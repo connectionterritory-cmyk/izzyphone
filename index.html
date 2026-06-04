@@ -290,9 +290,9 @@
 <body>
 
 <!-- Webhook config -->
-<div class="webhook-bar">
+<div class="webhook-bar" style="display:none">
   <label>🔗 Webhook n8n</label>
-  <input type="text" id="webhookUrl" placeholder="https://tu-n8n.host/webhook/izzy-cotizacion" value="https://n8n-n8n.fatnhd.easypanel.host/webhook/izzy-cotizacion">
+  <input type="text" id="webhookUrl" value="https://n8n-n8n.fatnhd.easypanel.host/webhook/izzy-cotizacion">
   <span class="webhook-status" id="webhookStatus"></span>
 </div>
 
@@ -778,8 +778,7 @@
   }
 
   async function saveToSheets() {
-    const url = document.getElementById('webhookUrl').value.trim();
-    if (!url) { showToast('⚠️ Pega la URL del webhook primero', '#b45309'); return; }
+    const url = 'https://n8n-n8n.fatnhd.easypanel.host/webhook/izzy-cotizacion';
     const cliente = getVal('clienteNombre');
     if (!cliente) { showToast('⚠️ Falta el nombre del cliente', '#b45309'); return; }
 
