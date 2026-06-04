@@ -589,61 +589,111 @@
   <div class="card-header" style="background:#0e7490;">⚡ La Mejor Oferta Encontrada</div>
   <div class="card-body">
 
-    <div class="field">
-      <label>Proveedor oferta</label>
-      <div class="chips">
-        <input type="radio" class="chip-input" name="ofertaProv" id="op-frontier" value="Frontier" onchange="generateCliente()">
-        <label class="chip-label" for="op-frontier">Frontier</label>
-        <input type="radio" class="chip-input" name="ofertaProv" id="op-spectrum" value="Spectrum" onchange="generateCliente()">
-        <label class="chip-label" for="op-spectrum">Spectrum</label>
-        <input type="radio" class="chip-input" name="ofertaProv" id="op-att" value="AT&T" onchange="generateCliente()">
-        <label class="chip-label" for="op-att">AT&T</label>
-        <input type="radio" class="chip-input" name="ofertaProv" id="op-tmobile" value="T-Mobile" onchange="generateCliente()">
-        <label class="chip-label" for="op-tmobile">T-Mobile</label>
-        <input type="radio" class="chip-input" name="ofertaProv" id="op-verizon" value="Verizon" onchange="generateCliente()">
-        <label class="chip-label" for="op-verizon">Verizon</label>
-      </div>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <label>Velocidad oferta</label>
+    <!-- INTERNET -->
+    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:700;color:#0e7490;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">🌐 Internet</div>
+      <div class="field" style="margin-bottom:10px;">
+        <label>Proveedor oferta</label>
         <div class="chips">
-          <input type="radio" class="chip-input" name="ofertaVel" id="ov-300" value="300 Mbps" onchange="generateCliente()">
-          <label class="chip-label" for="ov-300">300 Mb</label>
-          <input type="radio" class="chip-input" name="ofertaVel" id="ov-500" value="500 Mbps" onchange="generateCliente()">
-          <label class="chip-label" for="ov-500">500 Mb</label>
-          <input type="radio" class="chip-input" name="ofertaVel" id="ov-1g" value="1 Gig" onchange="generateCliente()">
-          <label class="chip-label" for="ov-1g">1 Gig</label>
-          <input type="radio" class="chip-input" name="ofertaVel" id="ov-2g" value="2 Gig" onchange="generateCliente()">
-          <label class="chip-label" for="ov-2g">2 Gig</label>
+          <input type="radio" class="chip-input" name="ofertaProv" id="op-spectrum" value="Spectrum" onchange="generateCliente()">
+          <label class="chip-label" for="op-spectrum">Spectrum</label>
+          <input type="radio" class="chip-input" name="ofertaProv" id="op-frontier" value="Frontier" onchange="generateCliente()">
+          <label class="chip-label" for="op-frontier">Frontier</label>
+          <input type="radio" class="chip-input" name="ofertaProv" id="op-att" value="AT&T" onchange="generateCliente()">
+          <label class="chip-label" for="op-att">AT&T</label>
+          <input type="radio" class="chip-input" name="ofertaProv" id="op-tmobile" value="T-Mobile" onchange="generateCliente()">
+          <label class="chip-label" for="op-tmobile">T-Mobile</label>
+          <input type="radio" class="chip-input" name="ofertaProv" id="op-verizon" value="Verizon" onchange="generateCliente()">
+          <label class="chip-label" for="op-verizon">Verizon</label>
         </div>
       </div>
-      <div class="field">
-        <label>Precio mensual nuevo</label>
-        <div class="money-wrap">
-          <span class="money-sign">$</span>
-          <input type="number" class="money-input" id="ofertaPrecio" placeholder="0.00" oninput="generateCliente()">
+      <div class="row2">
+        <div class="field">
+          <label>Velocidad oferta</label>
+          <div class="chips" style="flex-wrap:wrap;">
+            <input type="radio" class="chip-input" name="ofertaVel" id="ov-300" value="300 Mbps" onchange="generateCliente()">
+            <label class="chip-label" for="ov-300">300 Mb</label>
+            <input type="radio" class="chip-input" name="ofertaVel" id="ov-500" value="500 Mbps" onchange="generateCliente()">
+            <label class="chip-label" for="ov-500">500 Mb</label>
+            <input type="radio" class="chip-input" name="ofertaVel" id="ov-1g" value="1 Gig" onchange="generateCliente()">
+            <label class="chip-label" for="ov-1g">1 Gig</label>
+            <input type="radio" class="chip-input" name="ofertaVel" id="ov-2g" value="2 Gig" onchange="generateCliente()">
+            <label class="chip-label" for="ov-2g">2 Gig</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Precio internet/mes</label>
+          <div class="money-wrap">
+            <span class="money-sign">$</span>
+            <input type="number" class="money-input" id="ofertaIntPrecio" placeholder="0.00" oninput="generateCliente()">
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- TELÉFONOS -->
+    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 Teléfonos <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(opcional)</span></div>
+      <div class="field" style="margin-bottom:10px;">
+        <label>Líneas incluidas</label>
+        <div class="chips">
+          <input type="radio" class="chip-input" name="ofertaLineas" id="ol-0" value="0" onchange="generateCliente()">
+          <label class="chip-label" for="ol-0">Ninguna</label>
+          <input type="radio" class="chip-input" name="ofertaLineas" id="ol-1" value="1" onchange="generateCliente()">
+          <label class="chip-label" for="ol-1">1</label>
+          <input type="radio" class="chip-input" name="ofertaLineas" id="ol-2" value="2" onchange="generateCliente()">
+          <label class="chip-label" for="ol-2">2</label>
+          <input type="radio" class="chip-input" name="ofertaLineas" id="ol-3" value="3" onchange="generateCliente()">
+          <label class="chip-label" for="ol-3">3</label>
+          <input type="radio" class="chip-input" name="ofertaLineas" id="ol-4" value="4" onchange="generateCliente()">
+          <label class="chip-label" for="ol-4">4</label>
+          <input type="radio" class="chip-input" name="ofertaLineas" id="ol-5" value="5" onchange="generateCliente()">
+          <label class="chip-label" for="ol-5">5+</label>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Precio 1ra línea/mes</label>
+          <div class="money-wrap">
+            <span class="money-sign">$</span>
+            <input type="number" class="money-input" id="ofertaTelBase" placeholder="0.00" oninput="generateCliente()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Precio por línea adicional</label>
+          <div class="money-wrap">
+            <span class="money-sign">$</span>
+            <input type="number" class="money-input" id="ofertaTelAdicional" placeholder="0.00" oninput="generateCliente()">
+          </div>
+        </div>
+      </div>
+      <div id="totalTelDisplay" style="display:none;margin-top:10px;background:#f3e8ff;border-radius:8px;padding:9px 12px;font-size:13px;color:#5c2d91;font-weight:600;"></div>
+    </div>
+
+    <!-- PROMOCIONES -->
     <div class="field">
       <label>Promociones incluidas</label>
       <div class="chips">
-        <input type="checkbox" class="chip-input" id="pr-inst" value="✅ Instalación Gratis" onchange="generateCliente()">
+        <input type="checkbox" class="chip-input" id="pr-inst" value="Instalación Gratis" onchange="generateCliente()">
         <label class="chip-label" for="pr-inst">Instalación Gratis</label>
-        <input type="checkbox" class="chip-input" id="pr-2m" value="✅ 2 Meses Gratis" onchange="generateCliente()">
+        <input type="checkbox" class="chip-input" id="pr-2m" value="2 Meses Gratis" onchange="generateCliente()">
         <label class="chip-label" for="pr-2m">2 Meses Gratis</label>
-        <input type="checkbox" class="chip-input" id="pr-gc" value="🎁 Gift Card" onchange="generateCliente()">
+        <input type="checkbox" class="chip-input" id="pr-gc" value="Gift Card" onchange="generateCliente()">
         <label class="chip-label" for="pr-gc">Gift Card</label>
-        <input type="checkbox" class="chip-input" id="pr-sc" value="📵 Sin Contrato" onchange="generateCliente()">
+        <input type="checkbox" class="chip-input" id="pr-sc" value="Sin Contrato" onchange="generateCliente()">
         <label class="chip-label" for="pr-sc">Sin Contrato</label>
-        <input type="checkbox" class="chip-input" id="pr-esp" value="⭐ Oferta Especial" onchange="generateCliente()">
+        <input type="checkbox" class="chip-input" id="pr-esp" value="Oferta Especial" onchange="generateCliente()">
         <label class="chip-label" for="pr-esp">Especial</label>
       </div>
     </div>
 
+    <!-- TOTAL AUTOMÁTICO -->
+    <div id="ofertaTotalDisplay" style="display:none;border-radius:10px;padding:14px;border:1.5px solid #86efac;background:#f0fdf4;">
+      <div style="font-size:12px;font-weight:700;color:#15803d;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">💰 Resumen automático</div>
+      <div id="ofertaTotalLineas" style="font-size:14px;color:#1a1814;line-height:1.7;"></div>
+    </div>
+
+    <!-- NOTA -->
     <div class="field">
       <label>Nota para el cliente (opcional)</label>
       <input type="text" id="ofertaNota" placeholder="Ej: Precio garantizado por 2 años, sin contrato..." oninput="generateCliente()">
@@ -952,26 +1002,78 @@
   }
 
   function generateCliente() {
-    const cliente     = getVal('clienteNombre');
-    const tel         = getVal('clienteTel');
-    const yo          = getVal('miNombre');
-    const pagoInt     = parseFloat(getVal('pagoInternet')) || 0;
-    const pagoTel     = parseFloat(getVal('pagoTelefono')) || 0;
-    const pagoViejo   = pagoInt + pagoTel;
-    const intProv     = getRadio('intProv');
-    const telProv     = getRadio('telProv');
-    const ofertaProv  = getRadio('ofertaProv');
-    const ofertaVel   = getRadio('ofertaVel');
-    const ofertaPrecio = parseFloat(getVal('ofertaPrecio')) || 0;
-    const promos    = ['pr-inst','pr-2m','pr-gc','pr-sc','pr-esp']
-                        .filter(id => document.getElementById(id)?.checked)
-                        .map(id => document.getElementById(id).value);
+    const cliente          = getVal('clienteNombre');
+    const yo               = getVal('miNombre');
+    const pagoInt          = parseFloat(getVal('pagoInternet')) || 0;
+    const pagoTel          = parseFloat(getVal('pagoTelefono')) || 0;
+    const pagoViejo        = pagoInt + pagoTel;
+    const intProv          = getRadio('intProv');
+    const telProv          = getRadio('telProv');
+
+    // Oferta — internet
+    const ofertaProv       = getRadio('ofertaProv');
+    const ofertaVel        = getRadio('ofertaVel');
+    const ofertaIntPrecio  = parseFloat(getVal('ofertaIntPrecio')) || 0;
+
+    // Oferta — teléfonos
+    const numLineasStr     = getRadio('ofertaLineas');
+    const numLineas        = numLineasStr ? parseInt(numLineasStr) : 0;
+    const ofertaTelBase    = parseFloat(getVal('ofertaTelBase')) || 0;
+    const ofertaTelAdic    = parseFloat(getVal('ofertaTelAdicional')) || 0;
+    const lineasAdicionales = Math.max(0, numLineas - 1);
+    const totalTelefonos   = numLineas > 0 ? ofertaTelBase + (lineasAdicionales * ofertaTelAdic) : 0;
+
+    // Total oferta
+    const totalOferta      = ofertaIntPrecio + totalTelefonos;
+
+    // Promociones
+    const promos = ['pr-inst','pr-2m','pr-gc','pr-sc','pr-esp']
+      .filter(id => document.getElementById(id)?.checked)
+      .map(id => document.getElementById(id).value);
     const ofertaNota = getVal('ofertaNota');
 
-    const ahorro = pagoViejo > 0 && ofertaPrecio > 0 ? pagoViejo - ofertaPrecio : 0;
+    // Ahorro
+    const ahorro     = pagoViejo > 0 && totalOferta > 0 ? pagoViejo - totalOferta : 0;
     const ahorroAnual = ahorro * 12;
 
-    // Actualizar display de ahorro
+    // ── Actualizar resumen de teléfonos en el card ──
+    const totalTelEl = document.getElementById('totalTelDisplay');
+    if (numLineas > 0) {
+      let telResumen = `📱 ${numLineas} línea${numLineas > 1 ? 's' : ''}`;
+      if (numLineas === 1) {
+        telResumen += ` — $${ofertaTelBase.toFixed(2)}/mes`;
+      } else {
+        telResumen += ` — 1ra línea: $${ofertaTelBase.toFixed(2)}`;
+        if (lineasAdicionales > 0) telResumen += ` + ${lineasAdicionales} adicional${lineasAdicionales > 1 ? 'es' : ''} × $${ofertaTelAdic.toFixed(2)}`;
+        telResumen += ` = *$${totalTelefonos.toFixed(2)}/mes*`;
+      }
+      totalTelEl.textContent = telResumen;
+      totalTelEl.style.display = 'block';
+    } else {
+      totalTelEl.style.display = 'none';
+    }
+
+    // ── Actualizar resumen total en el card ──
+    const totalEl    = document.getElementById('ofertaTotalDisplay');
+    const totalLinEl = document.getElementById('ofertaTotalLineas');
+    if (totalOferta > 0) {
+      let resumen = '';
+      if (ofertaIntPrecio > 0) resumen += `🌐 Internet (${ofertaProv || '—'}): $${ofertaIntPrecio.toFixed(2)}/mes\n`;
+      if (numLineas > 0)       resumen += `📱 Teléfonos (${numLineas} línea${numLineas > 1 ? 's' : ''}): $${totalTelefonos.toFixed(2)}/mes\n`;
+      resumen += `\n💰 Total nuevo: $${totalOferta.toFixed(2)}/mes`;
+      if (pagoViejo > 0) resumen += `\n📊 Antes pagabas: $${pagoViejo.toFixed(2)}/mes`;
+      if (ahorro > 0)    resumen += `\n✅ Ahorras: $${ahorro.toFixed(2)}/mes · $${ahorroAnual.toFixed(0)}/año`;
+      else if (ahorro < 0) resumen += `\n📈 Diferencia: +$${Math.abs(ahorro).toFixed(2)}/mes`;
+      totalLinEl.style.whiteSpace = 'pre-line';
+      totalLinEl.textContent = resumen;
+      totalEl.style.display = 'block';
+      totalEl.style.borderColor = ahorro > 0 ? '#86efac' : ahorro < 0 ? '#fca5a5' : '#86efac';
+      totalEl.style.background  = ahorro > 0 ? '#f0fdf4' : ahorro < 0 ? '#fff5f5' : '#f0fdf4';
+    } else {
+      totalEl.style.display = 'none';
+    }
+
+    // ── Actualizar display de ahorro en footer ──
     const ahorroEl = document.getElementById('ahorro-display');
     if (ahorro > 0) {
       ahorroEl.textContent = `$${ahorro.toFixed(2)}/mes · $${ahorroAnual.toFixed(0)}/año`;
@@ -984,19 +1086,25 @@
       ahorroEl.style.color = 'var(--muted)';
     }
 
+    // ── Generar mensaje ──
     let msgC = '';
     const nombreCliente = cliente ? cliente.split(' ')[0] : 'Estimado/a';
 
     if (currentModeCliente === 'sms') {
       msgC += `Hola ${nombreCliente}! Soy ${yo || '[nombre]'} de Izzy Internet.\n\n`;
       msgC += `Te consegui una mejor oferta:\n\n`;
-      if (ofertaProv)   msgC += `Compania: ${ofertaProv}\n`;
-      if (ofertaVel)    msgC += `Velocidad: ${ofertaVel}\n`;
-      if (ofertaPrecio) msgC += `Precio nuevo: $${ofertaPrecio.toFixed(2)}/mes\n`;
-      if (pagoViejo > 0) msgC += `Antes pagabas: $${pagoViejo.toFixed(2)}/mes\n`;
-      if (ahorro > 0)   msgC += `Ahorras: $${ahorro.toFixed(2)}/mes ($${ahorroAnual.toFixed(0)}/año)\n`;
-      if (promos.length) msgC += `Incluye: ${promos.join(', ')}\n`;
-      if (ofertaNota)   msgC += `\n${ofertaNota}\n`;
+      if (ofertaProv || ofertaIntPrecio) {
+        msgC += `Internet: ${ofertaProv || '—'}${ofertaVel ? ' — ' + ofertaVel : ''} — $${ofertaIntPrecio.toFixed(2)}/mes\n`;
+      }
+      if (numLineas > 0) {
+        msgC += `Telefonos: ${numLineas} linea${numLineas > 1 ? 's' : ''} — $${totalTelefonos.toFixed(2)}/mes\n`;
+        if (numLineas > 1) msgC += `  (1ra: $${ofertaTelBase.toFixed(2)} + ${lineasAdicionales} adic. x $${ofertaTelAdic.toFixed(2)})\n`;
+      }
+      if (totalOferta > 0)  msgC += `Total: $${totalOferta.toFixed(2)}/mes\n`;
+      if (pagoViejo > 0)    msgC += `Antes: $${pagoViejo.toFixed(2)}/mes\n`;
+      if (ahorro > 0)       msgC += `Ahorras: $${ahorro.toFixed(2)}/mes ($${ahorroAnual.toFixed(0)}/año)\n`;
+      if (promos.length)    msgC += `Incluye: ${promos.join(', ')}\n`;
+      if (ofertaNota)       msgC += `\n${ofertaNota}\n`;
       msgC += `\n¿Te interesa? Podemos proceder hoy mismo.`;
 
     } else {
@@ -1007,26 +1115,36 @@
       msgC += `${'─'.repeat(28)}\n`;
       msgC += `⚡ *TU NUEVA OFERTA*\n`;
       msgC += `${'─'.repeat(28)}\n`;
-      if (ofertaProv)   msgC += `🏢 Compañía: *${ofertaProv}*\n`;
-      if (ofertaVel)    msgC += `🚀 Velocidad: *${ofertaVel}*\n`;
-      if (ofertaPrecio) msgC += `💵 Precio nuevo: *$${ofertaPrecio.toFixed(2)}/mes*\n`;
-      if (promos.length) {
-        msgC += `\n🎁 *Incluye:*\n`;
-        promos.forEach(p => msgC += `   ${p}\n`);
+      if (ofertaProv || ofertaIntPrecio) {
+        msgC += `🌐 Internet (${ofertaProv || '—'}): *$${ofertaIntPrecio.toFixed(2)}/mes*`;
+        if (ofertaVel) msgC += ` — ${ofertaVel}`;
+        msgC += `\n`;
       }
+      if (numLineas > 0) {
+        msgC += `📱 Teléfonos: *${numLineas} línea${numLineas > 1 ? 's' : ''}* — *$${totalTelefonos.toFixed(2)}/mes*\n`;
+        if (numLineas > 1) {
+          msgC += `   (1ra línea: $${ofertaTelBase.toFixed(2)}`;
+          if (lineasAdicionales > 0) msgC += ` + ${lineasAdicionales} adicional${lineasAdicionales > 1 ? 'es' : ''} × $${ofertaTelAdic.toFixed(2)}`;
+          msgC += `)\n`;
+        }
+      }
+      if (promos.length) msgC += `🎁 Incluye: ${promos.join(' · ')}\n`;
+
+      msgC += `\n💰 *Total nuevo: $${totalOferta.toFixed(2)}/mes*\n`;
 
       if (pagoViejo > 0 || intProv || telProv) {
         msgC += `\n${'─'.repeat(28)}\n`;
         msgC += `📊 *COMPARACIÓN*\n`;
         msgC += `${'─'.repeat(28)}\n`;
-        if (intProv && pagoInt > 0)  msgC += `❌ Internet (${intProv}): *$${pagoInt.toFixed(2)}/mes*\n`;
-        if (telProv && pagoTel > 0)  msgC += `❌ Celular (${telProv}): *$${pagoTel.toFixed(2)}/mes*\n`;
-        if (pagoViejo > 0)           msgC += `❌ *Total antes: $${pagoViejo.toFixed(2)}/mes*\n`;
-        msgC += `\n`;
-        if (ofertaPrecio)            msgC += `✅ *Nueva oferta (${ofertaProv || 'nuevo'}): $${ofertaPrecio.toFixed(2)}/mes*\n`;
+        if (intProv && pagoInt > 0) msgC += `❌ Internet (${intProv}): *$${pagoInt.toFixed(2)}/mes*\n`;
+        if (telProv && pagoTel > 0) msgC += `❌ Celular (${telProv}): *$${pagoTel.toFixed(2)}/mes*\n`;
+        if (pagoViejo > 0)          msgC += `❌ *Total antes: $${pagoViejo.toFixed(2)}/mes*\n\n`;
+        if (totalOferta > 0)        msgC += `✅ *Nueva oferta: $${totalOferta.toFixed(2)}/mes*\n`;
         if (ahorro > 0) {
           msgC += `\n💰 *Ahorras: $${ahorro.toFixed(2)} al mes*\n`;
           msgC += `📅 *$${ahorroAnual.toFixed(0)} al año* 🎉\n`;
+        } else if (ahorro < 0) {
+          msgC += `\n📈 Diferencia: +$${Math.abs(ahorro).toFixed(2)}/mes (mejor plan)\n`;
         }
       }
 
@@ -1035,9 +1153,7 @@
     }
 
     currentMsgCliente = msgC;
-    const bubble = document.getElementById('preview-cliente');
-    bubble.textContent = msgC;
-
+    document.getElementById('preview-cliente').textContent = msgC;
     const now = new Date();
     document.getElementById('bubble-time-cliente').textContent =
       now.getHours().toString().padStart(2,'0') + ':' +
