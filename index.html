@@ -339,9 +339,9 @@
 <div id="pinScreen">
   <div class="pin-emoji">📱</div>
   <div class="pin-title">Izzy Internet</div>
-  <div class="pin-sub">Ingresa tu código de acceso</div>
+  <div class="pin-sub" id="pinSub">Ingresa tu código de acceso</div>
   <input type="text" id="pinInput" placeholder="CÓDIGO" maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') checkPin()">
-  <button class="pin-btn" onclick="checkPin()">✅ Entrar</button>
+  <button class="pin-btn" id="pinBtn" onclick="checkPin()">✅ Entrar</button>
   <div class="pin-error" id="pinError"></div>
 </div>
 
@@ -362,70 +362,71 @@
     </div>
     <div>
       <div class="brand-name">Izzy Internet</div>
-      <div class="brand-sub">Enviar lead al cotizador</div>
+      <div class="brand-sub" id="brandSub">Enviar lead al cotizador</div>
     </div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
-    <a href="tutorial.html" style="display:flex;align-items:center;gap:5px;background:#edf1f8;color:#1a3a6b;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;border:1.5px solid #c7d4e8;">📚 Tutorial</a>
-    <div class="badge">📤 Para el Cotizador</div>
+    <a href="tutorial.html" id="tutorialLink" style="display:flex;align-items:center;gap:5px;background:#edf1f8;color:#1a3a6b;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;border:1.5px solid #c7d4e8;">📚 Tutorial</a>
+    <button id="langToggle" onclick="toggleLang()" style="background:#1a3a6b;color:#fff;border:none;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🇺🇸 EN</button>
+    <div class="badge" id="badgeText">📤 Para el Cotizador</div>
   </div>
 </div>
 
 <!-- Datos del agente -->
 <div class="card">
-  <div class="card-header">👤 Mis Datos (Agente)</div>
+  <div class="card-header" id="hdrAgente">👤 Mis Datos (Agente)</div>
   <div class="card-body">
     <div class="field">
-      <label>Mi nombre</label>
-      <input type="text" id="miNombre" placeholder="Tu nombre" oninput="generate()">
+      <label id="lblMiNombre">Mi nombre</label>
+      <input type="text" id="miNombre" placeholder="Tu nombre" data-ph="phMiNombre" oninput="generate()">
     </div>
   </div>
 </div>
 
 <!-- Datos del cotizador -->
 <div class="card">
-  <div class="card-header" style="background:#16a34a;">📲 Datos del Cotizador</div>
+  <div class="card-header" id="hdrCotizador" style="background:#16a34a;">📲 Datos del Cotizador</div>
   <div class="card-body">
     <div class="row2">
       <div class="field">
-        <label>Nombre del cotizador</label>
-        <input type="text" id="cotizadorNombre" placeholder="Nombre" oninput="saveCotizador()">
+        <label id="lblCotNombre">Nombre del cotizador</label>
+        <input type="text" id="cotizadorNombre" placeholder="Nombre" data-ph="phCotNombre" oninput="saveCotizador()">
       </div>
       <div class="field">
-        <label>WhatsApp / Teléfono</label>
+        <label id="lblCotTel">WhatsApp / Teléfono</label>
         <input type="tel" id="cotizadorTel" placeholder="+1 818 555 1234" oninput="saveCotizador()">
       </div>
     </div>
-    <p style="font-size:11px;color:var(--muted);margin-top:4px;">Este número se guarda automáticamente para la próxima vez.</p>
+    <p id="cotSavedNote" style="font-size:11px;color:var(--muted);margin-top:4px;">Este número se guarda automáticamente para la próxima vez.</p>
   </div>
 </div>
 
 <!-- Datos del cliente -->
 <div class="card">
-  <div class="card-header">🏠 Datos del Cliente</div>
+  <div class="card-header" id="hdrCliente">🏠 Datos del Cliente</div>
   <div class="card-body">
     <div class="field">
-      <label>Nombre del cliente</label>
-      <input type="text" id="clienteNombre" placeholder="Nombre completo" oninput="generate()">
+      <label id="lblClienteNombre">Nombre del cliente</label>
+      <input type="text" id="clienteNombre" placeholder="Nombre completo" data-ph="phClienteNombre" oninput="generate()">
     </div>
     <div class="row2">
       <div class="field">
-        <label>Teléfono</label>
+        <label id="lblClienteTel">Teléfono</label>
         <input type="tel" id="clienteTel" placeholder="(___) ___-____" oninput="formatPhone(this); generate()">
       </div>
       <div class="field">
-        <label>ZIP / Ciudad</label>
+        <label id="lblZip">ZIP / Ciudad</label>
         <input type="text" id="clienteZip" placeholder="90210" oninput="generate()" style="max-width:120px;">
       </div>
     </div>
     <div class="row2">
       <div class="field">
-        <label>Dirección (calle y número)</label>
-        <input type="text" id="clienteDirec" placeholder="1234 Main St, Apt 5" oninput="generate()">
+        <label id="lblDirec">Dirección (calle y número)</label>
+        <input type="text" id="clienteDirec" placeholder="1234 Main St, Apt 5" data-ph="phDirec" oninput="generate()">
       </div>
       <div class="field">
-        <label>Ciudad y Estado</label>
-        <input type="text" id="clienteCiudad" placeholder="Los Angeles, CA" oninput="generate()">
+        <label id="lblCiudad">Ciudad y Estado</label>
+        <input type="text" id="clienteCiudad" placeholder="Los Angeles, CA" data-ph="phCiudad" oninput="generate()">
       </div>
     </div>
   </div>
@@ -433,14 +434,14 @@
 
 <!-- Situación actual -->
 <div class="card">
-  <div class="card-header">📡 Situación Actual del Cliente</div>
+  <div class="card-header" id="hdrSituacion">📡 Situación Actual del Cliente</div>
   <div class="card-body">
 
     <!-- INTERNET -->
     <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
       <div style="font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">🌐 Internet</div>
       <div class="field" style="margin-bottom:10px;">
-        <label>Compañía de Internet</label>
+        <label id="lblIntProv">Compañía de Internet</label>
         <div class="chips">
           <input type="radio" class="chip-input" name="intProv" id="ip-spectrum" value="Spectrum" onchange="generate()">
           <label class="chip-label" for="ip-spectrum">Spectrum</label>
@@ -451,12 +452,12 @@
           <input type="radio" class="chip-input" name="intProv" id="ip-cox" value="Cox" onchange="generate()">
           <label class="chip-label" for="ip-cox">Cox</label>
           <input type="radio" class="chip-input" name="intProv" id="ip-ninguno" value="No tiene" onchange="generate()">
-          <label class="chip-label" for="ip-ninguno">No tiene</label>
+          <label class="chip-label" id="chipIntNone" for="ip-ninguno">No tiene</label>
         </div>
       </div>
       <div class="row2">
         <div class="field">
-          <label>Velocidad actual</label>
+          <label id="lblVelActual">Velocidad actual</label>
           <div class="chips" style="flex-wrap:wrap;">
             <input type="radio" class="chip-input" name="velActual" id="va-300" value="300 Mbps" onchange="generate()">
             <label class="chip-label" for="va-300">300 Mb</label>
@@ -465,11 +466,11 @@
             <input type="radio" class="chip-input" name="velActual" id="va-1g" value="1 Gig" onchange="generate()">
             <label class="chip-label" for="va-1g">1 Gig</label>
             <input type="radio" class="chip-input" name="velActual" id="va-ns" value="No sabe" onchange="generate()">
-            <label class="chip-label" for="va-ns">No sabe</label>
+            <label class="chip-label" id="chipNoSabe" for="va-ns">No sabe</label>
           </div>
         </div>
         <div class="field">
-          <label>Pago Internet/mes</label>
+          <label id="lblPagoInternet">Pago Internet/mes</label>
           <div class="money-wrap">
             <span class="money-sign">$</span>
             <input type="number" class="money-input" id="pagoInternet" placeholder="0.00" oninput="generate()">
@@ -477,10 +478,10 @@
         </div>
       </div>
       <div class="field" style="margin-top:8px;">
-        <label>¿Tiene TV?</label>
+        <label id="lblTieneTV">¿Tiene TV?</label>
         <div class="chips">
           <input type="radio" class="chip-input" name="tieneTV" id="tv-si" value="Sí" onchange="generate()">
-          <label class="chip-label" for="tv-si">Sí</label>
+          <label class="chip-label" id="chipSi" for="tv-si">Sí</label>
           <input type="radio" class="chip-input" name="tieneTV" id="tv-no" value="No" onchange="generate()">
           <label class="chip-label" for="tv-no">No</label>
         </div>
@@ -489,9 +490,9 @@
 
     <!-- TELÉFONOS -->
     <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
-      <div style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 Teléfonos Celulares</div>
+      <div id="hdrCelulares" style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 Teléfonos Celulares</div>
       <div class="field" style="margin-bottom:10px;">
-        <label>Compañía de Teléfono</label>
+        <label id="lblTelProv">Compañía de Teléfono</label>
         <div class="chips">
           <input type="radio" class="chip-input" name="telProv" id="tp-tmobile" value="T-Mobile" onchange="generate()">
           <label class="chip-label" for="tp-tmobile">T-Mobile</label>
@@ -504,12 +505,12 @@
           <input type="radio" class="chip-input" name="telProv" id="tp-cricket" value="Cricket" onchange="generate()">
           <label class="chip-label" for="tp-cricket">Cricket</label>
           <input type="radio" class="chip-input" name="telProv" id="tp-ninguno" value="No tiene" onchange="generate()">
-          <label class="chip-label" for="tp-ninguno">No tiene</label>
+          <label class="chip-label" id="chipTelNone" for="tp-ninguno">No tiene</label>
         </div>
       </div>
       <div class="row2">
         <div class="field">
-          <label>Número de líneas</label>
+          <label id="lblLineas">Número de líneas</label>
           <div class="chips">
             <input type="radio" class="chip-input" name="lineas" id="l-1" value="1 línea" onchange="generate()">
             <label class="chip-label" for="l-1">1</label>
@@ -524,7 +525,7 @@
           </div>
         </div>
         <div class="field">
-          <label>Pago Teléfono/mes</label>
+          <label id="lblPagoTelefono">Pago Teléfono/mes</label>
           <div class="money-wrap">
             <span class="money-sign">$</span>
             <input type="number" class="money-input" id="pagoTelefono" placeholder="0.00" oninput="generate()">
@@ -534,8 +535,8 @@
     </div>
 
     <div class="field">
-      <label>Nota adicional (opcional)</label>
-      <input type="text" id="nota" placeholder="Ej: Contrato vence en junio, quiere mejorar velocidad..." oninput="generate()">
+      <label id="lblNota">Nota adicional (opcional)</label>
+      <input type="text" id="nota" placeholder="Ej: Contrato vence en junio..." data-ph="phNota" oninput="generate()">
     </div>
 
   </div>
@@ -544,59 +545,47 @@
 <!-- Preview -->
 <div class="preview-card">
   <div class="preview-header">
-    <div class="preview-title">
-      💬 Mensaje para el Cotizador
-    </div>
+    <div class="preview-title" id="previewTitle">💬 Mensaje para el Cotizador</div>
     <div class="mode-toggle">
       <button class="mode-btn active" onclick="setMode('wa', this)">WhatsApp</button>
       <button class="mode-btn" onclick="setMode('sms', this)">SMS</button>
     </div>
   </div>
-
   <div class="wa-screen">
-    <div class="bubble" id="preview-bubble">
-      <em style="color:#aaa;">Llena los campos para generar el mensaje...</em>
-    </div>
+    <div class="bubble" id="preview-bubble"><em style="color:#aaa;" id="previewPlaceholder">Llena los campos para generar el mensaje...</em></div>
     <div class="bubble-time" id="bubble-time"></div>
   </div>
-
   <div class="copy-area">
-    <div class="char-count">Caracteres: <span id="char-count">0</span></div>
+    <div class="char-count"><span id="lblChars">Caracteres:</span> <span id="char-count">0</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn-copy" id="btn-copy" onclick="copyMsg()">
-        📋 Copiar mensaje
-      </button>
-      <button class="btn-copy" style="background:#25D366;" onclick="openWhatsApp()">
-        💬 Copiar y Abrir Grupo
-      </button>
-      <button class="btn-save" id="btn-save" onclick="saveToSheets()">
-        💾 Guardar
-      </button>
+      <button class="btn-copy" id="btn-copy" onclick="copyMsg()">📋 <span id="btnCopyText">Copiar mensaje</span></button>
+      <button class="btn-copy" id="btn-group" style="background:#25D366;" onclick="openWhatsApp()">💬 <span id="btnGroupText">Copiar y Abrir Grupo</span></button>
+      <button class="btn-save" id="btn-save" onclick="saveToSheets()">💾 <span id="btnSaveText">Guardar</span></button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast">✅ ¡Copiado! Pégalo en WhatsApp o SMS</div>
+<div class="toast" id="toast"></div>
 </div><!-- /mainApp -->
 
-<!-- ═══ PASO 2: RESPUESTA DEL COTIZADOR → MENSAJE AL CLIENTE ═══ -->
+<!-- ═══ PASO 2 ═══ -->
 <div style="max-width:560px;margin:28px auto 0;">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
     <div style="flex:1;height:2px;background:var(--border);border-radius:2px;"></div>
-    <span style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;">PASO 2 — Respuesta del Cotizador</span>
+    <span id="paso2Divider" style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;">PASO 2 — Respuesta del Cotizador</span>
     <div style="flex:1;height:2px;background:var(--border);border-radius:2px;"></div>
   </div>
 </div>
 
 <div class="card" style="max-width:560px;margin:0 auto 16px;">
-  <div class="card-header" style="background:#0e7490;">⚡ La Mejor Oferta Encontrada</div>
+  <div class="card-header" id="hdrOferta" style="background:#0e7490;">⚡ La Mejor Oferta Encontrada</div>
   <div class="card-body">
 
     <!-- INTERNET -->
     <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
       <div style="font-size:12px;font-weight:700;color:#0e7490;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">🌐 Internet</div>
       <div class="field" style="margin-bottom:10px;">
-        <label>Proveedor oferta</label>
+        <label id="lblOfertaProv">Proveedor oferta</label>
         <div class="chips">
           <input type="radio" class="chip-input" name="ofertaProv" id="op-spectrum" value="Spectrum" onchange="generateCliente()">
           <label class="chip-label" for="op-spectrum">Spectrum</label>
@@ -612,7 +601,7 @@
       </div>
       <div class="row2">
         <div class="field">
-          <label>Velocidad oferta</label>
+          <label id="lblOfertaVel">Velocidad oferta</label>
           <div class="chips" style="flex-wrap:wrap;">
             <input type="radio" class="chip-input" name="ofertaVel" id="ov-300" value="300 Mbps" onchange="generateCliente()">
             <label class="chip-label" for="ov-300">300 Mb</label>
@@ -625,7 +614,7 @@
           </div>
         </div>
         <div class="field">
-          <label>Precio internet/mes</label>
+          <label id="lblOfertaIntPrecio">Precio internet/mes</label>
           <div class="money-wrap">
             <span class="money-sign">$</span>
             <input type="number" class="money-input" id="ofertaIntPrecio" placeholder="0.00" oninput="generateCliente()">
@@ -636,12 +625,12 @@
 
     <!-- TELÉFONOS -->
     <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
-      <div style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 Teléfonos <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(opcional)</span></div>
+      <div style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 <span id="hdrOfertaTel">Teléfonos</span> <span id="hdrOfertaTelOpt" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(opcional)</span></div>
       <div class="field" style="margin-bottom:10px;">
-        <label>Líneas incluidas</label>
+        <label id="lblOfertaLineas">Líneas incluidas</label>
         <div class="chips">
           <input type="radio" class="chip-input" name="ofertaLineas" id="ol-0" value="0" onchange="generateCliente()">
-          <label class="chip-label" for="ol-0">Ninguna</label>
+          <label class="chip-label" id="chipLinNone" for="ol-0">Ninguna</label>
           <input type="radio" class="chip-input" name="ofertaLineas" id="ol-1" value="1" onchange="generateCliente()">
           <label class="chip-label" for="ol-1">1</label>
           <input type="radio" class="chip-input" name="ofertaLineas" id="ol-2" value="2" onchange="generateCliente()">
@@ -656,14 +645,14 @@
       </div>
       <div class="row2">
         <div class="field">
-          <label>Precio 1ra línea/mes</label>
+          <label id="lblOfertaTelBase">Precio 1ra línea/mes</label>
           <div class="money-wrap">
             <span class="money-sign">$</span>
             <input type="number" class="money-input" id="ofertaTelBase" placeholder="0.00" oninput="generateCliente()">
           </div>
         </div>
         <div class="field">
-          <label>Precio por línea adicional</label>
+          <label id="lblOfertaTelAdic">Precio por línea adicional</label>
           <div class="money-wrap">
             <span class="money-sign">$</span>
             <input type="number" class="money-input" id="ofertaTelAdicional" placeholder="0.00" oninput="generateCliente()">
@@ -675,31 +664,31 @@
 
     <!-- PROMOCIONES -->
     <div class="field">
-      <label>Promociones incluidas</label>
+      <label id="lblPromos">Promociones incluidas</label>
       <div class="chips">
-        <input type="checkbox" class="chip-input" id="pr-inst" value="Instalación Gratis" onchange="generateCliente()">
-        <label class="chip-label" for="pr-inst">Instalación Gratis</label>
-        <input type="checkbox" class="chip-input" id="pr-2m" value="2 Meses Gratis" onchange="generateCliente()">
-        <label class="chip-label" for="pr-2m">2 Meses Gratis</label>
-        <input type="checkbox" class="chip-input" id="pr-gc" value="Gift Card" onchange="generateCliente()">
+        <input type="checkbox" class="chip-input" id="pr-inst" onchange="generateCliente()">
+        <label class="chip-label" id="lbl-pr-inst" for="pr-inst">Instalación Gratis</label>
+        <input type="checkbox" class="chip-input" id="pr-2m" onchange="generateCliente()">
+        <label class="chip-label" id="lbl-pr-2m" for="pr-2m">2 Meses Gratis</label>
+        <input type="checkbox" class="chip-input" id="pr-gc" onchange="generateCliente()">
         <label class="chip-label" for="pr-gc">Gift Card</label>
-        <input type="checkbox" class="chip-input" id="pr-sc" value="Sin Contrato" onchange="generateCliente()">
-        <label class="chip-label" for="pr-sc">Sin Contrato</label>
-        <input type="checkbox" class="chip-input" id="pr-esp" value="Oferta Especial" onchange="generateCliente()">
-        <label class="chip-label" for="pr-esp">Especial</label>
+        <input type="checkbox" class="chip-input" id="pr-sc" onchange="generateCliente()">
+        <label class="chip-label" id="lbl-pr-sc" for="pr-sc">Sin Contrato</label>
+        <input type="checkbox" class="chip-input" id="pr-esp" onchange="generateCliente()">
+        <label class="chip-label" id="lbl-pr-esp" for="pr-esp">Especial</label>
       </div>
     </div>
 
     <!-- TOTAL AUTOMÁTICO -->
     <div id="ofertaTotalDisplay" style="display:none;border-radius:10px;padding:14px;border:1.5px solid #86efac;background:#f0fdf4;">
-      <div style="font-size:12px;font-weight:700;color:#15803d;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">💰 Resumen automático</div>
+      <div id="resumenTitle" style="font-size:12px;font-weight:700;color:#15803d;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">💰 Resumen automático</div>
       <div id="ofertaTotalLineas" style="font-size:14px;color:#1a1814;line-height:1.7;"></div>
     </div>
 
     <!-- NOTA -->
     <div class="field">
-      <label>Nota para el cliente (opcional)</label>
-      <input type="text" id="ofertaNota" placeholder="Ej: Precio garantizado por 2 años, sin contrato..." oninput="generateCliente()">
+      <label id="lblOfertaNota">Nota para el cliente (opcional)</label>
+      <input type="text" id="ofertaNota" placeholder="Ej: Precio garantizado por 2 años, sin contrato..." data-ph="phOfertaNota" oninput="generateCliente()">
     </div>
 
   </div>
@@ -708,7 +697,7 @@
 <!-- Preview mensaje al cliente -->
 <div class="preview-card" style="max-width:560px;margin:0 auto 16px;">
   <div class="preview-header" style="background:#0e7490;">
-    <div class="preview-title">📱 Mensaje para el Cliente</div>
+    <div class="preview-title" id="previewClienteTitle">📱 Mensaje para el Cliente</div>
     <div class="mode-toggle">
       <button class="mode-btn active" onclick="setModeCliente('wa', this)">WhatsApp</button>
       <button class="mode-btn" onclick="setModeCliente('sms', this)">SMS</button>
@@ -716,17 +705,14 @@
   </div>
 
   <div class="wa-screen">
-    <div class="bubble" id="preview-cliente">
-      <em style="color:#aaa;">Llena la oferta arriba para generar el mensaje al cliente...</em>
-    </div>
+    <div class="bubble" id="preview-cliente"><em style="color:#aaa;" id="previewClientePlaceholder">Llena la oferta arriba para generar el mensaje al cliente...</em></div>
     <div class="bubble-time" id="bubble-time-cliente"></div>
   </div>
-
   <div class="copy-area">
-    <div class="char-count">Ahorro: <span id="ahorro-display" style="font-weight:700;color:#16a34a;">$0.00/mes</span></div>
+    <div class="char-count"><span id="lblAhorro">Ahorro:</span> <span id="ahorro-display" style="font-weight:700;color:#16a34a;">$0.00/mes</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn-copy" onclick="copyMsgCliente()">📋 Copiar</button>
-      <button class="btn-copy" style="background:#25D366;" onclick="openWhatsAppCliente()">💬 Enviar al Cliente</button>
+      <button class="btn-copy" onclick="copyMsgCliente()">📋 <span id="btnCopyCliente">Copiar</span></button>
+      <button class="btn-copy" style="background:#25D366;" onclick="openWhatsAppCliente()">💬 <span id="btnSendCliente">Enviar al Cliente</span></button>
     </div>
   </div>
 </div>
@@ -771,6 +757,213 @@
   })();
   // ───────────────────────────────────────────────────────
 
+  // ── Traducciones / Translations ────────────────────────
+  let currentLang = localStorage.getItem('izzy_lang') || 'es';
+
+  const T = {
+    es: {
+      pinSub:'Ingresa tu código de acceso', pinBtn:'✅ Entrar', pinPlaceholder:'CÓDIGO',
+      pinError:'❌ Código incorrecto. Intenta de nuevo.',
+      brandSub:'Enviar lead al cotizador', badge:'📤 Para el Cotizador', tutorialLink:'📚 Tutorial', langToggle:'🇺🇸 EN',
+      hdrAgente:'👤 Mis Datos (Agente)', hdrCotizador:'📲 Datos del Cotizador',
+      hdrCliente:'🏠 Datos del Cliente', hdrSituacion:'📡 Situación Actual del Cliente',
+      hdrCelulares:'📱 Teléfonos Celulares', hdrOferta:'⚡ La Mejor Oferta Encontrada',
+      lblMiNombre:'Mi nombre', phMiNombre:'Tu nombre',
+      lblCotNombre:'Nombre del cotizador', phCotNombre:'Nombre',
+      lblCotTel:'WhatsApp / Teléfono', cotSavedNote:'Este número se guarda automáticamente para la próxima vez.',
+      lblClienteNombre:'Nombre del cliente', phClienteNombre:'Nombre completo',
+      lblClienteTel:'Teléfono', lblZip:'ZIP / Ciudad',
+      lblDirec:'Dirección (calle y número)', phDirec:'1234 Main St, Apt 5',
+      lblCiudad:'Ciudad y Estado', phCiudad:'Los Angeles, CA',
+      lblIntProv:'Compañía de Internet', chipIntNone:'No tiene',
+      lblVelActual:'Velocidad actual', chipNoSabe:'No sabe',
+      lblPagoInternet:'Pago Internet/mes', lblTieneTV:'¿Tiene TV?', chipSi:'Sí',
+      lblTelProv:'Compañía de Teléfono', chipTelNone:'No tiene',
+      lblLineas:'Número de líneas', lblPagoTelefono:'Pago Teléfono/mes',
+      lblNota:'Nota adicional (opcional)', phNota:'Ej: Contrato vence en junio, quiere mejorar velocidad...',
+      previewTitle:'💬 Mensaje para el Cotizador', lblChars:'Caracteres:',
+      btnCopyText:'Copiar mensaje', btnGroupText:'Copiar y Abrir Grupo', btnSaveText:'Guardar',
+      previewPlaceholder:'Llena los campos para generar el mensaje...',
+      paso2Divider:'PASO 2 — Respuesta del Cotizador',
+      hdrOfertaTel:'Teléfonos', hdrOfertaTelOpt:'(opcional)',
+      lblOfertaProv:'Proveedor oferta', lblOfertaVel:'Velocidad oferta', lblOfertaIntPrecio:'Precio internet/mes',
+      lblOfertaLineas:'Líneas incluidas', chipLinNone:'Ninguna',
+      lblOfertaTelBase:'Precio 1ra línea/mes', lblOfertaTelAdic:'Precio por línea adicional',
+      lblPromos:'Promociones incluidas',
+      promoInst:'Instalación Gratis', promo2m:'2 Meses Gratis', promoSC:'Sin Contrato', promoEsp:'Especial',
+      resumenTitle:'💰 Resumen automático',
+      lblOfertaNota:'Nota para el cliente (opcional)', phOfertaNota:'Ej: Precio garantizado por 2 años, sin contrato...',
+      previewClienteTitle:'📱 Mensaje para el Cliente',
+      lblAhorro:'Ahorro:', previewClientePlaceholder:'Llena la oferta arriba para generar el mensaje al cliente...',
+      btnCopyCliente:'Copiar', btnSendCliente:'Enviar al Cliente',
+      toastCopied:'✅ ¡Copiado! Pégalo en WhatsApp o SMS',
+      toastCopiedGroup:'✅ Mensaje copiado — pégalo en el grupo',
+      toastCopiedClient:'✅ ¡Copiado! Envíalo al cliente',
+      toastFillFields:'⚠️ Llena los campos primero',
+      toastFillOffer:'⚠️ Llena la oferta primero',
+      toastFillClient:'⚠️ Falta el nombre del cliente',
+      toastFillPhone:'⚠️ Falta el teléfono del cliente',
+      toastSaved:'✅ ¡Guardado!', toastSaveError:'❌ Error al guardar.',
+      savingBtn:'⏳ Guardando...', savedBtn:'💾 Guardar',
+      // mensaje al cotizador
+      msgHola:'Hola', msgDe:'Soy', msgDeIzzy:'de Izzy Internet',
+      msgNecesita:'Tengo un cliente que necesita cotización 👇',
+      msgDatosCliente:'DATOS DEL CLIENTE', msgNombre:'Nombre', msgTel:'Teléfono', msgDirec:'Dirección',
+      msgInternet:'INTERNET ACTUAL', msgCompania:'Compañía', msgVelocidad:'Velocidad', msgPaga:'Paga', msgTV:'Tiene TV',
+      msgTelefonos:'TELÉFONOS ACTUALES', msgLineas:'Líneas',
+      msgTotalPaga:'Total que paga hoy', msgQuePuede:'¿Qué le puedes ofrecer?',
+      msgMejorar:'QUÉ LE PUEDES MEJORAR',
+      msgInternet2:'Internet — bajarle el precio o subirle velocidad',
+      msgInternet3:'Internet — no tiene, cotizar opciones',
+      msgCelulares:'Celulares', msgConProv:'con', msgTV2:'TV — incluida con internet si es posible',
+      msgNota:'Nota', msgSMS1:'Hola, soy', msgSMS2:'de Izzy Internet.\nTengo un cliente para cotizar:',
+      msgQuePuedeGracias:'¿Que le puedes ofrecer? Gracias.',
+      // mensaje al cliente
+      msgEncontre:'¡Te encontré una *mejor oferta*!',
+      msgNuevaOferta:'TU NUEVA OFERTA', msgComparacion:'COMPARACIÓN',
+      msgTotalNuevo:'Total nuevo', msgAntesPagabas:'Antes pagabas', msgTotalAntes:'Total antes',
+      msgNuevaOferta2:'Nueva oferta', msgAhorras:'Ahorras al mes',
+      msgAnioLabel:'al año', msgInteresa:'¿Te interesa? Puedo ayudarte a activarlo *hoy mismo*. 🙌',
+      msgInteresaSMS:'¿Te interesa? Podemos proceder hoy mismo.',
+      msgTeBusque:'Te consegui una mejor oferta:',
+      msg1raLinea:'1ra línea', msgAdicional:'adicional', msgAdicionales:'adicionales',
+      msgIncluye:'Incluye', msgDiferencia:'Diferencia',
+    },
+    en: {
+      pinSub:'Enter your access code', pinBtn:'✅ Enter', pinPlaceholder:'CODE',
+      pinError:'❌ Incorrect code. Please try again.',
+      brandSub:'Send lead to quoting agent', badge:'📤 For Quoting Agent', tutorialLink:'📚 Tutorial', langToggle:'🇲🇽 ES',
+      hdrAgente:'👤 My Info (Agent)', hdrCotizador:'📲 Quoting Agent Info',
+      hdrCliente:'🏠 Client Info', hdrSituacion:'📡 Client\'s Current Situation',
+      hdrCelulares:'📱 Cell Phones', hdrOferta:'⚡ Best Offer Found',
+      lblMiNombre:'My name', phMiNombre:'Your name',
+      lblCotNombre:'Quoting agent name', phCotNombre:'Name',
+      lblCotTel:'WhatsApp / Phone', cotSavedNote:'This number is saved automatically for next time.',
+      lblClienteNombre:'Client name', phClienteNombre:'Full name',
+      lblClienteTel:'Phone', lblZip:'ZIP / City',
+      lblDirec:'Address (street & number)', phDirec:'1234 Main St, Apt 5',
+      lblCiudad:'City and State', phCiudad:'Los Angeles, CA',
+      lblIntProv:'Internet Provider', chipIntNone:'None',
+      lblVelActual:'Current speed', chipNoSabe:'Unknown',
+      lblPagoInternet:'Internet payment/mo', lblTieneTV:'Has TV?', chipSi:'Yes',
+      lblTelProv:'Phone Provider', chipTelNone:'None',
+      lblLineas:'Number of lines', lblPagoTelefono:'Phone payment/mo',
+      lblNota:'Additional note (optional)', phNota:'Ex: Contract ends in June, wants faster speed...',
+      previewTitle:'💬 Message for Quoting Agent', lblChars:'Characters:',
+      btnCopyText:'Copy message', btnGroupText:'Copy & Open Group', btnSaveText:'Save',
+      previewPlaceholder:'Fill in the fields to generate the message...',
+      paso2Divider:'STEP 2 — Quoting Agent Response',
+      hdrOfertaTel:'Phones', hdrOfertaTelOpt:'(optional)',
+      lblOfertaProv:'Offer provider', lblOfertaVel:'Offer speed', lblOfertaIntPrecio:'Internet price/mo',
+      lblOfertaLineas:'Lines included', chipLinNone:'None',
+      lblOfertaTelBase:'1st line price/mo', lblOfertaTelAdic:'Price per additional line',
+      lblPromos:'Promotions included',
+      promoInst:'Free Installation', promo2m:'2 Free Months', promoSC:'No Contract', promoEsp:'Special',
+      resumenTitle:'💰 Automatic summary',
+      lblOfertaNota:'Note for client (optional)', phOfertaNota:'Ex: Price guaranteed for 2 years, no contract...',
+      previewClienteTitle:'📱 Message for Client',
+      lblAhorro:'Savings:', previewClientePlaceholder:'Fill in the offer above to generate the client message...',
+      btnCopyCliente:'Copy', btnSendCliente:'Send to Client',
+      toastCopied:'✅ Copied! Paste it in WhatsApp or SMS',
+      toastCopiedGroup:'✅ Message copied — paste it in the group',
+      toastCopiedClient:'✅ Copied! Send it to the client',
+      toastFillFields:'⚠️ Fill in the fields first',
+      toastFillOffer:'⚠️ Fill in the offer first',
+      toastFillClient:'⚠️ Client name is missing',
+      toastFillPhone:'⚠️ Client phone number is missing',
+      toastSaved:'✅ Saved!', toastSaveError:'❌ Error saving.',
+      savingBtn:'⏳ Saving...', savedBtn:'💾 Save',
+      // message to quoting agent
+      msgHola:'Hello', msgDe:'I\'m', msgDeIzzy:'from Izzy Internet',
+      msgNecesita:'I have a client who needs a quote 👇',
+      msgDatosCliente:'CLIENT INFO', msgNombre:'Name', msgTel:'Phone', msgDirec:'Address',
+      msgInternet:'CURRENT INTERNET', msgCompania:'Provider', msgVelocidad:'Speed', msgPaga:'Pays', msgTV:'Has TV',
+      msgTelefonos:'CURRENT PHONES', msgLineas:'Lines',
+      msgTotalPaga:'Total paying today', msgQuePuede:'What can you offer?',
+      msgMejorar:'WHAT CAN BE IMPROVED',
+      msgInternet2:'Internet — lower price or faster speed',
+      msgInternet3:'Internet — no service, quote options',
+      msgCelulares:'Cell phones', msgConProv:'with', msgTV2:'TV — bundle with internet if possible',
+      msgNota:'Note', msgSMS1:'Hello, I\'m', msgSMS2:'from Izzy Internet.\nI have a client to quote:',
+      msgQuePuedeGracias:'What can you offer? Thank you.',
+      // message to client
+      msgEncontre:'I found you a *better offer*!',
+      msgNuevaOferta:'YOUR NEW OFFER', msgComparacion:'COMPARISON',
+      msgTotalNuevo:'New total', msgAntesPagabas:'You were paying', msgTotalAntes:'Total before',
+      msgNuevaOferta2:'New offer', msgAhorras:'You save per month',
+      msgAnioLabel:'per year', msgInteresa:'Interested? I can help you activate it *today*. 🙌',
+      msgInteresaSMS:'Interested? We can proceed today.',
+      msgTeBusque:'I found you a better offer:',
+      msg1raLinea:'1st line', msgAdicional:'additional', msgAdicionales:'additional',
+      msgIncluye:'Includes', msgDiferencia:'Difference',
+    }
+  };
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('izzy_lang', lang);
+    const t = T[lang];
+    // PIN screen
+    document.getElementById('pinSub').textContent = t.pinSub;
+    document.getElementById('pinBtn').textContent = t.pinBtn;
+    document.getElementById('pinInput').placeholder = t.pinPlaceholder;
+    // Header
+    document.getElementById('brandSub').textContent = t.brandSub;
+    document.getElementById('badgeText').textContent = t.badge;
+    document.getElementById('tutorialLink').textContent = t.tutorialLink;
+    document.getElementById('langToggle').textContent = t.langToggle;
+    // Card headers
+    ['hdrAgente','hdrCotizador','hdrCliente','hdrSituacion','hdrOferta'].forEach(id => {
+      if(document.getElementById(id)) document.getElementById(id).textContent = t[id];
+    });
+    document.getElementById('hdrCelulares').textContent = t.hdrCelulares;
+    document.getElementById('hdrOfertaTel').textContent = t.hdrOfertaTel;
+    document.getElementById('hdrOfertaTelOpt').textContent = t.hdrOfertaTelOpt;
+    // Labels
+    const labels = ['lblMiNombre','lblCotNombre','lblCotTel','cotSavedNote','lblClienteNombre',
+      'lblClienteTel','lblZip','lblDirec','lblCiudad','lblIntProv','lblVelActual','lblPagoInternet',
+      'lblTieneTV','lblTelProv','lblLineas','lblPagoTelefono','lblNota','previewTitle','lblChars',
+      'paso2Divider','lblOfertaProv','lblOfertaVel','lblOfertaIntPrecio','lblOfertaLineas',
+      'lblOfertaTelBase','lblOfertaTelAdic','lblPromos','resumenTitle','lblOfertaNota',
+      'lblAhorro','previewPlaceholder','previewClientePlaceholder'];
+    labels.forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t[id]; });
+    // Chips with translated text
+    ['chipIntNone','chipNoSabe','chipSi','chipTelNone','chipLinNone'].forEach(id => {
+      if(document.getElementById(id)) document.getElementById(id).textContent = t[id];
+    });
+    // Promo labels
+    document.getElementById('lbl-pr-inst').textContent = t.promoInst;
+    document.getElementById('lbl-pr-2m').textContent = t.promo2m;
+    document.getElementById('lbl-pr-sc').textContent = t.promoSC;
+    document.getElementById('lbl-pr-esp').textContent = t.promoEsp;
+    // Buttons
+    document.getElementById('btnCopyText').textContent = t.btnCopyText;
+    document.getElementById('btnGroupText').textContent = t.btnGroupText;
+    document.getElementById('btnSaveText').textContent = t.btnSaveText;
+    document.getElementById('btnCopyCliente').textContent = t.btnCopyCliente;
+    document.getElementById('btnSendCliente').textContent = t.btnSendCliente;
+    // Preview titles
+    document.querySelector('#previewClienteTitle') && (document.querySelector('[id="previewClienteTitle"]') ? document.getElementById('previewClienteTitle').textContent = t.previewClienteTitle : null);
+    // Placeholders
+    const phs = {miNombre:'phMiNombre',cotizadorNombre:'phCotNombre',clienteNombre:'phClienteNombre',
+      clienteDirec:'phDirec',clienteCiudad:'phCiudad',nota:'phNota',ofertaNota:'phOfertaNota'};
+    Object.entries(phs).forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      if(el) el.placeholder = t[key];
+    });
+    // Preview client title (in header)
+    const pct = document.getElementById('previewClienteTitle');
+    if(pct) pct.textContent = t.previewClienteTitle;
+    // Regenerate messages
+    generate();
+    generateCliente();
+  }
+
+  function toggleLang() {
+    setLang(currentLang === 'es' ? 'en' : 'es');
+  }
+  // ───────────────────────────────────────────────────────
+
   let currentMsg = '';
   let currentMode = 'wa';
 
@@ -781,15 +974,13 @@
   }
 
   function openWhatsApp() {
-    if (!currentMsg || currentMsg.includes('Llena los campos')) {
-      showToast('⚠️ Llena los campos primero', '#b45309'); return;
+    const t = T[currentLang];
+    if (!currentMsg || currentMsg.includes('Llena') || currentMsg.includes('Fill')) {
+      showToast(t.toastFillFields, '#b45309'); return;
     }
-    // Copy message first, then open group
     navigator.clipboard.writeText(currentMsg).then(() => {
-      showToast('✅ Mensaje copiado — pégalo en el grupo', '#128C7E');
-      setTimeout(() => {
-        window.open('https://chat.whatsapp.com/JRYBPDfD9WK2qm5C84rRzV', '_blank');
-      }, 800);
+      showToast(t.toastCopiedGroup, '#128C7E');
+      setTimeout(() => window.open('https://chat.whatsapp.com/JRYBPDfD9WK2qm5C84rRzV', '_blank'), 800);
     });
   }
 
@@ -817,6 +1008,7 @@
   function getChecks(ids) { return ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value); }
 
   function generate() {
+    const t  = T[currentLang];
     const yo        = getVal('miNombre');
     const cotizador = getVal('cotizadorNombre');
     const cliente   = getVal('clienteNombre');
@@ -832,101 +1024,74 @@
     const pagoTel   = getVal('pagoTelefono');
     const lineas    = getRadio('lineas');
     const nota      = getVal('nota');
-
-    // Pago total combinado
     const pagoTotal = (parseFloat(pagoInt)||0) + (parseFloat(pagoTel)||0);
-
-    // Dirección completa
     const direccionCompleta = [direc, ciudad, zip].filter(Boolean).join(', ');
-
+    const hasTV = tieneTV === 'Sí' || tieneTV === 'Yes' || tieneTV === t.chipSi;
+    const noTiene = 'No tiene';
     const isSMS = currentMode === 'sms';
     let msg = '';
 
     if (isSMS) {
-      msg += `Hola ${cotizador ? cotizador : ''}, soy ${yo || '[nombre]'} de Izzy Internet.\n`;
-      msg += `Tengo un cliente para cotizar:\n\n`;
-      msg += `── CLIENTE ──\n`;
-      if (cliente)           msg += `Nombre: ${cliente}\n`;
-      if (tel)               msg += `Tel: ${tel}\n`;
-      if (direccionCompleta) msg += `Dirección: ${direccionCompleta}\n`;
-      msg += `\n── INTERNET ──\n`;
-      if (intProv)  msg += `Compania: ${intProv}\n`;
-      if (velAct)   msg += `Velocidad: ${velAct}\n`;
-      if (pagoInt)  msg += `Paga: $${parseFloat(pagoInt).toFixed(2)}/mes\n`;
-      if (tieneTV)  msg += `TV: ${tieneTV}\n`;
+      msg += `${t.msgHola} ${cotizador || ''}, ${t.msgDe} ${yo || '[name]'} ${t.msgDeIzzy}.\n`;
+      msg += `${t.msgSMS2}\n\n`;
+      msg += `── ${t.msgDatosCliente} ──\n`;
+      if (cliente)           msg += `${t.msgNombre}: ${cliente}\n`;
+      if (tel)               msg += `${t.msgTel}: ${tel}\n`;
+      if (direccionCompleta) msg += `${t.msgDirec}: ${direccionCompleta}\n`;
+      msg += `\n── ${t.msgInternet} ──\n`;
+      if (intProv)  msg += `${t.msgCompania}: ${intProv}\n`;
+      if (velAct)   msg += `${t.msgVelocidad}: ${velAct}\n`;
+      if (pagoInt)  msg += `${t.msgPaga}: $${parseFloat(pagoInt).toFixed(2)}/mo\n`;
+      if (hasTV)    msg += `TV: ${t.chipSi}\n`;
       if (telProv || lineas) {
-        msg += `\n── TELEFONOS ──\n`;
-        if (telProv) msg += `Compania: ${telProv}\n`;
-        if (lineas)  msg += `Lineas: ${lineas}\n`;
-        if (pagoTel) msg += `Paga: $${parseFloat(pagoTel).toFixed(2)}/mes\n`;
+        msg += `\n── ${t.msgTelefonos} ──\n`;
+        if (telProv) msg += `${t.msgCompania}: ${telProv}\n`;
+        if (lineas)  msg += `${t.msgLineas}: ${lineas}\n`;
+        if (pagoTel) msg += `${t.msgPaga}: $${parseFloat(pagoTel).toFixed(2)}/mo\n`;
       }
-      if (pagoTotal > 0) msg += `\nTotal que paga: $${pagoTotal.toFixed(2)}/mes\n`;
-      if (nota) msg += `\nNota: ${nota}\n`;
-      msg += `\n¿Que le puedes ofrecer? Gracias.`;
-
+      if (pagoTotal > 0) msg += `\n${t.msgTotalPaga}: $${pagoTotal.toFixed(2)}/mo\n`;
+      if (nota) msg += `\n${t.msgNota}: ${nota}\n`;
+      msg += `\n${t.msgQuePuedeGracias}`;
     } else {
-      msg += `Hola${cotizador ? ' *' + cotizador + '*' : ''}! 👋\n`;
-      msg += `Soy *${yo || '[tu nombre]'}* de *Izzy Internet*.\n\n`;
-      msg += `Tengo un cliente que necesita cotización 👇\n\n`;
-
-      msg += `${'─'.repeat(28)}\n`;
-      msg += `👤 *DATOS DEL CLIENTE*\n`;
-      msg += `${'─'.repeat(28)}\n`;
-      if (cliente)           msg += `• Nombre: *${cliente}*\n`;
-      if (tel)               msg += `• Teléfono: ${tel}\n`;
-      if (direccionCompleta) msg += `• 📍 Dirección: *${direccionCompleta}*\n`;
-
-      msg += `\n${'─'.repeat(28)}\n`;
-      msg += `🌐 *INTERNET ACTUAL*\n`;
-      msg += `${'─'.repeat(28)}\n`;
-      if (intProv)  msg += `🏢 Compañía: *${intProv}*\n`;
-      if (velAct)   msg += `⚡ Velocidad: ${velAct}\n`;
-      if (pagoInt)  msg += `💵 Paga: *$${parseFloat(pagoInt).toFixed(2)}/mes*\n`;
-      if (tieneTV === 'Sí') msg += `📺 Tiene TV: Sí\n`;
-
+      msg += `${t.msgHola}${cotizador ? ' *' + cotizador + '*' : ''}! 👋\n`;
+      msg += `${t.msgDe} *${yo || '[name]'}* ${t.msgDeIzzy}.\n\n`;
+      msg += `${t.msgNecesita}\n\n`;
+      msg += `${'─'.repeat(28)}\n👤 *${t.msgDatosCliente}*\n${'─'.repeat(28)}\n`;
+      if (cliente)           msg += `• ${t.msgNombre}: *${cliente}*\n`;
+      if (tel)               msg += `• ${t.msgTel}: ${tel}\n`;
+      if (direccionCompleta) msg += `• 📍 ${t.msgDirec}: *${direccionCompleta}*\n`;
+      msg += `\n${'─'.repeat(28)}\n🌐 *${t.msgInternet}*\n${'─'.repeat(28)}\n`;
+      if (intProv)  msg += `🏢 ${t.msgCompania}: *${intProv}*\n`;
+      if (velAct)   msg += `⚡ ${t.msgVelocidad}: ${velAct}\n`;
+      if (pagoInt)  msg += `💵 ${t.msgPaga}: *$${parseFloat(pagoInt).toFixed(2)}/mo*\n`;
+      if (hasTV)    msg += `📺 ${t.msgTV}: ${t.chipSi}\n`;
       if (telProv || lineas) {
-        msg += `\n${'─'.repeat(28)}\n`;
-        msg += `📱 *TELÉFONOS ACTUALES*\n`;
-        msg += `${'─'.repeat(28)}\n`;
-        if (telProv) msg += `🏢 Compañía: *${telProv}*\n`;
-        if (lineas)  msg += `📱 Líneas: *${lineas}*\n`;
-        if (pagoTel) msg += `💵 Paga: *$${parseFloat(pagoTel).toFixed(2)}/mes*\n`;
+        msg += `\n${'─'.repeat(28)}\n📱 *${t.msgTelefonos}*\n${'─'.repeat(28)}\n`;
+        if (telProv) msg += `🏢 ${t.msgCompania}: *${telProv}*\n`;
+        if (lineas)  msg += `📱 ${t.msgLineas}: *${lineas}*\n`;
+        if (pagoTel) msg += `💵 ${t.msgPaga}: *$${parseFloat(pagoTel).toFixed(2)}/mo*\n`;
       }
-
-      if (pagoTotal > 0) {
-        msg += `\n💰 *Total que paga hoy: $${pagoTotal.toFixed(2)}/mes*\n`;
-      }
-
-      msg += `\n${'─'.repeat(28)}\n`;
-      msg += `🎯 *¿QUÉ LE PUEDES MEJORAR?*\n`;
-      msg += `${'─'.repeat(28)}\n`;
-      if (intProv && intProv !== 'No tiene') msg += `✅ Internet — bajarle el precio o subirle velocidad\n`;
-      if (!intProv || intProv === 'No tiene') msg += `✅ Internet — no tiene, cotizar opciones\n`;
-      if (telProv || lineas) msg += `✅ Celulares — ${lineas || 'ver líneas'} con ${telProv || 'proveedor actual'}\n`;
-      if (tieneTV === 'Sí') msg += `✅ TV — incluida con internet si es posible\n`;
-
-      if (nota) msg += `\n📝 *Nota:* ${nota}\n`;
-      msg += `\n¿Qué le puedes ofrecer? 🙏`;
+      if (pagoTotal > 0) msg += `\n💰 *${t.msgTotalPaga}: $${pagoTotal.toFixed(2)}/mo*\n`;
+      msg += `\n${'─'.repeat(28)}\n🎯 *${t.msgMejorar}*\n${'─'.repeat(28)}\n`;
+      if (intProv && intProv !== noTiene) msg += `✅ ${t.msgInternet2}\n`;
+      if (!intProv || intProv === noTiene) msg += `✅ ${t.msgInternet3}\n`;
+      if (telProv || lineas) msg += `✅ ${t.msgCelulares} — ${lineas || ''} ${t.msgConProv} ${telProv || ''}\n`;
+      if (hasTV) msg += `✅ ${t.msgTV2}\n`;
+      if (nota) msg += `\n📝 *${t.msgNota}:* ${nota}\n`;
+      msg += `\n${t.msgQuePuede} 🙏`;
     }
 
     currentMsg = msg;
-
-    const bubble = document.getElementById('preview-bubble');
-    bubble.textContent = msg;
+    document.getElementById('preview-bubble').textContent = msg;
     document.getElementById('char-count').textContent = msg.length;
     const now = new Date();
     document.getElementById('bubble-time').textContent =
-      now.getHours().toString().padStart(2,'0') + ':' +
-      now.getMinutes().toString().padStart(2,'0');
+      now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
   }
 
   function copyMsg() {
-    if (!currentMsg || currentMsg.includes('Llena los campos')) return;
-    navigator.clipboard.writeText(currentMsg).then(() => {
-      const toast = document.getElementById('toast');
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 2500);
-    });
+    if (!currentMsg || currentMsg.includes('Llena') || currentMsg.includes('Fill')) return;
+    navigator.clipboard.writeText(currentMsg).then(() => showToast(T[currentLang].toastCopied, '#128C7E'));
   }
 
   async function saveToSheets() {
@@ -936,7 +1101,7 @@
 
     const btn = document.getElementById('btn-save');
     btn.disabled = true;
-    btn.textContent = '⏳ Guardando...';
+    btn.innerHTML = T[currentLang].savingBtn;
 
     const payload = {
       fecha:           new Date().toLocaleDateString('es-US'),
@@ -960,19 +1125,13 @@
         body: JSON.stringify(payload)
       });
       if (res.ok) {
-        showToast('✅ ¡Guardado en Google Sheets!', '#16a34a');
-        document.getElementById('webhookStatus').textContent = '● Conectado';
-        document.getElementById('webhookStatus').className = 'webhook-status ok';
-      } else {
-        throw new Error('Error ' + res.status);
-      }
+        showToast(T[currentLang].toastSaved, '#16a34a');
+      } else { throw new Error('Error ' + res.status); }
     } catch (err) {
-      showToast('❌ Error al guardar. Revisa la URL del webhook.', '#b91c1c');
-      document.getElementById('webhookStatus').textContent = '● Error';
-      document.getElementById('webhookStatus').className = 'webhook-status err';
+      showToast(T[currentLang].toastSaveError, '#b91c1c');
     } finally {
       btn.disabled = false;
-      btn.textContent = '💾 Guardar';
+      btn.innerHTML = `💾 <span id="btnSaveText">${T[currentLang].btnSaveText}</span>`;
     }
   }
 
@@ -1011,6 +1170,7 @@
   }
 
   function generateCliente() {
+    const t   = T[currentLang];
     const cliente          = getVal('clienteNombre');
     const yo               = getVal('miNombre');
     const pagoInt          = parseFloat(getVal('pagoInternet')) || 0;
@@ -1018,174 +1178,148 @@
     const pagoViejo        = pagoInt + pagoTel;
     const intProv          = getRadio('intProv');
     const telProv          = getRadio('telProv');
-
-    // Oferta — internet
     const ofertaProv       = getRadio('ofertaProv');
     const ofertaVel        = getRadio('ofertaVel');
     const ofertaIntPrecio  = parseFloat(getVal('ofertaIntPrecio')) || 0;
-
-    // Oferta — teléfonos
     const numLineasStr     = getRadio('ofertaLineas');
     const numLineas        = numLineasStr ? parseInt(numLineasStr) : 0;
     const ofertaTelBase    = parseFloat(getVal('ofertaTelBase')) || 0;
     const ofertaTelAdic    = parseFloat(getVal('ofertaTelAdicional')) || 0;
     const lineasAdicionales = Math.max(0, numLineas - 1);
     const totalTelefonos   = numLineas > 0 ? ofertaTelBase + (lineasAdicionales * ofertaTelAdic) : 0;
-
-    // Total oferta
     const totalOferta      = ofertaIntPrecio + totalTelefonos;
-
-    // Promociones
     const promos = ['pr-inst','pr-2m','pr-gc','pr-sc','pr-esp']
       .filter(id => document.getElementById(id)?.checked)
-      .map(id => document.getElementById(id).value);
+      .map(id => document.getElementById(id).nextElementSibling?.textContent || '');
     const ofertaNota = getVal('ofertaNota');
-
-    // Ahorro
     const ahorro     = pagoViejo > 0 && totalOferta > 0 ? pagoViejo - totalOferta : 0;
     const ahorroAnual = ahorro * 12;
+    const line = currentLang === 'es' ? 'línea' : 'line';
+    const lines = currentLang === 'es' ? 'líneas' : 'lines';
 
-    // ── Actualizar resumen de teléfonos en el card ──
+    // Resumen teléfonos
     const totalTelEl = document.getElementById('totalTelDisplay');
     if (numLineas > 0) {
-      let telResumen = `📱 ${numLineas} línea${numLineas > 1 ? 's' : ''}`;
-      if (numLineas === 1) {
-        telResumen += ` — $${ofertaTelBase.toFixed(2)}/mes`;
-      } else {
-        telResumen += ` — 1ra línea: $${ofertaTelBase.toFixed(2)}`;
-        if (lineasAdicionales > 0) telResumen += ` + ${lineasAdicionales} adicional${lineasAdicionales > 1 ? 'es' : ''} × $${ofertaTelAdic.toFixed(2)}`;
-        telResumen += ` = *$${totalTelefonos.toFixed(2)}/mes*`;
+      let tr = `📱 ${numLineas} ${numLineas > 1 ? lines : line}`;
+      if (numLineas === 1) { tr += ` — $${ofertaTelBase.toFixed(2)}/mo`; }
+      else {
+        tr += ` — ${t.msg1raLinea}: $${ofertaTelBase.toFixed(2)}`;
+        if (lineasAdicionales > 0) tr += ` + ${lineasAdicionales} ${lineasAdicionales > 1 ? t.msgAdicionales : t.msgAdicional} × $${ofertaTelAdic.toFixed(2)}`;
+        tr += ` = $${totalTelefonos.toFixed(2)}/mo`;
       }
-      totalTelEl.textContent = telResumen;
-      totalTelEl.style.display = 'block';
-    } else {
-      totalTelEl.style.display = 'none';
-    }
+      totalTelEl.textContent = tr; totalTelEl.style.display = 'block';
+    } else { totalTelEl.style.display = 'none'; }
 
-    // ── Actualizar resumen total en el card ──
-    const totalEl    = document.getElementById('ofertaTotalDisplay');
+    // Resumen total
+    const totalEl = document.getElementById('ofertaTotalDisplay');
     const totalLinEl = document.getElementById('ofertaTotalLineas');
     if (totalOferta > 0) {
       let resumen = '';
-      if (ofertaIntPrecio > 0) resumen += `🌐 Internet (${ofertaProv || '—'}): $${ofertaIntPrecio.toFixed(2)}/mes\n`;
-      if (numLineas > 0)       resumen += `📱 Teléfonos (${numLineas} línea${numLineas > 1 ? 's' : ''}): $${totalTelefonos.toFixed(2)}/mes\n`;
-      resumen += `\n💰 Total nuevo: $${totalOferta.toFixed(2)}/mes`;
-      if (pagoViejo > 0) resumen += `\n📊 Antes pagabas: $${pagoViejo.toFixed(2)}/mes`;
-      if (ahorro > 0)    resumen += `\n✅ Ahorras: $${ahorro.toFixed(2)}/mes · $${ahorroAnual.toFixed(0)}/año`;
-      else if (ahorro < 0) resumen += `\n📈 Diferencia: +$${Math.abs(ahorro).toFixed(2)}/mes`;
+      if (ofertaIntPrecio > 0) resumen += `🌐 Internet (${ofertaProv || '—'}): $${ofertaIntPrecio.toFixed(2)}/mo\n`;
+      if (numLineas > 0)       resumen += `📱 ${t.hdrOfertaTel} (${numLineas} ${numLineas > 1 ? lines : line}): $${totalTelefonos.toFixed(2)}/mo\n`;
+      resumen += `\n💰 ${t.msgTotalNuevo}: $${totalOferta.toFixed(2)}/mo`;
+      if (pagoViejo > 0) resumen += `\n📊 ${t.msgAntesPagabas}: $${pagoViejo.toFixed(2)}/mo`;
+      if (ahorro > 0)    resumen += `\n✅ ${t.msgAhorras}: $${ahorro.toFixed(2)} · $${ahorroAnual.toFixed(0)}/${t.msgAnioLabel}`;
+      else if (ahorro < 0) resumen += `\n📈 ${t.msgDiferencia}: +$${Math.abs(ahorro).toFixed(2)}/mo`;
       totalLinEl.style.whiteSpace = 'pre-line';
       totalLinEl.textContent = resumen;
       totalEl.style.display = 'block';
       totalEl.style.borderColor = ahorro > 0 ? '#86efac' : ahorro < 0 ? '#fca5a5' : '#86efac';
       totalEl.style.background  = ahorro > 0 ? '#f0fdf4' : ahorro < 0 ? '#fff5f5' : '#f0fdf4';
-    } else {
-      totalEl.style.display = 'none';
-    }
+    } else { totalEl.style.display = 'none'; }
 
-    // ── Actualizar display de ahorro en footer ──
+    // Ahorro display footer
     const ahorroEl = document.getElementById('ahorro-display');
     if (ahorro > 0) {
-      ahorroEl.textContent = `$${ahorro.toFixed(2)}/mes · $${ahorroAnual.toFixed(0)}/año`;
+      ahorroEl.textContent = `$${ahorro.toFixed(2)}/mo · $${ahorroAnual.toFixed(0)}/${t.msgAnioLabel}`;
       ahorroEl.style.color = '#16a34a';
     } else if (ahorro < 0) {
-      ahorroEl.textContent = `+$${Math.abs(ahorro).toFixed(2)}/mes más`;
+      ahorroEl.textContent = `+$${Math.abs(ahorro).toFixed(2)}/mo`;
       ahorroEl.style.color = '#b91c1c';
     } else {
-      ahorroEl.textContent = 'Llena los precios';
+      ahorroEl.textContent = t.ahorroDefault || 'Llena los precios';
       ahorroEl.style.color = 'var(--muted)';
     }
 
-    // ── Generar mensaje ──
+    // Generar mensaje
     let msgC = '';
-    const nombreCliente = cliente ? cliente.split(' ')[0] : 'Estimado/a';
+    const nombreCliente = cliente ? cliente.split(' ')[0] : (currentLang === 'es' ? 'Estimado/a' : 'Dear Customer');
 
     if (currentModeCliente === 'sms') {
-      msgC += `Hola ${nombreCliente}! Soy ${yo || '[nombre]'} de Izzy Internet.\n\n`;
-      msgC += `Te consegui una mejor oferta:\n\n`;
-      if (ofertaProv || ofertaIntPrecio) {
-        msgC += `Internet: ${ofertaProv || '—'}${ofertaVel ? ' — ' + ofertaVel : ''} — $${ofertaIntPrecio.toFixed(2)}/mes\n`;
-      }
+      msgC += `${t.msgHola} ${nombreCliente}! ${t.msgDe} ${yo || '[name]'} ${t.msgDeIzzy}.\n\n`;
+      msgC += `${t.msgTeBusque}\n\n`;
+      if (ofertaProv || ofertaIntPrecio) msgC += `Internet: ${ofertaProv || '—'}${ofertaVel ? ' — ' + ofertaVel : ''} — $${ofertaIntPrecio.toFixed(2)}/mo\n`;
       if (numLineas > 0) {
-        msgC += `Telefonos: ${numLineas} linea${numLineas > 1 ? 's' : ''} — $${totalTelefonos.toFixed(2)}/mes\n`;
-        if (numLineas > 1) msgC += `  (1ra: $${ofertaTelBase.toFixed(2)} + ${lineasAdicionales} adic. x $${ofertaTelAdic.toFixed(2)})\n`;
+        msgC += `${t.hdrOfertaTel}: ${numLineas} ${numLineas > 1 ? lines : line} — $${totalTelefonos.toFixed(2)}/mo\n`;
+        if (numLineas > 1) msgC += `  (${t.msg1raLinea}: $${ofertaTelBase.toFixed(2)} + ${lineasAdicionales} ${t.msgAdicional} x $${ofertaTelAdic.toFixed(2)})\n`;
       }
-      if (totalOferta > 0)  msgC += `Total: $${totalOferta.toFixed(2)}/mes\n`;
-      if (pagoViejo > 0)    msgC += `Antes: $${pagoViejo.toFixed(2)}/mes\n`;
-      if (ahorro > 0)       msgC += `Ahorras: $${ahorro.toFixed(2)}/mes ($${ahorroAnual.toFixed(0)}/año)\n`;
-      if (promos.length)    msgC += `Incluye: ${promos.join(', ')}\n`;
+      if (totalOferta > 0)  msgC += `Total: $${totalOferta.toFixed(2)}/mo\n`;
+      if (pagoViejo > 0)    msgC += `${t.msgAntesPagabas}: $${pagoViejo.toFixed(2)}/mo\n`;
+      if (ahorro > 0)       msgC += `${t.msgAhorras}: $${ahorro.toFixed(2)}/mo ($${ahorroAnual.toFixed(0)}/${t.msgAnioLabel})\n`;
+      if (promos.length)    msgC += `${t.msgIncluye}: ${promos.join(', ')}\n`;
       if (ofertaNota)       msgC += `\n${ofertaNota}\n`;
-      msgC += `\n¿Te interesa? Podemos proceder hoy mismo.`;
-
+      msgC += `\n${t.msgInteresaSMS}`;
     } else {
-      msgC += `Hola *${nombreCliente}*! 👋\n`;
-      msgC += `Soy *${yo || '[nombre]'}* de *Izzy Internet*.\n\n`;
-      msgC += `🎉 ¡Te encontré una *mejor oferta*!\n\n`;
-
-      msgC += `${'─'.repeat(28)}\n`;
-      msgC += `⚡ *TU NUEVA OFERTA*\n`;
-      msgC += `${'─'.repeat(28)}\n`;
+      msgC += `${t.msgHola} *${nombreCliente}*! 👋\n`;
+      msgC += `${t.msgDe} *${yo || '[name]'}* ${t.msgDeIzzy}.\n\n`;
+      msgC += `🎉 ${t.msgEncontre}\n\n`;
+      msgC += `${'─'.repeat(28)}\n⚡ *${t.msgNuevaOferta}*\n${'─'.repeat(28)}\n`;
       if (ofertaProv || ofertaIntPrecio) {
-        msgC += `🌐 Internet (${ofertaProv || '—'}): *$${ofertaIntPrecio.toFixed(2)}/mes*`;
+        msgC += `🌐 Internet (${ofertaProv || '—'}): *$${ofertaIntPrecio.toFixed(2)}/mo*`;
         if (ofertaVel) msgC += ` — ${ofertaVel}`;
         msgC += `\n`;
       }
       if (numLineas > 0) {
-        msgC += `📱 Teléfonos: *${numLineas} línea${numLineas > 1 ? 's' : ''}* — *$${totalTelefonos.toFixed(2)}/mes*\n`;
+        msgC += `📱 ${t.hdrOfertaTel}: *${numLineas} ${numLineas > 1 ? lines : line}* — *$${totalTelefonos.toFixed(2)}/mo*\n`;
         if (numLineas > 1) {
-          msgC += `   (1ra línea: $${ofertaTelBase.toFixed(2)}`;
-          if (lineasAdicionales > 0) msgC += ` + ${lineasAdicionales} adicional${lineasAdicionales > 1 ? 'es' : ''} × $${ofertaTelAdic.toFixed(2)}`;
+          msgC += `   (${t.msg1raLinea}: $${ofertaTelBase.toFixed(2)}`;
+          if (lineasAdicionales > 0) msgC += ` + ${lineasAdicionales} ${lineasAdicionales > 1 ? t.msgAdicionales : t.msgAdicional} × $${ofertaTelAdic.toFixed(2)}`;
           msgC += `)\n`;
         }
       }
-      if (promos.length) msgC += `🎁 Incluye: ${promos.join(' · ')}\n`;
-
-      msgC += `\n💰 *Total nuevo: $${totalOferta.toFixed(2)}/mes*\n`;
-
+      if (promos.length) msgC += `🎁 ${t.msgIncluye}: ${promos.join(' · ')}\n`;
+      msgC += `\n💰 *${t.msgTotalNuevo}: $${totalOferta.toFixed(2)}/mo*\n`;
       if (pagoViejo > 0 || intProv || telProv) {
-        msgC += `\n${'─'.repeat(28)}\n`;
-        msgC += `📊 *COMPARACIÓN*\n`;
-        msgC += `${'─'.repeat(28)}\n`;
-        if (intProv && pagoInt > 0) msgC += `❌ Internet (${intProv}): *$${pagoInt.toFixed(2)}/mes*\n`;
-        if (telProv && pagoTel > 0) msgC += `❌ Celular (${telProv}): *$${pagoTel.toFixed(2)}/mes*\n`;
-        if (pagoViejo > 0)          msgC += `❌ *Total antes: $${pagoViejo.toFixed(2)}/mes*\n\n`;
-        if (totalOferta > 0)        msgC += `✅ *Nueva oferta: $${totalOferta.toFixed(2)}/mes*\n`;
+        msgC += `\n${'─'.repeat(28)}\n📊 *${t.msgComparacion}*\n${'─'.repeat(28)}\n`;
+        if (intProv && pagoInt > 0) msgC += `❌ Internet (${intProv}): *$${pagoInt.toFixed(2)}/mo*\n`;
+        if (telProv && pagoTel > 0) msgC += `❌ ${t.hdrCelulares} (${telProv}): *$${pagoTel.toFixed(2)}/mo*\n`;
+        if (pagoViejo > 0)          msgC += `❌ *${t.msgTotalAntes}: $${pagoViejo.toFixed(2)}/mo*\n\n`;
+        if (totalOferta > 0)        msgC += `✅ *${t.msgNuevaOferta2}: $${totalOferta.toFixed(2)}/mo*\n`;
         if (ahorro > 0) {
-          msgC += `\n💰 *Ahorras: $${ahorro.toFixed(2)} al mes*\n`;
-          msgC += `📅 *$${ahorroAnual.toFixed(0)} al año* 🎉\n`;
+          msgC += `\n💰 *${t.msgAhorras}: $${ahorro.toFixed(2)}/mo*\n`;
+          msgC += `📅 *$${ahorroAnual.toFixed(0)} ${t.msgAnioLabel}* 🎉\n`;
         } else if (ahorro < 0) {
-          msgC += `\n📈 Diferencia: +$${Math.abs(ahorro).toFixed(2)}/mes (mejor plan)\n`;
+          msgC += `\n📈 ${t.msgDiferencia}: +$${Math.abs(ahorro).toFixed(2)}/mo\n`;
         }
       }
-
       if (ofertaNota) msgC += `\n📝 ${ofertaNota}\n`;
-      msgC += `\n¿Te interesa? Puedo ayudarte a activarlo *hoy mismo*. 🙌`;
+      msgC += `\n${t.msgInteresa}`;
     }
 
     currentMsgCliente = msgC;
     document.getElementById('preview-cliente').textContent = msgC;
     const now = new Date();
     document.getElementById('bubble-time-cliente').textContent =
-      now.getHours().toString().padStart(2,'0') + ':' +
-      now.getMinutes().toString().padStart(2,'0');
+      now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
   }
 
   function copyMsgCliente() {
-    if (!currentMsgCliente || currentMsgCliente.includes('Llena')) return;
-    navigator.clipboard.writeText(currentMsgCliente).then(() => showToast('✅ ¡Copiado! Envíalo al cliente', '#16a34a'));
+    if (!currentMsgCliente || currentMsgCliente.includes('Llena') || currentMsgCliente.includes('Fill')) return;
+    navigator.clipboard.writeText(currentMsgCliente).then(() => showToast(T[currentLang].toastCopiedClient, '#16a34a'));
   }
 
   function openWhatsAppCliente() {
-    if (!currentMsgCliente || currentMsgCliente.includes('Llena')) {
-      showToast('⚠️ Llena la oferta primero', '#b45309'); return;
+    const t = T[currentLang];
+    if (!currentMsgCliente || currentMsgCliente.includes('Llena') || currentMsgCliente.includes('Fill')) {
+      showToast(t.toastFillOffer, '#b45309'); return;
     }
     const tel = getVal('clienteTel').replace(/\D/g, '');
-    if (!tel) { showToast('⚠️ Falta el teléfono del cliente', '#b45309'); return; }
+    if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
     window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
   }
 
-  generate();
-  generateCliente();
+  setLang(currentLang);
 </script>
 </body>
 </html>
