@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Internet — Enviar Lead al Cotizador</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0f2f5;
+    --surface: #fff;
+    --border: #e2e0dc;
+    --text: #1a1814;
+    --muted: #7a7570;
+    --blue: #1a3a6b;
+    --blue-light: #edf1f8;
+    --green: #25D366;
+    --green-dark: #128C7E;
+    --green-light: #e8faf1;
+    --wa-bg: #e5ddd5;
+    --wa-bubble: #dcf8c6;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+
+  /* Header */
+  .header {
+    max-width: 560px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-icon {
+    width: 40px; height: 40px;
+    background: var(--blue);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .brand-name { font-size: 18px; font-weight: 700; color: var(--blue); }
+  .brand-sub { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+  .badge {
+    background: var(--green-dark);
+    color: #fff;
+    font-size: 12px; font-weight: 600;
+    padding: 5px 14px; border-radius: 20px;
+  }
+
+  /* Card */
+  .card {
+    max-width: 560px;
+    margin: 0 auto 16px;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 13px 20px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: #fff;
+    background: var(--blue);
+  }
+
+  .card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 13px; }
+
+  /* Fields */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+
+  label {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="number"] {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--text);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 14px;
+    outline: none; width: 100%;
+    transition: border-color .15s, box-shadow .15s;
+  }
+
+  input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-light);
+    background: #fff;
+  }
+
+  input::placeholder { color: #c5bfb9; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip-input { display: none; }
+  .chip-label {
+    cursor: pointer;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1.5px solid var(--border);
+    font-size: 13px; font-weight: 500; color: var(--muted);
+    transition: all .15s; user-select: none;
+  }
+  .chip-input:checked + .chip-label {
+    background: var(--blue); border-color: var(--blue); color: #fff;
+  }
+
+  /* Money */
+  .money-wrap {
+    display: flex; align-items: stretch;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    overflow: hidden;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .money-wrap:focus-within {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-light);
+    background: #fff;
+  }
+  .money-sign {
+    padding: 0 12px;
+    font-size: 16px; font-weight: 700; color: var(--muted);
+    background: var(--border);
+    display: flex; align-items: center;
+  }
+  .money-input {
+    border: none !important; background: transparent !important;
+    box-shadow: none !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 16px !important; font-weight: 600 !important;
+    padding: 10px 12px !important; width: 100%;
+    outline: none;
+  }
+
+  /* Preview */
+  .preview-card {
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    overflow: hidden;
+  }
+
+  .preview-header {
+    background: var(--green-dark);
+    padding: 13px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+
+  .preview-title {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: #fff;
+    display: flex; align-items: center; gap: 7px;
+  }
+
+  .mode-toggle { display: flex; gap: 6px; }
+  .mode-btn {
+    padding: 5px 14px; border-radius: 20px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 600; transition: all .15s;
+    background: rgba(255,255,255,.15); color: #fff;
+  }
+  .mode-btn.active { background: #fff; color: var(--green-dark); }
+
+  .wa-screen {
+    background: var(--wa-bg);
+    padding: 20px 16px;
+    min-height: 120px;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9bfb5' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .bubble {
+    background: var(--wa-bubble);
+    border-radius: 8px 8px 8px 2px;
+    padding: 10px 14px;
+    max-width: 95%;
+    font-size: 14px; line-height: 1.65;
+    white-space: pre-wrap; word-break: break-word;
+    color: #111;
+    box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  }
+
+  .bubble.sms {
+    background: #e9e9eb;
+    border-radius: 16px 16px 16px 4px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .bubble-time { font-size: 11px; color: #999; text-align: right; margin-top: 4px; }
+
+  .copy-area {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; flex-wrap: wrap;
+    align-items: center; justify-content: space-between;
+  }
+
+  .char-count { font-size: 12px; color: var(--muted); }
+  .char-count span { font-weight: 700; color: var(--text); }
+
+  .btn-copy {
+    padding: 11px 24px; border-radius: 10px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    transition: all .15s;
+    background: var(--green); color: #fff;
+  }
+  .btn-copy:hover { background: #1da851; }
+  .btn-copy:active { transform: scale(.97); }
+  .btn-copy.sms-mode { background: #3478f6; }
+  .btn-copy.sms-mode:hover { background: #2860c8; }
+
+  .btn-save {
+    padding: 11px 24px; border-radius: 10px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    transition: all .15s;
+    background: #16a34a; color: #fff;
+  }
+  .btn-save:hover { background: #15803d; }
+  .btn-save:active { transform: scale(.97); }
+  .btn-save:disabled { background: #86efac; cursor: not-allowed; }
+
+  .webhook-bar {
+    max-width: 560px;
+    margin: 0 auto 16px;
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .webhook-bar label { color: rgba(255,255,255,.6); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+  .webhook-bar input {
+    flex: 1; min-width: 200px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    color: #fff; border-radius: 8px;
+    padding: 7px 12px; font-size: 13px;
+    font-family: 'DM Mono', monospace;
+  }
+  .webhook-bar input::placeholder { color: rgba(255,255,255,.3); }
+  .webhook-bar input:focus { outline: none; border-color: rgba(255,255,255,.4); }
+  .webhook-status { font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .webhook-status.ok  { color: #4ade80; }
+  .webhook-status.err { color: #f87171; }
+
+  .toast {
+    display: none;
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #111; color: #fff;
+    padding: 10px 24px; border-radius: 30px;
+    font-size: 14px; font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    z-index: 99;
+    animation: fadeup .3s ease;
+  }
+
+  @keyframes fadeup {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Webhook config -->
+<div class="webhook-bar">
+  <label>🔗 Webhook n8n</label>
+  <input type="text" id="webhookUrl" placeholder="https://tu-n8n.host/webhook/izzy-cotizacion">
+  <span class="webhook-status" id="webhookStatus"></span>
+</div>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M1.5 8.5C5.2 4.8 10.4 3 12 3s6.8 1.8 10.5 5.5L21 10c-3-3-5.7-5-9-5s-6 2-9 5l-1.5-1.5zM12 7c2.4 0 4.6.9 6.2 2.4L16.8 11C15.6 9.8 13.9 9 12 9s-3.6.8-4.8 2L5.8 9.4C7.4 7.9 9.6 7 12 7zm0 4c1.1 0 2.1.4 2.8 1.2L12 15l-2.8-2.8C9.9 11.4 10.9 11 12 11zm0 4l1.5 1.5L12 18l-1.5-1.5L12 15z"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">Izzy Internet</div>
+      <div class="brand-sub">Enviar lead al cotizador</div>
+    </div>
+  </div>
+  <div class="badge">📤 Para el Cotizador</div>
+</div>
+
+<!-- Datos del agente -->
+<div class="card">
+  <div class="card-header">👤 Mis Datos (Agente)</div>
+  <div class="card-body">
+    <div class="field">
+      <label>Mi nombre</label>
+      <input type="text" id="miNombre" placeholder="Tu nombre" oninput="generate()">
+    </div>
+  </div>
+</div>
+
+<!-- Datos del cotizador -->
+<div class="card">
+  <div class="card-header" style="background:#16a34a;">📲 Datos del Cotizador</div>
+  <div class="card-body">
+    <div class="row2">
+      <div class="field">
+        <label>Nombre del cotizador</label>
+        <input type="text" id="cotizadorNombre" placeholder="Nombre" oninput="saveCotizador()">
+      </div>
+      <div class="field">
+        <label>WhatsApp / Teléfono</label>
+        <input type="tel" id="cotizadorTel" placeholder="+1 818 555 1234" oninput="saveCotizador()">
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:4px;">Este número se guarda automáticamente para la próxima vez.</p>
+  </div>
+</div>
+
+<!-- Datos del cliente -->
+<div class="card">
+  <div class="card-header">🏠 Datos del Cliente</div>
+  <div class="card-body">
+    <div class="field">
+      <label>Nombre del cliente</label>
+      <input type="text" id="clienteNombre" placeholder="Nombre completo" oninput="generate()">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="tel" id="clienteTel" placeholder="(___) ___-____" oninput="formatPhone(this); generate()">
+      </div>
+      <div class="field">
+        <label>ZIP / Ciudad</label>
+        <input type="text" id="clienteZip" placeholder="90210" oninput="generate()" style="max-width:120px;">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Dirección (calle y número)</label>
+        <input type="text" id="clienteDirec" placeholder="1234 Main St, Apt 5" oninput="generate()">
+      </div>
+      <div class="field">
+        <label>Ciudad y Estado</label>
+        <input type="text" id="clienteCiudad" placeholder="Los Angeles, CA" oninput="generate()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Situación actual -->
+<div class="card">
+  <div class="card-header">📡 Situación Actual del Cliente</div>
+  <div class="card-body">
+
+    <!-- INTERNET -->
+    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">🌐 Internet</div>
+      <div class="field" style="margin-bottom:10px;">
+        <label>Compañía de Internet</label>
+        <div class="chips">
+          <input type="radio" class="chip-input" name="intProv" id="ip-spectrum" value="Spectrum" onchange="generate()">
+          <label class="chip-label" for="ip-spectrum">Spectrum</label>
+          <input type="radio" class="chip-input" name="intProv" id="ip-frontier" value="Frontier" onchange="generate()">
+          <label class="chip-label" for="ip-frontier">Frontier</label>
+          <input type="radio" class="chip-input" name="intProv" id="ip-att" value="AT&T" onchange="generate()">
+          <label class="chip-label" for="ip-att">AT&T</label>
+          <input type="radio" class="chip-input" name="intProv" id="ip-cox" value="Cox" onchange="generate()">
+          <label class="chip-label" for="ip-cox">Cox</label>
+          <input type="radio" class="chip-input" name="intProv" id="ip-ninguno" value="No tiene" onchange="generate()">
+          <label class="chip-label" for="ip-ninguno">No tiene</label>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Velocidad actual</label>
+          <div class="chips" style="flex-wrap:wrap;">
+            <input type="radio" class="chip-input" name="velActual" id="va-300" value="300 Mbps" onchange="generate()">
+            <label class="chip-label" for="va-300">300 Mb</label>
+            <input type="radio" class="chip-input" name="velActual" id="va-500" value="500 Mbps" onchange="generate()">
+            <label class="chip-label" for="va-500">500 Mb</label>
+            <input type="radio" class="chip-input" name="velActual" id="va-1g" value="1 Gig" onchange="generate()">
+            <label class="chip-label" for="va-1g">1 Gig</label>
+            <input type="radio" class="chip-input" name="velActual" id="va-ns" value="No sabe" onchange="generate()">
+            <label class="chip-label" for="va-ns">No sabe</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Pago Internet/mes</label>
+          <div class="money-wrap">
+            <span class="money-sign">$</span>
+            <input type="number" class="money-input" id="pagoInternet" placeholder="0.00" oninput="generate()">
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:8px;">
+        <label>¿Tiene TV?</label>
+        <div class="chips">
+          <input type="radio" class="chip-input" name="tieneTV" id="tv-si" value="Sí" onchange="generate()">
+          <label class="chip-label" for="tv-si">Sí</label>
+          <input type="radio" class="chip-input" name="tieneTV" id="tv-no" value="No" onchange="generate()">
+          <label class="chip-label" for="tv-no">No</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELÉFONOS -->
+    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 Teléfonos Celulares</div>
+      <div class="field" style="margin-bottom:10px;">
+        <label>Compañía de Teléfono</label>
+        <div class="chips">
+          <input type="radio" class="chip-input" name="telProv" id="tp-tmobile" value="T-Mobile" onchange="generate()">
+          <label class="chip-label" for="tp-tmobile">T-Mobile</label>
+          <input type="radio" class="chip-input" name="telProv" id="tp-verizon" value="Verizon" onchange="generate()">
+          <label class="chip-label" for="tp-verizon">Verizon</label>
+          <input type="radio" class="chip-input" name="telProv" id="tp-att" value="AT&T" onchange="generate()">
+          <label class="chip-label" for="tp-att">AT&T</label>
+          <input type="radio" class="chip-input" name="telProv" id="tp-metro" value="Metro" onchange="generate()">
+          <label class="chip-label" for="tp-metro">Metro</label>
+          <input type="radio" class="chip-input" name="telProv" id="tp-cricket" value="Cricket" onchange="generate()">
+          <label class="chip-label" for="tp-cricket">Cricket</label>
+          <input type="radio" class="chip-input" name="telProv" id="tp-ninguno" value="No tiene" onchange="generate()">
+          <label class="chip-label" for="tp-ninguno">No tiene</label>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Número de líneas</label>
+          <div class="chips">
+            <input type="radio" class="chip-input" name="lineas" id="l-1" value="1 línea" onchange="generate()">
+            <label class="chip-label" for="l-1">1</label>
+            <input type="radio" class="chip-input" name="lineas" id="l-2" value="2 líneas" onchange="generate()">
+            <label class="chip-label" for="l-2">2</label>
+            <input type="radio" class="chip-input" name="lineas" id="l-3" value="3 líneas" onchange="generate()">
+            <label class="chip-label" for="l-3">3</label>
+            <input type="radio" class="chip-input" name="lineas" id="l-4" value="4 líneas" onchange="generate()">
+            <label class="chip-label" for="l-4">4</label>
+            <input type="radio" class="chip-input" name="lineas" id="l-5" value="5+ líneas" onchange="generate()">
+            <label class="chip-label" for="l-5">5+</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Pago Teléfono/mes</label>
+          <div class="money-wrap">
+            <span class="money-sign">$</span>
+            <input type="number" class="money-input" id="pagoTelefono" placeholder="0.00" oninput="generate()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Nota adicional (opcional)</label>
+      <input type="text" id="nota" placeholder="Ej: Contrato vence en junio, quiere mejorar velocidad..." oninput="generate()">
+    </div>
+
+  </div>
+</div>
+
+<!-- Preview -->
+<div class="preview-card">
+  <div class="preview-header">
+    <div class="preview-title">
+      💬 Mensaje para el Cotizador
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('wa', this)">WhatsApp</button>
+      <button class="mode-btn" onclick="setMode('sms', this)">SMS</button>
+    </div>
+  </div>
+
+  <div class="wa-screen">
+    <div class="bubble" id="preview-bubble">
+      <em style="color:#aaa;">Llena los campos para generar el mensaje...</em>
+    </div>
+    <div class="bubble-time" id="bubble-time"></div>
+  </div>
+
+  <div class="copy-area">
+    <div class="char-count">Caracteres: <span id="char-count">0</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-copy" id="btn-copy" onclick="copyMsg()">
+        📋 Copiar mensaje
+      </button>
+      <button class="btn-copy" style="background:#25D366;" onclick="openWhatsApp()">
+        💬 Copiar y Abrir Grupo
+      </button>
+      <button class="btn-save" id="btn-save" onclick="saveToSheets()">
+        💾 Guardar en Sheets
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ ¡Copiado! Pégalo en WhatsApp o SMS</div>
+
+<!-- ═══ PASO 2: RESPUESTA DEL COTIZADOR → MENSAJE AL CLIENTE ═══ -->
+<div style="max-width:560px;margin:28px auto 0;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div style="flex:1;height:2px;background:var(--border);border-radius:2px;"></div>
+    <span style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;">PASO 2 — Respuesta del Cotizador</span>
+    <div style="flex:1;height:2px;background:var(--border);border-radius:2px;"></div>
+  </div>
+</div>
+
+<div class="card" style="max-width:560px;margin:0 auto 16px;">
+  <div class="card-header" style="background:#0e7490;">⚡ La Mejor Oferta Encontrada</div>
+  <div class="card-body">
+
+    <div class="field">
+      <label>Proveedor oferta</label>
+      <div class="chips">
+        <input type="radio" class="chip-input" name="ofertaProv" id="op-frontier" value="Frontier" onchange="generateCliente()">
+        <label class="chip-label" for="op-frontier">Frontier</label>
+        <input type="radio" class="chip-input" name="ofertaProv" id="op-spectrum" value="Spectrum" onchange="generateCliente()">
+        <label class="chip-label" for="op-spectrum">Spectrum</label>
+        <input type="radio" class="chip-input" name="ofertaProv" id="op-att" value="AT&T" onchange="generateCliente()">
+        <label class="chip-label" for="op-att">AT&T</label>
+        <input type="radio" class="chip-input" name="ofertaProv" id="op-tmobile" value="T-Mobile" onchange="generateCliente()">
+        <label class="chip-label" for="op-tmobile">T-Mobile</label>
+        <input type="radio" class="chip-input" name="ofertaProv" id="op-verizon" value="Verizon" onchange="generateCliente()">
+        <label class="chip-label" for="op-verizon">Verizon</label>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Velocidad oferta</label>
+        <div class="chips">
+          <input type="radio" class="chip-input" name="ofertaVel" id="ov-300" value="300 Mbps" onchange="generateCliente()">
+          <label class="chip-label" for="ov-300">300 Mb</label>
+          <input type="radio" class="chip-input" name="ofertaVel" id="ov-500" value="500 Mbps" onchange="generateCliente()">
+          <label class="chip-label" for="ov-500">500 Mb</label>
+          <input type="radio" class="chip-input" name="ofertaVel" id="ov-1g" value="1 Gig" onchange="generateCliente()">
+          <label class="chip-label" for="ov-1g">1 Gig</label>
+          <input type="radio" class="chip-input" name="ofertaVel" id="ov-2g" value="2 Gig" onchange="generateCliente()">
+          <label class="chip-label" for="ov-2g">2 Gig</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Precio mensual nuevo</label>
+        <div class="money-wrap">
+          <span class="money-sign">$</span>
+          <input type="number" class="money-input" id="ofertaPrecio" placeholder="0.00" oninput="generateCliente()">
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Promociones incluidas</label>
+      <div class="chips">
+        <input type="checkbox" class="chip-input" id="pr-inst" value="✅ Instalación Gratis" onchange="generateCliente()">
+        <label class="chip-label" for="pr-inst">Instalación Gratis</label>
+        <input type="checkbox" class="chip-input" id="pr-2m" value="✅ 2 Meses Gratis" onchange="generateCliente()">
+        <label class="chip-label" for="pr-2m">2 Meses Gratis</label>
+        <input type="checkbox" class="chip-input" id="pr-gc" value="🎁 Gift Card" onchange="generateCliente()">
+        <label class="chip-label" for="pr-gc">Gift Card</label>
+        <input type="checkbox" class="chip-input" id="pr-sc" value="📵 Sin Contrato" onchange="generateCliente()">
+        <label class="chip-label" for="pr-sc">Sin Contrato</label>
+        <input type="checkbox" class="chip-input" id="pr-esp" value="⭐ Oferta Especial" onchange="generateCliente()">
+        <label class="chip-label" for="pr-esp">Especial</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Nota para el cliente (opcional)</label>
+      <input type="text" id="ofertaNota" placeholder="Ej: Precio garantizado por 2 años, sin contrato..." oninput="generateCliente()">
+    </div>
+
+  </div>
+</div>
+
+<!-- Preview mensaje al cliente -->
+<div class="preview-card" style="max-width:560px;margin:0 auto 16px;">
+  <div class="preview-header" style="background:#0e7490;">
+    <div class="preview-title">📱 Mensaje para el Cliente</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setModeCliente('wa', this)">WhatsApp</button>
+      <button class="mode-btn" onclick="setModeCliente('sms', this)">SMS</button>
+    </div>
+  </div>
+
+  <div class="wa-screen">
+    <div class="bubble" id="preview-cliente">
+      <em style="color:#aaa;">Llena la oferta arriba para generar el mensaje al cliente...</em>
+    </div>
+    <div class="bubble-time" id="bubble-time-cliente"></div>
+  </div>
+
+  <div class="copy-area">
+    <div class="char-count">Ahorro: <span id="ahorro-display" style="font-weight:700;color:#16a34a;">$0.00/mes</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-copy" onclick="copyMsgCliente()">📋 Copiar</button>
+      <button class="btn-copy" style="background:#25D366;" onclick="openWhatsAppCliente()">💬 Enviar al Cliente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentMsg = '';
+  let currentMode = 'wa';
+
+  // Persistir datos del cotizador
+  function saveCotizador() {
+    localStorage.setItem('izzy_cotizador_nombre', getVal('cotizadorNombre'));
+    localStorage.setItem('izzy_cotizador_tel', getVal('cotizadorTel'));
+  }
+
+  function openWhatsApp() {
+    if (!currentMsg || currentMsg.includes('Llena los campos')) {
+      showToast('⚠️ Llena los campos primero', '#b45309'); return;
+    }
+    // Copy message first, then open group
+    navigator.clipboard.writeText(currentMsg).then(() => {
+      showToast('✅ Mensaje copiado — pégalo en el grupo', '#128C7E');
+      setTimeout(() => {
+        window.open('https://chat.whatsapp.com/JRYBPDfD9WK2qm5C84rRzV', '_blank');
+      }, 800);
+    });
+  }
+
+  function setMode(mode, btn) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const bubble = document.getElementById('preview-bubble');
+    bubble.className = mode === 'sms' ? 'bubble sms' : 'bubble';
+    const copyBtn = document.getElementById('btn-copy');
+    copyBtn.className = mode === 'sms' ? 'btn-copy sms-mode' : 'btn-copy';
+    copyBtn.textContent = mode === 'wa' ? '📋 Copiar mensaje' : '📱 Copiar para SMS';
+    generate();
+  }
+
+  function formatPhone(el) {
+    let v = el.value.replace(/\D/g,'').substring(0,10);
+    if (v.length >= 6) v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+    else if (v.length >= 3) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+    el.value = v;
+  }
+
+  function getVal(id) { return document.getElementById(id)?.value?.trim() || ''; }
+  function getRadio(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; }
+  function getChecks(ids) { return ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value); }
+
+  function generate() {
+    const yo        = getVal('miNombre');
+    const cotizador = getVal('cotizadorNombre');
+    const cliente   = getVal('clienteNombre');
+    const tel       = getVal('clienteTel');
+    const zip       = getVal('clienteZip');
+    const direc     = getVal('clienteDirec');
+    const ciudad    = getVal('clienteCiudad');
+    const intProv   = getRadio('intProv');
+    const telProv   = getRadio('telProv');
+    const tieneTV   = getRadio('tieneTV');
+    const velAct    = getRadio('velActual');
+    const pagoInt   = getVal('pagoInternet');
+    const pagoTel   = getVal('pagoTelefono');
+    const lineas    = getRadio('lineas');
+    const nota      = getVal('nota');
+
+    // Pago total combinado
+    const pagoTotal = (parseFloat(pagoInt)||0) + (parseFloat(pagoTel)||0);
+
+    // Dirección completa
+    const direccionCompleta = [direc, ciudad, zip].filter(Boolean).join(', ');
+
+    const isSMS = currentMode === 'sms';
+    let msg = '';
+
+    if (isSMS) {
+      msg += `Hola ${cotizador ? cotizador : ''}, soy ${yo || '[nombre]'} de Izzy Internet.\n`;
+      msg += `Tengo un cliente para cotizar:\n\n`;
+      msg += `── CLIENTE ──\n`;
+      if (cliente)           msg += `Nombre: ${cliente}\n`;
+      if (tel)               msg += `Tel: ${tel}\n`;
+      if (direccionCompleta) msg += `Dirección: ${direccionCompleta}\n`;
+      msg += `\n── INTERNET ──\n`;
+      if (intProv)  msg += `Compania: ${intProv}\n`;
+      if (velAct)   msg += `Velocidad: ${velAct}\n`;
+      if (pagoInt)  msg += `Paga: $${parseFloat(pagoInt).toFixed(2)}/mes\n`;
+      if (tieneTV)  msg += `TV: ${tieneTV}\n`;
+      if (telProv || lineas) {
+        msg += `\n── TELEFONOS ──\n`;
+        if (telProv) msg += `Compania: ${telProv}\n`;
+        if (lineas)  msg += `Lineas: ${lineas}\n`;
+        if (pagoTel) msg += `Paga: $${parseFloat(pagoTel).toFixed(2)}/mes\n`;
+      }
+      if (pagoTotal > 0) msg += `\nTotal que paga: $${pagoTotal.toFixed(2)}/mes\n`;
+      if (nota) msg += `\nNota: ${nota}\n`;
+      msg += `\n¿Que le puedes ofrecer? Gracias.`;
+
+    } else {
+      msg += `Hola${cotizador ? ' *' + cotizador + '*' : ''}! 👋\n`;
+      msg += `Soy *${yo || '[tu nombre]'}* de *Izzy Internet*.\n\n`;
+      msg += `Tengo un cliente que necesita cotización 👇\n\n`;
+
+      msg += `${'─'.repeat(28)}\n`;
+      msg += `👤 *DATOS DEL CLIENTE*\n`;
+      msg += `${'─'.repeat(28)}\n`;
+      if (cliente)           msg += `• Nombre: *${cliente}*\n`;
+      if (tel)               msg += `• Teléfono: ${tel}\n`;
+      if (direccionCompleta) msg += `• 📍 Dirección: *${direccionCompleta}*\n`;
+
+      msg += `\n${'─'.repeat(28)}\n`;
+      msg += `🌐 *INTERNET ACTUAL*\n`;
+      msg += `${'─'.repeat(28)}\n`;
+      if (intProv)  msg += `🏢 Compañía: *${intProv}*\n`;
+      if (velAct)   msg += `⚡ Velocidad: ${velAct}\n`;
+      if (pagoInt)  msg += `💵 Paga: *$${parseFloat(pagoInt).toFixed(2)}/mes*\n`;
+      if (tieneTV === 'Sí') msg += `📺 Tiene TV: Sí\n`;
+
+      if (telProv || lineas) {
+        msg += `\n${'─'.repeat(28)}\n`;
+        msg += `📱 *TELÉFONOS ACTUALES*\n`;
+        msg += `${'─'.repeat(28)}\n`;
+        if (telProv) msg += `🏢 Compañía: *${telProv}*\n`;
+        if (lineas)  msg += `📱 Líneas: *${lineas}*\n`;
+        if (pagoTel) msg += `💵 Paga: *$${parseFloat(pagoTel).toFixed(2)}/mes*\n`;
+      }
+
+      if (pagoTotal > 0) {
+        msg += `\n💰 *Total que paga hoy: $${pagoTotal.toFixed(2)}/mes*\n`;
+      }
+
+      msg += `\n${'─'.repeat(28)}\n`;
+      msg += `🎯 *¿QUÉ LE PUEDES MEJORAR?*\n`;
+      msg += `${'─'.repeat(28)}\n`;
+      if (intProv && intProv !== 'No tiene') msg += `✅ Internet — bajarle el precio o subirle velocidad\n`;
+      if (!intProv || intProv === 'No tiene') msg += `✅ Internet — no tiene, cotizar opciones\n`;
+      if (telProv || lineas) msg += `✅ Celulares — ${lineas || 'ver líneas'} con ${telProv || 'proveedor actual'}\n`;
+      if (tieneTV === 'Sí') msg += `✅ TV — incluida con internet si es posible\n`;
+
+      if (nota) msg += `\n📝 *Nota:* ${nota}\n`;
+      msg += `\n¿Qué le puedes ofrecer? 🙏`;
+    }
+
+    currentMsg = msg;
+
+    const bubble = document.getElementById('preview-bubble');
+    bubble.textContent = msg;
+    document.getElementById('char-count').textContent = msg.length;
+    const now = new Date();
+    document.getElementById('bubble-time').textContent =
+      now.getHours().toString().padStart(2,'0') + ':' +
+      now.getMinutes().toString().padStart(2,'0');
+  }
+
+  function copyMsg() {
+    if (!currentMsg || currentMsg.includes('Llena los campos')) return;
+    navigator.clipboard.writeText(currentMsg).then(() => {
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 2500);
+    });
+  }
+
+  async function saveToSheets() {
+    const url = document.getElementById('webhookUrl').value.trim();
+    if (!url) { showToast('⚠️ Pega la URL del webhook primero', '#b45309'); return; }
+    const cliente = getVal('clienteNombre');
+    if (!cliente) { showToast('⚠️ Falta el nombre del cliente', '#b45309'); return; }
+
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+
+    const payload = {
+      fecha:           new Date().toLocaleDateString('es-US'),
+      agente:          getVal('miNombre'),
+      cliente:         cliente,
+      telefono:        getVal('clienteTel'),
+      zona:            [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
+      proveedorInternet: getRadio('intProv'),
+      pagoInternet:    getVal('pagoInternet'),
+      proveedorTelefono: getRadio('telProv'),
+      pagoTelefono:    getVal('pagoTelefono'),
+      velocidad:       getRadio('velActual'),
+      lineas:          getRadio('lineas'),
+      nota:            getVal('nota')
+    };
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        showToast('✅ ¡Guardado en Google Sheets!', '#16a34a');
+        document.getElementById('webhookStatus').textContent = '● Conectado';
+        document.getElementById('webhookStatus').className = 'webhook-status ok';
+      } else {
+        throw new Error('Error ' + res.status);
+      }
+    } catch (err) {
+      showToast('❌ Error al guardar. Revisa la URL del webhook.', '#b91c1c');
+      document.getElementById('webhookStatus').textContent = '● Error';
+      document.getElementById('webhookStatus').className = 'webhook-status err';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 Guardar en Sheets';
+    }
+  }
+
+  function showToast(msg, color = '#111') {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.background = color;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+  }
+
+  // Persist webhook URL
+  const savedUrl = localStorage.getItem('izzy_webhook');
+  if (savedUrl) document.getElementById('webhookUrl').value = savedUrl;
+  document.getElementById('webhookUrl').addEventListener('input', function() {
+    localStorage.setItem('izzy_webhook', this.value);
+  });
+
+  // Cargar datos guardados del cotizador
+  const savedCotNombre = localStorage.getItem('izzy_cotizador_nombre');
+  const savedCotTel    = localStorage.getItem('izzy_cotizador_tel');
+  if (savedCotNombre) document.getElementById('cotizadorNombre').value = savedCotNombre;
+  if (savedCotTel)    document.getElementById('cotizadorTel').value    = savedCotTel;
+
+  // ═══ PASO 2: MENSAJE AL CLIENTE ═══
+  let currentMsgCliente = '';
+  let currentModeCliente = 'wa';
+
+  function setModeCliente(mode, btn) {
+    currentModeCliente = mode;
+    btn.closest('.mode-toggle').querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const bubble = document.getElementById('preview-cliente');
+    bubble.className = mode === 'sms' ? 'bubble sms' : 'bubble';
+    generateCliente();
+  }
+
+  function generateCliente() {
+    const cliente     = getVal('clienteNombre');
+    const tel         = getVal('clienteTel');
+    const yo          = getVal('miNombre');
+    const pagoInt     = parseFloat(getVal('pagoInternet')) || 0;
+    const pagoTel     = parseFloat(getVal('pagoTelefono')) || 0;
+    const pagoViejo   = pagoInt + pagoTel;
+    const intProv     = getRadio('intProv');
+    const telProv     = getRadio('telProv');
+    const ofertaProv  = getRadio('ofertaProv');
+    const ofertaVel   = getRadio('ofertaVel');
+    const ofertaPrecio = parseFloat(getVal('ofertaPrecio')) || 0;
+    const promos    = ['pr-inst','pr-2m','pr-gc','pr-sc','pr-esp']
+                        .filter(id => document.getElementById(id)?.checked)
+                        .map(id => document.getElementById(id).value);
+    const ofertaNota = getVal('ofertaNota');
+
+    const ahorro = pagoViejo > 0 && ofertaPrecio > 0 ? pagoViejo - ofertaPrecio : 0;
+    const ahorroAnual = ahorro * 12;
+
+    // Actualizar display de ahorro
+    const ahorroEl = document.getElementById('ahorro-display');
+    if (ahorro > 0) {
+      ahorroEl.textContent = `$${ahorro.toFixed(2)}/mes · $${ahorroAnual.toFixed(0)}/año`;
+      ahorroEl.style.color = '#16a34a';
+    } else if (ahorro < 0) {
+      ahorroEl.textContent = `+$${Math.abs(ahorro).toFixed(2)}/mes más`;
+      ahorroEl.style.color = '#b91c1c';
+    } else {
+      ahorroEl.textContent = 'Llena los precios';
+      ahorroEl.style.color = 'var(--muted)';
+    }
+
+    let msgC = '';
+    const nombreCliente = cliente ? cliente.split(' ')[0] : 'Estimado/a';
+
+    if (currentModeCliente === 'sms') {
+      msgC += `Hola ${nombreCliente}! Soy ${yo || '[nombre]'} de Izzy Internet.\n\n`;
+      msgC += `Te consegui una mejor oferta:\n\n`;
+      if (ofertaProv)   msgC += `Compania: ${ofertaProv}\n`;
+      if (ofertaVel)    msgC += `Velocidad: ${ofertaVel}\n`;
+      if (ofertaPrecio) msgC += `Precio nuevo: $${ofertaPrecio.toFixed(2)}/mes\n`;
+      if (pagoViejo > 0) msgC += `Antes pagabas: $${pagoViejo.toFixed(2)}/mes\n`;
+      if (ahorro > 0)   msgC += `Ahorras: $${ahorro.toFixed(2)}/mes ($${ahorroAnual.toFixed(0)}/año)\n`;
+      if (promos.length) msgC += `Incluye: ${promos.join(', ')}\n`;
+      if (ofertaNota)   msgC += `\n${ofertaNota}\n`;
+      msgC += `\n¿Te interesa? Podemos proceder hoy mismo.`;
+
+    } else {
+      msgC += `Hola *${nombreCliente}*! 👋\n`;
+      msgC += `Soy *${yo || '[nombre]'}* de *Izzy Internet*.\n\n`;
+      msgC += `🎉 ¡Te encontré una *mejor oferta*!\n\n`;
+
+      msgC += `${'─'.repeat(28)}\n`;
+      msgC += `⚡ *TU NUEVA OFERTA*\n`;
+      msgC += `${'─'.repeat(28)}\n`;
+      if (ofertaProv)   msgC += `🏢 Compañía: *${ofertaProv}*\n`;
+      if (ofertaVel)    msgC += `🚀 Velocidad: *${ofertaVel}*\n`;
+      if (ofertaPrecio) msgC += `💵 Precio nuevo: *$${ofertaPrecio.toFixed(2)}/mes*\n`;
+      if (promos.length) {
+        msgC += `\n🎁 *Incluye:*\n`;
+        promos.forEach(p => msgC += `   ${p}\n`);
+      }
+
+      if (pagoViejo > 0 || intProv || telProv) {
+        msgC += `\n${'─'.repeat(28)}\n`;
+        msgC += `📊 *COMPARACIÓN*\n`;
+        msgC += `${'─'.repeat(28)}\n`;
+        if (intProv && pagoInt > 0)  msgC += `❌ Internet (${intProv}): *$${pagoInt.toFixed(2)}/mes*\n`;
+        if (telProv && pagoTel > 0)  msgC += `❌ Celular (${telProv}): *$${pagoTel.toFixed(2)}/mes*\n`;
+        if (pagoViejo > 0)           msgC += `❌ *Total antes: $${pagoViejo.toFixed(2)}/mes*\n`;
+        msgC += `\n`;
+        if (ofertaPrecio)            msgC += `✅ *Nueva oferta (${ofertaProv || 'nuevo'}): $${ofertaPrecio.toFixed(2)}/mes*\n`;
+        if (ahorro > 0) {
+          msgC += `\n💰 *Ahorras: $${ahorro.toFixed(2)} al mes*\n`;
+          msgC += `📅 *$${ahorroAnual.toFixed(0)} al año* 🎉\n`;
+        }
+      }
+
+      if (ofertaNota) msgC += `\n📝 ${ofertaNota}\n`;
+      msgC += `\n¿Te interesa? Puedo ayudarte a activarlo *hoy mismo*. 🙌`;
+    }
+
+    currentMsgCliente = msgC;
+    const bubble = document.getElementById('preview-cliente');
+    bubble.textContent = msgC;
+
+    const now = new Date();
+    document.getElementById('bubble-time-cliente').textContent =
+      now.getHours().toString().padStart(2,'0') + ':' +
+      now.getMinutes().toString().padStart(2,'0');
+  }
+
+  function copyMsgCliente() {
+    if (!currentMsgCliente || currentMsgCliente.includes('Llena')) return;
+    navigator.clipboard.writeText(currentMsgCliente).then(() => showToast('✅ ¡Copiado! Envíalo al cliente', '#16a34a'));
+  }
+
+  function openWhatsAppCliente() {
+    if (!currentMsgCliente || currentMsgCliente.includes('Llena')) {
+      showToast('⚠️ Llena la oferta primero', '#b45309'); return;
+    }
+    const tel = getVal('clienteTel').replace(/\D/g, '');
+    if (!tel) { showToast('⚠️ Falta el teléfono del cliente', '#b45309'); return; }
+    const telCompleto = tel.length === 10 ? '1' + tel : tel;
+    window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
+  }
+
+  generate();
+  generateCliente();
+</script>
+</body>
+</html>
