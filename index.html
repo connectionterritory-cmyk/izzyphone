@@ -679,12 +679,17 @@
 </div>
 
 <script>
-  // ── PIN de acceso ──────────────────────────────────────
-  const VALID_PINS = ['IZZY2026', 'VENDEDOR1', 'VENDEDOR2', 'VENDEDOR3'];
+  // ── Acceso por código de usuario ───────────────────────
+  const USERS = {
+    'CAIM0001': { nombre: 'Moises Caicedo',   rol: 'admin'  },
+    'OSPP0001': { nombre: 'Patricia Caicedo', rol: 'agente' },
+    'TEST0001': { nombre: 'Test',             rol: 'agente' }
+  };
 
   function checkPin() {
     const val = document.getElementById('pinInput').value.trim().toUpperCase();
-    if (VALID_PINS.includes(val)) {
+    const user = USERS[val];
+    if (user) {
       localStorage.setItem('izzy_access', val);
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
@@ -700,7 +705,7 @@
   // Verificar si ya tiene acceso guardado
   (function() {
     const saved = localStorage.getItem('izzy_access');
-    if (saved && VALID_PINS.includes(saved)) {
+    if (saved && USERS[saved]) {
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
     }
