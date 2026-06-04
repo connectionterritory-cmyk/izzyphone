@@ -285,9 +285,68 @@
     from { opacity: 0; transform: translate(-50%, 10px); }
     to   { opacity: 1; transform: translate(-50%, 0); }
   }
+
+  /* PIN Screen */
+  #pinScreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #1a3a6b;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 24px;
+  }
+  #pinScreen .pin-emoji { font-size: 52px; margin-bottom: 16px; }
+  #pinScreen .pin-title {
+    font-size: 26px; font-weight: 700; color: #fff;
+    margin-bottom: 6px; letter-spacing: -.3px;
+  }
+  #pinScreen .pin-sub {
+    font-size: 14px; color: rgba(255,255,255,.65);
+    margin-bottom: 28px; text-align: center;
+  }
+  #pinScreen input[type="text"] {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 600; letter-spacing: .18em;
+    text-align: center; text-transform: uppercase;
+    background: rgba(255,255,255,.1);
+    border: 2px solid rgba(255,255,255,.25);
+    color: #fff; border-radius: 12px;
+    padding: 14px 20px; width: 100%; max-width: 300px;
+    outline: none; transition: border-color .2s;
+    margin-bottom: 16px;
+  }
+  #pinScreen input[type="text"]:focus { border-color: #25D366; }
+  #pinScreen input[type="text"]::placeholder { color: rgba(255,255,255,.3); letter-spacing: .08em; }
+  #pinScreen .pin-btn {
+    width: 100%; max-width: 300px;
+    padding: 14px; border-radius: 12px; border: none;
+    background: #25D366; color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  #pinScreen .pin-btn:hover { background: #1da851; }
+  #pinScreen .pin-btn:active { transform: scale(.97); }
+  #pinScreen .pin-error {
+    margin-top: 14px; color: #f87171;
+    font-size: 13px; font-weight: 600;
+    min-height: 20px; text-align: center;
+  }
 </style>
 </head>
 <body>
+
+<!-- PIN Screen -->
+<div id="pinScreen">
+  <div class="pin-emoji">📱</div>
+  <div class="pin-title">Izzy Internet</div>
+  <div class="pin-sub">Ingresa tu código de acceso</div>
+  <input type="text" id="pinInput" placeholder="CÓDIGO" maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') checkPin()">
+  <button class="pin-btn" onclick="checkPin()">✅ Entrar</button>
+  <div class="pin-error" id="pinError"></div>
+</div>
+
+<!-- App principal -->
+<div id="mainApp" style="display:none">
 
 <!-- Webhook config -->
 <div class="webhook-bar" style="display:none">
@@ -515,6 +574,7 @@
 </div>
 
 <div class="toast" id="toast">✅ ¡Copiado! Pégalo en WhatsApp o SMS</div>
+</div><!-- /mainApp -->
 
 <!-- ═══ PASO 2: RESPUESTA DEL COTIZADOR → MENSAJE AL CLIENTE ═══ -->
 <div style="max-width:560px;margin:28px auto 0;">
@@ -619,6 +679,34 @@
 </div>
 
 <script>
+  // ── PIN de acceso ──────────────────────────────────────
+  const VALID_PINS = ['IZZY2026', 'VENDEDOR1', 'VENDEDOR2', 'VENDEDOR3'];
+
+  function checkPin() {
+    const val = document.getElementById('pinInput').value.trim().toUpperCase();
+    if (VALID_PINS.includes(val)) {
+      localStorage.setItem('izzy_access', val);
+      document.getElementById('pinScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+    } else {
+      const err = document.getElementById('pinError');
+      err.textContent = '❌ Código incorrecto. Intenta de nuevo.';
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinInput').focus();
+      setTimeout(() => err.textContent = '', 3000);
+    }
+  }
+
+  // Verificar si ya tiene acceso guardado
+  (function() {
+    const saved = localStorage.getItem('izzy_access');
+    if (saved && VALID_PINS.includes(saved)) {
+      document.getElementById('pinScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+    }
+  })();
+  // ───────────────────────────────────────────────────────
+
   let currentMsg = '';
   let currentMode = 'wa';
 
