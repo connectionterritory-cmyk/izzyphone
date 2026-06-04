@@ -28,7 +28,6 @@
     padding-bottom: 60px;
   }
 
-  /* Header */
   .hero {
     background: var(--blue);
     padding: 36px 24px 32px;
@@ -39,7 +38,6 @@
   .hero h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
   .hero p { font-size: 14px; color: rgba(255,255,255,.7); max-width: 340px; margin: 0 auto; }
 
-  /* Progress bar */
   .progress-wrap {
     max-width: 560px; margin: 24px auto 0; padding: 0 20px;
     display: flex; align-items: center; gap: 0;
@@ -50,14 +48,12 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; color: rgba(255,255,255,.5);
     flex-shrink: 0; cursor: pointer; transition: all .2s;
-    position: relative; z-index: 1;
   }
   .prog-step.done { background: var(--green); border-color: var(--green); color: #fff; }
   .prog-step.active { background: #fff; border-color: #fff; color: var(--blue); }
   .prog-line { flex: 1; height: 2px; background: rgba(255,255,255,.2); }
   .prog-line.done { background: var(--green); }
 
-  /* Step cards */
   .steps-wrap { max-width: 560px; margin: 0 auto; padding: 24px 16px 0; }
 
   .step-card {
@@ -97,11 +93,10 @@
     padding: 16px;
     margin-bottom: 18px;
     border: 1.5px solid var(--border);
-    font-size: 13px; color: var(--muted); line-height: 1.6;
   }
   .step-visual .label {
     font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .08em; color: var(--blue); margin-bottom: 8px;
+    letter-spacing: .08em; color: var(--blue); margin-bottom: 10px;
   }
 
   .tip-list { display: flex; flex-direction: column; gap: 10px; }
@@ -114,16 +109,19 @@
   .tip-text { font-size: 14px; line-height: 1.55; }
   .tip-text strong { color: var(--text); font-weight: 600; }
 
-  .highlight {
-    background: #fefce8; border: 1.5px solid #fde68a;
-    border-radius: 10px; padding: 12px 14px;
-    font-size: 13px; color: #92400e; line-height: 1.55;
-    margin-top: 14px;
+  .alert {
+    border-radius: 10px; padding: 13px 15px;
+    font-size: 13px; line-height: 1.55; margin-top: 14px;
+    display: flex; gap: 10px; align-items: flex-start;
   }
+  .alert-red   { background: #fff5f5; border: 1.5px solid #fca5a5; color: #991b1b; }
+  .alert-yellow { background: #fefce8; border: 1.5px solid #fde68a; color: #92400e; }
+  .alert-green  { background: #f0fdf4; border: 1.5px solid #86efac; color: #15803d; }
+  .alert-icon { font-size: 18px; flex-shrink: 0; }
 
   .mock-bubble {
     background: #dcf8c6; border-radius: 8px 8px 8px 2px;
-    padding: 10px 14px; font-size: 13px; line-height: 1.65;
+    padding: 10px 14px; font-size: 12px; line-height: 1.65;
     white-space: pre-wrap; color: #111;
     box-shadow: 0 1px 2px rgba(0,0,0,.1);
     font-family: monospace;
@@ -134,16 +132,52 @@
     border-radius: 9px; padding: 10px 14px;
     font-size: 14px; color: var(--text); margin-bottom: 8px;
   }
-  .mock-field-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .mock-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
 
-  .chips-demo { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .chip-demo {
-    padding: 5px 14px; border-radius: 20px; font-size: 13px;
-    border: 1.5px solid var(--border); color: var(--muted);
+  .chips-demo { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip-d { padding: 5px 14px; border-radius: 20px; font-size: 13px; border: 1.5px solid var(--border); color: var(--muted); }
+  .chip-d.sel { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .chip-d.sel-green { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+  /* PIN mock */
+  .pin-mock {
+    background: #1a3a6b; border-radius: 14px;
+    padding: 24px 20px; text-align: center;
   }
-  .chip-demo.sel { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .pin-mock .pm-emoji { font-size: 36px; margin-bottom: 8px; }
+  .pin-mock .pm-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .pin-mock .pm-sub { font-size: 12px; color: rgba(255,255,255,.6); margin-bottom: 14px; }
+  .pin-mock .pm-input {
+    background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.25);
+    border-radius: 10px; padding: 10px 16px;
+    font-family: monospace; font-size: 18px; letter-spacing: .2em;
+    color: #fff; font-weight: 700; display: inline-block;
+    margin-bottom: 10px; min-width: 180px;
+  }
+  .pin-mock .pm-btn {
+    display: block; margin: 0 auto;
+    background: #25D366; color: #fff;
+    border-radius: 10px; padding: 10px 24px;
+    font-size: 14px; font-weight: 700;
+  }
+  .pm-error { color: #f87171; font-size: 12px; font-weight: 600; margin-top: 8px; }
 
-  /* Navigation */
+  /* Offer mock */
+  .offer-block {
+    background: #fff; border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+  }
+  .offer-block-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; margin-bottom: 8px;
+  }
+  .offer-total {
+    background: #f0fdf4; border: 1.5px solid #86efac;
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 13px; color: #15803d; line-height: 1.7;
+    white-space: pre-line; font-weight: 600;
+  }
+
   .step-nav {
     padding: 16px 24px 20px;
     display: flex; gap: 10px; border-top: 1px solid var(--border);
@@ -154,21 +188,14 @@
     font-size: 15px; font-weight: 700; cursor: pointer;
     transition: all .15s;
   }
-  .btn-prev {
-    background: var(--bg); color: var(--muted);
-    border: 1.5px solid var(--border);
-  }
+  .btn-prev { background: var(--bg); color: var(--muted); border: 1.5px solid var(--border); }
   .btn-prev:hover { background: var(--border); }
   .btn-next { background: var(--blue); color: #fff; }
   .btn-next:hover { background: #15316a; }
   .btn-next:active { transform: scale(.97); }
   .btn-next.final { background: var(--green-dark); }
-  .btn-next.final:hover { background: #0e7060; }
 
-  /* Done screen */
-  .done-screen {
-    display: none; text-align: center; padding: 40px 24px;
-  }
+  .done-screen { display: none; text-align: center; padding: 40px 24px; }
   .done-screen.active { display: block; }
   .done-screen .done-emoji { font-size: 64px; margin-bottom: 16px; }
   .done-screen h2 { font-size: 22px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
@@ -181,11 +208,7 @@
   }
   .btn-go:hover { background: #0e7060; }
 
-  /* Counter */
-  .step-counter {
-    text-align: center; font-size: 12px; color: var(--muted);
-    margin-top: 14px; font-weight: 500;
-  }
+  .step-counter { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; font-weight: 500; }
 </style>
 </head>
 <body>
@@ -193,11 +216,8 @@
 <div class="hero">
   <div class="hero-emoji">📚</div>
   <h1>Tutorial — Cotizador de Leads</h1>
-  <p>Aprende a usar la app en 7 pasos simples</p>
-
-  <div class="progress-wrap" id="progressWrap">
-    <!-- generado por JS -->
-  </div>
+  <p>Aprende a usar la app en 8 pasos</p>
+  <div class="progress-wrap" id="progressWrap"></div>
 </div>
 
 <div class="steps-wrap">
@@ -207,28 +227,42 @@
     <div class="step-header">
       <div class="step-num">1</div>
       <div class="step-header-text">
-        <h2>Ingresar con tu código</h2>
-        <p>Acceso seguro para el equipo</p>
+        <h2>Ingresar con tu PIN</h2>
+        <p>Acceso seguro — solo el equipo puede entrar</p>
       </div>
     </div>
     <div class="step-body">
       <div class="step-visual">
         <div class="label">Pantalla de acceso</div>
-        <div style="text-align:center;padding:12px 0;">
-          <div style="font-size:32px;margin-bottom:8px;">📱</div>
-          <div style="font-size:16px;font-weight:700;color:#1a3a6b;margin-bottom:4px;">Izzy Internet</div>
-          <div style="font-size:12px;color:#7a7570;margin-bottom:12px;">Ingresa tu código de acceso</div>
-          <div style="background:#1a3a6b;border-radius:8px;padding:8px 16px;display:inline-block;color:rgba(255,255,255,.6);font-family:monospace;font-size:14px;letter-spacing:.15em;">VENDEDOR1</div>
+        <div class="pin-mock">
+          <div class="pm-emoji">📱</div>
+          <div class="pm-title">Izzy Internet</div>
+          <div class="pm-sub">Ingresa tu código de acceso</div>
+          <div class="pm-input">OSPP0001</div>
+          <div class="pm-btn">✅ Entrar</div>
         </div>
       </div>
       <div class="tip-list">
-        <div class="tip"><div class="tip-icon">🔑</div><div class="tip-text"><strong>Tu código personal</strong> lo recibiste por parte del administrador. Cuídalo.</div></div>
-        <div class="tip"><div class="tip-icon">💾</div><div class="tip-text">Una vez que entras, el código queda <strong>guardado en tu dispositivo</strong>. No tendrás que volver a ingresarlo.</div></div>
-        <div class="tip"><div class="tip-icon">🚫</div><div class="tip-text">No compartas tu código. Cada vendedor tiene el suyo.</div></div>
+        <div class="tip">
+          <div class="tip-icon">🔑</div>
+          <div class="tip-text"><strong>Tu PIN es personal y único.</strong> Lo recibiste del administrador del sistema. Escríbelo exactamente como te lo dieron (en mayúsculas).</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💾</div>
+          <div class="tip-text">Una vez que entras, el PIN queda <strong>guardado en tu dispositivo</strong>. No tienes que escribirlo cada vez.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🚫</div>
+          <div class="tip-text"><strong>No compartas tu PIN</strong> con nadie. Cada vendedor tiene el suyo. Si alguien más lo usa, el admin puede ver quién fue.</div>
+        </div>
+      </div>
+      <div class="alert alert-red" style="margin-top:14px;">
+        <div class="alert-icon">❌</div>
+        <div><strong>¿No tienes PIN o no funciona?</strong><br>Llama al administrador del sistema. Solo el admin puede crear o resetear códigos de acceso. No puedes entrar sin él.</div>
       </div>
     </div>
     <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(0)" disabled>← Anterior</button>
+      <button class="btn-prev" disabled>← Anterior</button>
       <button class="btn-next" onclick="goStep(2)">Siguiente →</button>
     </div>
   </div>
@@ -245,18 +279,24 @@
     <div class="step-body">
       <div class="step-visual">
         <div class="label">Sección Agente</div>
-        <div class="mock-field-label">Mi nombre</div>
+        <div class="mock-label">Mi nombre</div>
         <div class="mock-field">María García</div>
-        <div style="margin-top:12px;">
-          <div class="mock-field-label">Nombre del cotizador</div>
+        <div style="margin-top:10px;">
+          <div class="mock-label">Nombre del cotizador</div>
           <div class="mock-field">Juan Pérez</div>
-          <div class="mock-field-label" style="margin-top:6px;">WhatsApp del cotizador</div>
+          <div class="mock-label" style="margin-top:6px;">WhatsApp del cotizador</div>
           <div class="mock-field">+1 (818) 555-1234</div>
         </div>
       </div>
       <div class="tip-list">
-        <div class="tip"><div class="tip-icon">👤</div><div class="tip-text"><strong>Tu nombre</strong> aparecerá en el mensaje que se envía al cotizador.</div></div>
-        <div class="tip"><div class="tip-icon">📲</div><div class="tip-text">Los datos del cotizador se <strong>guardan automáticamente</strong> — solo los escribes una vez.</div></div>
+        <div class="tip">
+          <div class="tip-icon">👤</div>
+          <div class="tip-text"><strong>Tu nombre</strong> aparece en el mensaje que se envía al cotizador para que sepa quién manda el lead.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📲</div>
+          <div class="tip-text">Los datos del cotizador se <strong>guardan automáticamente</strong> — solo los escribes una vez y ya quedan listos para la próxima.</div>
+        </div>
       </div>
     </div>
     <div class="step-nav">
@@ -271,34 +311,40 @@
       <div class="step-num">3</div>
       <div class="step-header-text">
         <h2>Datos del cliente</h2>
-        <p>Nombre, teléfono y dirección</p>
+        <p>Nombre, teléfono y dirección completa</p>
       </div>
     </div>
     <div class="step-body">
       <div class="step-visual">
         <div class="label">Sección Cliente</div>
-        <div class="mock-field-label">Nombre completo</div>
+        <div class="mock-label">Nombre completo</div>
         <div class="mock-field">Carlos Martínez</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
           <div>
-            <div class="mock-field-label">Teléfono</div>
+            <div class="mock-label">Teléfono</div>
             <div class="mock-field">(323) 555-8900</div>
           </div>
           <div>
-            <div class="mock-field-label">ZIP</div>
+            <div class="mock-label">ZIP</div>
             <div class="mock-field">90210</div>
           </div>
         </div>
         <div style="margin-top:6px;">
-          <div class="mock-field-label">Dirección</div>
+          <div class="mock-label">Dirección</div>
           <div class="mock-field">1234 Main St, Apt 5</div>
-          <div class="mock-field-label" style="margin-top:4px;">Ciudad y Estado</div>
+          <div class="mock-label" style="margin-top:4px;">Ciudad y Estado</div>
           <div class="mock-field">Los Angeles, CA</div>
         </div>
       </div>
       <div class="tip-list">
-        <div class="tip"><div class="tip-icon">📍</div><div class="tip-text">La <strong>dirección completa</strong> es importante para que el cotizador pueda verificar cobertura.</div></div>
-        <div class="tip"><div class="tip-icon">📞</div><div class="tip-text">El teléfono se formatea <strong>automáticamente</strong> al escribirlo.</div></div>
+        <div class="tip">
+          <div class="tip-icon">📍</div>
+          <div class="tip-text">La <strong>dirección completa</strong> es clave — el cotizador la necesita para verificar qué servicios están disponibles en esa zona.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📞</div>
+          <div class="tip-text">El teléfono se formatea <strong>automáticamente</strong> mientras escribes.</div>
+        </div>
       </div>
     </div>
     <div class="step-nav">
@@ -319,28 +365,37 @@
     <div class="step-body">
       <div class="step-visual">
         <div class="label">Sección Internet actual</div>
-        <div class="mock-field-label">Compañía de Internet</div>
+        <div class="mock-label">Compañía de Internet</div>
         <div class="chips-demo">
-          <div class="chip-demo sel">Spectrum</div>
-          <div class="chip-demo">Frontier</div>
-          <div class="chip-demo">AT&T</div>
-          <div class="chip-demo">Cox</div>
-          <div class="chip-demo">No tiene</div>
+          <div class="chip-d sel">Spectrum</div>
+          <div class="chip-d">Frontier</div>
+          <div class="chip-d">AT&T</div>
+          <div class="chip-d">Cox</div>
+          <div class="chip-d">No tiene</div>
         </div>
-        <div style="margin-top:14px;">
-          <div class="mock-field-label">Compañía de Teléfono</div>
+        <div style="margin-top:12px;">
+          <div class="mock-label">Compañía de Teléfono</div>
           <div class="chips-demo">
-            <div class="chip-demo">T-Mobile</div>
-            <div class="chip-demo sel">Verizon</div>
-            <div class="chip-demo">AT&T</div>
-            <div class="chip-demo">Metro</div>
+            <div class="chip-d">T-Mobile</div>
+            <div class="chip-d sel">Verizon</div>
+            <div class="chip-d">AT&T</div>
+            <div class="chip-d">Metro</div>
           </div>
         </div>
       </div>
       <div class="tip-list">
-        <div class="tip"><div class="tip-icon">💵</div><div class="tip-text">Siempre pregunta <strong>cuánto paga</strong> — es la clave para mostrar el ahorro.</div></div>
-        <div class="tip"><div class="tip-icon">📺</div><div class="tip-text">Pregunta si tiene TV — puede sumarse a la oferta de internet.</div></div>
-        <div class="tip"><div class="tip-icon">📱</div><div class="tip-text">Anota cuántas líneas de celular tiene. Más líneas = más ahorro potencial.</div></div>
+        <div class="tip">
+          <div class="tip-icon">💵</div>
+          <div class="tip-text">Siempre pregunta <strong>cuánto paga hoy</strong> por internet y por teléfonos. Eso es lo que usamos para calcular el ahorro.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📺</div>
+          <div class="tip-text">Marca si tiene TV — algunos paquetes la incluyen y eso puede ser un argumento extra para el cliente.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📱</div>
+          <div class="tip-text">Anota cuántas <strong>líneas de celular</strong> tiene la familia. Más líneas = más ahorro potencial.</div>
+        </div>
       </div>
     </div>
     <div class="step-nav">
@@ -371,16 +426,25 @@ Tengo un cliente que necesita cotización 👇
 ────────────────────────────
 • Nombre: *Carlos Martínez*
 • Teléfono: (323) 555-8900
-• 📍 Dirección: *1234 Main St*
+• 📍 Dirección: *1234 Main St, LA*
 
 💰 *Total que paga hoy: $180.00/mes*
 
 ¿Qué le puedes ofrecer? 🙏</div>
       </div>
       <div class="tip-list">
-        <div class="tip"><div class="tip-icon">📋</div><div class="tip-text"><strong>Copiar mensaje</strong> — copia el texto para pegarlo donde quieras.</div></div>
-        <div class="tip"><div class="tip-icon">💬</div><div class="tip-text"><strong>Copiar y Abrir Grupo</strong> — copia el mensaje y abre el grupo de WhatsApp del equipo automáticamente.</div></div>
-        <div class="tip"><div class="tip-icon">📱</div><div class="tip-text">Cambia entre modo <strong>WhatsApp</strong> y <strong>SMS</strong> según cómo vayas a enviar el mensaje.</div></div>
+        <div class="tip">
+          <div class="tip-icon">📋</div>
+          <div class="tip-text"><strong>Copiar mensaje</strong> — copia el texto para pegarlo donde quieras.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💬</div>
+          <div class="tip-text"><strong>Copiar y Abrir Grupo</strong> — copia el mensaje y abre el grupo de WhatsApp del equipo automáticamente. Solo tienes que pegar y enviar.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📱</div>
+          <div class="tip-text">Cambia entre <strong>WhatsApp</strong> y <strong>SMS</strong> según cómo quieras enviar el mensaje.</div>
+        </div>
       </div>
     </div>
     <div class="step-nav">
@@ -395,34 +459,77 @@ Tengo un cliente que necesita cotización 👇
       <div class="step-num">6</div>
       <div class="step-header-text">
         <h2>Registrar la oferta del cotizador</h2>
-        <p>Paso 2 — Lo que encontró el cotizador</p>
+        <p>Internet + teléfonos con desglose automático</p>
       </div>
     </div>
     <div class="step-body">
       <div class="step-visual">
         <div class="label">Sección — La Mejor Oferta</div>
-        <div class="mock-field-label">Proveedor oferta</div>
-        <div class="chips-demo">
-          <div class="chip-demo sel">Frontier</div>
-          <div class="chip-demo">Spectrum</div>
-          <div class="chip-demo">AT&T</div>
-        </div>
-        <div style="margin-top:10px;">
-          <div class="mock-field-label">Promociones incluidas</div>
-          <div class="chips-demo">
-            <div class="chip-demo sel">Instalación Gratis</div>
-            <div class="chip-demo sel">2 Meses Gratis</div>
-            <div class="chip-demo">Gift Card</div>
+
+        <div class="offer-block">
+          <div class="offer-block-title" style="color:#0e7490;">🌐 Internet</div>
+          <div class="mock-label">Proveedor</div>
+          <div class="chips-demo" style="margin-bottom:8px;">
+            <div class="chip-d sel">Spectrum</div>
+            <div class="chip-d">Frontier</div>
+            <div class="chip-d">AT&T</div>
+          </div>
+          <div class="mock-label">Velocidad · Precio</div>
+          <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+            <div class="chip-d sel">1 Gig</div>
+            <div style="font-size:14px;color:#1a1814;font-weight:600;margin-left:4px;">$49.99/mes</div>
           </div>
         </div>
-        <div style="margin-top:10px;background:#f0fdf4;border-radius:8px;padding:10px;font-size:13px;color:#16a34a;font-weight:600;">
-          💰 Ahorro: $80.00/mes · $960/año
+
+        <div class="offer-block">
+          <div class="offer-block-title" style="color:#5c2d91;">📱 Teléfonos (opcional)</div>
+          <div class="mock-label">Líneas incluidas</div>
+          <div class="chips-demo" style="margin-bottom:8px;">
+            <div class="chip-d">1</div>
+            <div class="chip-d sel">2</div>
+            <div class="chip-d">3</div>
+            <div class="chip-d">4</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;">
+            <div>
+              <div class="mock-label">1ra línea</div>
+              <div class="mock-field" style="margin:0;">$0.00</div>
+            </div>
+            <div>
+              <div class="mock-label">Por línea adicional</div>
+              <div class="mock-field" style="margin:0;">$30.00</div>
+            </div>
+          </div>
+          <div style="background:#f3e8ff;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:12px;color:#5c2d91;font-weight:600;">
+            📱 2 líneas — 1ra: $0.00 + 1 adicional × $30.00 = $30.00/mes
+          </div>
+        </div>
+
+        <div class="offer-total">🌐 Internet (Spectrum): $49.99/mes
+📱 Teléfonos (2 líneas): $30.00/mes
+
+💰 Total nuevo: $79.99/mes
+📊 Antes pagabas: $180.00/mes
+✅ Ahorras: $100.01/mes · $1,200/año</div>
+      </div>
+
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">🌐</div>
+          <div class="tip-text">Llena <strong>Internet primero</strong>: proveedor, velocidad y precio mensual.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📱</div>
+          <div class="tip-text">En <strong>Teléfonos</strong>: selecciona cuántas líneas, pon el precio de la primera y el precio por cada línea extra. El total se calcula solo.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💰</div>
+          <div class="tip-text">El <strong>resumen verde</strong> aparece automáticamente con el total nuevo y el ahorro comparado con lo que el cliente paga hoy.</div>
         </div>
       </div>
-      <div class="tip-list">
-        <div class="tip"><div class="tip-icon">⚡</div><div class="tip-text">Cuando el cotizador te responda, llena esta sección con su oferta.</div></div>
-        <div class="tip"><div class="tip-icon">🎁</div><div class="tip-text">Selecciona todas las <strong>promociones incluidas</strong> — se suman al mensaje al cliente.</div></div>
-        <div class="tip"><div class="tip-icon">💰</div><div class="tip-text">El <strong>ahorro se calcula solo</strong> comparando lo que pagaba vs. la oferta nueva.</div></div>
+      <div class="alert alert-yellow" style="margin-top:14px;">
+        <div class="alert-icon">💡</div>
+        <div><strong>Ejemplo real:</strong> Spectrum ofrece Internet 1 Gig a $49.99 + 2 líneas (1ra gratis, 2da a $30). Pones $49.99 en internet, 2 líneas, $0 base, $30 adicional. El total sale $79.99/mes automático.</div>
       </div>
     </div>
     <div class="step-nav">
@@ -436,31 +543,100 @@ Tengo un cliente que necesita cotización 👇
     <div class="step-header">
       <div class="step-num">7</div>
       <div class="step-header-text">
-        <h2>Guardar en Google Sheets</h2>
-        <p>Registro automático del lead</p>
+        <h2>Enviar la oferta al cliente</h2>
+        <p>Mensaje con desglose completo listo para enviar</p>
       </div>
     </div>
     <div class="step-body">
       <div class="step-visual">
-        <div class="label">Botón Guardar en Sheets</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-          <div style="padding:11px 20px;background:#16a34a;color:#fff;border-radius:10px;font-size:14px;font-weight:700;">💾 Guardar en Sheets</div>
-        </div>
-        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:10px 12px;font-size:13px;color:#16a34a;font-weight:600;">
-          ✅ ¡Guardado en Google Sheets!
-        </div>
+        <div class="label">Mensaje generado para el cliente</div>
+        <div class="mock-bubble">Hola *Carlos*! 👋
+Soy *María* de *Izzy Internet*.
+
+🎉 ¡Te encontré una *mejor oferta*!
+
+────────────────────────────
+⚡ *TU NUEVA OFERTA*
+────────────────────────────
+🌐 Internet (Spectrum): *$49.99/mes* — 1 Gig
+📱 Teléfonos: *2 líneas* — *$30.00/mes*
+   (1ra línea: $0.00 + 1 adicional × $30.00)
+🎁 Incluye: Instalación Gratis · 2 Meses Gratis
+
+💰 *Total nuevo: $79.99/mes*
+
+────────────────────────────
+📊 *COMPARACIÓN*
+────────────────────────────
+❌ Internet (Spectrum): *$100.00/mes*
+❌ Celular (Verizon): *$80.00/mes*
+❌ *Total antes: $180.00/mes*
+
+✅ *Nueva oferta: $79.99/mes*
+
+💰 *Ahorras: $100.01 al mes*
+📅 *$1,200 al año* 🎉
+
+¿Te interesa? Puedo ayudarte a activarlo *hoy mismo*. 🙌</div>
       </div>
       <div class="tip-list">
-        <div class="tip"><div class="tip-icon">💾</div><div class="tip-text">Al presionar <strong>Guardar en Sheets</strong>, el lead se registra automáticamente con fecha, agente, cliente y datos.</div></div>
-        <div class="tip"><div class="tip-icon">📊</div><div class="tip-text">El administrador puede ver todos los leads en tiempo real desde Google Sheets.</div></div>
-        <div class="tip"><div class="tip-icon">✅</div><div class="tip-text">Verás una notificación verde de confirmación cuando el registro sea exitoso.</div></div>
-      </div>
-      <div class="highlight">
-        💡 <strong>Flujo completo:</strong> Llena los datos → Envía al cotizador → Espera respuesta → Llena la oferta → Envía al cliente → Guarda en Sheets.
+        <div class="tip">
+          <div class="tip-icon">📋</div>
+          <div class="tip-text"><strong>Copiar</strong> — copia el mensaje con el desglose completo.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💬</div>
+          <div class="tip-text"><strong>Enviar al Cliente</strong> — abre WhatsApp directo al número del cliente con el mensaje ya escrito. Solo presiona enviar.</div>
+        </div>
       </div>
     </div>
     <div class="step-nav">
       <button class="btn-prev" onclick="goStep(6)">← Anterior</button>
+      <button class="btn-next" onclick="goStep(8)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- PASO 8 -->
+  <div class="step-card" data-step="8">
+    <div class="step-header">
+      <div class="step-num">8</div>
+      <div class="step-header-text">
+        <h2>Guardar el lead</h2>
+        <p>Registro automático del cliente</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="label">Botón Guardar</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#16a34a;color:#fff;border-radius:10px;font-size:14px;font-weight:700;margin-bottom:12px;">
+          💾 Guardar
+        </div>
+        <div class="alert alert-green" style="margin-top:0;">
+          <div class="alert-icon">✅</div>
+          <div><strong>¡Guardado!</strong> El lead fue registrado con fecha, agente, cliente y todos los datos.</div>
+        </div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">💾</div>
+          <div class="tip-text">Al presionar <strong>Guardar</strong>, todos los datos del cliente se registran automáticamente para que el admin pueda verlos.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📊</div>
+          <div class="tip-text">El administrador ve todos los leads en tiempo real. Siempre guarda antes de cerrar la app.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">✅</div>
+          <div class="tip-text">Verás una notificación verde de confirmación cuando el registro sea exitoso.</div>
+        </div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:14px;">
+        <div class="alert-icon">💡</div>
+        <div><strong>Flujo completo:</strong> Llena los datos del cliente → Envía al cotizador → Espera la oferta → Llena el desglose → Envía al cliente → Guarda el lead.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="goStep(7)">← Anterior</button>
       <button class="btn-next final" onclick="finish()">✅ ¡Listo, empezar!</button>
     </div>
   </div>
@@ -473,12 +649,12 @@ Tengo un cliente que necesita cotización 👇
     <a href="index.html" class="btn-go">📱 Abrir la App</a>
   </div>
 
-  <div class="step-counter" id="stepCounter">Paso 1 de 7</div>
+  <div class="step-counter" id="stepCounter">Paso 1 de 8</div>
 
 </div>
 
 <script>
-  const TOTAL = 7;
+  const TOTAL = 8;
   let current = 1;
 
   function buildProgress() {
