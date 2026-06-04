@@ -7,209 +7,78 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --blue: #1a3a6b;
-    --blue-light: #edf1f8;
-    --green: #25D366;
-    --green-dark: #128C7E;
-    --bg: #f0f2f5;
-    --surface: #fff;
-    --border: #e2e0dc;
-    --text: #1a1814;
-    --muted: #7a7570;
+    --blue:#1a3a6b; --green:#25D366; --green-dark:#128C7E;
+    --bg:#f0f2f5; --surface:#fff; --border:#e2e0dc; --text:#1a1814; --muted:#7a7570;
   }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 60px;
-  }
-
-  .hero {
-    background: var(--blue);
-    padding: 36px 24px 32px;
-    text-align: center;
-    color: #fff;
-  }
-  .hero-emoji { font-size: 48px; margin-bottom: 12px; }
-  .hero h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-  .hero p { font-size: 14px; color: rgba(255,255,255,.7); max-width: 340px; margin: 0 auto; }
-
-  .progress-wrap {
-    max-width: 560px; margin: 24px auto 0; padding: 0 20px;
-    display: flex; align-items: center; gap: 0;
-  }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:80px; }
+  .hero { background:var(--blue); padding:36px 24px 32px; text-align:center; color:#fff; }
+  .hero-emoji { font-size:48px; margin-bottom:12px; }
+  .hero h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
+  .hero p { font-size:14px; color:rgba(255,255,255,.7); max-width:340px; margin:0 auto; }
+  .progress-wrap { max-width:560px; margin:24px auto 0; padding:0 20px; display:flex; align-items:center; }
   .prog-step {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: rgba(255,255,255,.2); border: 2px solid rgba(255,255,255,.3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: rgba(255,255,255,.5);
-    flex-shrink: 0; cursor: pointer; transition: all .2s;
+    width:28px; height:28px; border-radius:50%;
+    background:rgba(255,255,255,.2); border:2px solid rgba(255,255,255,.3);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; color:rgba(255,255,255,.5);
+    flex-shrink:0; cursor:pointer; transition:all .2s;
   }
-  .prog-step.done { background: var(--green); border-color: var(--green); color: #fff; }
-  .prog-step.active { background: #fff; border-color: #fff; color: var(--blue); }
-  .prog-line { flex: 1; height: 2px; background: rgba(255,255,255,.2); }
-  .prog-line.done { background: var(--green); }
-
-  .steps-wrap { max-width: 560px; margin: 0 auto; padding: 24px 16px 0; }
-
-  .step-card {
-    display: none;
-    background: var(--surface);
-    border-radius: 20px;
-    box-shadow: 0 2px 16px rgba(0,0,0,.08);
-    overflow: hidden;
-    animation: slideIn .3s ease;
-  }
-  .step-card.active { display: block; }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .step-header {
-    padding: 20px 24px 16px;
-    display: flex; align-items: center; gap: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .step-num {
-    width: 42px; height: 42px; border-radius: 12px;
-    background: var(--blue); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 700; flex-shrink: 0;
-  }
-  .step-header-text h2 { font-size: 17px; font-weight: 700; color: var(--blue); }
-  .step-header-text p { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  .step-body { padding: 20px 24px; }
-
-  .step-visual {
-    background: var(--bg);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 18px;
-    border: 1.5px solid var(--border);
-  }
-  .step-visual .label {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .08em; color: var(--blue); margin-bottom: 10px;
-  }
-
-  .tip-list { display: flex; flex-direction: column; gap: 10px; }
-  .tip {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 12px 14px; border-radius: 10px;
-    background: var(--bg); border: 1px solid var(--border);
-  }
-  .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-  .tip-text { font-size: 14px; line-height: 1.55; }
-  .tip-text strong { color: var(--text); font-weight: 600; }
-
-  .alert {
-    border-radius: 10px; padding: 13px 15px;
-    font-size: 13px; line-height: 1.55; margin-top: 14px;
-    display: flex; gap: 10px; align-items: flex-start;
-  }
-  .alert-red   { background: #fff5f5; border: 1.5px solid #fca5a5; color: #991b1b; }
-  .alert-yellow { background: #fefce8; border: 1.5px solid #fde68a; color: #92400e; }
-  .alert-green  { background: #f0fdf4; border: 1.5px solid #86efac; color: #15803d; }
-  .alert-icon { font-size: 18px; flex-shrink: 0; }
-
-  .mock-bubble {
-    background: #dcf8c6; border-radius: 8px 8px 8px 2px;
-    padding: 10px 14px; font-size: 12px; line-height: 1.65;
-    white-space: pre-wrap; color: #111;
-    box-shadow: 0 1px 2px rgba(0,0,0,.1);
-    font-family: monospace;
-  }
-
-  .mock-field {
-    background: #fff; border: 1.5px solid var(--border);
-    border-radius: 9px; padding: 10px 14px;
-    font-size: 14px; color: var(--text); margin-bottom: 8px;
-  }
-  .mock-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-
-  .chips-demo { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-  .chip-d { padding: 5px 14px; border-radius: 20px; font-size: 13px; border: 1.5px solid var(--border); color: var(--muted); }
-  .chip-d.sel { background: var(--blue); border-color: var(--blue); color: #fff; }
-  .chip-d.sel-green { background: #16a34a; border-color: #16a34a; color: #fff; }
-
-  /* PIN mock */
-  .pin-mock {
-    background: #1a3a6b; border-radius: 14px;
-    padding: 24px 20px; text-align: center;
-  }
-  .pin-mock .pm-emoji { font-size: 36px; margin-bottom: 8px; }
-  .pin-mock .pm-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-  .pin-mock .pm-sub { font-size: 12px; color: rgba(255,255,255,.6); margin-bottom: 14px; }
-  .pin-mock .pm-input {
-    background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.25);
-    border-radius: 10px; padding: 10px 16px;
-    font-family: monospace; font-size: 18px; letter-spacing: .2em;
-    color: #fff; font-weight: 700; display: inline-block;
-    margin-bottom: 10px; min-width: 180px;
-  }
-  .pin-mock .pm-btn {
-    display: block; margin: 0 auto;
-    background: #25D366; color: #fff;
-    border-radius: 10px; padding: 10px 24px;
-    font-size: 14px; font-weight: 700;
-  }
-  .pm-error { color: #f87171; font-size: 12px; font-weight: 600; margin-top: 8px; }
-
-  /* Offer mock */
-  .offer-block {
-    background: #fff; border: 1.5px solid var(--border);
-    border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
-  }
-  .offer-block-title {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .06em; margin-bottom: 8px;
-  }
-  .offer-total {
-    background: #f0fdf4; border: 1.5px solid #86efac;
-    border-radius: 10px; padding: 12px 14px;
-    font-size: 13px; color: #15803d; line-height: 1.7;
-    white-space: pre-line; font-weight: 600;
-  }
-
-  .step-nav {
-    padding: 16px 24px 20px;
-    display: flex; gap: 10px; border-top: 1px solid var(--border);
-  }
-  .btn-prev, .btn-next {
-    flex: 1; padding: 13px; border-radius: 12px; border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px; font-weight: 700; cursor: pointer;
-    transition: all .15s;
-  }
-  .btn-prev { background: var(--bg); color: var(--muted); border: 1.5px solid var(--border); }
-  .btn-prev:hover { background: var(--border); }
-  .btn-next { background: var(--blue); color: #fff; }
-  .btn-next:hover { background: #15316a; }
-  .btn-next:active { transform: scale(.97); }
-  .btn-next.final { background: var(--green-dark); }
-
-  .done-screen { display: none; text-align: center; padding: 40px 24px; }
-  .done-screen.active { display: block; }
-  .done-screen .done-emoji { font-size: 64px; margin-bottom: 16px; }
-  .done-screen h2 { font-size: 22px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
-  .done-screen p { font-size: 14px; color: var(--muted); max-width: 300px; margin: 0 auto 24px; line-height: 1.6; }
-  .btn-go {
-    display: inline-block; padding: 14px 32px;
-    background: var(--green-dark); color: #fff;
-    border-radius: 12px; font-size: 16px; font-weight: 700;
-    text-decoration: none; transition: background .15s;
-  }
-  .btn-go:hover { background: #0e7060; }
-
-  .step-counter { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; font-weight: 500; }
-  .lang-fab { position: fixed; bottom: 20px; right: 20px; z-index: 999; background: var(--blue); color: #fff; border: none; border-radius: 50px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.2); font-family: 'DM Sans', sans-serif; }
+  .prog-step.done { background:var(--green); border-color:var(--green); color:#fff; }
+  .prog-step.active { background:#fff; border-color:#fff; color:var(--blue); }
+  .prog-line { flex:1; height:2px; background:rgba(255,255,255,.2); }
+  .prog-line.done { background:var(--green); }
+  .steps-wrap { max-width:560px; margin:0 auto; padding:24px 16px 0; }
+  .step-card { display:none; background:var(--surface); border-radius:20px; box-shadow:0 2px 16px rgba(0,0,0,.08); overflow:hidden; animation:slideIn .3s ease; }
+  .step-card.active { display:block; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .step-header { padding:20px 24px 16px; display:flex; align-items:center; gap:14px; border-bottom:1px solid var(--border); }
+  .step-num { width:42px; height:42px; border-radius:12px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0; }
+  .step-header-text h2 { font-size:17px; font-weight:700; color:var(--blue); }
+  .step-header-text p { font-size:12px; color:var(--muted); margin-top:2px; }
+  .step-body { padding:20px 24px; }
+  .step-visual { background:var(--bg); border-radius:12px; padding:16px; margin-bottom:18px; border:1.5px solid var(--border); }
+  .step-visual .vlabel { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--blue); margin-bottom:10px; }
+  .tip-list { display:flex; flex-direction:column; gap:10px; }
+  .tip { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:10px; background:var(--bg); border:1px solid var(--border); }
+  .tip-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+  .tip-text { font-size:14px; line-height:1.55; }
+  .tip-text strong { color:var(--text); font-weight:600; }
+  .alert { border-radius:10px; padding:13px 15px; font-size:13px; line-height:1.55; margin-top:14px; display:flex; gap:10px; align-items:flex-start; }
+  .alert-red { background:#fff5f5; border:1.5px solid #fca5a5; color:#991b1b; }
+  .alert-yellow { background:#fefce8; border:1.5px solid #fde68a; color:#92400e; }
+  .alert-green { background:#f0fdf4; border:1.5px solid #86efac; color:#15803d; }
+  .alert-icon { font-size:18px; flex-shrink:0; }
+  .mock-bubble { background:#dcf8c6; border-radius:8px 8px 8px 2px; padding:10px 14px; font-size:12px; line-height:1.65; white-space:pre-wrap; color:#111; box-shadow:0 1px 2px rgba(0,0,0,.1); font-family:monospace; }
+  .mock-field { background:#fff; border:1.5px solid var(--border); border-radius:9px; padding:10px 14px; font-size:14px; color:var(--text); margin-bottom:8px; }
+  .mock-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+  .chips-demo { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .chip-d { padding:5px 14px; border-radius:20px; font-size:13px; border:1.5px solid var(--border); color:var(--muted); }
+  .chip-d.sel { background:var(--blue); border-color:var(--blue); color:#fff; }
+  .pin-mock { background:#1a3a6b; border-radius:14px; padding:24px 20px; text-align:center; }
+  .pin-mock .pm-emoji { font-size:36px; margin-bottom:8px; }
+  .pin-mock .pm-title { font-size:18px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .pin-mock .pm-sub { font-size:12px; color:rgba(255,255,255,.6); margin-bottom:14px; }
+  .pin-mock .pm-input { background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.25); border-radius:10px; padding:10px 16px; font-family:monospace; font-size:18px; letter-spacing:.2em; color:#fff; font-weight:700; display:inline-block; margin-bottom:10px; min-width:180px; }
+  .pin-mock .pm-btn { display:block; margin:0 auto; background:#25D366; color:#fff; border-radius:10px; padding:10px 24px; font-size:14px; font-weight:700; }
+  .offer-block { background:#fff; border:1.5px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:8px; }
+  .offer-block-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .offer-total { background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; padding:12px 14px; font-size:13px; color:#15803d; line-height:1.7; white-space:pre-line; font-weight:600; }
+  .step-nav { padding:16px 24px 20px; display:flex; gap:10px; border-top:1px solid var(--border); }
+  .btn-prev, .btn-next { flex:1; padding:13px; border-radius:12px; border:none; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; }
+  .btn-prev { background:var(--bg); color:var(--muted); border:1.5px solid var(--border); }
+  .btn-prev:hover { background:var(--border); }
+  .btn-next { background:var(--blue); color:#fff; }
+  .btn-next:hover { background:#15316a; }
+  .btn-next.final { background:var(--green-dark); }
+  .done-screen { display:none; text-align:center; padding:40px 24px; }
+  .done-screen.active { display:block; }
+  .done-emoji { font-size:64px; margin-bottom:16px; }
+  .done-screen h2 { font-size:22px; font-weight:700; color:var(--blue); margin-bottom:8px; }
+  .done-screen p { font-size:14px; color:var(--muted); max-width:300px; margin:0 auto 24px; line-height:1.6; }
+  .btn-go { display:inline-block; padding:14px 32px; background:var(--green-dark); color:#fff; border-radius:12px; font-size:16px; font-weight:700; text-decoration:none; }
+  .step-counter { text-align:center; font-size:12px; color:var(--muted); margin-top:14px; font-weight:500; }
+  .lang-fab { position:fixed; bottom:20px; right:20px; z-index:999; background:var(--blue); color:#fff; border:none; border-radius:50px; padding:10px 18px; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,.2); font-family:'DM Sans',sans-serif; }
 </style>
 </head>
 <body>
@@ -221,67 +90,52 @@
   <div class="progress-wrap" id="progressWrap"></div>
 </div>
 
-<button class="lang-fab" id="langBtn" onclick="toggleTutLang()">🇺🇸 EN</button>
+<div class="steps-wrap" id="stepsWrap">
+  <!-- Steps rendered by JS -->
+</div>
 
-<div class="steps-wrap">
+<div class="done-screen" id="doneScreen">
+  <div class="done-emoji">🎉</div>
+  <h2 id="doneTitle">¡Ya estás listo!</h2>
+  <p id="doneSub">Ahora sabes usar el cotizador de Izzy Internet. ¡A conseguir esos leads!</p>
+  <a href="index.html" class="btn-go" id="doneBtn">📱 Abrir la App</a>
+</div>
 
-  <!-- PASO 1 -->
-  <div class="step-card active" data-step="1">
-    <div class="step-header">
-      <div class="step-num">1</div>
-      <div class="step-header-text">
-        <h2>Ingresar con tu PIN</h2>
-        <p>Acceso seguro — solo el equipo puede entrar</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Pantalla de acceso</div>
+<div class="step-counter" id="stepCounter">Paso 1 de 8</div>
+<button class="lang-fab" id="langFab" onclick="toggleTutLang()">🇺🇸 EN</button>
+
+<script>
+const TOTAL = 8;
+let current = 1;
+let tutLang = localStorage.getItem('izzy_lang') || 'es';
+
+// ── Content data ────────────────────────────────────────
+const STEPS = {
+  es: [
+    {
+      title: 'Ingresar con tu PIN',
+      sub:   'Acceso seguro — solo el equipo puede entrar',
+      visual: `
+        <div class="vlabel">Pantalla de acceso</div>
         <div class="pin-mock">
           <div class="pm-emoji">📱</div>
           <div class="pm-title">Izzy Internet</div>
           <div class="pm-sub">Ingresa tu código de acceso</div>
           <div class="pm-input">XXXX0000</div>
           <div class="pm-btn">✅ Entrar</div>
-        </div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">🔑</div>
-          <div class="tip-text"><strong>Tu PIN es personal y único.</strong> Lo recibiste del administrador del sistema. Escríbelo exactamente como te lo dieron (en mayúsculas).</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">💾</div>
-          <div class="tip-text">Una vez que entras, el PIN queda <strong>guardado en tu dispositivo</strong>. No tienes que escribirlo cada vez.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">🚫</div>
-          <div class="tip-text"><strong>No compartas tu PIN</strong> con nadie. Cada vendedor tiene el suyo. Si alguien más lo usa, el admin puede ver quién fue.</div>
-        </div>
-      </div>
-      <div class="alert alert-red" style="margin-top:14px;">
-        <div class="alert-icon">❌</div>
-        <div><strong>¿No tienes PIN o no funciona?</strong><br>Llama al administrador del sistema. Solo el admin puede crear o resetear códigos de acceso. No puedes entrar sin él.</div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" disabled>← Anterior</button>
-      <button class="btn-next" onclick="goStep(2)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 2 -->
-  <div class="step-card" data-step="2">
-    <div class="step-header">
-      <div class="step-num">2</div>
-      <div class="step-header-text">
-        <h2>Mis datos y el cotizador</h2>
-        <p>Lo primero que debes llenar</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Sección Agente</div>
+        </div>`,
+      tips: [
+        ['🔑','<strong>Tu PIN es personal y único.</strong> Lo recibiste del administrador. Escríbelo exactamente como te lo dieron, en mayúsculas.'],
+        ['💾','Una vez que entras, el PIN queda <strong>guardado en tu dispositivo</strong>. No tendrás que escribirlo cada vez.'],
+        ['🚫','<strong>No compartas tu PIN</strong> con nadie. Cada vendedor tiene el suyo.'],
+      ],
+      alert: { type:'red', icon:'❌', text:'<strong>¿No tienes PIN o no funciona?</strong><br>Llama al administrador del sistema. Solo el admin puede crear o resetear códigos de acceso. No puedes entrar sin él.' }
+    },
+    {
+      title: 'Mis datos y el cotizador',
+      sub:   'Lo primero que debes llenar',
+      visual: `
+        <div class="vlabel">Sección Agente</div>
         <div class="mock-label">Mi nombre</div>
         <div class="mock-field">María García</div>
         <div style="margin-top:10px;">
@@ -289,136 +143,60 @@
           <div class="mock-field">Juan Pérez</div>
           <div class="mock-label" style="margin-top:6px;">WhatsApp del cotizador</div>
           <div class="mock-field">+1 (818) 555-1234</div>
-        </div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">👤</div>
-          <div class="tip-text"><strong>Tu nombre</strong> aparece en el mensaje que se envía al cotizador para que sepa quién manda el lead.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📲</div>
-          <div class="tip-text">Los datos del cotizador se <strong>guardan automáticamente</strong> — solo los escribes una vez y ya quedan listos para la próxima.</div>
-        </div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(1)">← Anterior</button>
-      <button class="btn-next" onclick="goStep(3)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 3 -->
-  <div class="step-card" data-step="3">
-    <div class="step-header">
-      <div class="step-num">3</div>
-      <div class="step-header-text">
-        <h2>Datos del cliente</h2>
-        <p>Nombre, teléfono y dirección completa</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Sección Cliente</div>
+        </div>`,
+      tips: [
+        ['👤','<strong>Tu nombre</strong> aparece en el mensaje que se envía al cotizador para que sepa quién manda el lead.'],
+        ['📲','Los datos del cotizador se <strong>guardan automáticamente</strong> — solo los escribes una vez y ya quedan listos para la próxima.'],
+      ]
+    },
+    {
+      title: 'Datos del cliente',
+      sub:   'Nombre, teléfono y dirección completa',
+      visual: `
+        <div class="vlabel">Sección Cliente</div>
         <div class="mock-label">Nombre completo</div>
         <div class="mock-field">Carlos Martínez</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
-          <div>
-            <div class="mock-label">Teléfono</div>
-            <div class="mock-field">(323) 555-8900</div>
-          </div>
-          <div>
-            <div class="mock-label">ZIP</div>
-            <div class="mock-field">90210</div>
-          </div>
+          <div><div class="mock-label">Teléfono</div><div class="mock-field">(323) 555-8900</div></div>
+          <div><div class="mock-label">ZIP</div><div class="mock-field">90210</div></div>
         </div>
         <div style="margin-top:6px;">
-          <div class="mock-label">Dirección</div>
-          <div class="mock-field">1234 Main St, Apt 5</div>
-          <div class="mock-label" style="margin-top:4px;">Ciudad y Estado</div>
-          <div class="mock-field">Los Angeles, CA</div>
-        </div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">📍</div>
-          <div class="tip-text">La <strong>dirección completa</strong> es clave — el cotizador la necesita para verificar qué servicios están disponibles en esa zona.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📞</div>
-          <div class="tip-text">El teléfono se formatea <strong>automáticamente</strong> mientras escribes.</div>
-        </div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(2)">← Anterior</button>
-      <button class="btn-next" onclick="goStep(4)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 4 -->
-  <div class="step-card" data-step="4">
-    <div class="step-header">
-      <div class="step-num">4</div>
-      <div class="step-header-text">
-        <h2>Situación actual del cliente</h2>
-        <p>Internet y teléfonos que tiene hoy</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Sección Internet actual</div>
+          <div class="mock-label">Dirección</div><div class="mock-field">1234 Main St, Apt 5</div>
+          <div class="mock-label" style="margin-top:4px;">Ciudad y Estado</div><div class="mock-field">Los Angeles, CA</div>
+        </div>`,
+      tips: [
+        ['📍','La <strong>dirección completa</strong> es clave — el cotizador la necesita para verificar qué servicios están disponibles en esa zona.'],
+        ['📞','El teléfono se formatea <strong>automáticamente</strong> mientras escribes.'],
+      ]
+    },
+    {
+      title: 'Situación actual del cliente',
+      sub:   'Internet y teléfonos que tiene hoy',
+      visual: `
+        <div class="vlabel">Sección Internet actual</div>
         <div class="mock-label">Compañía de Internet</div>
         <div class="chips-demo">
-          <div class="chip-d sel">Spectrum</div>
-          <div class="chip-d">Frontier</div>
-          <div class="chip-d">AT&T</div>
-          <div class="chip-d">Cox</div>
-          <div class="chip-d">No tiene</div>
+          <div class="chip-d sel">Spectrum</div><div class="chip-d">Frontier</div>
+          <div class="chip-d">AT&T</div><div class="chip-d">Cox</div><div class="chip-d">No tiene</div>
         </div>
         <div style="margin-top:12px;">
           <div class="mock-label">Compañía de Teléfono</div>
           <div class="chips-demo">
-            <div class="chip-d">T-Mobile</div>
-            <div class="chip-d sel">Verizon</div>
-            <div class="chip-d">AT&T</div>
-            <div class="chip-d">Metro</div>
+            <div class="chip-d">T-Mobile</div><div class="chip-d sel">Verizon</div>
+            <div class="chip-d">AT&T</div><div class="chip-d">Metro</div>
           </div>
-        </div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">💵</div>
-          <div class="tip-text">Siempre pregunta <strong>cuánto paga hoy</strong> por internet y por teléfonos. Eso es lo que usamos para calcular el ahorro.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📺</div>
-          <div class="tip-text">Marca si tiene TV — algunos paquetes la incluyen y eso puede ser un argumento extra para el cliente.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📱</div>
-          <div class="tip-text">Anota cuántas <strong>líneas de celular</strong> tiene la familia. Más líneas = más ahorro potencial.</div>
-        </div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(3)">← Anterior</button>
-      <button class="btn-next" onclick="goStep(5)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 5 -->
-  <div class="step-card" data-step="5">
-    <div class="step-header">
-      <div class="step-num">5</div>
-      <div class="step-header-text">
-        <h2>Enviar el mensaje al cotizador</h2>
-        <p>WhatsApp o SMS listo en un clic</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Vista previa del mensaje</div>
+        </div>`,
+      tips: [
+        ['💵','Siempre pregunta <strong>cuánto paga hoy</strong> por internet y por teléfonos — es la base para calcular el ahorro.'],
+        ['📺','Marca si tiene TV — algunos paquetes la incluyen y puede ser un argumento extra.'],
+        ['📱','Anota cuántas <strong>líneas de celular</strong> tiene. Más líneas = más ahorro potencial.'],
+      ]
+    },
+    {
+      title: 'Enviar el mensaje al cotizador',
+      sub:   'WhatsApp o SMS listo en un clic',
+      visual: `
+        <div class="vlabel">Vista previa del mensaje</div>
         <div class="mock-bubble">Hola *Juan*! 👋
 Soy *María* de *Izzy Internet*.
 
@@ -431,128 +209,58 @@ Tengo un cliente que necesita cotización 👇
 • Teléfono: (323) 555-8900
 • 📍 Dirección: *1234 Main St, LA*
 
-💰 *Total que paga hoy: $180.00/mes*
+💰 *Total que paga hoy: $180.00/mo*
 
-¿Qué le puedes ofrecer? 🙏</div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">📋</div>
-          <div class="tip-text"><strong>Copiar mensaje</strong> — copia el texto para pegarlo donde quieras.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">💬</div>
-          <div class="tip-text"><strong>Copiar y Abrir Grupo</strong> — copia el mensaje y abre el grupo de WhatsApp del equipo automáticamente. Solo tienes que pegar y enviar.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📱</div>
-          <div class="tip-text">Cambia entre <strong>WhatsApp</strong> y <strong>SMS</strong> según cómo quieras enviar el mensaje.</div>
-        </div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(4)">← Anterior</button>
-      <button class="btn-next" onclick="goStep(6)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 6 -->
-  <div class="step-card" data-step="6">
-    <div class="step-header">
-      <div class="step-num">6</div>
-      <div class="step-header-text">
-        <h2>Registrar la oferta del cotizador</h2>
-        <p>Internet + teléfonos con desglose automático</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Sección — La Mejor Oferta</div>
-
+¿Qué le puedes ofrecer? 🙏</div>`,
+      tips: [
+        ['📋','<strong>Copiar mensaje</strong> — copia el texto para pegarlo donde quieras.'],
+        ['💬','<strong>Copiar y Abrir Grupo</strong> — copia el mensaje y abre el grupo de WhatsApp del equipo automáticamente.'],
+        ['📱','Cambia entre <strong>WhatsApp</strong> y <strong>SMS</strong> según cómo quieras enviar el mensaje.'],
+      ]
+    },
+    {
+      title: 'Registrar la oferta del cotizador',
+      sub:   'Internet + teléfonos con desglose automático',
+      visual: `
+        <div class="vlabel">La Mejor Oferta</div>
         <div class="offer-block">
           <div class="offer-block-title" style="color:#0e7490;">🌐 Internet</div>
-          <div class="mock-label">Proveedor</div>
           <div class="chips-demo" style="margin-bottom:8px;">
-            <div class="chip-d sel">Spectrum</div>
-            <div class="chip-d">Frontier</div>
-            <div class="chip-d">AT&T</div>
+            <div class="chip-d sel">Spectrum</div><div class="chip-d">Frontier</div><div class="chip-d">AT&T</div>
           </div>
-          <div class="mock-label">Velocidad · Precio</div>
-          <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+          <div style="display:flex;gap:6px;align-items:center;">
             <div class="chip-d sel">1 Gig</div>
-            <div style="font-size:14px;color:#1a1814;font-weight:600;margin-left:4px;">$49.99/mes</div>
+            <div style="font-size:14px;font-weight:600;margin-left:4px;">$49.99/mes</div>
           </div>
         </div>
-
         <div class="offer-block">
           <div class="offer-block-title" style="color:#5c2d91;">📱 Teléfonos (opcional)</div>
-          <div class="mock-label">Líneas incluidas</div>
           <div class="chips-demo" style="margin-bottom:8px;">
-            <div class="chip-d">1</div>
-            <div class="chip-d sel">2</div>
-            <div class="chip-d">3</div>
-            <div class="chip-d">4</div>
+            <div class="chip-d">1</div><div class="chip-d sel">2</div><div class="chip-d">3</div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;">
-            <div>
-              <div class="mock-label">1ra línea</div>
-              <div class="mock-field" style="margin:0;">$0.00</div>
-            </div>
-            <div>
-              <div class="mock-label">Por línea adicional</div>
-              <div class="mock-field" style="margin:0;">$30.00</div>
-            </div>
-          </div>
-          <div style="background:#f3e8ff;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:12px;color:#5c2d91;font-weight:600;">
-            📱 2 líneas — 1ra: $0.00 + 1 adicional × $30.00 = $30.00/mes
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div><div class="mock-label">1ra línea</div><div class="mock-field" style="margin:0;">$0.00</div></div>
+            <div><div class="mock-label">Por línea adicional</div><div class="mock-field" style="margin:0;">$30.00</div></div>
           </div>
         </div>
-
         <div class="offer-total">🌐 Internet (Spectrum): $49.99/mes
 📱 Teléfonos (2 líneas): $30.00/mes
 
 💰 Total nuevo: $79.99/mes
 📊 Antes pagabas: $180.00/mes
-✅ Ahorras: $100.01/mes · $1,200/año</div>
-      </div>
-
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">🌐</div>
-          <div class="tip-text">Llena <strong>Internet primero</strong>: proveedor, velocidad y precio mensual.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📱</div>
-          <div class="tip-text">En <strong>Teléfonos</strong>: selecciona cuántas líneas, pon el precio de la primera y el precio por cada línea extra. El total se calcula solo.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">💰</div>
-          <div class="tip-text">El <strong>resumen verde</strong> aparece automáticamente con el total nuevo y el ahorro comparado con lo que el cliente paga hoy.</div>
-        </div>
-      </div>
-      <div class="alert alert-yellow" style="margin-top:14px;">
-        <div class="alert-icon">💡</div>
-        <div><strong>Ejemplo real:</strong> Spectrum ofrece Internet 1 Gig a $49.99 + 2 líneas (1ra gratis, 2da a $30). Pones $49.99 en internet, 2 líneas, $0 base, $30 adicional. El total sale $79.99/mes automático.</div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(5)">← Anterior</button>
-      <button class="btn-next" onclick="goStep(7)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 7 -->
-  <div class="step-card" data-step="7">
-    <div class="step-header">
-      <div class="step-num">7</div>
-      <div class="step-header-text">
-        <h2>Enviar la oferta al cliente</h2>
-        <p>Mensaje con desglose completo listo para enviar</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Mensaje generado para el cliente</div>
+✅ Ahorras: $100.01/mes · $1,200/año</div>`,
+      tips: [
+        ['🌐','Llena <strong>Internet primero</strong>: proveedor, velocidad y precio mensual.'],
+        ['📱','En <strong>Teléfonos</strong>: selecciona cuántas líneas, el precio de la primera y el precio por cada línea extra. El total se calcula solo.'],
+        ['💰','El <strong>resumen verde</strong> aparece automáticamente con el total y el ahorro comparado con lo que el cliente paga hoy.'],
+      ],
+      alert: { type:'yellow', icon:'💡', text:'<strong>Ejemplo:</strong> Spectrum ofrece 1 Gig a $49.99 + 2 líneas (1ra gratis, 2da a $30). Pones $49.99 en internet, 2 líneas, $0 base, $30 adicional. El total sale $79.99/mes automático.' }
+    },
+    {
+      title: 'Enviar la oferta al cliente',
+      sub:   'Mensaje con desglose completo listo para enviar',
+      visual: `
+        <div class="vlabel">Mensaje para el cliente</div>
         <div class="mock-bubble">Hola *Carlos*! 👋
 Soy *María* de *Izzy Internet*.
 
@@ -561,242 +269,353 @@ Soy *María* de *Izzy Internet*.
 ────────────────────────────
 ⚡ *TU NUEVA OFERTA*
 ────────────────────────────
-🌐 Internet (Spectrum): *$49.99/mes* — 1 Gig
-📱 Teléfonos: *2 líneas* — *$30.00/mes*
+🌐 Internet (Spectrum): *$49.99/mo* — 1 Gig
+📱 Teléfonos: *2 líneas* — *$30.00/mo*
    (1ra línea: $0.00 + 1 adicional × $30.00)
 🎁 Incluye: Instalación Gratis · 2 Meses Gratis
 
-💰 *Total nuevo: $79.99/mes*
+💰 *Total nuevo: $79.99/mo*
 
-────────────────────────────
-📊 *COMPARACIÓN*
-────────────────────────────
-❌ Internet (Spectrum): *$100.00/mes*
-❌ Celular (Verizon): *$80.00/mes*
-❌ *Total antes: $180.00/mes*
-
-✅ *Nueva oferta: $79.99/mes*
-
-💰 *Ahorras: $100.01 al mes*
+✅ *Ahorras: $100.01 al mes*
 📅 *$1,200 al año* 🎉
 
-¿Te interesa? Puedo ayudarte a activarlo *hoy mismo*. 🙌</div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">📋</div>
-          <div class="tip-text"><strong>Copiar</strong> — copia el mensaje con el desglose completo.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">💬</div>
-          <div class="tip-text"><strong>Enviar al Cliente</strong> — abre WhatsApp directo al número del cliente con el mensaje ya escrito. Solo presiona enviar.</div>
-        </div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(6)">← Anterior</button>
-      <button class="btn-next" onclick="goStep(8)">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 8 -->
-  <div class="step-card" data-step="8">
-    <div class="step-header">
-      <div class="step-num">8</div>
-      <div class="step-header-text">
-        <h2>Guardar el lead</h2>
-        <p>Registro automático del cliente</p>
-      </div>
-    </div>
-    <div class="step-body">
-      <div class="step-visual">
-        <div class="label">Botón Guardar</div>
+¿Te interesa? Puedo ayudarte a activarlo *hoy mismo*. 🙌</div>`,
+      tips: [
+        ['📋','<strong>Copiar</strong> — copia el mensaje con el desglose completo.'],
+        ['💬','<strong>Enviar al Cliente</strong> — abre WhatsApp directo al número del cliente con el mensaje ya escrito. Solo presiona enviar.'],
+      ]
+    },
+    {
+      title: 'Guardar el lead',
+      sub:   'Registro automático del cliente',
+      visual: `
+        <div class="vlabel">Botón Guardar</div>
         <div style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#16a34a;color:#fff;border-radius:10px;font-size:14px;font-weight:700;margin-bottom:12px;">
           💾 Guardar
         </div>
         <div class="alert alert-green" style="margin-top:0;">
           <div class="alert-icon">✅</div>
           <div><strong>¡Guardado!</strong> El lead fue registrado con fecha, agente, cliente y todos los datos.</div>
-        </div>
-      </div>
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">💾</div>
-          <div class="tip-text">Al presionar <strong>Guardar</strong>, todos los datos del cliente se registran automáticamente para que el admin pueda verlos.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📊</div>
-          <div class="tip-text">El administrador ve todos los leads en tiempo real. Siempre guarda antes de cerrar la app.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">✅</div>
-          <div class="tip-text">Verás una notificación verde de confirmación cuando el registro sea exitoso.</div>
-        </div>
-      </div>
-      <div class="alert alert-yellow" style="margin-top:14px;">
-        <div class="alert-icon">💡</div>
-        <div><strong>Flujo completo:</strong> Llena los datos del cliente → Envía al cotizador → Espera la oferta → Llena el desglose → Envía al cliente → Guarda el lead.</div>
-      </div>
-    </div>
-    <div class="step-nav">
-      <button class="btn-prev" onclick="goStep(7)">← Anterior</button>
-      <button class="btn-next final" onclick="finish()">✅ ¡Listo, empezar!</button>
-    </div>
-  </div>
-
-  <!-- Done -->
-  <div class="done-screen" id="doneScreen">
-    <div class="done-emoji">🎉</div>
-    <h2>¡Ya estás listo!</h2>
-    <p>Ahora sabes usar el cotizador de Izzy Internet. ¡A conseguir esos leads!</p>
-    <a href="index.html" class="btn-go">📱 Abrir la App</a>
-  </div>
-
-  <div class="step-counter" id="stepCounter">Paso 1 de 8</div>
-
-</div>
-
-<script>
-  const TOTAL = 8;
-  let current = 1;
-
-  function buildProgress() {
-    const wrap = document.getElementById('progressWrap');
-    wrap.innerHTML = '';
-    for (let i = 1; i <= TOTAL; i++) {
-      const s = document.createElement('div');
-      s.className = 'prog-step' + (i < current ? ' done' : i === current ? ' active' : '');
-      s.textContent = i < current ? '✓' : i;
-      s.onclick = () => goStep(i);
-      wrap.appendChild(s);
-      if (i < TOTAL) {
-        const l = document.createElement('div');
-        l.className = 'prog-line' + (i < current ? ' done' : '');
-        wrap.appendChild(l);
-      }
-    }
-  }
-
-  function goStep(n) {
-    if (n < 1 || n > TOTAL) return;
-    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
-    const card = document.querySelector(`.step-card[data-step="${n}"]`);
-    if (card) card.classList.add('active');
-    document.getElementById('doneScreen').classList.remove('active');
-    document.getElementById('stepCounter').style.display = 'block';
-    document.getElementById('stepCounter').textContent = `Paso ${n} de ${TOTAL}`;
-    current = n;
-    buildProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function finish() {
-    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('doneScreen').classList.add('active');
-    document.getElementById('stepCounter').style.display = 'none';
-    current = TOTAL + 1;
-    buildProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ── Tutorial bilingual ──────────────────────────────────
-  let tutLang = localStorage.getItem('izzy_lang') || 'es';
-
-  const TUT = {
-    es: {
-      heroTitle: 'Tutorial — Cotizador de Leads',
-      heroSub: 'Aprende a usar la app en 8 pasos',
-      langBtn: '🇺🇸 EN',
-      stepOf: 'Paso',
-      of: 'de',
-      prev: '← Anterior',
-      next: 'Siguiente →',
-      finish: '✅ ¡Listo, empezar!',
-      doneTitle: '¡Ya estás listo!',
-      doneSub: 'Ahora sabes usar el cotizador de Izzy Internet. ¡A conseguir esos leads!',
-      doneBtn: '📱 Abrir la App',
-      stepTitles: [
-        'Ingresar con tu PIN', 'Mis datos y el cotizador', 'Datos del cliente',
-        'Situación actual del cliente', 'Enviar el mensaje al cotizador',
-        'Registrar la oferta del cotizador', 'Enviar la oferta al cliente', 'Guardar el lead'
+        </div>`,
+      tips: [
+        ['💾','Al presionar <strong>Guardar</strong>, todos los datos del cliente se registran automáticamente.'],
+        ['📊','El administrador ve todos los leads en tiempo real. Siempre guarda antes de cerrar la app.'],
+        ['✅','Verás una notificación verde de confirmación cuando el registro sea exitoso.'],
       ],
-      stepSubs: [
-        'Acceso seguro — solo el equipo puede entrar',
-        'Lo primero que debes llenar',
-        'Nombre, teléfono y dirección completa',
-        'Internet y teléfonos que tiene hoy',
-        'WhatsApp o SMS listo en un clic',
-        'Internet + teléfonos con desglose automático',
-        'Mensaje con desglose completo listo para enviar',
-        'Registro automático del cliente'
+      alert: { type:'yellow', icon:'💡', text:'<strong>Flujo completo:</strong> Llena los datos del cliente → Envía al cotizador → Espera la oferta → Llena el desglose → Envía al cliente → Guarda el lead.' }
+    }
+  ],
+
+  en: [
+    {
+      title: 'Sign in with your PIN',
+      sub:   'Secure access — team members only',
+      visual: `
+        <div class="vlabel">Access screen</div>
+        <div class="pin-mock">
+          <div class="pm-emoji">📱</div>
+          <div class="pm-title">Izzy Internet</div>
+          <div class="pm-sub">Enter your access code</div>
+          <div class="pm-input">XXXX0000</div>
+          <div class="pm-btn">✅ Enter</div>
+        </div>`,
+      tips: [
+        ['🔑','<strong>Your PIN is personal and unique.</strong> You received it from the system administrator. Type it exactly as given, in uppercase.'],
+        ['💾','Once you sign in, the PIN is <strong>saved on your device</strong>. You won\'t need to type it again.'],
+        ['🚫','<strong>Do not share your PIN</strong> with anyone. Each team member has their own.'],
+      ],
+      alert: { type:'red', icon:'❌', text:'<strong>No PIN or it\'s not working?</strong><br>Call the system administrator. Only the admin can create or reset access codes. You cannot enter without one.' }
+    },
+    {
+      title: 'My info and quoting agent',
+      sub:   'The first thing you need to fill in',
+      visual: `
+        <div class="vlabel">Agent section</div>
+        <div class="mock-label">My name</div>
+        <div class="mock-field">Maria Garcia</div>
+        <div style="margin-top:10px;">
+          <div class="mock-label">Quoting agent name</div>
+          <div class="mock-field">John Smith</div>
+          <div class="mock-label" style="margin-top:6px;">Quoting agent WhatsApp</div>
+          <div class="mock-field">+1 (818) 555-1234</div>
+        </div>`,
+      tips: [
+        ['👤','<strong>Your name</strong> appears in the message sent to the quoting agent so they know who is sending the lead.'],
+        ['📲','The quoting agent\'s info is <strong>saved automatically</strong> — you only type it once and it\'s ready next time.'],
       ]
     },
-    en: {
-      heroTitle: 'Tutorial — Lead Quoter',
-      heroSub: 'Learn to use the app in 8 steps',
-      langBtn: '🇲🇽 ES',
-      stepOf: 'Step',
-      of: 'of',
-      prev: '← Previous',
-      next: 'Next →',
-      finish: '✅ Ready, let\'s start!',
-      doneTitle: 'You\'re all set!',
-      doneSub: 'Now you know how to use the Izzy Internet quoter. Go get those leads!',
-      doneBtn: '📱 Open the App',
-      stepTitles: [
-        'Sign in with your PIN', 'My info and quoting agent', 'Client info',
-        'Client\'s current situation', 'Send message to quoting agent',
-        'Enter the quoting agent\'s offer', 'Send the offer to the client', 'Save the lead'
-      ],
-      stepSubs: [
-        'Secure access — team members only',
-        'The first thing you need to fill in',
-        'Name, phone and full address',
-        'Current internet and phone plans',
-        'WhatsApp or SMS ready in one tap',
-        'Internet + phones with automatic breakdown',
-        'Complete breakdown message ready to send',
-        'Automatic client record'
+    {
+      title: 'Client info',
+      sub:   'Name, phone and full address',
+      visual: `
+        <div class="vlabel">Client section</div>
+        <div class="mock-label">Full name</div>
+        <div class="mock-field">Carlos Martinez</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
+          <div><div class="mock-label">Phone</div><div class="mock-field">(323) 555-8900</div></div>
+          <div><div class="mock-label">ZIP</div><div class="mock-field">90210</div></div>
+        </div>
+        <div style="margin-top:6px;">
+          <div class="mock-label">Address</div><div class="mock-field">1234 Main St, Apt 5</div>
+          <div class="mock-label" style="margin-top:4px;">City and State</div><div class="mock-field">Los Angeles, CA</div>
+        </div>`,
+      tips: [
+        ['📍','The <strong>full address</strong> is key — the quoting agent needs it to check which services are available in that area.'],
+        ['📞','The phone number is <strong>formatted automatically</strong> as you type.'],
       ]
-    }
-  };
+    },
+    {
+      title: "Client's current situation",
+      sub:   'Current internet and phone plans',
+      visual: `
+        <div class="vlabel">Current internet section</div>
+        <div class="mock-label">Internet Provider</div>
+        <div class="chips-demo">
+          <div class="chip-d sel">Spectrum</div><div class="chip-d">Frontier</div>
+          <div class="chip-d">AT&T</div><div class="chip-d">Cox</div><div class="chip-d">None</div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="mock-label">Phone Provider</div>
+          <div class="chips-demo">
+            <div class="chip-d">T-Mobile</div><div class="chip-d sel">Verizon</div>
+            <div class="chip-d">AT&T</div><div class="chip-d">Metro</div>
+          </div>
+        </div>`,
+      tips: [
+        ['💵','Always ask <strong>how much they pay today</strong> for internet and phones — that\'s the base for calculating their savings.'],
+        ['📺','Check if they have TV — some bundles include it and it can be an extra selling point.'],
+        ['📱','Note how many <strong>cell phone lines</strong> the family has. More lines = more potential savings.'],
+      ]
+    },
+    {
+      title: 'Send message to quoting agent',
+      sub:   'WhatsApp or SMS ready in one tap',
+      visual: `
+        <div class="vlabel">Message preview</div>
+        <div class="mock-bubble">Hello *John*! 👋
+I'm *Maria* from *Izzy Internet*.
 
-  function applyTutLang(lang) {
-    tutLang = lang;
-    localStorage.setItem('izzy_lang', lang);
-    const t = TUT[lang];
-    document.getElementById('heroTitle').textContent = t.heroTitle;
-    document.getElementById('heroSub').textContent = t.heroSub;
-    document.getElementById('langBtn').textContent = t.langBtn;
-    // Step headers
-    document.querySelectorAll('.step-card').forEach((card, i) => {
-      const h2 = card.querySelector('h2');
-      const p  = card.querySelector('.step-header-text p');
-      if (h2 && t.stepTitles[i]) h2.textContent = t.stepTitles[i];
-      if (p  && t.stepSubs[i])   p.textContent  = t.stepSubs[i];
-    });
-    // Nav buttons
-    document.querySelectorAll('.btn-prev').forEach(b => { if (!b.disabled) b.textContent = t.prev; });
-    document.querySelectorAll('.btn-next:not(.final)').forEach(b => b.textContent = t.next);
-    document.querySelectorAll('.btn-next.final').forEach(b => b.textContent = t.finish);
-    // Done screen
-    const ds = document.getElementById('doneScreen');
-    if (ds) {
-      const h2 = ds.querySelector('h2');
-      const p  = ds.querySelector('p');
-      const a  = ds.querySelector('a');
-      if (h2) h2.textContent = t.doneTitle;
-      if (p)  p.textContent  = t.doneSub;
-      if (a)  a.textContent  = t.doneBtn;
+I have a client who needs a quote 👇
+
+────────────────────────────
+👤 *CLIENT INFO*
+────────────────────────────
+• Name: *Carlos Martinez*
+• Phone: (323) 555-8900
+• 📍 Address: *1234 Main St, LA*
+
+💰 *Total paying today: $180.00/mo*
+
+What can you offer? 🙏</div>`,
+      tips: [
+        ['📋','<strong>Copy message</strong> — copies the text so you can paste it anywhere.'],
+        ['💬','<strong>Copy & Open Group</strong> — copies the message and opens the team WhatsApp group automatically.'],
+        ['📱','Switch between <strong>WhatsApp</strong> and <strong>SMS</strong> depending on how you\'ll send the message.'],
+      ]
+    },
+    {
+      title: "Enter the quoting agent's offer",
+      sub:   'Internet + phones with automatic breakdown',
+      visual: `
+        <div class="vlabel">Best Offer Found</div>
+        <div class="offer-block">
+          <div class="offer-block-title" style="color:#0e7490;">🌐 Internet</div>
+          <div class="chips-demo" style="margin-bottom:8px;">
+            <div class="chip-d sel">Spectrum</div><div class="chip-d">Frontier</div><div class="chip-d">AT&T</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div class="chip-d sel">1 Gig</div>
+            <div style="font-size:14px;font-weight:600;margin-left:4px;">$49.99/mo</div>
+          </div>
+        </div>
+        <div class="offer-block">
+          <div class="offer-block-title" style="color:#5c2d91;">📱 Phones (optional)</div>
+          <div class="chips-demo" style="margin-bottom:8px;">
+            <div class="chip-d">1</div><div class="chip-d sel">2</div><div class="chip-d">3</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div><div class="mock-label">1st line</div><div class="mock-field" style="margin:0;">$0.00</div></div>
+            <div><div class="mock-label">Per additional line</div><div class="mock-field" style="margin:0;">$30.00</div></div>
+          </div>
+        </div>
+        <div class="offer-total">🌐 Internet (Spectrum): $49.99/mo
+📱 Phones (2 lines): $30.00/mo
+
+💰 New total: $79.99/mo
+📊 Was paying: $180.00/mo
+✅ Saves: $100.01/mo · $1,200/year</div>`,
+      tips: [
+        ['🌐','Fill in <strong>Internet first</strong>: provider, speed, and monthly price.'],
+        ['📱','Under <strong>Phones</strong>: select how many lines, enter the price for the first line and the price per additional line. The total is calculated automatically.'],
+        ['💰','The <strong>green summary</strong> appears automatically with the new total and savings compared to what the client pays today.'],
+      ],
+      alert: { type:'yellow', icon:'💡', text:'<strong>Example:</strong> Spectrum offers 1 Gig for $49.99 + 2 lines (1st free, 2nd at $30). Enter $49.99 for internet, 2 lines, $0 base, $30 additional. The total of $79.99/mo is calculated automatically.' }
+    },
+    {
+      title: 'Send the offer to the client',
+      sub:   'Complete breakdown message ready to send',
+      visual: `
+        <div class="vlabel">Message for client</div>
+        <div class="mock-bubble">Hello *Carlos*! 👋
+I'm *Maria* from *Izzy Internet*.
+
+🎉 I found you a *better offer*!
+
+────────────────────────────
+⚡ *YOUR NEW OFFER*
+────────────────────────────
+🌐 Internet (Spectrum): *$49.99/mo* — 1 Gig
+📱 Phones: *2 lines* — *$30.00/mo*
+   (1st line: $0.00 + 1 additional × $30.00)
+🎁 Includes: Free Installation · 2 Free Months
+
+💰 *New total: $79.99/mo*
+
+✅ *You save: $100.01 per month*
+📅 *$1,200 per year* 🎉
+
+Interested? I can help you activate it *today*. 🙌</div>`,
+      tips: [
+        ['📋','<strong>Copy</strong> — copies the full breakdown message.'],
+        ['💬','<strong>Send to Client</strong> — opens WhatsApp directly to the client\'s number with the message already written. Just press send.'],
+      ]
+    },
+    {
+      title: 'Save the lead',
+      sub:   'Automatic client record',
+      visual: `
+        <div class="vlabel">Save button</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#16a34a;color:#fff;border-radius:10px;font-size:14px;font-weight:700;margin-bottom:12px;">
+          💾 Save
+        </div>
+        <div class="alert alert-green" style="margin-top:0;">
+          <div class="alert-icon">✅</div>
+          <div><strong>Saved!</strong> The lead was recorded with date, agent, client and all details.</div>
+        </div>`,
+      tips: [
+        ['💾','When you press <strong>Save</strong>, all client data is automatically recorded for the admin to review.'],
+        ['📊','The administrator sees all leads in real time. Always save before closing the app.'],
+        ['✅','You\'ll see a green confirmation notification when the record is successful.'],
+      ],
+      alert: { type:'yellow', icon:'💡', text:'<strong>Full flow:</strong> Fill in client info → Send to quoting agent → Wait for the offer → Enter the breakdown → Send to client → Save the lead.' }
     }
-    // Step counter
-    if (current <= TOTAL) document.getElementById('stepCounter').textContent = `${t.stepOf} ${current} ${t.of} ${TOTAL}`;
+  ]
+};
+
+// ── UI strings ──────────────────────────────────────────
+const UI = {
+  es: { stepOf:'Paso', of:'de', prev:'← Anterior', next:'Siguiente →', finish:'✅ ¡Listo, empezar!',
+        doneTitle:'¡Ya estás listo!', doneSub:'Ahora sabes usar el cotizador de Izzy Internet. ¡A conseguir esos leads!',
+        doneBtn:'📱 Abrir la App', heroTitle:'Tutorial — Cotizador de Leads', heroSub:'Aprende a usar la app en 8 pasos', langBtn:'🇺🇸 EN' },
+  en: { stepOf:'Step', of:'of', prev:'← Previous', next:'Next →', finish:"✅ Ready, let's start!",
+        doneTitle:"You're all set!", doneSub:'Now you know how to use the Izzy Internet quoter. Go get those leads!',
+        doneBtn:'📱 Open the App', heroTitle:'Tutorial — Lead Quoter', heroSub:'Learn to use the app in 8 steps', langBtn:'🇲🇽 ES' }
+};
+
+// ── Render ──────────────────────────────────────────────
+function renderSteps(lang) {
+  const u = UI[lang];
+  const wrap = document.getElementById('stepsWrap');
+  wrap.innerHTML = '';
+  STEPS[lang].forEach((step, i) => {
+    const n = i + 1;
+    const isFirst = n === 1, isLast = n === TOTAL;
+    // Build tips HTML
+    const tipsHTML = step.tips.map(([icon, text]) =>
+      `<div class="tip"><div class="tip-icon">${icon}</div><div class="tip-text">${text}</div></div>`
+    ).join('');
+    // Build alert HTML
+    const alertHTML = step.alert
+      ? `<div class="alert alert-${step.alert.type}"><div class="alert-icon">${step.alert.icon}</div><div>${step.alert.text}</div></div>` : '';
+    const card = document.createElement('div');
+    card.className = 'step-card' + (n === current ? ' active' : '');
+    card.dataset.step = n;
+    card.innerHTML = `
+      <div class="step-header">
+        <div class="step-num">${n}</div>
+        <div class="step-header-text"><h2>${step.title}</h2><p>${step.sub}</p></div>
+      </div>
+      <div class="step-body">
+        <div class="step-visual">${step.visual}</div>
+        <div class="tip-list">${tipsHTML}</div>
+        ${alertHTML}
+      </div>
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goStep(${n - 1})" ${isFirst ? 'disabled' : ''}>${u.prev}</button>
+        <button class="btn-next ${isLast ? 'final' : ''}" onclick="${isLast ? 'finish()' : 'goStep(' + (n + 1) + ')'}">
+          ${isLast ? u.finish : u.next}
+        </button>
+      </div>`;
+    wrap.appendChild(card);
+  });
+}
+
+function buildProgress() {
+  const wrap = document.getElementById('progressWrap');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const s = document.createElement('div');
+    s.className = 'prog-step' + (i < current ? ' done' : i === current ? ' active' : '');
+    s.textContent = i < current ? '✓' : i;
+    s.onclick = () => goStep(i);
+    wrap.appendChild(s);
+    if (i < TOTAL) {
+      const l = document.createElement('div');
+      l.className = 'prog-line' + (i < current ? ' done' : '');
+      wrap.appendChild(l);
+    }
   }
+}
 
-  function toggleTutLang() { applyTutLang(tutLang === 'es' ? 'en' : 'es'); }
+function applyUI(lang) {
+  const u = UI[lang];
+  document.getElementById('heroTitle').textContent = u.heroTitle;
+  document.getElementById('heroSub').textContent   = u.heroSub;
+  document.getElementById('langFab').textContent   = u.langBtn;
+  document.getElementById('doneTitle').textContent = u.doneTitle;
+  document.getElementById('doneSub').textContent   = u.doneSub;
+  document.getElementById('doneBtn').textContent   = u.doneBtn;
+  document.getElementById('stepCounter').textContent = `${u.stepOf} ${current} ${u.of} ${TOTAL}`;
+}
 
-  applyTutLang(tutLang);
+function goStep(n) {
+  if (n < 1 || n > TOTAL) return;
+  current = n;
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+  const card = document.querySelector(`.step-card[data-step="${n}"]`);
+  if (card) card.classList.add('active');
+  document.getElementById('doneScreen').classList.remove('active');
+  document.getElementById('stepCounter').style.display = 'block';
+  applyUI(tutLang);
   buildProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function finish() {
+  current = TOTAL + 1;
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('doneScreen').classList.add('active');
+  document.getElementById('stepCounter').style.display = 'none';
+  buildProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setTutLang(lang) {
+  tutLang = lang;
+  localStorage.setItem('izzy_lang', lang);
+  renderSteps(lang);
+  applyUI(lang);
+  buildProgress();
+  if (current <= TOTAL) {
+    const card = document.querySelector(`.step-card[data-step="${current}"]`);
+    if (card) card.classList.add('active');
+  }
+}
+
+function toggleTutLang() { setTutLang(tutLang === 'es' ? 'en' : 'es'); }
+
+// ── Init ────────────────────────────────────────────────
+setTutLang(tutLang);
 </script>
 </body>
 </html>
