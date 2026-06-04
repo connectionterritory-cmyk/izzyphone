@@ -209,16 +209,19 @@
   .btn-go:hover { background: #0e7060; }
 
   .step-counter { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; font-weight: 500; }
+  .lang-fab { position: fixed; bottom: 20px; right: 20px; z-index: 999; background: var(--blue); color: #fff; border: none; border-radius: 50px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.2); font-family: 'DM Sans', sans-serif; }
 </style>
 </head>
 <body>
 
 <div class="hero">
   <div class="hero-emoji">📚</div>
-  <h1>Tutorial — Cotizador de Leads</h1>
-  <p>Aprende a usar la app en 8 pasos</p>
+  <h1 id="heroTitle">Tutorial — Cotizador de Leads</h1>
+  <p id="heroSub">Aprende a usar la app en 8 pasos</p>
   <div class="progress-wrap" id="progressWrap"></div>
 </div>
+
+<button class="lang-fab" id="langBtn" onclick="toggleTutLang()">🇺🇸 EN</button>
 
 <div class="steps-wrap">
 
@@ -696,6 +699,103 @@ Soy *María* de *Izzy Internet*.
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // ── Tutorial bilingual ──────────────────────────────────
+  let tutLang = localStorage.getItem('izzy_lang') || 'es';
+
+  const TUT = {
+    es: {
+      heroTitle: 'Tutorial — Cotizador de Leads',
+      heroSub: 'Aprende a usar la app en 8 pasos',
+      langBtn: '🇺🇸 EN',
+      stepOf: 'Paso',
+      of: 'de',
+      prev: '← Anterior',
+      next: 'Siguiente →',
+      finish: '✅ ¡Listo, empezar!',
+      doneTitle: '¡Ya estás listo!',
+      doneSub: 'Ahora sabes usar el cotizador de Izzy Internet. ¡A conseguir esos leads!',
+      doneBtn: '📱 Abrir la App',
+      stepTitles: [
+        'Ingresar con tu PIN', 'Mis datos y el cotizador', 'Datos del cliente',
+        'Situación actual del cliente', 'Enviar el mensaje al cotizador',
+        'Registrar la oferta del cotizador', 'Enviar la oferta al cliente', 'Guardar el lead'
+      ],
+      stepSubs: [
+        'Acceso seguro — solo el equipo puede entrar',
+        'Lo primero que debes llenar',
+        'Nombre, teléfono y dirección completa',
+        'Internet y teléfonos que tiene hoy',
+        'WhatsApp o SMS listo en un clic',
+        'Internet + teléfonos con desglose automático',
+        'Mensaje con desglose completo listo para enviar',
+        'Registro automático del cliente'
+      ]
+    },
+    en: {
+      heroTitle: 'Tutorial — Lead Quoter',
+      heroSub: 'Learn to use the app in 8 steps',
+      langBtn: '🇲🇽 ES',
+      stepOf: 'Step',
+      of: 'of',
+      prev: '← Previous',
+      next: 'Next →',
+      finish: '✅ Ready, let\'s start!',
+      doneTitle: 'You\'re all set!',
+      doneSub: 'Now you know how to use the Izzy Internet quoter. Go get those leads!',
+      doneBtn: '📱 Open the App',
+      stepTitles: [
+        'Sign in with your PIN', 'My info and quoting agent', 'Client info',
+        'Client\'s current situation', 'Send message to quoting agent',
+        'Enter the quoting agent\'s offer', 'Send the offer to the client', 'Save the lead'
+      ],
+      stepSubs: [
+        'Secure access — team members only',
+        'The first thing you need to fill in',
+        'Name, phone and full address',
+        'Current internet and phone plans',
+        'WhatsApp or SMS ready in one tap',
+        'Internet + phones with automatic breakdown',
+        'Complete breakdown message ready to send',
+        'Automatic client record'
+      ]
+    }
+  };
+
+  function applyTutLang(lang) {
+    tutLang = lang;
+    localStorage.setItem('izzy_lang', lang);
+    const t = TUT[lang];
+    document.getElementById('heroTitle').textContent = t.heroTitle;
+    document.getElementById('heroSub').textContent = t.heroSub;
+    document.getElementById('langBtn').textContent = t.langBtn;
+    // Step headers
+    document.querySelectorAll('.step-card').forEach((card, i) => {
+      const h2 = card.querySelector('h2');
+      const p  = card.querySelector('.step-header-text p');
+      if (h2 && t.stepTitles[i]) h2.textContent = t.stepTitles[i];
+      if (p  && t.stepSubs[i])   p.textContent  = t.stepSubs[i];
+    });
+    // Nav buttons
+    document.querySelectorAll('.btn-prev').forEach(b => { if (!b.disabled) b.textContent = t.prev; });
+    document.querySelectorAll('.btn-next:not(.final)').forEach(b => b.textContent = t.next);
+    document.querySelectorAll('.btn-next.final').forEach(b => b.textContent = t.finish);
+    // Done screen
+    const ds = document.getElementById('doneScreen');
+    if (ds) {
+      const h2 = ds.querySelector('h2');
+      const p  = ds.querySelector('p');
+      const a  = ds.querySelector('a');
+      if (h2) h2.textContent = t.doneTitle;
+      if (p)  p.textContent  = t.doneSub;
+      if (a)  a.textContent  = t.doneBtn;
+    }
+    // Step counter
+    if (current <= TOTAL) document.getElementById('stepCounter').textContent = `${t.stepOf} ${current} ${t.of} ${TOTAL}`;
+  }
+
+  function toggleTutLang() { applyTutLang(tutLang === 'es' ? 'en' : 'es'); }
+
+  applyTutLang(tutLang);
   buildProgress();
 </script>
 </body>
