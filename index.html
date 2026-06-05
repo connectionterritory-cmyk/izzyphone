@@ -367,6 +367,7 @@
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
     <a href="tutorial.html" id="tutorialLink" style="display:flex;align-items:center;gap:5px;background:#edf1f8;color:#1a3a6b;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;border:1.5px solid #c7d4e8;">📚 Tutorial</a>
+    <a href="leads.html" id="leadsLink" style="display:none;align-items:center;gap:5px;background:#1a3a6b;color:#fff;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;">📊 Leads</a>
     <button id="langToggle" onclick="toggleLang()" style="background:#1a3a6b;color:#fff;border:none;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🇺🇸 EN</button>
     <div class="badge" id="badgeText">📤 Para el Cotizador</div>
   </div>
@@ -743,6 +744,9 @@
       localStorage.setItem('izzy_access', hash);
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
+      if (user.rol === 'admin') {
+        document.getElementById('leadsLink').style.display = 'flex';
+      }
     } else {
       const err = document.getElementById('pinError');
       err.textContent = '❌ Código incorrecto. Intenta de nuevo.';
@@ -758,6 +762,9 @@
     if (saved && USERS[saved]) {
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
+      if (USERS[saved].rol === 'admin') {
+        document.getElementById('leadsLink').style.display = 'flex';
+      }
     }
   })();
   // ───────────────────────────────────────────────────────

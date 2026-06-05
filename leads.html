@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Internet — Leads</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f0f2f5; --surface: #fff; --border: #e2e0dc;
+    --text: #1a1814; --muted: #7a7570;
+    --blue: #1a3a6b; --blue-light: #edf1f8;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px 16px 60px; }
+
+  /* Header */
+  .page-header {
+    max-width: 900px; margin: 0 auto 20px;
+    background: var(--blue); border-radius: 16px; padding: 18px 24px; color: #fff;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 40px; height: 40px; background: rgba(255,255,255,.15);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .page-header h1 { font-size: 20px; font-weight: 700; }
+  .page-header .sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+  .header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .header-tag {
+    background: rgba(255,255,255,.18); border-radius: 20px;
+    padding: 5px 13px; font-size: 12px; font-weight: 600;
+  }
+  .btn-back {
+    background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.3);
+    color: #fff; border-radius: 20px; padding: 5px 13px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
+    cursor: pointer; text-decoration: none; display: inline-block;
+    transition: background .15s;
+  }
+  .btn-back:hover { background: rgba(255,255,255,.25); }
+
+  /* Stats */
+  .stats-row {
+    max-width: 900px; margin: 0 auto 16px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;
+  }
+  .stat-card {
+    background: var(--surface); border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    padding: 14px 18px;
+  }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--blue); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Search bar */
+  .search-bar {
+    max-width: 900px; margin: 0 auto 16px;
+    background: var(--surface); border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    padding: 14px 18px;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  }
+  .search-bar input, .search-bar select {
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px;
+    padding: 8px 12px; outline: none; transition: border-color .15s;
+    -webkit-appearance: none;
+  }
+  .search-bar input { flex: 1; min-width: 180px; }
+  .search-bar input:focus, .search-bar select:focus { border-color: var(--blue); }
+  .search-bar select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer;
+  }
+  .result-count { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; margin-left: auto; }
+
+  /* Table wrapper */
+  .table-wrap {
+    max-width: 900px; margin: 0 auto;
+    background: var(--surface); border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  thead { background: var(--blue); }
+  thead th {
+    color: #fff; font-size: 11px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    padding: 12px 14px; text-align: left; white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { background: #142e58; }
+  thead th .sort-icon { margin-left: 4px; opacity: .6; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
+  tbody td { padding: 11px 14px; font-size: 13px; color: var(--text); vertical-align: top; }
+  td.muted { color: var(--muted); }
+  td.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+  td.money { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: #16a34a; }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+  }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-purple { background: #f3e8ff; color: #6b21a8; }
+
+  /* Empty / loading */
+  .empty-state {
+    padding: 48px 24px; text-align: center; color: var(--muted);
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Mobile cards */
+  @media (max-width: 600px) {
+    .table-scroll { display: none; }
+    .card-list { display: block; }
+  }
+  @media (min-width: 601px) {
+    .card-list { display: none; }
+  }
+  .lead-card {
+    border-bottom: 1px solid var(--border); padding: 14px 18px;
+  }
+  .lead-card:last-child { border-bottom: none; }
+  .lead-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .lead-card-name { font-size: 15px; font-weight: 700; }
+  .lead-card-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .lead-card-row { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+  .lead-card-row strong { color: var(--text); }
+  .lead-card-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="header-left">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M1.5 8.5C5.2 4.8 10.4 3 12 3s6.8 1.8 10.5 5.5L21 10c-3-3-5.7-5-9-5s-6 2-9 5l-1.5-1.5zM12 7c2.4 0 4.6.9 6.2 2.4L16.8 11C15.6 9.8 13.9 9 12 9s-3.6.8-4.8 2L5.8 9.4C7.4 7.9 9.6 7 12 7zm0 4c1.1 0 2.1.4 2.8 1.2L12 15l-2.8-2.8C9.9 11.4 10.9 11 12 11zm0 4l1.5 1.5L12 18l-1.5-1.5L12 15z"/></svg>
+    </div>
+    <div>
+      <h1>Leads — Izzy Internet</h1>
+      <div class="sub" id="adminLabel">Panel de Administración</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-tag" id="agentTag"></span>
+    <a href="index.html" class="btn-back">← Cotizador</a>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">Total Leads</div>
+    <div class="stat-value" id="statTotal">—</div>
+    <div class="stat-sub">en la base de datos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Hoy</div>
+    <div class="stat-value" id="statHoy">—</div>
+    <div class="stat-sub" id="statFecha">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Esta Semana</div>
+    <div class="stat-value" id="statSemana">—</div>
+    <div class="stat-sub">últimos 7 días</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Pago Promedio</div>
+    <div class="stat-value" id="statProm">—</div>
+    <div class="stat-sub">internet + teléfono</div>
+  </div>
+</div>
+
+<!-- Search -->
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍 Buscar por cliente, agente o teléfono..." oninput="filterLeads()">
+  <select id="filterAgente" onchange="filterLeads()">
+    <option value="">Todos los agentes</option>
+  </select>
+  <select id="filterProv" onchange="filterLeads()">
+    <option value="">Todos los proveedores</option>
+  </select>
+  <span class="result-count" id="resultCount"></span>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <!-- Desktop table -->
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('fecha')">Fecha <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('agente')">Agente <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('cliente')">Cliente <span class="sort-icon">↕</span></th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th>Internet</th>
+          <th>Pago Int.</th>
+          <th>Teléfonos</th>
+          <th>Pago Tel.</th>
+          <th>Velocidad</th>
+          <th>Líneas</th>
+          <th>Nota</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <!-- Mobile cards -->
+  <div class="card-list" id="cardList"></div>
+
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="icon">📭</div>
+    <p>No se encontraron leads con esos filtros.</p>
+  </div>
+</div>
+
+<script>
+  // ── Auth: admin only ───────────────────────────────────
+  const USERS = {
+    '28211219d567800d7c18e3de9280f032344d98ba840315783f4413a9b0a79111': { nombre: 'Moises Caicedo',   rol: 'admin'  },
+    '626b4660147aaeb4acc717598f67220f24d687b0d872d55b3f97c4d2c7535737': { nombre: 'Patricia Caicedo', rol: 'agente' },
+    '07ba71d69de787494d45d3bd6524485fe5acfb4906b3fa6e41fb035df83a2fde': { nombre: 'Test',             rol: 'agente' }
+  };
+  const savedHash  = localStorage.getItem('izzy_access');
+  const currentUser = savedHash ? USERS[savedHash] : null;
+  if (!currentUser) { window.location.href = 'index.html'; }
+  if (currentUser.rol !== 'admin') { window.location.href = 'index.html'; }
+
+  document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
+
+  // ── Supabase ───────────────────────────────────────────
+  const SUPA_URL = 'https://rxiarmbosgivaplygqug.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4aWFybWJvc2dpdmFwbHlncXVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzQ2NTMsImV4cCI6MjA4NjkxMDY1M30.2d7AJwe4iklQ8PSb0kxVUI3Ic0qYpHkNnc-yovyUUM0';
+
+  let allLeads = [];
+  let sortCol  = 'created_at';
+  let sortAsc  = false;
+
+  async function fetchLeads() {
+    const res = await fetch(
+      `${SUPA_URL}/rest/v1/izzy_leads?select=*&order=created_at.desc`,
+      { headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` } }
+    );
+    allLeads = await res.json();
+    buildFilters();
+    updateStats();
+    renderTable();
+  }
+
+  function buildFilters() {
+    const agentes   = [...new Set(allLeads.map(l => l.agente).filter(Boolean))].sort();
+    const provs     = [...new Set(allLeads.map(l => l.proveedor_internet).filter(Boolean))].sort();
+    const agtSel    = document.getElementById('filterAgente');
+    const provSel   = document.getElementById('filterProv');
+    agentes.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; agtSel.appendChild(o); });
+    provs.forEach(p   => { const o = document.createElement('option'); o.value = p; o.textContent = p; provSel.appendChild(o); });
+  }
+
+  function updateStats() {
+    const today = new Date().toLocaleDateString('es-US');
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    const hoy     = allLeads.filter(l => l.fecha === today).length;
+    const semana  = allLeads.filter(l => new Date(l.created_at) >= weekAgo).length;
+    const pagos   = allLeads.map(l => (parseFloat(l.pago_internet)||0) + (parseFloat(l.pago_telefono)||0)).filter(p => p > 0);
+    const prom    = pagos.length ? (pagos.reduce((a,b) => a+b, 0) / pagos.length) : 0;
+
+    document.getElementById('statTotal').textContent  = allLeads.length;
+    document.getElementById('statHoy').textContent    = hoy;
+    document.getElementById('statSemana').textContent = semana;
+    document.getElementById('statProm').textContent   = prom > 0 ? `$${prom.toFixed(0)}` : '—';
+    document.getElementById('statFecha').textContent  = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+  }
+
+  function getFiltered() {
+    const q    = document.getElementById('searchInput').value.toLowerCase();
+    const agt  = document.getElementById('filterAgente').value;
+    const prov = document.getElementById('filterProv').value;
+    return allLeads.filter(l => {
+      const matchQ   = !q || [l.cliente, l.agente, l.telefono, l.direccion].some(v => (v||'').toLowerCase().includes(q));
+      const matchAgt = !agt  || l.agente === agt;
+      const matchPrv = !prov || l.proveedor_internet === prov;
+      return matchQ && matchAgt && matchPrv;
+    });
+  }
+
+  function sortBy(col) {
+    if (sortCol === col) sortAsc = !sortAsc;
+    else { sortCol = col; sortAsc = true; }
+    renderTable();
+  }
+
+  function filterLeads() { renderTable(); }
+
+  function renderTable() {
+    let data = getFiltered();
+    data.sort((a, b) => {
+      const va = a[sortCol] || ''; const vb = b[sortCol] || '';
+      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+
+    document.getElementById('resultCount').textContent = `${data.length} lead${data.length !== 1 ? 's' : ''}`;
+    const empty = document.getElementById('emptyState');
+    empty.style.display = data.length === 0 ? 'block' : 'none';
+
+    // Desktop table
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = data.map(l => {
+      const pagoInt = l.pago_internet ? `$${parseFloat(l.pago_internet).toFixed(0)}` : '—';
+      const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}` : '—';
+      return `<tr>
+        <td class="mono">${l.fecha || '—'}</td>
+        <td><strong>${esc(l.agente||'—')}</strong></td>
+        <td><strong>${esc(l.cliente||'—')}</strong></td>
+        <td class="mono">${esc(l.telefono||'—')}</td>
+        <td class="muted" style="max-width:160px;font-size:12px;">${esc(l.direccion||'—')}</td>
+        <td>${l.proveedor_internet ? `<span class="badge badge-blue">${esc(l.proveedor_internet)}</span>` : '<span class="muted">—</span>'}</td>
+        <td class="money">${pagoInt}</td>
+        <td>${l.proveedor_telefono ? `<span class="badge badge-purple">${esc(l.proveedor_telefono)}</span>` : '<span class="muted">—</span>'}</td>
+        <td class="money">${pagoTel}</td>
+        <td class="muted">${esc(l.velocidad||'—')}</td>
+        <td class="muted">${esc(l.lineas||'—')}</td>
+        <td class="muted" style="max-width:140px;font-size:12px;">${esc(l.nota||'—')}</td>
+      </tr>`;
+    }).join('');
+
+    // Mobile cards
+    const cardList = document.getElementById('cardList');
+    cardList.innerHTML = data.map(l => {
+      const pagoInt = l.pago_internet ? `$${parseFloat(l.pago_internet).toFixed(0)}/mo` : null;
+      const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}/mo` : null;
+      return `<div class="lead-card">
+        <div class="lead-card-top">
+          <div class="lead-card-name">${esc(l.cliente||'—')}</div>
+          <div class="lead-card-date">${l.fecha||'—'}</div>
+        </div>
+        <div class="lead-card-row">📞 <strong>${esc(l.telefono||'—')}</strong></div>
+        ${l.direccion ? `<div class="lead-card-row">📍 ${esc(l.direccion)}</div>` : ''}
+        ${l.agente    ? `<div class="lead-card-row">👤 Agente: <strong>${esc(l.agente)}</strong></div>` : ''}
+        ${l.nota      ? `<div class="lead-card-row">📝 ${esc(l.nota)}</div>` : ''}
+        <div class="lead-card-badges">
+          ${l.proveedor_internet ? `<span class="badge badge-blue">🌐 ${esc(l.proveedor_internet)}${pagoInt ? ' · ' + pagoInt : ''}</span>` : ''}
+          ${l.proveedor_telefono ? `<span class="badge badge-purple">📱 ${esc(l.proveedor_telefono)}${pagoTel ? ' · ' + pagoTel : ''}</span>` : ''}
+          ${l.velocidad ? `<span class="badge" style="background:#f0fdf4;color:#16a34a;">⚡ ${esc(l.velocidad)}</span>` : ''}
+          ${l.lineas    ? `<span class="badge" style="background:#fef9c3;color:#854d0e;">${esc(l.lineas)}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  fetchLeads();
+</script>
+</body>
+</html>
