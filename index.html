@@ -566,7 +566,6 @@
 </div>
 
 <div class="toast" id="toast"></div>
-</div><!-- /mainApp -->
 
 <!-- ═══ PASO 2 ═══ -->
 <div style="max-width:560px;margin:28px auto 0;">
@@ -716,6 +715,12 @@
     </div>
   </div>
 </div>
+
+<div style="max-width:560px;margin:12px auto 32px;padding:0 4px;">
+  <button id="btnProcederOrden" onclick="procederOrden()" style="width:100%;padding:16px;border-radius:12px;border:none;background:#1a3a6b;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;display:none;box-shadow:0 4px 14px rgba(26,58,107,0.3);transition:all .15s;">📋 Proceder con la Orden</button>
+</div>
+
+</div><!-- /mainApp -->
 
 <script>
   // ── Acceso por código de usuario ───────────────────────
@@ -1228,6 +1233,10 @@
       totalEl.style.background  = ahorro > 0 ? '#f0fdf4' : ahorro < 0 ? '#fff5f5' : '#f0fdf4';
     } else { totalEl.style.display = 'none'; }
 
+    // Show/hide Proceder button
+    const btnProceder = document.getElementById('btnProcederOrden');
+    if (btnProceder) btnProceder.style.display = totalOferta > 0 ? 'block' : 'none';
+
     // Ahorro display footer
     const ahorroEl = document.getElementById('ahorro-display');
     if (ahorro > 0) {
@@ -1317,6 +1326,17 @@
     if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
     window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
+  }
+
+  function procederOrden() {
+    localStorage.setItem('izzy_orden_cliente',   getVal('clienteNombre'));
+    localStorage.setItem('izzy_orden_tel',        getVal('clienteTel'));
+    const direc = [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', ');
+    localStorage.setItem('izzy_orden_direccion',  direc);
+    localStorage.setItem('izzy_orden_proveedor',  getRadio('ofertaProv'));
+    localStorage.setItem('izzy_orden_velocidad',  getRadio('ofertaVel'));
+    localStorage.setItem('izzy_orden_precio',     getVal('ofertaIntPrecio'));
+    window.location.href = 'orden.html';
   }
 
   setLang(currentLang);

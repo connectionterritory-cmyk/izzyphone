@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Izzy Internet — Service Order</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f0f2f5; --surface: #fff; --border: #e2e0dc;
+    --text: #1a1814; --muted: #7a7570;
+    --blue: #1a3a6b; --blue-light: #edf1f8;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px 16px 80px; }
+
+  .page-header {
+    max-width: 600px; margin: 0 auto 20px;
+    background: var(--blue); border-radius: 16px; padding: 20px 24px; color: #fff;
+  }
+  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .brand-icon {
+    width: 44px; height: 44px; background: rgba(255,255,255,.15);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .brand-icon svg { width: 22px; height: 22px; fill: #fff; }
+  .page-header h1 { font-size: 22px; font-weight: 700; }
+  .page-header .sub { font-size: 12px; opacity: .75; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .header-tag {
+    display: inline-block; background: rgba(255,255,255,.18);
+    border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600;
+  }
+
+  .section-divider {
+    max-width: 600px; margin: 26px auto 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-divider .line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
+  .section-divider .lbl {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+  }
+  .sec-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .card {
+    max-width: 600px; margin: 0 auto 14px;
+    background: var(--surface); border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden;
+  }
+  .card-header {
+    padding: 13px 20px; font-size: 12px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase; color: #fff;
+  }
+  .card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="number"],
+  input[type="date"],
+  select, textarea {
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text);
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px;
+    padding: 10px 14px; outline: none; width: 100%;
+    transition: border-color .15s, box-shadow .15s; -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: #fff;
+  }
+  input::placeholder, textarea::placeholder { color: #c5bfb9; }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer;
+  }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip-input { display: none; }
+  .chip-label {
+    cursor: pointer; padding: 8px 16px; border-radius: 20px;
+    border: 1.5px solid var(--border); font-size: 13px; font-weight: 500; color: var(--muted);
+    transition: all .15s; user-select: none;
+  }
+  .chip-input:checked + .chip-label { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+  .toggle-wrap { display: flex; gap: 8px; }
+  .toggle-btn {
+    flex: 1; padding: 10px; border-radius: 9px; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; text-align: center; transition: all .15s;
+  }
+  .toggle-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+  .ssn-wrap { display: flex; align-items: center; gap: 6px; }
+  .ssn-wrap input { text-align: center; font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 600; }
+  .ssn-sep { font-size: 18px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+  #ssn1 { max-width: 80px; } #ssn2 { max-width: 60px; } #ssn3 { max-width: 90px; }
+
+  .card-icons { display: flex; gap: 6px; align-items: center; }
+  .card-icon {
+    padding: 3px 9px; border-radius: 5px; border: 1.5px solid var(--border);
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+  }
+
+  .readonly-field {
+    padding: 10px 14px; background: #f7f7f5; border: 1.5px solid var(--border);
+    border-radius: 9px; font-size: 15px; color: var(--muted); min-height: 42px;
+  }
+  .admin-badge {
+    display: inline-block; background: #fef3c7; color: #92400e;
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+    letter-spacing: .06em; text-transform: uppercase; margin-left: 8px; vertical-align: middle;
+  }
+
+  #signatureCanvas {
+    width: 100%; height: 180px; border: 2px dashed var(--border);
+    border-radius: 12px; background: #fafaf8; touch-action: none;
+    cursor: crosshair; display: block;
+  }
+  #signatureCanvas.has-sig { border-color: var(--blue); border-style: solid; }
+
+  .legal-text { font-size: 12px; line-height: 1.65; color: var(--muted); padding: 12px; background: var(--bg); border-radius: 8px; }
+
+  .btn-submit {
+    display: block; width: 100%; max-width: 600px; margin: 8px auto 0;
+    padding: 18px; border-radius: 14px; border: none;
+    background: var(--blue); color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(26,58,107,0.3); transition: all .15s;
+  }
+  .btn-submit:hover { background: #142e58; }
+  .btn-submit:active { transform: scale(.98); }
+
+  .toast {
+    display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #111; color: #fff; padding: 10px 24px; border-radius: 30px;
+    font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 99;
+  }
+
+  #successOverlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(26,58,107,0.96); flex-direction: column;
+    align-items: center; justify-content: center; padding: 32px; text-align: center;
+  }
+  #successOverlay.show { display: flex; }
+  #successOverlay .s-emoji { font-size: 64px; margin-bottom: 16px; }
+  #successOverlay h2 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  #successOverlay p { font-size: 15px; color: rgba(255,255,255,.75); line-height: 1.6; max-width: 300px; }
+  #successOverlay .btn-done {
+    margin-top: 28px; padding: 14px 32px; border-radius: 12px; border: none;
+    background: #25D366; color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer;
+  }
+
+  .prev-addr-box {
+    background: #fff8ed; padding: 14px; border-radius: 10px;
+    border: 1.5px solid #fde68a; display: flex; flex-direction: column; gap: 10px;
+  }
+  .money-wrap-ord {
+    display: flex; align-items: stretch; background: var(--bg);
+    border: 1.5px solid var(--border); border-radius: 9px; overflow: hidden;
+  }
+  .money-wrap-ord:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: #fff; }
+  .money-sign-ord {
+    padding: 0 12px; font-size: 16px; font-weight: 700; color: var(--muted);
+    background: var(--border); display: flex; align-items: center;
+  }
+  .money-input-ord {
+    border: none !important; background: transparent !important; box-shadow: none !important;
+    font-family: 'DM Mono', monospace !important; font-size: 16px !important; font-weight: 600 !important;
+    padding: 10px 12px !important; width: 100%; outline: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Success Overlay -->
+<div id="successOverlay">
+  <div class="s-emoji">✅</div>
+  <h2>Order Submitted!</h2>
+  <p>The team has been notified and will follow up with the client shortly.</p>
+  <button class="btn-done" onclick="window.location.href='index.html'">← Back to Quoter</button>
+</div>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="header-top">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M1.5 8.5C5.2 4.8 10.4 3 12 3s6.8 1.8 10.5 5.5L21 10c-3-3-5.7-5-9-5s-6 2-9 5l-1.5-1.5zM12 7c2.4 0 4.6.9 6.2 2.4L16.8 11C15.6 9.8 13.9 9 12 9s-3.6.8-4.8 2L5.8 9.4C7.4 7.9 9.6 7 12 7zm0 4c1.1 0 2.1.4 2.8 1.2L12 15l-2.8-2.8C9.9 11.4 10.9 11 12 11zm0 4l1.5 1.5L12 18l-1.5-1.5L12 15z"/></svg>
+    </div>
+    <div>
+      <h1>Izzy Internet</h1>
+      <div class="sub">Agente Autorizado: Frontier · AT&T · Spectrum · EarthLink</div>
+    </div>
+  </div>
+  <div class="tag-row">
+    <span class="header-tag">📋 Service Order Form</span>
+    <span class="header-tag" id="agentTag"></span>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: CLIENT INFO ═══ -->
+<div class="section-divider">
+  <div class="line"></div>
+  <div class="lbl"><span class="sec-num" style="background:#1a3a6b;">1</span> Client Information</div>
+  <div class="line"></div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="background:#1a3a6b;">👤 Client Information</div>
+  <div class="card-body">
+
+    <div class="field">
+      <label>Service Provider</label>
+      <div class="chips">
+        <input type="radio" class="chip-input" name="svcProv" id="sp-frontier" value="Frontier">
+        <label class="chip-label" for="sp-frontier">Frontier</label>
+        <input type="radio" class="chip-input" name="svcProv" id="sp-att" value="AT&T">
+        <label class="chip-label" for="sp-att">AT&T</label>
+        <input type="radio" class="chip-input" name="svcProv" id="sp-spectrum" value="Spectrum">
+        <label class="chip-label" for="sp-spectrum">Spectrum</label>
+        <input type="radio" class="chip-input" name="svcProv" id="sp-earthlink" value="EarthLink">
+        <label class="chip-label" for="sp-earthlink">EarthLink</label>
+        <input type="radio" class="chip-input" name="svcProv" id="sp-other" value="Other" onchange="toggleOtherProv(this.checked)">
+        <label class="chip-label" for="sp-other">Other</label>
+      </div>
+      <input type="text" id="svcProvOther" placeholder="Provider name..." style="display:none;margin-top:8px;">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>First Name *</label>
+        <input type="text" id="firstName" placeholder="John" autocomplete="given-name">
+      </div>
+      <div class="field">
+        <label>Last Name *</label>
+        <input type="text" id="lastName" placeholder="Doe" autocomplete="family-name">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Primary Phone *</label>
+        <input type="tel" id="phone1" placeholder="(818) 555-1234" oninput="fmtPhone(this)" autocomplete="tel">
+      </div>
+      <div class="field">
+        <label>Secondary Phone</label>
+        <input type="tel" id="phone2" placeholder="(818) 555-0000" oninput="fmtPhone(this)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="john@email.com" autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label>Date of Birth</label>
+      <div class="row3">
+        <select id="dobMonth">
+          <option value="">Month</option>
+          <option value="01">January</option><option value="02">February</option>
+          <option value="03">March</option><option value="04">April</option>
+          <option value="05">May</option><option value="06">June</option>
+          <option value="07">July</option><option value="08">August</option>
+          <option value="09">September</option><option value="10">October</option>
+          <option value="11">November</option><option value="12">December</option>
+        </select>
+        <select id="dobDay">
+          <option value="">Day</option>
+        </select>
+        <input type="number" id="dobYear" placeholder="Year" min="1900" max="2010" style="text-align:center;">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Social Security Number <span style="font-size:10px;color:#b45309;font-weight:400;text-transform:none;letter-spacing:0;">(not saved)</span></label>
+      <div class="ssn-wrap">
+        <input type="tel" id="ssn1" placeholder="XXX" maxlength="3" oninput="ssnAdv(this,'ssn2',3)" autocomplete="off" inputmode="numeric">
+        <span class="ssn-sep">—</span>
+        <input type="tel" id="ssn2" placeholder="XX" maxlength="2" oninput="ssnAdv(this,'ssn3',2)" onkeydown="ssnBack(event,'ssn1')" autocomplete="off" inputmode="numeric">
+        <span class="ssn-sep">—</span>
+        <input type="tel" id="ssn3" placeholder="XXXX" maxlength="4" onkeydown="ssnBack(event,'ssn2')" autocomplete="off" inputmode="numeric">
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Used for identity verification only. Never stored or transmitted.</p>
+    </div>
+
+    <div class="field">
+      <label>Street Address *</label>
+      <input type="text" id="street" placeholder="1234 Main St" autocomplete="street-address">
+    </div>
+    <div class="field">
+      <label>Apt / Unit</label>
+      <input type="text" id="apt" placeholder="Apt 5, Unit B...">
+    </div>
+    <div class="row3">
+      <div class="field" style="grid-column:span 1;">
+        <label>City *</label>
+        <input type="text" id="city" placeholder="Los Angeles" autocomplete="address-level2">
+      </div>
+      <div class="field">
+        <label>State *</label>
+        <select id="state" autocomplete="address-level1">
+          <option value="">State</option>
+          <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+          <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+          <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+          <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+          <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+          <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+          <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+          <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+          <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+          <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+          <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+          <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+          <option>WI</option><option>WY</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ZIP *</label>
+        <input type="text" id="zip" placeholder="90210" maxlength="10" autocomplete="postal-code">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Years at current address</label>
+      <div class="chips">
+        <input type="radio" class="chip-input" name="yearsAddr" id="ya-lt1" value="<1" onchange="togglePrevAddr()">
+        <label class="chip-label" for="ya-lt1">Less than 1</label>
+        <input type="radio" class="chip-input" name="yearsAddr" id="ya-13" value="1-3" onchange="togglePrevAddr()">
+        <label class="chip-label" for="ya-13">1–3 years</label>
+        <input type="radio" class="chip-input" name="yearsAddr" id="ya-3p" value="3+" onchange="togglePrevAddr()">
+        <label class="chip-label" for="ya-3p">3+ years</label>
+      </div>
+    </div>
+
+    <div id="prevAddrSection" style="display:none;">
+      <div class="prev-addr-box">
+        <label style="color:#92400e;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Previous Address</label>
+        <input type="text" id="prevStreet" placeholder="Previous street address">
+        <div class="row3">
+          <input type="text" id="prevCity" placeholder="City">
+          <select id="prevState">
+            <option value="">State</option>
+            <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+            <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+            <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+            <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+            <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+            <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+            <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+            <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+            <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+            <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+            <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+            <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+            <option>WI</option><option>WY</option>
+          </select>
+          <input type="text" id="prevZip" placeholder="ZIP">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: INSTALLATION PREFERENCES ═══ -->
+<div class="section-divider">
+  <div class="line"></div>
+  <div class="lbl"><span class="sec-num" style="background:#0e7490;">2</span> Installation Preferences</div>
+  <div class="line"></div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="background:#0e7490;">🔧 Installation Preferences</div>
+  <div class="card-body">
+
+    <div class="field">
+      <label>Preferred Time</label>
+      <div class="chips">
+        <input type="radio" class="chip-input" name="timePref" id="tp-am" value="AM (Morning)">
+        <label class="chip-label" for="tp-am">🌅 AM</label>
+        <input type="radio" class="chip-input" name="timePref" id="tp-pm" value="PM (Afternoon)">
+        <label class="chip-label" for="tp-pm">☀️ PM</label>
+        <input type="radio" class="chip-input" name="timePref" id="tp-asap" value="ASAP">
+        <label class="chip-label" for="tp-asap">⚡ ASAP</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Desired Speed</label>
+      <div class="chips">
+        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-500" value="500 Mbps" onchange="document.getElementById('speedOther').style.display='none'">
+        <label class="chip-label" for="ds-500">500 Mb</label>
+        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-1g" value="1 Gig" onchange="document.getElementById('speedOther').style.display='none'">
+        <label class="chip-label" for="ds-1g">1 Gig</label>
+        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-other" value="Other" onchange="document.getElementById('speedOther').style.display='block'">
+        <label class="chip-label" for="ds-other">Other</label>
+      </div>
+      <input type="text" id="speedOther" placeholder="Specify speed..." style="display:none;margin-top:8px;">
+    </div>
+
+    <div class="field">
+      <label>Voice / Phone Service</label>
+      <div class="toggle-wrap">
+        <button class="toggle-btn" id="voiceYes" onclick="setTgl('voice','yes')">📞 Yes</button>
+        <button class="toggle-btn active" id="voiceNo" onclick="setTgl('voice','no')">✗ No</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Installation Notes</label>
+      <textarea id="installNotes" placeholder="Gate code, parking instructions, best contact time..."></textarea>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: PAYMENT INFO ═══ -->
+<div class="section-divider">
+  <div class="line"></div>
+  <div class="lbl"><span class="sec-num" style="background:#16a34a;">3</span> Payment Information</div>
+  <div class="line"></div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="background:#16a34a;">💳 Payment Information</div>
+  <div class="card-body">
+
+    <div class="field">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <label style="margin-bottom:0;">Card Number</label>
+        <div class="card-icons">
+          <span class="card-icon" style="color:#1a1f71;">VISA</span>
+          <span class="card-icon" style="color:#eb001b;">MC</span>
+          <span class="card-icon" style="color:#007bc1;">AMEX</span>
+        </div>
+      </div>
+      <input type="tel" id="cardNumber" placeholder="1234-5678-9012-3456" maxlength="19"
+             oninput="fmtCard(this)" autocomplete="cc-number" inputmode="numeric"
+             style="font-family:'DM Mono',monospace;font-size:16px;letter-spacing:.05em;">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Expiration</label>
+        <input type="tel" id="cardExp" placeholder="MM/YY" maxlength="5"
+               oninput="fmtExp(this)" autocomplete="cc-exp" inputmode="numeric"
+               style="font-family:'DM Mono',monospace;">
+      </div>
+      <div class="field">
+        <label>CVV</label>
+        <input type="tel" id="cardCvv" placeholder="123" maxlength="4"
+               autocomplete="cc-csc" inputmode="numeric"
+               style="font-family:'DM Mono',monospace;max-width:120px;">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Autopay</label>
+      <div class="toggle-wrap">
+        <button class="toggle-btn" id="autopayYes" onclick="setTgl('autopay','yes')">✅ Yes</button>
+        <button class="toggle-btn active" id="autopayNo" onclick="setTgl('autopay','no')">✗ No</button>
+      </div>
+      <p style="font-size:12px;color:#16a34a;font-weight:600;margin-top:6px;">💰 Save $10/month with autopay enabled</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: ORDER DETAILS ═══ -->
+<div class="section-divider">
+  <div class="line"></div>
+  <div class="lbl"><span class="sec-num" style="background:#7c3aed;">4</span> Order Details</div>
+  <div class="line"></div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="background:#7c3aed;">
+    📋 Order Details
+    <span id="adminBadge" class="admin-badge" style="display:none;">ADMIN EDIT</span>
+  </div>
+  <div class="card-body">
+
+    <div class="field">
+      <label>Agent Name</label>
+      <div class="readonly-field" id="agentNameDisplay">—</div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Order Number</label>
+        <div class="readonly-field" id="orderNumReadonly">—</div>
+        <input type="text" id="orderNum" placeholder="ORD-XXXXX" style="display:none;">
+      </div>
+      <div class="field">
+        <label>BTN</label>
+        <div class="readonly-field" id="btnReadonly">—</div>
+        <input type="text" id="btnField" placeholder="Billing Telephone Number" style="display:none;">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Order Date</label>
+        <div class="readonly-field" id="orderDateDisplay">—</div>
+      </div>
+      <div class="field">
+        <label>Install Date</label>
+        <div class="readonly-field" id="installDateReadonly">—</div>
+        <input type="date" id="installDate" style="display:none;">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Monthly Price</label>
+      <div class="readonly-field" id="monthlyPriceReadonly">—</div>
+      <div id="monthlyPriceInputWrap" style="display:none;">
+        <div class="money-wrap-ord">
+          <span class="money-sign-ord">$</span>
+          <input type="number" class="money-input-ord" id="monthlyPrice" placeholder="0.00">
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Special Notes</label>
+      <div class="readonly-field" id="specialNotesReadonly" style="min-height:60px;">—</div>
+      <textarea id="specialNotes" placeholder="Order notes, special instructions..." style="display:none;"></textarea>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: SIGNATURE ═══ -->
+<div class="section-divider">
+  <div class="line"></div>
+  <div class="lbl"><span class="sec-num" style="background:#b45309;">5</span> Client Signature</div>
+  <div class="line"></div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="background:#b45309;">✍️ Client Signature</div>
+  <div class="card-body">
+
+    <div class="legal-text">
+      I authorize this agent, Izzy Internet, or any of its employees to manage my internet order, handle all necessary documentation, and schedule a technician visit to install and activate services at my premises. This authorization will remain effective until I revoke it in writing. I accept full responsibility for all charges incurred under this authorization.
+    </div>
+
+    <div class="field">
+      <label>Sign below (finger or stylus)</label>
+      <canvas id="signatureCanvas"></canvas>
+      <button onclick="clearSig()" style="margin-top:8px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;">🗑 Clear Signature</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Submit -->
+<button class="btn-submit" onclick="submitOrder()">✅ Submit Order</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Auth ──────────────────────────────────────────────
+  const USERS = {
+    '28211219d567800d7c18e3de9280f032344d98ba840315783f4413a9b0a79111': { nombre: 'Moises Caicedo',   rol: 'admin'  },
+    '626b4660147aaeb4acc717598f67220f24d687b0d872d55b3f97c4d2c7535737': { nombre: 'Patricia Caicedo', rol: 'agente' },
+    '07ba71d69de787494d45d3bd6524485fe5acfb4906b3fa6e41fb035df83a2fde': { nombre: 'Test',             rol: 'agente' }
+  };
+  const savedHash  = localStorage.getItem('izzy_access');
+  const currentUser = savedHash ? USERS[savedHash] : null;
+  if (!currentUser) { window.location.href = 'index.html'; }
+
+  const agentName = currentUser ? currentUser.nombre : '';
+  const agentRole = currentUser ? currentUser.rol    : '';
+
+  document.getElementById('agentTag').textContent = '👤 ' + agentName;
+  document.getElementById('agentNameDisplay').textContent = agentName;
+
+  const today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('orderDateDisplay').textContent = today;
+
+  // ── Role: admin unlocks Section 4 ─────────────────────
+  if (agentRole === 'admin') {
+    document.getElementById('adminBadge').style.display = 'inline-block';
+    ['orderNum','btnField','installDate','specialNotes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'block';
+    });
+    ['orderNumReadonly','btnReadonly','installDateReadonly','specialNotesReadonly'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.getElementById('monthlyPriceReadonly').style.display = 'none';
+    document.getElementById('monthlyPriceInputWrap').style.display = 'block';
+  }
+
+  // ── Populate Day dropdown ─────────────────────────────
+  const daySelect = document.getElementById('dobDay');
+  for (let i = 1; i <= 31; i++) {
+    const o = document.createElement('option');
+    o.value = String(i).padStart(2,'0');
+    o.textContent = i;
+    daySelect.appendChild(o);
+  }
+
+  // ── Auto-fill from localStorage ───────────────────────
+  const fullName = localStorage.getItem('izzy_orden_cliente') || '';
+  if (fullName) {
+    const parts = fullName.trim().split(' ');
+    document.getElementById('firstName').value = parts[0] || '';
+    document.getElementById('lastName').value  = parts.slice(1).join(' ') || '';
+  }
+
+  const tel = localStorage.getItem('izzy_orden_tel') || '';
+  if (tel) document.getElementById('phone1').value = tel;
+
+  const fullAddr = localStorage.getItem('izzy_orden_direccion') || '';
+  if (fullAddr) {
+    const parts = fullAddr.split(',').map(s => s.trim());
+    if (parts[0]) document.getElementById('street').value = parts[0];
+    if (parts[1]) document.getElementById('city').value   = parts[1];
+    if (parts[2]) {
+      const chunk = parts[2];
+      const m = chunk.match(/^([A-Z]{2})\s+(.+)$/);
+      if (m) {
+        const stSel = document.getElementById('state');
+        for (let opt of stSel.options) { if (opt.value === m[1]) { opt.selected = true; break; } }
+        document.getElementById('zip').value = m[2];
+      } else {
+        document.getElementById('zip').value = chunk;
+      }
+    }
+    if (parts[3]) document.getElementById('zip').value = parts[3];
+  }
+
+  const offerProv = localStorage.getItem('izzy_orden_proveedor') || '';
+  if (offerProv) {
+    document.querySelectorAll('input[name="svcProv"]').forEach(r => { if (r.value === offerProv) r.checked = true; });
+  }
+
+  const offerSpeed = localStorage.getItem('izzy_orden_velocidad') || '';
+  if (offerSpeed) {
+    let matched = false;
+    document.querySelectorAll('input[name="desiredSpeed"]').forEach(r => {
+      if (r.value === offerSpeed) { r.checked = true; matched = true; }
+    });
+    if (!matched && offerSpeed) {
+      document.getElementById('ds-other').checked = true;
+      document.getElementById('speedOther').style.display = 'block';
+      document.getElementById('speedOther').value = offerSpeed;
+    }
+  }
+
+  if (agentRole === 'admin') {
+    const price = localStorage.getItem('izzy_orden_precio') || '';
+    if (price) document.getElementById('monthlyPrice').value = price;
+  }
+
+  // ── Toggles ───────────────────────────────────────────
+  const tglState = { voice: 'no', autopay: 'no' };
+  function setTgl(name, val) {
+    tglState[name] = val;
+    if (name === 'voice') {
+      document.getElementById('voiceYes').classList.toggle('active', val === 'yes');
+      document.getElementById('voiceNo').classList.toggle('active', val === 'no');
+    } else {
+      document.getElementById('autopayYes').classList.toggle('active', val === 'yes');
+      document.getElementById('autopayNo').classList.toggle('active', val === 'no');
+    }
+  }
+
+  // ── Helpers ───────────────────────────────────────────
+  function toggleOtherProv(show) {
+    document.getElementById('svcProvOther').style.display = show ? 'block' : 'none';
+  }
+
+  function togglePrevAddr() {
+    const val = document.querySelector('input[name="yearsAddr"]:checked')?.value || '';
+    document.getElementById('prevAddrSection').style.display =
+      (val === '<1' || val === '1-3') ? 'block' : 'none';
+  }
+
+  function fmtPhone(el) {
+    let v = el.value.replace(/\D/g,'').substring(0,10);
+    if (v.length >= 6) v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+    else if (v.length >= 3) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+    el.value = v;
+  }
+
+  function fmtCard(el) {
+    let v = el.value.replace(/\D/g,'').substring(0,16);
+    el.value = v.replace(/(.{4})/g,'$1-').replace(/-$/,'');
+  }
+
+  function fmtExp(el) {
+    let v = el.value.replace(/\D/g,'').substring(0,4);
+    if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+    el.value = v;
+  }
+
+  function ssnAdv(el, nextId, maxLen) {
+    el.value = el.value.replace(/\D/g,'');
+    if (el.value.length >= maxLen) document.getElementById(nextId)?.focus();
+  }
+
+  function ssnBack(e, prevId) {
+    if (e.key === 'Backspace' && e.target.value === '') document.getElementById(prevId)?.focus();
+  }
+
+  // ── Signature Canvas ──────────────────────────────────
+  const canvas = document.getElementById('signatureCanvas');
+  const ctx    = canvas.getContext('2d');
+  let drawing  = false;
+  let hasSig   = false;
+
+  function resizeCanvas() {
+    const r = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = r.width  * dpr;
+    canvas.height = r.height * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.strokeStyle = '#1a3a6b';
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function getPos(e) {
+    const r   = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+
+  canvas.addEventListener('mousedown', e => {
+    drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    hasSig = true; canvas.classList.add('has-sig');
+  });
+  canvas.addEventListener('mouseup',    () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    hasSig = true; canvas.classList.add('has-sig');
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => drawing = false);
+
+  function clearSig() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasSig = false;
+    canvas.classList.remove('has-sig');
+  }
+
+  // ── Toast ─────────────────────────────────────────────
+  function showToast(msg, color = '#111') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.background = color; t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  // ── Submit ────────────────────────────────────────────
+  function submitOrder() {
+    const first  = document.getElementById('firstName').value.trim();
+    const last   = document.getElementById('lastName').value.trim();
+    const phone  = document.getElementById('phone1').value.trim();
+    const street = document.getElementById('street').value.trim();
+
+    if (!first || !last) { showToast('⚠️ Client name is required', '#b45309'); return; }
+    if (!phone)          { showToast('⚠️ Primary phone is required', '#b45309'); return; }
+    if (!street)         { showToast('⚠️ Street address is required', '#b45309'); return; }
+
+    document.getElementById('successOverlay').classList.add('show');
+  }
+</script>
+</body>
+</html>
