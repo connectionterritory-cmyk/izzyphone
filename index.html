@@ -414,7 +414,7 @@
     <div class="row2">
       <div class="field">
         <label id="lblClienteTel">Teléfono</label>
-        <input type="tel" id="clienteTel" placeholder="(___) ___-____" oninput="formatPhone(this); generate()">
+        <input type="tel" id="clienteTel" placeholder="(___) ___-____" oninput="formatPhone(this); generate(); updateWaBtn()">
       </div>
       <div class="field">
         <label id="lblZip">ZIP / Ciudad</label>
@@ -1258,6 +1258,7 @@
     // Show/hide WhatsApp button inside cotizador card
     const btnWa = document.getElementById('btnWaCliente');
     if (btnWa) btnWa.style.display = totalOferta > 0 ? 'block' : 'none';
+    if (totalOferta > 0) updateWaBtn();
 
     // Ahorro display footer
     const ahorroEl = document.getElementById('ahorro-display');
@@ -1337,6 +1338,20 @@
   function copyMsgCliente() {
     if (!currentMsgCliente || currentMsgCliente.includes('Llena') || currentMsgCliente.includes('Fill')) return;
     navigator.clipboard.writeText(currentMsgCliente).then(() => showToast(T[currentLang].toastCopiedClient, '#16a34a'));
+  }
+
+  function updateWaBtn() {
+    const span = document.getElementById('btnSendCliente');
+    if (!span) return;
+    const tel = getVal('clienteTel').trim();
+    const nombre = getVal('clienteNombre').trim().split(' ')[0];
+    if (tel && nombre) {
+      span.textContent = `Enviar a ${nombre} — ${tel}`;
+    } else if (tel) {
+      span.textContent = `Enviar a ${tel}`;
+    } else {
+      span.textContent = 'Enviar al Cliente por WhatsApp';
+    }
   }
 
   function openWhatsAppCliente() {
