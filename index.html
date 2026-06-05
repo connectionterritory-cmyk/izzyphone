@@ -1109,18 +1109,18 @@
     btn.innerHTML = T[currentLang].savingBtn;
 
     const payload = {
-      fecha:           new Date().toLocaleDateString('es-US'),
-      agente:          getVal('miNombre'),
-      cliente:         cliente,
-      telefono:        getVal('clienteTel'),
-      zona:            [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
-      proveedorInternet: getRadio('intProv'),
-      pagoInternet:    getVal('pagoInternet'),
-      proveedorTelefono: getRadio('telProv'),
-      pagoTelefono:    getVal('pagoTelefono'),
-      velocidad:       getRadio('velActual'),
-      lineas:          getRadio('lineas'),
-      nota:            getVal('nota')
+      'Fecha':               new Date().toLocaleDateString('es-US'),
+      'Agente':              getVal('miNombre'),
+      'Cliente':             cliente,
+      'Teléfono':            getVal('clienteTel'),
+      'Zona':                [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
+      'Proveedor Internet':  getRadio('intProv'),
+      'Pago Internet':       getVal('pagoInternet'),
+      'Proveedor Teléfono':  getRadio('telProv'),
+      'Pago Teléfono':       getVal('pagoTelefono'),
+      'Velocidad':           getRadio('velActual'),
+      'Líneas':              getRadio('lineas'),
+      'Nota':                getVal('nota')
     };
 
     try {
