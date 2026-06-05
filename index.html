@@ -766,6 +766,7 @@
       if (USERS[saved].rol === 'admin') {
         document.getElementById('leadsLink').style.display = 'flex';
       }
+      restoreLead();
     }
   })();
   // ───────────────────────────────────────────────────────
@@ -1344,6 +1345,42 @@
     if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
     window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
+  }
+
+  function restoreLead() {
+    const raw = localStorage.getItem('izzy_restore');
+    if (!raw) return;
+    localStorage.removeItem('izzy_restore');
+    const l = JSON.parse(raw);
+
+    // Text fields
+    if (l.cliente)   document.getElementById('clienteNombre').value = l.cliente;
+    if (l.telefono)  document.getElementById('clienteTel').value    = l.telefono;
+    if (l.direccion) document.getElementById('clienteDirec').value  = l.direccion;
+    if (l.pago_internet)  document.getElementById('pagoInternet').value  = l.pago_internet;
+    if (l.pago_telefono)  document.getElementById('pagoTelefono').value  = l.pago_telefono;
+    if (l.nota)      document.getElementById('nota').value          = l.nota;
+
+    // Radio buttons helper
+    function setRadio(name, value) {
+      if (!value) return;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+        if (r.value === value) r.checked = true;
+      });
+    }
+    setRadio('intProv',   l.proveedor_internet);
+    setRadio('telProv',   l.proveedor_telefono);
+    setRadio('velActual', l.velocidad);
+    setRadio('lineas',    l.lineas);
+
+    generate();
+    generateCliente();
+    showToast(`✅ Lead de ${l.cliente} cargado — completa el PASO 2`, '#1a3a6b');
+    // Scroll to PASO 2
+    setTimeout(() => {
+      const el = document.getElementById('paso2Divider');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
   }
 
   function nuevaCotizacion() {
