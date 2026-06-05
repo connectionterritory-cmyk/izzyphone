@@ -745,9 +745,7 @@
       localStorage.setItem('izzy_access', hash);
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
-      if (user.rol === 'admin') {
-        document.getElementById('leadsLink').style.display = 'flex';
-      }
+      document.getElementById('leadsLink').style.display = 'flex';
     } else {
       const err = document.getElementById('pinError');
       err.textContent = '❌ Código incorrecto. Intenta de nuevo.';
@@ -763,9 +761,7 @@
     if (saved && USERS[saved]) {
       document.getElementById('pinScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
-      if (USERS[saved].rol === 'admin') {
-        document.getElementById('leadsLink').style.display = 'flex';
-      }
+      document.getElementById('leadsLink').style.display = 'flex';
       restoreLead();
     }
   })();

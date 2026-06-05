@@ -294,9 +294,9 @@
 <!-- ── STATS ──────────────────────────────────────────── -->
 <div class="stats-row">
   <div class="stat-card">
-    <div class="stat-label">Total Leads</div>
+    <div class="stat-label" id="statTotalLabel">Total Leads</div>
     <div class="stat-value" id="statTotal">—</div>
-    <div class="stat-sub">en la base de datos</div>
+    <div class="stat-sub" id="statTotalSub">en la base de datos</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Hoy</div>
@@ -368,7 +368,8 @@
   };
   const savedHash   = localStorage.getItem('izzy_access');
   const currentUser = savedHash ? USERS[savedHash] : null;
-  if (!currentUser || currentUser.rol !== 'admin') { window.location.href = 'index.html'; }
+  if (!currentUser) { window.location.href = 'index.html'; }
+  const isAdmin = currentUser.rol === 'admin';
   document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
 
   // ── Supabase ───────────────────────────────────────────
@@ -383,7 +384,10 @@
 
   // ── Fetch ──────────────────────────────────────────────
   async function fetchLeads() {
-    const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads?select=*&order=created_at.desc`, { headers: HEADERS });
+    const filter = isAdmin
+      ? ''
+      : `&agente=eq.${encodeURIComponent(currentUser.nombre)}`;
+    const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads?select=*&order=created_at.desc${filter}`, { headers: HEADERS });
     allLeads = await res.json();
     buildFilters();
     updateStats();
@@ -392,12 +396,16 @@
 
   // ── Filters ────────────────────────────────────────────
   function buildFilters() {
-    const agentes = [...new Set(allLeads.map(l => l.agente).filter(Boolean))].sort();
-    const provs   = [...new Set(allLeads.map(l => l.proveedor_internet).filter(Boolean))].sort();
-    const agtSel  = document.getElementById('filterAgente');
-    const prvSel  = document.getElementById('filterProv');
-    agentes.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; agtSel.appendChild(o); });
-    provs.forEach(p   => { const o = document.createElement('option'); o.value = p; o.textContent = p; prvSel.appendChild(o); });
+    const agtSel = document.getElementById('filterAgente');
+    if (!isAdmin) {
+      agtSel.style.display = 'none';
+    } else {
+      const agentes = [...new Set(allLeads.map(l => l.agente).filter(Boolean))].sort();
+      agentes.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; agtSel.appendChild(o); });
+    }
+    const provs  = [...new Set(allLeads.map(l => l.proveedor_internet).filter(Boolean))].sort();
+    const prvSel = document.getElementById('filterProv');
+    provs.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; prvSel.appendChild(o); });
   }
 
   function getFiltered() {
@@ -422,6 +430,10 @@
     const semana  = allLeads.filter(l => new Date(l.created_at) >= weekAgo).length;
     const pagos   = allLeads.map(l => (parseFloat(l.pago_internet)||0) + (parseFloat(l.pago_telefono)||0)).filter(p => p > 0);
     const prom    = pagos.length ? pagos.reduce((a,b) => a+b, 0) / pagos.length : 0;
+    if (!isAdmin) {
+      document.getElementById('statTotalLabel').textContent = 'Mis Leads';
+      document.getElementById('statTotalSub').textContent   = 'cotizaciones tuyas';
+    }
     document.getElementById('statTotal').textContent  = allLeads.length;
     document.getElementById('statHoy').textContent    = hoy;
     document.getElementById('statSemana').textContent = semana;
