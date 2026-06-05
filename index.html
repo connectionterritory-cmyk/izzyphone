@@ -1342,16 +1342,11 @@
   }
 
   function sendWaCotizador() {
-    const t = T[currentLang];
-    const raw = document.getElementById('preview-msg')?.innerText || '';
-    if (!raw || raw.includes('Llena') || raw.includes('Fill')) {
-      showToast(t.toastFillOffer || 'Llena el formulario primero', '#b45309'); return;
-    }
     const tel = getVal('cotizadorTel').replace(/\D/g, '');
     if (!tel) { showToast('Ingresa el teléfono del cotizador', '#b45309'); return; }
+    if (!currentMsg || currentMsg.length < 5) { showToast('Completa los datos del cliente primero', '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
-    const msg = currentMsg || raw;
-    window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsg)}`, '_blank');
   }
 
   function updateWaBtn() {
