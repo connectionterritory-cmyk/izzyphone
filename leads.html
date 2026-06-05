@@ -21,126 +21,260 @@
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
   }
   .header-left { display: flex; align-items: center; gap: 12px; }
-  .brand-icon {
-    width: 40px; height: 40px; background: rgba(255,255,255,.15);
-    border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
+  .brand-icon { width: 40px; height: 40px; background: rgba(255,255,255,.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
   .page-header h1 { font-size: 20px; font-weight: 700; }
   .page-header .sub { font-size: 11px; opacity: .7; margin-top: 2px; }
   .header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .header-tag {
-    background: rgba(255,255,255,.18); border-radius: 20px;
-    padding: 5px 13px; font-size: 12px; font-weight: 600;
-  }
-  .btn-back {
-    background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.3);
-    color: #fff; border-radius: 20px; padding: 5px 13px;
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
-    cursor: pointer; text-decoration: none; display: inline-block;
-    transition: background .15s;
-  }
+  .header-tag { background: rgba(255,255,255,.18); border-radius: 20px; padding: 5px 13px; font-size: 12px; font-weight: 600; }
+  .btn-back { background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.3); color: #fff; border-radius: 20px; padding: 5px 13px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background .15s; }
   .btn-back:hover { background: rgba(255,255,255,.25); }
 
   /* Stats */
-  .stats-row {
-    max-width: 900px; margin: 0 auto 16px;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;
-  }
-  .stat-card {
-    background: var(--surface); border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    padding: 14px 18px;
-  }
+  .stats-row { max-width: 900px; margin: 0 auto 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .stat-card { background: var(--surface); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); padding: 14px 18px; }
   .stat-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
   .stat-value { font-size: 26px; font-weight: 700; color: var(--blue); }
   .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
   /* Search bar */
-  .search-bar {
-    max-width: 900px; margin: 0 auto 16px;
-    background: var(--surface); border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    padding: 14px 18px;
-    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-  }
-  .search-bar input, .search-bar select {
-    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
-    background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px;
-    padding: 8px 12px; outline: none; transition: border-color .15s;
-    -webkit-appearance: none;
-  }
+  .search-bar { max-width: 900px; margin: 0 auto 16px; background: var(--surface); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); padding: 14px 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .search-bar input, .search-bar select { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 8px 12px; outline: none; transition: border-color .15s; -webkit-appearance: none; }
   .search-bar input { flex: 1; min-width: 180px; }
   .search-bar input:focus, .search-bar select:focus { border-color: var(--blue); }
-  .search-bar select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer;
-  }
+  .search-bar select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
   .result-count { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; margin-left: auto; }
 
-  /* Table wrapper */
-  .table-wrap {
-    max-width: 900px; margin: 0 auto;
-    background: var(--surface); border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden;
-  }
+  /* Table */
+  .table-wrap { max-width: 900px; margin: 0 auto; background: var(--surface); border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
   .table-scroll { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
   thead { background: var(--blue); }
-  thead th {
-    color: #fff; font-size: 11px; font-weight: 700;
-    letter-spacing: .06em; text-transform: uppercase;
-    padding: 12px 10px; text-align: left; white-space: nowrap;
-    cursor: pointer; user-select: none;
-  }
+  thead th { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 12px 10px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; }
   thead th:hover { background: #142e58; }
-  thead th .sort-icon { margin-left: 4px; opacity: .6; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  thead th.no-sort { cursor: default; }
+  thead th.no-sort:hover { background: var(--blue); }
+  .sort-icon { margin-left: 4px; opacity: .6; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; cursor: pointer; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--bg); }
-  tbody td { padding: 10px 10px; font-size: 13px; color: var(--text); vertical-align: top; }
-  th:last-child, td:last-child { position: sticky; right: 0; background: inherit; box-shadow: -2px 0 6px rgba(0,0,0,.08); }
-  thead th:last-child { background: var(--blue); }
+  tbody tr:hover { background: #edf1f8; }
+  tbody td { padding: 10px 10px; font-size: 13px; color: var(--text); vertical-align: middle; }
   td.muted { color: var(--muted); }
   td.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
   td.money { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: #16a34a; }
-  .badge {
-    display: inline-block; padding: 2px 8px; border-radius: 20px;
-    font-size: 11px; font-weight: 700; letter-spacing: .04em;
-  }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
   .badge-blue { background: var(--blue-light); color: var(--blue); }
   .badge-purple { background: #f3e8ff; color: #6b21a8; }
 
-  /* Empty / loading */
-  .empty-state {
-    padding: 48px 24px; text-align: center; color: var(--muted);
-  }
+  /* Empty */
+  .empty-state { padding: 48px 24px; text-align: center; color: var(--muted); }
   .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
   .empty-state p { font-size: 14px; }
 
   /* Mobile cards */
-  @media (max-width: 600px) {
-    .table-scroll { display: none; }
-    .card-list { display: block; }
-  }
-  @media (min-width: 601px) {
-    .card-list { display: none; }
-  }
-  .lead-card {
-    border-bottom: 1px solid var(--border); padding: 14px 18px;
-  }
+  @media (max-width: 600px) { .table-scroll { display: none; } .card-list { display: block; } }
+  @media (min-width: 601px) { .card-list { display: none; } }
+  .lead-card { border-bottom: 1px solid var(--border); padding: 14px 18px; cursor: pointer; transition: background .1s; }
   .lead-card:last-child { border-bottom: none; }
+  .lead-card:hover { background: var(--bg); }
   .lead-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
   .lead-card-name { font-size: 15px; font-weight: 700; }
   .lead-card-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
   .lead-card-row { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
   .lead-card-row strong { color: var(--text); }
   .lead-card-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tap-hint { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
+
+  /* ── MODAL ────────────────────────────────────────── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(10,20,40,.55); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    width: 100%; max-width: 480px; max-height: 90vh;
+    display: flex; flex-direction: column; overflow: hidden;
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(.95) translateY(8px); } to { opacity:1; transform:none; } }
+
+  .modal-header {
+    padding: 18px 20px 16px;
+    background: var(--blue); color: #fff;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-shrink: 0;
+  }
+  .modal-header h2 { font-size: 16px; font-weight: 700; }
+  .modal-header .modal-sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+  .btn-close {
+    background: rgba(255,255,255,.15); border: none; color: #fff;
+    width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background .15s;
+  }
+  .btn-close:hover { background: rgba(255,255,255,.3); }
+
+  .modal-body { padding: 18px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 13px; flex: 1; }
+
+  .m-field { display: flex; flex-direction: column; gap: 5px; }
+  .m-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .m-input {
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text);
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px;
+    padding: 10px 14px; outline: none; width: 100%;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .m-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: #fff; }
+  .m-input::placeholder { color: #c5bfb9; }
+  .m-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .m-money { display: flex; align-items: stretch; background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; overflow: hidden; transition: border-color .15s, box-shadow .15s; }
+  .m-money:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: #fff; }
+  .m-money-sign { padding: 0 11px; font-size: 15px; font-weight: 700; color: var(--muted); background: var(--border); display: flex; align-items: center; }
+  .m-money input { border: none !important; background: transparent !important; box-shadow: none !important; font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; padding: 10px 11px; outline: none; width: 100%; }
+  textarea.m-input { resize: vertical; min-height: 70px; line-height: 1.5; }
+  select.m-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; -webkit-appearance: none; cursor: pointer; }
+
+  .modal-footer {
+    padding: 14px 20px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px; flex-shrink: 0;
+  }
+  .btn-save-modal {
+    flex: 1; padding: 12px; border-radius: 10px; border: none;
+    background: #16a34a; color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-save-modal:hover { background: #15803d; }
+  .btn-save-modal:disabled { background: #86efac; cursor: not-allowed; }
+  .btn-cotizar {
+    flex: 1; padding: 12px; border-radius: 10px; border: none;
+    background: var(--blue); color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-cotizar:hover { background: #142e58; }
+
+  /* Toast */
+  .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999; white-space: nowrap; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
+<!-- ── MODAL ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle">Editar Lead</h2>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="m-field">
+        <label class="m-label">Nombre del cliente</label>
+        <input class="m-input" type="text" id="mCliente" placeholder="Nombre completo">
+      </div>
+      <div class="m-row2">
+        <div class="m-field">
+          <label class="m-label">Teléfono</label>
+          <input class="m-input" type="tel" id="mTelefono" placeholder="(___) ___-____">
+        </div>
+        <div class="m-field">
+          <label class="m-label">Agente</label>
+          <input class="m-input" type="text" id="mAgente" placeholder="Nombre agente">
+        </div>
+      </div>
+      <div class="m-field">
+        <label class="m-label">Dirección</label>
+        <input class="m-input" type="text" id="mDireccion" placeholder="Calle, ciudad, estado, ZIP">
+      </div>
+
+      <div style="height:1px;background:var(--border);"></div>
+
+      <div class="m-row2">
+        <div class="m-field">
+          <label class="m-label">Proveedor Internet</label>
+          <select class="m-input" id="mProvInt">
+            <option value="">— Ninguno —</option>
+            <option>Spectrum</option><option>Frontier</option>
+            <option>AT&T</option><option>Cox</option><option>EarthLink</option>
+          </select>
+        </div>
+        <div class="m-field">
+          <label class="m-label">Pago Internet/mes</label>
+          <div class="m-money">
+            <span class="m-money-sign">$</span>
+            <input type="number" id="mPagoInt" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field">
+          <label class="m-label">Velocidad actual</label>
+          <select class="m-input" id="mVelocidad">
+            <option value="">— Ninguna —</option>
+            <option>300 Mbps</option><option>500 Mbps</option>
+            <option>1 Gig</option><option>No sabe</option>
+          </select>
+        </div>
+        <div class="m-field">
+          <label class="m-label">¿Tiene TV?</label>
+          <select class="m-input" id="mTV">
+            <option value="">—</option>
+            <option>Sí</option><option>No</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="height:1px;background:var(--border);"></div>
+
+      <div class="m-row2">
+        <div class="m-field">
+          <label class="m-label">Proveedor Teléfono</label>
+          <select class="m-input" id="mProvTel">
+            <option value="">— Ninguno —</option>
+            <option>T-Mobile</option><option>Verizon</option>
+            <option>AT&T</option><option>Metro</option><option>Cricket</option>
+          </select>
+        </div>
+        <div class="m-field">
+          <label class="m-label">Pago Teléfono/mes</label>
+          <div class="m-money">
+            <span class="m-money-sign">$</span>
+            <input type="number" id="mPagoTel" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+      <div class="m-field">
+        <label class="m-label">Número de líneas</label>
+        <select class="m-input" id="mLineas">
+          <option value="">—</option>
+          <option>1 línea</option><option>2 líneas</option><option>3 líneas</option>
+          <option>4 líneas</option><option>5+ líneas</option>
+        </select>
+      </div>
+
+      <div style="height:1px;background:var(--border);"></div>
+
+      <div class="m-field">
+        <label class="m-label">Nota</label>
+        <textarea class="m-input" id="mNota" placeholder="Notas adicionales..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-save-modal" id="btnSaveModal" onclick="saveChanges()">💾 Guardar cambios</button>
+      <button class="btn-cotizar" onclick="cotizarDesdeModal()">⚡ Cotizar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HEADER ─────────────────────────────────────────── -->
 <div class="page-header">
   <div class="header-left">
     <div class="brand-icon">
@@ -148,7 +282,7 @@
     </div>
     <div>
       <h1>Leads — Izzy Internet</h1>
-      <div class="sub" id="adminLabel">Panel de Administración</div>
+      <div class="sub">Panel de Administración</div>
     </div>
   </div>
   <div class="header-right">
@@ -157,7 +291,7 @@
   </div>
 </div>
 
-<!-- Stats -->
+<!-- ── STATS ──────────────────────────────────────────── -->
 <div class="stats-row">
   <div class="stat-card">
     <div class="stat-label">Total Leads</div>
@@ -181,7 +315,7 @@
   </div>
 </div>
 
-<!-- Search -->
+<!-- ── SEARCH ─────────────────────────────────────────── -->
 <div class="search-bar">
   <input type="text" id="searchInput" placeholder="🔍 Buscar por cliente, agente o teléfono..." oninput="filterLeads()">
   <select id="filterAgente" onchange="filterLeads()">
@@ -193,9 +327,8 @@
   <span class="result-count" id="resultCount"></span>
 </div>
 
-<!-- Table -->
+<!-- ── TABLE ──────────────────────────────────────────── -->
 <div class="table-wrap">
-  <!-- Desktop table -->
   <div class="table-scroll">
     <table>
       <thead>
@@ -203,29 +336,28 @@
           <th onclick="sortBy('fecha')">Fecha <span class="sort-icon">↕</span></th>
           <th onclick="sortBy('agente')">Agente <span class="sort-icon">↕</span></th>
           <th onclick="sortBy('cliente')">Cliente <span class="sort-icon">↕</span></th>
-          <th>Teléfono</th>
-          <th>Dirección</th>
-          <th>Internet</th>
-          <th>Pago Int.</th>
-          <th>Teléfonos</th>
-          <th>Pago Tel.</th>
-          <th>Velocidad</th>
-          <th>Líneas</th>
-          <th>Nota</th>
-          <th></th>
+          <th class="no-sort">Teléfono</th>
+          <th class="no-sort">Dirección</th>
+          <th class="no-sort">Internet</th>
+          <th class="no-sort">Pago Int.</th>
+          <th class="no-sort">Teléfonos</th>
+          <th class="no-sort">Pago Tel.</th>
+          <th class="no-sort">Velocidad</th>
+          <th class="no-sort">Líneas</th>
+          <th class="no-sort">Nota</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
   </div>
-  <!-- Mobile cards -->
   <div class="card-list" id="cardList"></div>
-
   <div class="empty-state" id="emptyState" style="display:none;">
     <div class="icon">📭</div>
     <p>No se encontraron leads con esos filtros.</p>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
   // ── Auth: admin only ───────────────────────────────────
@@ -234,54 +366,38 @@
     '626b4660147aaeb4acc717598f67220f24d687b0d872d55b3f97c4d2c7535737': { nombre: 'Patricia Caicedo', rol: 'agente' },
     '07ba71d69de787494d45d3bd6524485fe5acfb4906b3fa6e41fb035df83a2fde': { nombre: 'Test',             rol: 'agente' }
   };
-  const savedHash  = localStorage.getItem('izzy_access');
+  const savedHash   = localStorage.getItem('izzy_access');
   const currentUser = savedHash ? USERS[savedHash] : null;
-  if (!currentUser) { window.location.href = 'index.html'; }
-  if (currentUser.rol !== 'admin') { window.location.href = 'index.html'; }
-
+  if (!currentUser || currentUser.rol !== 'admin') { window.location.href = 'index.html'; }
   document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
 
   // ── Supabase ───────────────────────────────────────────
   const SUPA_URL = 'https://rxiarmbosgivaplygqug.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4aWFybWJvc2dpdmFwbHlncXVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzQ2NTMsImV4cCI6MjA4NjkxMDY1M30.2d7AJwe4iklQ8PSb0kxVUI3Ic0qYpHkNnc-yovyUUM0';
+  const HEADERS  = { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json' };
 
-  let allLeads = [];
-  let sortCol  = 'created_at';
-  let sortAsc  = false;
+  let allLeads  = [];
+  let sortCol   = 'created_at';
+  let sortAsc   = false;
+  let activeLead = null;
 
+  // ── Fetch ──────────────────────────────────────────────
   async function fetchLeads() {
-    const res = await fetch(
-      `${SUPA_URL}/rest/v1/izzy_leads?select=*&order=created_at.desc`,
-      { headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` } }
-    );
+    const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads?select=*&order=created_at.desc`, { headers: HEADERS });
     allLeads = await res.json();
     buildFilters();
     updateStats();
     renderTable();
   }
 
+  // ── Filters ────────────────────────────────────────────
   function buildFilters() {
-    const agentes   = [...new Set(allLeads.map(l => l.agente).filter(Boolean))].sort();
-    const provs     = [...new Set(allLeads.map(l => l.proveedor_internet).filter(Boolean))].sort();
-    const agtSel    = document.getElementById('filterAgente');
-    const provSel   = document.getElementById('filterProv');
+    const agentes = [...new Set(allLeads.map(l => l.agente).filter(Boolean))].sort();
+    const provs   = [...new Set(allLeads.map(l => l.proveedor_internet).filter(Boolean))].sort();
+    const agtSel  = document.getElementById('filterAgente');
+    const prvSel  = document.getElementById('filterProv');
     agentes.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; agtSel.appendChild(o); });
-    provs.forEach(p   => { const o = document.createElement('option'); o.value = p; o.textContent = p; provSel.appendChild(o); });
-  }
-
-  function updateStats() {
-    const today = new Date().toLocaleDateString('es-US');
-    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
-    const hoy     = allLeads.filter(l => l.fecha === today).length;
-    const semana  = allLeads.filter(l => new Date(l.created_at) >= weekAgo).length;
-    const pagos   = allLeads.map(l => (parseFloat(l.pago_internet)||0) + (parseFloat(l.pago_telefono)||0)).filter(p => p > 0);
-    const prom    = pagos.length ? (pagos.reduce((a,b) => a+b, 0) / pagos.length) : 0;
-
-    document.getElementById('statTotal').textContent  = allLeads.length;
-    document.getElementById('statHoy').textContent    = hoy;
-    document.getElementById('statSemana').textContent = semana;
-    document.getElementById('statProm').textContent   = prom > 0 ? `$${prom.toFixed(0)}` : '—';
-    document.getElementById('statFecha').textContent  = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    provs.forEach(p   => { const o = document.createElement('option'); o.value = p; o.textContent = p; prvSel.appendChild(o); });
   }
 
   function getFiltered() {
@@ -296,13 +412,29 @@
     });
   }
 
-  function sortBy(col) {
-    if (sortCol === col) sortAsc = !sortAsc;
-    else { sortCol = col; sortAsc = true; }
-    renderTable();
+  function filterLeads() { renderTable(); }
+
+  // ── Stats ──────────────────────────────────────────────
+  function updateStats() {
+    const today   = new Date().toLocaleDateString('es-US');
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    const hoy     = allLeads.filter(l => l.fecha === today).length;
+    const semana  = allLeads.filter(l => new Date(l.created_at) >= weekAgo).length;
+    const pagos   = allLeads.map(l => (parseFloat(l.pago_internet)||0) + (parseFloat(l.pago_telefono)||0)).filter(p => p > 0);
+    const prom    = pagos.length ? pagos.reduce((a,b) => a+b, 0) / pagos.length : 0;
+    document.getElementById('statTotal').textContent  = allLeads.length;
+    document.getElementById('statHoy').textContent    = hoy;
+    document.getElementById('statSemana').textContent = semana;
+    document.getElementById('statProm').textContent   = prom > 0 ? `$${prom.toFixed(0)}` : '—';
+    document.getElementById('statFecha').textContent  = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
   }
 
-  function filterLeads() { renderTable(); }
+  // ── Sort & Render ──────────────────────────────────────
+  function sortBy(col) {
+    sortAsc = sortCol === col ? !sortAsc : true;
+    sortCol = col;
+    renderTable();
+  }
 
   function renderTable() {
     let data = getFiltered();
@@ -312,64 +444,153 @@
     });
 
     document.getElementById('resultCount').textContent = `${data.length} lead${data.length !== 1 ? 's' : ''}`;
-    const empty = document.getElementById('emptyState');
-    empty.style.display = data.length === 0 ? 'block' : 'none';
+    document.getElementById('emptyState').style.display = data.length === 0 ? 'block' : 'none';
 
-    // Desktop table
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = data.map(l => {
+    // Desktop table — rows clickable
+    document.getElementById('tableBody').innerHTML = data.map(l => {
       const pagoInt = l.pago_internet ? `$${parseFloat(l.pago_internet).toFixed(0)}` : '—';
       const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}` : '—';
-      return `<tr>
-        <td class="mono">${l.fecha || '—'}</td>
+      const id = JSON.stringify(l).replace(/'/g, '&apos;');
+      return `<tr onclick='openModal(${id.replace(/"/g, "&quot;")})' title="Clic para editar">
+        <td class="mono">${l.fecha||'—'}</td>
         <td><strong>${esc(l.agente||'—')}</strong></td>
         <td><strong>${esc(l.cliente||'—')}</strong></td>
         <td class="mono">${esc(l.telefono||'—')}</td>
-        <td class="muted" style="max-width:160px;font-size:12px;">${esc(l.direccion||'—')}</td>
+        <td class="muted" style="max-width:150px;font-size:12px;">${esc(l.direccion||'—')}</td>
         <td>${l.proveedor_internet ? `<span class="badge badge-blue">${esc(l.proveedor_internet)}</span>` : '<span class="muted">—</span>'}</td>
         <td class="money">${pagoInt}</td>
         <td>${l.proveedor_telefono ? `<span class="badge badge-purple">${esc(l.proveedor_telefono)}</span>` : '<span class="muted">—</span>'}</td>
         <td class="money">${pagoTel}</td>
         <td class="muted">${esc(l.velocidad||'—')}</td>
         <td class="muted">${esc(l.lineas||'—')}</td>
-        <td class="muted" style="max-width:140px;font-size:12px;">${esc(l.nota||'—')}</td>
-        <td><button onclick='continuar(${JSON.stringify(l)})' style="white-space:nowrap;padding:6px 12px;border-radius:8px;border:none;background:#1a3a6b;color:#fff;font-family:DM Sans,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Cotizar →</button></td>
+        <td class="muted" style="max-width:130px;font-size:12px;">${esc(l.nota||'—')}</td>
       </tr>`;
     }).join('');
 
-    // Mobile cards
-    const cardList = document.getElementById('cardList');
-    cardList.innerHTML = data.map(l => {
+    // Mobile cards — clickable
+    document.getElementById('cardList').innerHTML = data.map(l => {
       const pagoInt = l.pago_internet ? `$${parseFloat(l.pago_internet).toFixed(0)}/mo` : null;
       const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}/mo` : null;
-      return `<div class="lead-card">
+      const id = JSON.stringify(l).replace(/"/g, '&quot;');
+      return `<div class="lead-card" onclick='openModal(${id})'>
         <div class="lead-card-top">
           <div class="lead-card-name">${esc(l.cliente||'—')}</div>
           <div class="lead-card-date">${l.fecha||'—'}</div>
         </div>
         <div class="lead-card-row">📞 <strong>${esc(l.telefono||'—')}</strong></div>
         ${l.direccion ? `<div class="lead-card-row">📍 ${esc(l.direccion)}</div>` : ''}
-        ${l.agente    ? `<div class="lead-card-row">👤 Agente: <strong>${esc(l.agente)}</strong></div>` : ''}
+        ${l.agente    ? `<div class="lead-card-row">👤 <strong>${esc(l.agente)}</strong></div>` : ''}
         ${l.nota      ? `<div class="lead-card-row">📝 ${esc(l.nota)}</div>` : ''}
         <div class="lead-card-badges">
-          ${l.proveedor_internet ? `<span class="badge badge-blue">🌐 ${esc(l.proveedor_internet)}${pagoInt ? ' · ' + pagoInt : ''}</span>` : ''}
-          ${l.proveedor_telefono ? `<span class="badge badge-purple">📱 ${esc(l.proveedor_telefono)}${pagoTel ? ' · ' + pagoTel : ''}</span>` : ''}
+          ${l.proveedor_internet ? `<span class="badge badge-blue">🌐 ${esc(l.proveedor_internet)}${pagoInt?' · '+pagoInt:''}</span>` : ''}
+          ${l.proveedor_telefono ? `<span class="badge badge-purple">📱 ${esc(l.proveedor_telefono)}${pagoTel?' · '+pagoTel:''}</span>` : ''}
           ${l.velocidad ? `<span class="badge" style="background:#f0fdf4;color:#16a34a;">⚡ ${esc(l.velocidad)}</span>` : ''}
           ${l.lineas    ? `<span class="badge" style="background:#fef9c3;color:#854d0e;">${esc(l.lineas)}</span>` : ''}
         </div>
-        <button onclick='continuar(${JSON.stringify(l)})' style="margin-top:10px;width:100%;padding:10px;border-radius:9px;border:none;background:#1a3a6b;color:#fff;font-family:DM Sans,sans-serif;font-size:14px;font-weight:700;cursor:pointer;">⚡ Cotizar al cliente →</button>
+        <div class="tap-hint">Toca para editar / cotizar →</div>
       </div>`;
     }).join('');
   }
 
-  function continuar(lead) {
+  // ── Modal ──────────────────────────────────────────────
+  function openModal(lead) {
+    activeLead = lead;
+    document.getElementById('modalTitle').textContent = lead.cliente || 'Editar Lead';
+    document.getElementById('modalSub').textContent   = `Guardado: ${lead.fecha || '—'} · ID #${lead.id}`;
+    document.getElementById('mCliente').value    = lead.cliente    || '';
+    document.getElementById('mTelefono').value   = lead.telefono   || '';
+    document.getElementById('mAgente').value     = lead.agente     || '';
+    document.getElementById('mDireccion').value  = lead.direccion  || '';
+    setSelect('mProvInt',   lead.proveedor_internet);
+    document.getElementById('mPagoInt').value    = lead.pago_internet  || '';
+    setSelect('mVelocidad', lead.velocidad);
+    setSelect('mProvTel',   lead.proveedor_telefono);
+    document.getElementById('mPagoTel').value    = lead.pago_telefono  || '';
+    setSelect('mLineas',    lead.lineas);
+    document.getElementById('mNota').value       = lead.nota        || '';
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function setSelect(id, value) {
+    const sel = document.getElementById(id);
+    for (let opt of sel.options) { opt.selected = opt.value === (value || ''); }
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    activeLead = null;
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  async function saveChanges() {
+    if (!activeLead) return;
+    const btn = document.getElementById('btnSaveModal');
+    btn.disabled = true; btn.textContent = '⏳ Guardando...';
+
+    const updates = {
+      cliente:            document.getElementById('mCliente').value.trim(),
+      telefono:           document.getElementById('mTelefono').value.trim(),
+      agente:             document.getElementById('mAgente').value.trim(),
+      direccion:          document.getElementById('mDireccion').value.trim(),
+      proveedor_internet: document.getElementById('mProvInt').value,
+      pago_internet:      parseFloat(document.getElementById('mPagoInt').value) || null,
+      velocidad:          document.getElementById('mVelocidad').value,
+      proveedor_telefono: document.getElementById('mProvTel').value,
+      pago_telefono:      parseFloat(document.getElementById('mPagoTel').value) || null,
+      lineas:             document.getElementById('mLineas').value,
+      nota:               document.getElementById('mNota').value.trim()
+    };
+
+    try {
+      const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads?id=eq.${activeLead.id}`, {
+        method: 'PATCH',
+        headers: { ...HEADERS, Prefer: 'return=minimal' },
+        body: JSON.stringify(updates)
+      });
+      if (!res.ok) throw new Error(await res.text());
+      // Update local data
+      const idx = allLeads.findIndex(l => l.id === activeLead.id);
+      if (idx >= 0) { allLeads[idx] = { ...allLeads[idx], ...updates }; activeLead = allLeads[idx]; }
+      document.getElementById('modalTitle').textContent = updates.cliente || 'Editar Lead';
+      renderTable();
+      updateStats();
+      showToast('✅ Cambios guardados', '#16a34a');
+    } catch(e) {
+      showToast('❌ Error al guardar', '#b91c1c');
+    } finally {
+      btn.disabled = false; btn.textContent = '💾 Guardar cambios';
+    }
+  }
+
+  function cotizarDesdeModal() {
+    if (!activeLead) return;
+    const lead = {
+      ...activeLead,
+      cliente:   document.getElementById('mCliente').value.trim()   || activeLead.cliente,
+      telefono:  document.getElementById('mTelefono').value.trim()  || activeLead.telefono,
+      direccion: document.getElementById('mDireccion').value.trim() || activeLead.direccion,
+    };
     localStorage.setItem('izzy_restore', JSON.stringify(lead));
     window.location.href = 'index.html';
+  }
+
+  // ── Helpers ────────────────────────────────────────────
+  function showToast(msg, color = '#111') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.background = color; t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
   }
 
   function esc(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   fetchLeads();
 </script>
