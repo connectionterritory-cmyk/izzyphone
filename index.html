@@ -561,6 +561,7 @@
     <div class="char-count"><span id="lblChars">Caracteres:</span> <span id="char-count">0</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn-copy" id="btn-copy" onclick="copyMsg()">📋 <span id="btnCopyText">Copiar mensaje</span></button>
+      <button class="btn-copy" id="btn-wa-cotizador" style="background:#25D366;" onclick="sendWaCotizador()">💬 <span id="btnWaCotizador">Enviar al Cotizador</span></button>
       <button class="btn-save" id="btn-save" onclick="saveToSheets()">💾 <span id="btnSaveText">Guardar</span></button>
     </div>
   </div>
@@ -1338,6 +1339,19 @@
   function copyMsgCliente() {
     if (!currentMsgCliente || currentMsgCliente.includes('Llena') || currentMsgCliente.includes('Fill')) return;
     navigator.clipboard.writeText(currentMsgCliente).then(() => showToast(T[currentLang].toastCopiedClient, '#16a34a'));
+  }
+
+  function sendWaCotizador() {
+    const t = T[currentLang];
+    const raw = document.getElementById('preview-msg')?.innerText || '';
+    if (!raw || raw.includes('Llena') || raw.includes('Fill')) {
+      showToast(t.toastFillOffer || 'Llena el formulario primero', '#b45309'); return;
+    }
+    const tel = getVal('cotizadorTel').replace(/\D/g, '');
+    if (!tel) { showToast('Ingresa el teléfono del cotizador', '#b45309'); return; }
+    const telCompleto = tel.length === 10 ? '1' + tel : tel;
+    const msg = currentMsg || raw;
+    window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function updateWaBtn() {
