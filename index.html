@@ -1100,7 +1100,9 @@
   }
 
   async function saveToSheets() {
-    const url = 'https://n8n-n8n.fatnhd.easypanel.host/webhook/izzy-cotizacion';
+    const SUPA_URL = 'https://rxiarmbosgivaplygqug.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4aWFybWJvc2dpdmFwbHlncXVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzQ2NTMsImV4cCI6MjA4NjkxMDY1M30.2d7AJwe4iklQ8PSb0kxVUI3Ic0qYpHkNnc-yovyUUM0';
+
     const cliente = getVal('clienteNombre');
     if (!cliente) { showToast('⚠️ Falta el nombre del cliente', '#b45309'); return; }
 
@@ -1109,29 +1111,37 @@
     btn.innerHTML = T[currentLang].savingBtn;
 
     const payload = {
-      'Fecha':               new Date().toLocaleDateString('es-US'),
-      'Agente':              getVal('miNombre'),
-      'Cliente':             cliente,
-      'Teléfono':            getVal('clienteTel'),
-      'Dirección':           [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
-      'Proveedor Internet':  getRadio('intProv'),
-      'Pago Internet':       getVal('pagoInternet'),
-      'Proveedor Teléfono':  getRadio('telProv'),
-      'Pago Teléfono':       getVal('pagoTelefono'),
-      'Velocidad':           getRadio('velActual'),
-      'Líneas':              getRadio('lineas'),
-      'Nota':                getVal('nota')
+      fecha:              new Date().toLocaleDateString('es-US'),
+      agente:             getVal('miNombre'),
+      cliente:            cliente,
+      telefono:           getVal('clienteTel'),
+      direccion:          [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
+      proveedor_internet: getRadio('intProv'),
+      pago_internet:      parseFloat(getVal('pagoInternet')) || null,
+      proveedor_telefono: getRadio('telProv'),
+      pago_telefono:      parseFloat(getVal('pagoTelefono')) || null,
+      velocidad:          getRadio('velActual'),
+      lineas:             getRadio('lineas'),
+      nota:               getVal('nota')
     };
 
     try {
-      const res = await fetch(url, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPA_KEY,
+          'Authorization': `Bearer ${SUPA_KEY}`,
+          'Prefer': 'return=minimal'
+        },
         body: JSON.stringify(payload)
       });
       if (res.ok) {
         showToast(T[currentLang].toastSaved, '#16a34a');
-      } else { throw new Error('Error ' + res.status); }
+      } else {
+        const err = await res.text();
+        throw new Error(err);
+      }
     } catch (err) {
       showToast(T[currentLang].toastSaveError, '#b91c1c');
     } finally {
