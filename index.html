@@ -366,6 +366,7 @@
     </div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
+    <button onclick="nuevaCotizacion()" id="btnNueva" style="background:#e8faf1;color:#16a34a;border:1.5px solid #86efac;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Nueva</button>
     <a href="tutorial.html" id="tutorialLink" style="display:flex;align-items:center;gap:5px;background:#edf1f8;color:#1a3a6b;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;border:1.5px solid #c7d4e8;">📚 Tutorial</a>
     <a href="leads.html" id="leadsLink" style="display:none;align-items:center;gap:5px;background:#1a3a6b;color:#fff;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;">📊 Leads</a>
     <button id="langToggle" onclick="toggleLang()" style="background:#1a3a6b;color:#fff;border:none;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🇺🇸 EN</button>
@@ -1343,6 +1344,31 @@
     if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
     window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
+  }
+
+  function nuevaCotizacion() {
+    // Clear text/number inputs (except agent and cotizador fields)
+    ['clienteNombre','clienteTel','clienteZip','clienteDirec','clienteCiudad',
+     'pagoInternet','pagoTelefono','nota',
+     'ofertaIntPrecio','ofertaTelBase','ofertaTelAdicional','ofertaNota'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    // Clear all radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    // Clear all checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    // Hide dynamic displays
+    ['totalTelDisplay','ofertaTotalDisplay','btnProcederOrden'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    // Reset previews
+    generate();
+    generateCliente();
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('✅ Formulario limpiado — listo para nueva cotización', '#16a34a');
   }
 
   function procederOrden() {
