@@ -424,12 +424,18 @@
     <div class="row2">
       <div class="field">
         <label id="lblDirec">Dirección (calle y número)</label>
-        <input type="text" id="clienteDirec" placeholder="1234 Main St, Apt 5" data-ph="phDirec" oninput="generate(); acType(this)" autocomplete="off">
+        <input type="text" id="clienteDirec" placeholder="1234 Main St" data-ph="phDirec" oninput="generate(); acType(this)" autocomplete="off">
         <span id="acSpinner" style="display:none;font-size:11px;color:var(--muted);margin-top:3px;">🔍 Buscando...</span>
       </div>
       <div class="field">
         <label id="lblCiudad">Ciudad y Estado</label>
         <input type="text" id="clienteCiudad" placeholder="Los Angeles, CA" data-ph="phCiudad" oninput="generate()">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field" style="max-width:180px;">
+        <label id="lblApt">Apt / Unit</label>
+        <input type="text" id="clienteApt" placeholder="Apt 5, Unit B..." oninput="generate()" autocomplete="off">
       </div>
     </div>
   </div>
@@ -1030,6 +1036,7 @@
     const tel       = getVal('clienteTel');
     const zip       = getVal('clienteZip');
     const direc     = getVal('clienteDirec');
+    const apt       = getVal('clienteApt');
     const ciudad    = getVal('clienteCiudad');
     const intProv   = getRadio('intProv');
     const telProv   = getRadio('telProv');
@@ -1040,7 +1047,8 @@
     const lineas    = getRadio('lineas');
     const nota      = getVal('nota');
     const pagoTotal = (parseFloat(pagoInt)||0) + (parseFloat(pagoTel)||0);
-    const direccionCompleta = [direc, ciudad, zip].filter(Boolean).join(', ');
+    const direcConApt = [direc, apt].filter(Boolean).join(', ');
+    const direccionCompleta = [direcConApt, ciudad, zip].filter(Boolean).join(', ');
     const hasTV = tieneTV === 'Sí' || tieneTV === 'Yes' || tieneTV === t.chipSi;
     const noTiene = 'No tiene';
     const isSMS = currentMode === 'sms';
@@ -1125,7 +1133,7 @@
       agente:             getVal('miNombre'),
       cliente:            cliente,
       telefono:           getVal('clienteTel'),
-      direccion:          [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
+      direccion:          [[getVal('clienteDirec'), getVal('clienteApt')].filter(Boolean).join(', '), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
       proveedor_internet: getRadio('intProv'),
       pago_internet:      parseFloat(getVal('pagoInternet')) || null,
       proveedor_telefono: getRadio('telProv'),
@@ -1413,7 +1421,7 @@
 
   function nuevaCotizacion() {
     // Clear text/number inputs (except agent and cotizador fields)
-    ['clienteNombre','clienteTel','clienteZip','clienteDirec','clienteCiudad',
+    ['clienteNombre','clienteTel','clienteZip','clienteDirec','clienteApt','clienteCiudad',
      'pagoInternet','pagoTelefono','nota',
      'ofertaIntPrecio','ofertaTelBase','ofertaTelAdicional','ofertaNota'].forEach(id => {
       const el = document.getElementById(id);
@@ -1439,7 +1447,7 @@
   function procederOrden() {
     localStorage.setItem('izzy_orden_cliente',   getVal('clienteNombre'));
     localStorage.setItem('izzy_orden_tel',        getVal('clienteTel'));
-    const direc = [getVal('clienteDirec'), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', ');
+    const direc = [[getVal('clienteDirec'), getVal('clienteApt')].filter(Boolean).join(', '), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', ');
     localStorage.setItem('izzy_orden_direccion',  direc);
     localStorage.setItem('izzy_orden_proveedor',  getRadio('ofertaProv'));
     localStorage.setItem('izzy_orden_velocidad',  getRadio('ofertaVel'));
