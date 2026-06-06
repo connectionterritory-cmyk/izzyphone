@@ -1448,7 +1448,7 @@
 
   setLang(currentLang);
 
-  // ── Address autocomplete (OpenStreetMap Nominatim) ─────
+  // ── Address autocomplete (Photon/OpenStreetMap — browser friendly) ─────
   const STATE_MAP = {'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
   function stateAbbr(s) { return STATE_MAP[s] || s || ''; }
 
@@ -1509,52 +1509,51 @@
 
   async function acFetch(q) {
     try {
-      const base = 'https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&addressdetails=1&limit=7&';
-      const r1 = await fetch(base + 'street=' + encodeURIComponent(q));
-      const d1 = await r1.json();
-      if (d1.length) { acShow(d1); return; }
-      const r2 = await fetch(base + 'q=' + encodeURIComponent(q));
-      const d2 = await r2.json();
-      acShow(d2);
+      // Photon: OpenStreetMap geocoder designed for browser use, no API key needed
+      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en&limit=7&bbox=-125,24,-66,50`;
+      const r = await fetch(url);
+      const data = await r.json();
+      const features = (data.features || []).filter(f => f.properties.country === 'United States of America');
+      acShow(features);
     } catch {
       acDrop.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#b91c1c;">⚠️ Sin conexión — escribe la dirección manualmente</div>';
     }
   }
 
-  function acShow(results) {
-    if (!results.length) {
+  function acShow(features) {
+    if (!features.length) {
       acDrop.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#7a7570;">Sin resultados — agrega ciudad o estado</div>';
       acPos(); return;
     }
-    acDrop.innerHTML = results.map((r,i) => {
-      const a = r.address;
-      const street = [a.house_number, a.road].filter(Boolean).join(' ');
-      const city   = a.city||a.town||a.village||a.municipality||a.county||'';
-      const st     = stateAbbr(a.state);
-      const zip    = (a.postcode||'').split('-')[0];
-      const line1  = street || r.display_name.split(',')[0];
-      const line2  = [city,st,zip].filter(Boolean).join(', ');
+    acDrop.innerHTML = features.map((f, i) => {
+      const p = f.properties;
+      const street = [p.housenumber, p.street].filter(Boolean).join(' ');
+      const city   = p.city || p.town || p.village || p.municipality || '';
+      const st     = stateAbbr(p.state);
+      const zip    = p.postcode || '';
+      const line1  = street || p.name || p.street || '';
+      const line2  = [city, st, zip].filter(Boolean).join(', ');
       return `<div class="aci" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid #f0f2f5;">
         <div style="font-size:14px;font-weight:600;color:#1a1814;line-height:1.3;">${line1}</div>
         ${line2?`<div style="font-size:12px;color:#7a7570;margin-top:2px;">${line2}</div>`:''}
       </div>`;
     }).join('');
     acPos(); acDrop.style.display='block';
-    acDrop.querySelectorAll('.aci').forEach((el,i) => {
+    acDrop.querySelectorAll('.aci').forEach((el, i) => {
       el.addEventListener('mouseenter', ()=>{ acActive=i; acHL(); });
       el.addEventListener('mousedown', e => {
         e.preventDefault();
-        acCb(results[i]);
+        acCb(features[i]);
         acClose();
       });
     });
   }
 
-  initAutocomplete('clienteDirec', res => {
-    const a = res.address;
-    document.getElementById('clienteDirec').value  = [a.house_number,a.road].filter(Boolean).join(' ');
-    document.getElementById('clienteCiudad').value = [a.city||a.town||a.village||a.municipality||a.county, stateAbbr(a.state)].filter(Boolean).join(', ');
-    document.getElementById('clienteZip').value    = (a.postcode||'').split('-')[0];
+  initAutocomplete('clienteDirec', f => {
+    const p = f.properties;
+    document.getElementById('clienteDirec').value  = [p.housenumber, p.street].filter(Boolean).join(' ');
+    document.getElementById('clienteCiudad').value = [p.city||p.town||p.village||p.municipality, stateAbbr(p.state)].filter(Boolean).join(', ');
+    document.getElementById('clienteZip').value    = p.postcode || '';
     generate();
   });
 </script>
