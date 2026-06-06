@@ -189,6 +189,12 @@
     background: var(--blue); border-color: var(--blue); color: #fff;
   }
 
+  .other-provider-field {
+    display: none;
+    margin-top: 10px;
+  }
+  .other-provider-field.show { display: block; }
+
   .cotizador-banner {
     display: none;
     align-items: center;
@@ -677,16 +683,21 @@
       <div class="field" style="margin-bottom:10px;">
         <label id="lblIntProv">Compañía de Internet</label>
         <div class="chips">
-          <input type="radio" class="chip-input" name="intProv" id="ip-spectrum" value="Spectrum" onchange="generate()">
+          <input type="radio" class="chip-input" name="intProv" id="ip-spectrum" value="Spectrum" onchange="handleProviderSelection('intProv')">
           <label class="chip-label" for="ip-spectrum">Spectrum</label>
-          <input type="radio" class="chip-input" name="intProv" id="ip-frontier" value="Frontier" onchange="generate()">
+          <input type="radio" class="chip-input" name="intProv" id="ip-frontier" value="Frontier" onchange="handleProviderSelection('intProv')">
           <label class="chip-label" for="ip-frontier">Frontier</label>
-          <input type="radio" class="chip-input" name="intProv" id="ip-att" value="AT&T" onchange="generate()">
+          <input type="radio" class="chip-input" name="intProv" id="ip-att" value="AT&T" onchange="handleProviderSelection('intProv')">
           <label class="chip-label" for="ip-att">AT&T</label>
-          <input type="radio" class="chip-input" name="intProv" id="ip-cox" value="Cox" onchange="generate()">
+          <input type="radio" class="chip-input" name="intProv" id="ip-cox" value="Cox" onchange="handleProviderSelection('intProv')">
           <label class="chip-label" for="ip-cox">Cox</label>
-          <input type="radio" class="chip-input" name="intProv" id="ip-ninguno" value="No tiene" onchange="generate()">
+          <input type="radio" class="chip-input" name="intProv" id="ip-otro" value="Otro" onchange="handleProviderSelection('intProv')">
+          <label class="chip-label" for="ip-otro">Otro</label>
+          <input type="radio" class="chip-input" name="intProv" id="ip-ninguno" value="No tiene" onchange="handleProviderSelection('intProv')">
           <label class="chip-label" id="chipIntNone" for="ip-ninguno">No tiene</label>
+        </div>
+        <div class="other-provider-field" id="intProvOtherWrap">
+          <input type="text" id="intProvOther" placeholder="Escribe la compania de internet" oninput="generate()">
         </div>
       </div>
       <div class="row2">
@@ -728,18 +739,23 @@
       <div class="field" style="margin-bottom:10px;">
         <label id="lblTelProv">Compañía de Teléfono</label>
         <div class="chips">
-          <input type="radio" class="chip-input" name="telProv" id="tp-tmobile" value="T-Mobile" onchange="generate()">
+          <input type="radio" class="chip-input" name="telProv" id="tp-tmobile" value="T-Mobile" onchange="handleProviderSelection('telProv')">
           <label class="chip-label" for="tp-tmobile">T-Mobile</label>
-          <input type="radio" class="chip-input" name="telProv" id="tp-verizon" value="Verizon" onchange="generate()">
+          <input type="radio" class="chip-input" name="telProv" id="tp-verizon" value="Verizon" onchange="handleProviderSelection('telProv')">
           <label class="chip-label" for="tp-verizon">Verizon</label>
-          <input type="radio" class="chip-input" name="telProv" id="tp-att" value="AT&T" onchange="generate()">
+          <input type="radio" class="chip-input" name="telProv" id="tp-att" value="AT&T" onchange="handleProviderSelection('telProv')">
           <label class="chip-label" for="tp-att">AT&T</label>
-          <input type="radio" class="chip-input" name="telProv" id="tp-metro" value="Metro" onchange="generate()">
+          <input type="radio" class="chip-input" name="telProv" id="tp-metro" value="Metro" onchange="handleProviderSelection('telProv')">
           <label class="chip-label" for="tp-metro">Metro</label>
-          <input type="radio" class="chip-input" name="telProv" id="tp-cricket" value="Cricket" onchange="generate()">
+          <input type="radio" class="chip-input" name="telProv" id="tp-cricket" value="Cricket" onchange="handleProviderSelection('telProv')">
           <label class="chip-label" for="tp-cricket">Cricket</label>
-          <input type="radio" class="chip-input" name="telProv" id="tp-ninguno" value="No tiene" onchange="generate()">
+          <input type="radio" class="chip-input" name="telProv" id="tp-otro" value="Otro" onchange="handleProviderSelection('telProv')">
+          <label class="chip-label" for="tp-otro">Otro</label>
+          <input type="radio" class="chip-input" name="telProv" id="tp-ninguno" value="No tiene" onchange="handleProviderSelection('telProv')">
           <label class="chip-label" id="chipTelNone" for="tp-ninguno">No tiene</label>
+        </div>
+        <div class="other-provider-field" id="telProvOtherWrap">
+          <input type="text" id="telProvOther" placeholder="Escribe la compania de telefono" oninput="generate()">
         </div>
       </div>
       <div class="row2">
@@ -1540,9 +1556,53 @@
     el.value = v;
   }
 
+  const KNOWN_INTERNET_PROVIDERS = ['Spectrum', 'Frontier', 'AT&T', 'Cox', 'No tiene'];
+  const KNOWN_PHONE_PROVIDERS = ['T-Mobile', 'Verizon', 'AT&T', 'Metro', 'Cricket', 'No tiene'];
+
   function getVal(id) { return document.getElementById(id)?.value?.trim() || ''; }
   function getRadio(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; }
   function getChecks(ids) { return ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value); }
+
+  function getProviderValue(name) {
+    const selected = getRadio(name);
+    if (selected !== 'Otro') return selected;
+    return getVal(name === 'intProv' ? 'intProvOther' : 'telProvOther');
+  }
+
+  function handleProviderSelection(name) {
+    const isInternet = name === 'intProv';
+    const selected = getRadio(name);
+    const wrap = document.getElementById(isInternet ? 'intProvOtherWrap' : 'telProvOtherWrap');
+    const input = document.getElementById(isInternet ? 'intProvOther' : 'telProvOther');
+    const show = selected === 'Otro';
+    wrap.classList.toggle('show', show);
+    if (!show) input.value = '';
+    generate();
+  }
+
+  function setProviderSelection(name, value) {
+    const normalized = String(value || '').trim();
+    const isInternet = name === 'intProv';
+    const known = isInternet ? KNOWN_INTERNET_PROVIDERS : KNOWN_PHONE_PROVIDERS;
+    const otherInputId = isInternet ? 'intProvOther' : 'telProvOther';
+    const otherWrapId = isInternet ? 'intProvOtherWrap' : 'telProvOtherWrap';
+    const radios = document.querySelectorAll(`input[name="${name}"]`);
+    radios.forEach((radio) => { radio.checked = false; });
+    document.getElementById(otherInputId).value = '';
+    document.getElementById(otherWrapId).classList.remove('show');
+
+    if (!normalized) return;
+    if (known.includes(normalized)) {
+      const match = Array.from(radios).find((radio) => radio.value === normalized);
+      if (match) match.checked = true;
+      return;
+    }
+
+    const otherRadio = Array.from(radios).find((radio) => radio.value === 'Otro');
+    if (otherRadio) otherRadio.checked = true;
+    document.getElementById(otherInputId).value = normalized;
+    document.getElementById(otherWrapId).classList.add('show');
+  }
 
   function generate() {
     const t  = T[currentLang];
@@ -1554,8 +1614,8 @@
     const direc     = getVal('clienteDirec');
     const apt       = getVal('clienteApt');
     const ciudad    = getVal('clienteCiudad');
-    const intProv   = getRadio('intProv');
-    const telProv   = getRadio('telProv');
+    const intProv   = getProviderValue('intProv');
+    const telProv   = getProviderValue('telProv');
     const tieneTV   = getRadio('tieneTV');
     const velAct    = getRadio('velActual');
     const pagoInt   = getVal('pagoInternet');
@@ -1647,9 +1707,9 @@
       cliente:            cliente,
       telefono:           getVal('clienteTel'),
       direccion:          [[getVal('clienteDirec'), getVal('clienteApt')].filter(Boolean).join(', '), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', '),
-      proveedor_internet: getRadio('intProv'),
+      proveedor_internet: getProviderValue('intProv'),
       pago_internet:      parseFloat(getVal('pagoInternet')) || null,
-      proveedor_telefono: getRadio('telProv'),
+      proveedor_telefono: getProviderValue('telProv'),
       pago_telefono:      parseFloat(getVal('pagoTelefono')) || null,
       velocidad:          getRadio('velActual'),
       lineas:             getRadio('lineas'),
@@ -1718,8 +1778,8 @@
     const pagoInt          = parseFloat(getVal('pagoInternet')) || 0;
     const pagoTel          = parseFloat(getVal('pagoTelefono')) || 0;
     const pagoViejo        = pagoInt + pagoTel;
-    const intProv          = getRadio('intProv');
-    const telProv          = getRadio('telProv');
+    const intProv          = getProviderValue('intProv');
+    const telProv          = getProviderValue('telProv');
     const ofertaProv       = getRadio('ofertaProv');
     const ofertaVel        = getRadio('ofertaVel');
     const ofertaIntPrecio  = parseFloat(getVal('ofertaIntPrecio')) || 0;
@@ -1913,8 +1973,8 @@
         if (r.value === value) r.checked = true;
       });
     }
-    setRadio('intProv',   l.proveedor_internet);
-    setRadio('telProv',   l.proveedor_telefono);
+    setProviderSelection('intProv', l.proveedor_internet);
+    setProviderSelection('telProv', l.proveedor_telefono);
     setRadio('velActual', l.velocidad);
     setRadio('lineas',    l.lineas);
 
@@ -1931,13 +1991,15 @@
   function nuevaCotizacion() {
     // Clear text/number inputs (except agent and cotizador fields)
     ['clienteNombre','clienteTel','clienteZip','clienteDirec','clienteApt','clienteCiudad',
-     'pagoInternet','pagoTelefono','nota',
+     'pagoInternet','pagoTelefono','nota','intProvOther','telProvOther',
      'ofertaIntPrecio','ofertaTelBase','ofertaTelAdicional','ofertaNota'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     // Clear all radio buttons
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.getElementById('intProvOtherWrap').classList.remove('show');
+    document.getElementById('telProvOtherWrap').classList.remove('show');
     // Clear all checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
     // Hide dynamic displays

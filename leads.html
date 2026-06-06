@@ -222,8 +222,9 @@
           <select class="m-input" id="mProvInt">
             <option value="">— Ninguno —</option>
             <option>Spectrum</option><option>Frontier</option>
-            <option>AT&T</option><option>Cox</option><option>EarthLink</option>
+            <option>AT&T</option><option>Cox</option><option>EarthLink</option><option>Otro</option>
           </select>
+          <input class="m-input" type="text" id="mProvIntOther" placeholder="Otra compania de internet" style="display:none;margin-top:8px;">
         </div>
         <div class="m-field">
           <label class="m-label">Pago Internet/mes</label>
@@ -259,8 +260,9 @@
           <select class="m-input" id="mProvTel">
             <option value="">— Ninguno —</option>
             <option>T-Mobile</option><option>Verizon</option>
-            <option>AT&T</option><option>Metro</option><option>Cricket</option>
+            <option>AT&T</option><option>Metro</option><option>Cricket</option><option>Otro</option>
           </select>
+          <input class="m-input" type="text" id="mProvTelOther" placeholder="Otra compania de telefono" style="display:none;margin-top:8px;">
         </div>
         <div class="m-field">
           <label class="m-label">Pago Teléfono/mes</label>
@@ -523,6 +525,8 @@
   let adminUsers = [];
   let adminQuoters = [];
   let resetRequests = [];
+  const KNOWN_MODAL_INTERNET_PROVIDERS = ['Spectrum', 'Frontier', 'AT&T', 'Cox', 'EarthLink'];
+  const KNOWN_MODAL_PHONE_PROVIDERS = ['T-Mobile', 'Verizon', 'AT&T', 'Metro', 'Cricket'];
 
   // ── Fetch ──────────────────────────────────────────────
   async function fetchLeads() {
@@ -873,6 +877,53 @@
   }
 
   // ── Modal ──────────────────────────────────────────────
+  function bindProviderOtherFields() {
+    document.getElementById('mProvInt').addEventListener('change', () => toggleModalOtherProvider('mProvInt'));
+    document.getElementById('mProvTel').addEventListener('change', () => toggleModalOtherProvider('mProvTel'));
+  }
+
+  function toggleModalOtherProvider(id) {
+    const isInternet = id === 'mProvInt';
+    const select = document.getElementById(id);
+    const input = document.getElementById(isInternet ? 'mProvIntOther' : 'mProvTelOther');
+    const show = select.value === 'Otro';
+    input.style.display = show ? 'block' : 'none';
+    if (!show) input.value = '';
+  }
+
+  function setModalProviderValue(id, value) {
+    const normalized = String(value || '').trim();
+    const isInternet = id === 'mProvInt';
+    const known = isInternet ? KNOWN_MODAL_INTERNET_PROVIDERS : KNOWN_MODAL_PHONE_PROVIDERS;
+    const select = document.getElementById(id);
+    const input = document.getElementById(isInternet ? 'mProvIntOther' : 'mProvTelOther');
+
+    if (!normalized) {
+      select.value = '';
+      input.value = '';
+      input.style.display = 'none';
+      return;
+    }
+
+    if (known.includes(normalized)) {
+      select.value = normalized;
+      input.value = '';
+      input.style.display = 'none';
+      return;
+    }
+
+    select.value = 'Otro';
+    input.value = normalized;
+    input.style.display = 'block';
+  }
+
+  function getModalProviderValue(id) {
+    const isInternet = id === 'mProvInt';
+    const select = document.getElementById(id);
+    if (select.value !== 'Otro') return select.value;
+    return document.getElementById(isInternet ? 'mProvIntOther' : 'mProvTelOther').value.trim();
+  }
+
   function openModal(lead) {
     activeLead = lead;
     document.getElementById('modalTitle').textContent = lead.cliente || 'Editar Lead';
@@ -881,10 +932,10 @@
     document.getElementById('mTelefono').value   = lead.telefono   || '';
     document.getElementById('mAgente').value     = lead.agente     || '';
     document.getElementById('mDireccion').value  = lead.direccion  || '';
-    setSelect('mProvInt',   lead.proveedor_internet);
+    setModalProviderValue('mProvInt', lead.proveedor_internet);
     document.getElementById('mPagoInt').value    = lead.pago_internet  || '';
     setSelect('mVelocidad', lead.velocidad);
-    setSelect('mProvTel',   lead.proveedor_telefono);
+    setModalProviderValue('mProvTel', lead.proveedor_telefono);
     document.getElementById('mPagoTel').value    = lead.pago_telefono  || '';
     setSelect('mLineas',    lead.lineas);
     document.getElementById('mNota').value       = lead.nota        || '';
@@ -917,10 +968,10 @@
       telefono:           document.getElementById('mTelefono').value.trim(),
       agente:             document.getElementById('mAgente').value.trim(),
       direccion:          document.getElementById('mDireccion').value.trim(),
-      proveedor_internet: document.getElementById('mProvInt').value,
+      proveedor_internet: getModalProviderValue('mProvInt'),
       pago_internet:      parseFloat(document.getElementById('mPagoInt').value) || null,
       velocidad:          document.getElementById('mVelocidad').value,
-      proveedor_telefono: document.getElementById('mProvTel').value,
+      proveedor_telefono: getModalProviderValue('mProvTel'),
       pago_telefono:      parseFloat(document.getElementById('mPagoTel').value) || null,
       lineas:             document.getElementById('mLineas').value,
       nota:               document.getElementById('mNota').value.trim()
@@ -974,6 +1025,7 @@
 
   fetchLeads();
   fetchAdminConfig();
+  bindProviderOtherFields();
 </script>
 </body>
 </html>
