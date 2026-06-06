@@ -1513,7 +1513,7 @@
       const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en&limit=7&bbox=-125,24,-66,50`;
       const r = await fetch(url);
       const data = await r.json();
-      const features = (data.features || []).filter(f => f.properties.country === 'United States of America');
+      const features = (data.features || []).filter(f => f.properties.countrycode === 'US');
       acShow(features);
     } catch {
       acDrop.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#b91c1c;">⚠️ Sin conexión — escribe la dirección manualmente</div>';
