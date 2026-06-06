@@ -1556,7 +1556,9 @@
       const a = item.address || {};
       const house = a.house_number || '';
       const road  = a.road || a.pedestrian || a.footway || a.path || '';
-      const city  = a.city || a.town || a.village || a.hamlet || a.municipality || a.county || '';
+      // suburb contains neighborhood names like "Winnetka Neighborhood Council District" → clean to "Winnetka"
+      const suburb = (a.suburb || '').replace(/\s+(Neighborhood|Community|Council|District).*/i, '').trim();
+      const city  = suburb || a.city || a.town || a.village || a.hamlet || a.municipality || a.county || '';
       const state = stateAbbr(a.state || '');
       const zip   = a.postcode || '';
       if (!road) continue;
@@ -1585,27 +1587,23 @@
 
   async function acFetch(q, inp) {
     let results = [];
+    // Primary: Nominatim — handles house numbers correctly, strictly US with countrycodes=us
     try {
-      results = await photonFetch(q);
-      // Photon confuses 5-digit house numbers with European postal codes → 0 US street results.
-      // Retry with just the street portion so Photon can match the street name.
-      if (!results.length && /^\d{4,}\s/.test(q)) {
-        const streetOnly = q.replace(/^\d+\s+/, '').trim();
-        if (streetOnly.length >= 3) results = await photonFetch(streetOnly);
-      }
+      results = await nominatimFetch(q);
     } catch(e) {
-      console.warn('[AC] Photon:', e.message);
+      console.warn('[AC] Nominatim:', e.message);
     }
+    // Fallback: Photon — no rate limit but confuses 5-digit house# with postal codes
     if (!results.length) {
       try {
-        results = await nominatimFetch(q);
-        // Same retry for Nominatim if leading number causes it to return city matches
+        results = await photonFetch(q);
+        // If Photon also returns nothing, retry with just the street part
         if (!results.length && /^\d{4,}\s/.test(q)) {
           const streetOnly = q.replace(/^\d+\s+/, '').trim();
-          if (streetOnly.length >= 3) results = await nominatimFetch(streetOnly);
+          if (streetOnly.length >= 3) results = await photonFetch(streetOnly);
         }
       } catch(e2) {
-        console.warn('[AC] Nominatim:', e2.message);
+        console.warn('[AC] Photon:', e2.message);
         if (acSpin) { acSpin.textContent = '❌ Sin conexión'; acSpin.style.display = 'inline'; setTimeout(()=>{ acSpin.style.display='none'; }, 3000); }
         return;
       }
