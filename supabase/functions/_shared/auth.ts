@@ -16,6 +16,7 @@ type SessionPayload = SessionUser & {
 
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const encoder = new TextEncoder();
+const PASSWORD_ITERATIONS = 100_000;
 
 function toBase64Url(bytes: Uint8Array): string {
   const bin = Array.from(bytes, (b) => String.fromCharCode(b)).join("");
@@ -26,6 +27,10 @@ function fromBase64Url(value: string): Uint8Array {
   const padded = value.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (value.length % 4)) % 4);
   const bin = atob(padded);
   return Uint8Array.from(bin, (char) => char.charCodeAt(0));
+}
+
+function toBytes(value: string): Uint8Array {
+  return encoder.encode(value);
 }
 
 async function hmacSign(input: string): Promise<string> {
@@ -71,6 +76,42 @@ export function authenticatePin(pin: string): SessionUser | null {
   const normalized = normalizePin(pin);
   const match = getUsers().find((user) => user.pin === normalized);
   return match ? { nombre: match.nombre, rol: match.rol } : null;
+}
+
+export function normalizePassword(password: string): string {
+  return String(password || "");
+}
+
+export async function hashPassword(password: string, salt?: string) {
+  const normalized = normalizePassword(password);
+  const saltValue = salt || crypto.randomUUID().replace(/-/g, "");
+  const key = await crypto.subtle.importKey(
+    "raw",
+    toBytes(normalized),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits"],
+  );
+  const bits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      hash: "SHA-256",
+      salt: toBytes(saltValue),
+      iterations: PASSWORD_ITERATIONS,
+    },
+    key,
+    256,
+  );
+
+  return {
+    salt: saltValue,
+    hash: toBase64Url(new Uint8Array(bits)),
+  };
+}
+
+export async function verifyPassword(password: string, salt: string, expectedHash: string) {
+  const derived = await hashPassword(password, salt);
+  return derived.hash === expectedHash;
 }
 
 export async function createSessionToken(user: SessionUser): Promise<string> {

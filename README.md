@@ -2,6 +2,8 @@
 
 App web para capturar y enviar leads al equipo de ventas de Izzy Internet. El formulario recopila información del cliente, genera mensajes para WhatsApp y ahora usa Supabase Edge Functions para login, creación y administración de leads sin exponer la tabla `public.izzy_leads` al frontend.
 
+Los accesos del portal ahora pueden tener password persistido en `public.izzy_portal_users`. Los usuarios viejos sin password siguen entrando temporalmente solo con PIN hasta que un admin les asigne password desde `Leads > Administracion`.
+
 ## Supabase
 
 - Proyecto enlazado: `rxiarmbosgivaplygqug` (`FlowSuiteCRM`)

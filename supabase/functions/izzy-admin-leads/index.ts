@@ -1,6 +1,14 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 
-import { authenticatePin, createSessionToken, requireSession, type Role } from "../_shared/auth.ts";
+import {
+  authenticatePin,
+  createSessionToken,
+  hashPassword,
+  normalizePassword,
+  requireSession,
+  type Role,
+  verifyPassword,
+} from "../_shared/auth.ts";
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
@@ -10,6 +18,8 @@ type PortalUser = {
   nombre: string;
   rol: Role;
   active: boolean;
+  password_hash?: string | null;
+  password_salt?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -101,13 +111,13 @@ async function getQuoters(supabase: ReturnType<typeof createAdminClient>) {
   return DEFAULT_QUOTERS as Quoter[];
 }
 
-async function authenticatePortalUser(pin: string, supabase: ReturnType<typeof createAdminClient>) {
+async function authenticatePortalUser(pin: string, password: string, supabase: ReturnType<typeof createAdminClient>) {
   const normalized = normalizePin(pin);
   if (!normalized) return null;
 
   const { data, error } = await supabase
     .from("izzy_portal_users")
-    .select("nombre, rol, active")
+    .select("nombre, rol, active, password_hash, password_salt")
     .eq("pin_code", normalized)
     .maybeSingle();
 
@@ -117,6 +127,10 @@ async function authenticatePortalUser(pin: string, supabase: ReturnType<typeof c
   }
 
   if (data?.active) {
+    if (data.password_hash && data.password_salt) {
+      const validPassword = await verifyPassword(password, data.password_salt, data.password_hash);
+      if (!validPassword) return null;
+    }
     return { nombre: data.nombre, rol: normalizeRole(data.rol) };
   }
 
@@ -135,7 +149,7 @@ function ensureAdmin(user: { rol: Role }) {
 async function handleLogin(req: Request) {
   const body = await req.json();
   const supabase = createAdminClient();
-  const user = await authenticatePortalUser(String(body?.pin || ""), supabase);
+  const user = await authenticatePortalUser(String(body?.pin || ""), normalizePassword(body?.password), supabase);
 
   if (!user) {
     return jsonResponse({ error: "Invalid access code" }, { status: 401 });
@@ -164,7 +178,7 @@ async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeo
   ensureAdmin(user);
 
   const [{ data: users, error: usersError }, { data: quoters, error: quotersError }] = await Promise.all([
-    supabase.from("izzy_portal_users").select("*").order("nombre", { ascending: true }),
+    supabase.from("izzy_portal_users").select("id, pin_code, nombre, rol, active, created_at, updated_at, password_hash").order("nombre", { ascending: true }),
     supabase.from("izzy_quoters").select("*").order("nombre", { ascending: true }),
   ]);
 
@@ -174,7 +188,7 @@ async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeo
   }
 
   return jsonResponse({
-    users: users ?? [],
+    users: (users ?? []).map((row) => ({ ...row, password_set: Boolean(row.password_hash) })),
     quoters: quoters ?? [],
   });
 }
@@ -182,6 +196,7 @@ async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeo
 async function handleCreateUser(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
   ensureAdmin(user);
   const body = await req.json();
+  const password = normalizePassword(body?.password);
 
   const payload = {
     pin_code: normalizePin(body?.pin_code || body?.pin || ""),
@@ -190,14 +205,16 @@ async function handleCreateUser(req: Request, user: { rol: Role }, supabase: Ret
     active: body?.active === false ? false : true,
   };
 
-  if (!payload.pin_code || !payload.nombre) {
-    return jsonResponse({ error: "pin_code and nombre are required" }, { status: 400 });
+  if (!payload.pin_code || !payload.nombre || !password) {
+    return jsonResponse({ error: "pin_code, nombre and password are required" }, { status: 400 });
   }
+
+  const passwordData = await hashPassword(password);
 
   const { data, error } = await supabase
     .from("izzy_portal_users")
-    .insert(payload)
-    .select("*")
+    .insert({ ...payload, password_hash: passwordData.hash, password_salt: passwordData.salt })
+    .select("id, pin_code, nombre, rol, active, created_at, updated_at")
     .single();
 
   if (error) {
@@ -206,6 +223,32 @@ async function handleCreateUser(req: Request, user: { rol: Role }, supabase: Ret
   }
 
   return jsonResponse({ user: data }, { status: 201 });
+}
+
+async function handleResetUserPassword(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
+  ensureAdmin(user);
+  const body = await req.json();
+  const userId = Number(body?.user_id);
+  const password = normalizePassword(body?.password);
+
+  if (!Number.isInteger(userId) || userId <= 0 || !password) {
+    return jsonResponse({ error: "user_id and password are required" }, { status: 400 });
+  }
+
+  const passwordData = await hashPassword(password);
+  const { data, error } = await supabase
+    .from("izzy_portal_users")
+    .update({ password_hash: passwordData.hash, password_salt: passwordData.salt })
+    .eq("id", userId)
+    .select("id, pin_code, nombre, rol, active, created_at, updated_at")
+    .single();
+
+  if (error) {
+    console.error("[izzy-admin-leads] reset password failed", error);
+    return jsonResponse({ error: "Could not reset password" }, { status: 500 });
+  }
+
+  return jsonResponse({ user: data });
 }
 
 async function handleCreateQuoter(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
@@ -316,6 +359,10 @@ async function handlePost(req: Request) {
 
   if (resource === "users") {
     return await handleCreateUser(req, user, supabase);
+  }
+
+  if (resource === "user-password") {
+    return await handleResetUserPassword(req, user, supabase);
   }
 
   if (resource === "quoters") {

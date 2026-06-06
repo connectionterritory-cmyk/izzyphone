@@ -358,9 +358,26 @@
           <label class="admin-label">Nombre</label>
           <input class="admin-input" id="newAgentName" type="text" placeholder="Nombre completo">
         </div>
+        <div>
+          <label class="admin-label">Password</label>
+          <input class="admin-input" id="newAgentPassword" type="password" placeholder="Password temporal o definitivo">
+        </div>
         <button class="admin-submit" id="saveAgentBtn" onclick="createPortalUser()">Guardar agente</button>
       </div>
       <div class="admin-list" id="usersList"></div>
+      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Usuario existente</label>
+            <select class="admin-select" id="resetUserSelect"></select>
+          </div>
+          <div>
+            <label class="admin-label">Nuevo password</label>
+            <input class="admin-input" id="resetUserPassword" type="password" placeholder="Nuevo password">
+          </div>
+        </div>
+        <button class="admin-submit" id="resetPasswordBtn" onclick="resetUserPassword()">Actualizar password</button>
+      </div>
     </div>
   </div>
 
@@ -522,7 +539,7 @@
       ? adminUsers.map((user) => `
         <div class="admin-item">
           <div class="admin-item-title">${esc(user.nombre)}</div>
-          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)}${user.active ? '' : ' · inactivo'}</div>
+          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
         </div>
       `).join('')
       : '<div class="admin-empty">No hay agentes configurados.</div>';
@@ -535,6 +552,11 @@
         </div>
       `).join('')
       : '<div class="admin-empty">No hay cotizadores configurados.</div>';
+
+    const resetSelect = document.getElementById('resetUserSelect');
+    resetSelect.innerHTML = adminUsers.length
+      ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
+      : '<option value="">Sin usuarios</option>';
   }
 
   async function createPortalUser() {
@@ -542,10 +564,11 @@
       pin_code: document.getElementById('newAgentPin').value.trim().toUpperCase(),
       nombre: document.getElementById('newAgentName').value.trim(),
       rol: document.getElementById('newAgentRole').value,
+      password: document.getElementById('newAgentPassword').value,
     };
 
-    if (!payload.pin_code || !payload.nombre) {
-      showToast('⚠️ Falta PIN o nombre del agente', '#b45309');
+    if (!payload.pin_code || !payload.nombre || !payload.password) {
+      showToast('⚠️ Falta PIN, nombre o password del agente', '#b45309');
       return;
     }
 
@@ -561,9 +584,11 @@
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || 'Create user failed');
       adminUsers.unshift(data.user);
+      if (adminUsers[0]) adminUsers[0].password_set = true;
       renderAdminLists();
       document.getElementById('newAgentPin').value = '';
       document.getElementById('newAgentName').value = '';
+      document.getElementById('newAgentPassword').value = '';
       document.getElementById('newAgentRole').value = 'agente';
       showToast('✅ Agente guardado', '#16a34a');
     } catch (error) {
@@ -571,6 +596,39 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Guardar agente';
+    }
+  }
+
+  async function resetUserPassword() {
+    const userId = Number(document.getElementById('resetUserSelect').value);
+    const password = document.getElementById('resetUserPassword').value;
+
+    if (!userId || !password) {
+      showToast('⚠️ Elige usuario y escribe password', '#b45309');
+      return;
+    }
+
+    const btn = document.getElementById('resetPasswordBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Actualizando...';
+
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=user-password', {
+        method: 'POST',
+        body: JSON.stringify({ user_id: userId, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Reset password failed');
+      const idx = adminUsers.findIndex((item) => item.id === userId);
+      if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user, password_set: true };
+      renderAdminLists();
+      document.getElementById('resetUserPassword').value = '';
+      showToast('✅ Password actualizado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo actualizar el password', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Actualizar password';
     }
   }
 

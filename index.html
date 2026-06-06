@@ -384,7 +384,8 @@
     font-size: 14px; color: rgba(255,255,255,.65);
     margin-bottom: 28px; text-align: center;
   }
-  #pinScreen input[type="text"] {
+  #pinScreen input[type="text"],
+  #pinScreen input[type="password"] {
     font-family: 'DM Mono', monospace;
     font-size: 20px; font-weight: 600; letter-spacing: .18em;
     text-align: center; text-transform: uppercase;
@@ -395,8 +396,10 @@
     outline: none; transition: border-color .2s;
     margin-bottom: 16px;
   }
-  #pinScreen input[type="text"]:focus { border-color: #25D366; }
-  #pinScreen input[type="text"]::placeholder { color: rgba(255,255,255,.3); letter-spacing: .08em; }
+  #pinScreen input[type="text"]:focus,
+  #pinScreen input[type="password"]:focus { border-color: #25D366; }
+  #pinScreen input[type="text"]::placeholder,
+  #pinScreen input[type="password"]::placeholder { color: rgba(255,255,255,.3); letter-spacing: .08em; }
   #pinScreen .pin-btn {
     width: 100%; max-width: 300px;
     padding: 14px; border-radius: 12px; border: none;
@@ -422,6 +425,7 @@
   <div class="pin-title">Izzy Internet</div>
   <div class="pin-sub" id="pinSub">Ingresa tu código de acceso</div>
   <input type="text" id="pinInput" placeholder="CÓDIGO" maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') checkPin()">
+  <input type="password" id="passwordInput" placeholder="PASSWORD" autocomplete="current-password" onkeydown="if(event.key==='Enter') checkPin()">
   <button class="pin-btn" id="pinBtn" onclick="checkPin()">✅ Entrar</button>
   <div class="pin-error" id="pinError"></div>
 </div>
@@ -895,6 +899,7 @@
 
   async function checkPin() {
     const pin = document.getElementById('pinInput').value.trim().toUpperCase();
+    const password = document.getElementById('passwordInput').value;
     const err = document.getElementById('pinError');
     if (!pin) {
       err.textContent = '❌ Ingresa tu código de acceso.';
@@ -905,7 +910,7 @@
       const res = await fetch(`${FUNCTIONS_BASE_URL}/izzy-admin-leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin })
+        body: JSON.stringify({ pin, password })
       });
       const data = await res.json();
       if (!res.ok || !data?.token || !data?.user) throw new Error(data?.error || 'Auth failed');
@@ -916,6 +921,7 @@
     } catch {
       err.textContent = '❌ Código incorrecto. Intenta de nuevo.';
       document.getElementById('pinInput').value = '';
+      document.getElementById('passwordInput').value = '';
       document.getElementById('pinInput').focus();
       setTimeout(() => err.textContent = '', 3000);
     }
