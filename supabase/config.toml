@@ -1,0 +1,11 @@
+[functions.izzy-create-lead]
+enabled = true
+verify_jwt = false
+import_map = "./functions/izzy-create-lead/deno.json"
+entrypoint = "./functions/izzy-create-lead/index.ts"
+
+[functions.izzy-admin-leads]
+enabled = true
+verify_jwt = false
+import_map = "./functions/izzy-admin-leads/deno.json"
+entrypoint = "./functions/izzy-admin-leads/index.ts"

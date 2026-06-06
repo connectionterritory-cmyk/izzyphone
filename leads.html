@@ -45,6 +45,26 @@
   .search-bar select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
   .result-count { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; margin-left: auto; }
 
+  /* Admin config */
+  .admin-panel { max-width: 900px; margin: 0 auto 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .admin-card { background: var(--surface); border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
+  .admin-card-header { background: #0f766e; color: #fff; padding: 14px 18px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .admin-card-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .admin-form { display: grid; gap: 10px; }
+  .admin-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .admin-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .admin-input, .admin-select { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; outline: none; }
+  .admin-input:focus, .admin-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: #fff; }
+  .admin-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; -webkit-appearance: none; }
+  .admin-submit { border: none; border-radius: 10px; padding: 11px 14px; background: #0f766e; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .admin-submit:disabled { background: #99f6e4; cursor: not-allowed; }
+  .admin-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+  .admin-item { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: #fcfcfd; }
+  .admin-item-title { font-size: 14px; font-weight: 700; }
+  .admin-item-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .admin-empty { font-size: 13px; color: var(--muted); }
+  @media (max-width: 760px) { .admin-panel { grid-template-columns: 1fr; } .admin-row2 { grid-template-columns: 1fr; } }
+
   /* Table */
   .table-wrap { max-width: 900px; margin: 0 auto; background: var(--surface); border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
   .table-scroll { overflow-x: auto; }
@@ -315,6 +335,60 @@
   </div>
 </div>
 
+<!-- ── ADMIN CONFIG ───────────────────────────────────── -->
+<div class="admin-panel" id="adminPanel" style="display:none;">
+  <div class="admin-card">
+    <div class="admin-card-header">Agentes</div>
+    <div class="admin-card-body">
+      <div class="admin-form">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">PIN</label>
+            <input class="admin-input" id="newAgentPin" type="text" placeholder="ABCD0001">
+          </div>
+          <div>
+            <label class="admin-label">Rol</label>
+            <select class="admin-select" id="newAgentRole">
+              <option value="agente">Agente</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="admin-label">Nombre</label>
+          <input class="admin-input" id="newAgentName" type="text" placeholder="Nombre completo">
+        </div>
+        <button class="admin-submit" id="saveAgentBtn" onclick="createPortalUser()">Guardar agente</button>
+      </div>
+      <div class="admin-list" id="usersList"></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-header">Cotizadores</div>
+    <div class="admin-card-body">
+      <div class="admin-form">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Codigo</label>
+            <input class="admin-input" id="newQuoterCode" type="text" placeholder="PCAI">
+          </div>
+          <div>
+            <label class="admin-label">Telefono</label>
+            <input class="admin-input" id="newQuoterPhone" type="tel" placeholder="7862913042">
+          </div>
+        </div>
+        <div>
+          <label class="admin-label">Nombre</label>
+          <input class="admin-input" id="newQuoterName" type="text" placeholder="Nombre completo">
+        </div>
+        <button class="admin-submit" id="saveQuoterBtn" onclick="createQuoter()">Guardar cotizador</button>
+      </div>
+      <div class="admin-list" id="quotersList"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ── SEARCH ─────────────────────────────────────────── -->
 <div class="search-bar">
   <input type="text" id="searchInput" placeholder="🔍 Buscar por cliente, agente o teléfono..." oninput="filterLeads()">
@@ -361,42 +435,186 @@
 
 <script>
   // ── Auth: admin only ───────────────────────────────────
-  const USERS = {
-    '28211219d567800d7c18e3de9280f032344d98ba840315783f4413a9b0a79111': { nombre: 'Moises Caicedo',   rol: 'admin'  },
-    '626b4660147aaeb4acc717598f67220f24d687b0d872d55b3f97c4d2c7535737': { nombre: 'Patricia Caicedo', rol: 'agente' },
-    '07ba71d69de787494d45d3bd6524485fe5acfb4906b3fa6e41fb035df83a2fde': { nombre: 'Test',             rol: 'agente' }
-  };
-  const savedHash   = localStorage.getItem('izzy_access');
-  const currentUser = savedHash ? USERS[savedHash] : null;
+  const PROJECT_REF = 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const SESSION_KEY = 'izzy_session';
+  let currentUser = null;
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+  } catch {
+    currentUser = null;
+  }
   if (!currentUser) { window.location.href = 'index.html'; }
   const isAdmin = currentUser.rol === 'admin';
   document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
 
-  // ── Supabase ───────────────────────────────────────────
-  const SUPA_URL = 'https://rxiarmbosgivaplygqug.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4aWFybWJvc2dpdmFwbHlncXVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzQ2NTMsImV4cCI6MjA4NjkxMDY1M30.2d7AJwe4iklQ8PSb0kxVUI3Ic0qYpHkNnc-yovyUUM0';
-  const HEADERS  = { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json' };
+  function getSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function apiFetch(path, options = {}) {
+    const session = getSession();
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${path}`, {
+      ...options,
+      headers
+    });
+
+    if (res.status === 401) {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+
+    return res;
+  }
 
   let allLeads  = [];
   let sortCol   = 'created_at';
   let sortAsc   = false;
   let activeLead = null;
+  let adminUsers = [];
+  let adminQuoters = [];
 
   // ── Fetch ──────────────────────────────────────────────
   async function fetchLeads() {
-    const filter = isAdmin
-      ? ''
-      : `&agente=eq.${encodeURIComponent(currentUser.nombre)}`;
-    const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads?select=*&order=created_at.desc${filter}`, { headers: HEADERS });
-    allLeads = await res.json();
+    const res = await apiFetch('izzy-admin-leads');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast('❌ Error al cargar leads', '#b91c1c');
+      return;
+    }
+    allLeads = data.leads || [];
     buildFilters();
     updateStats();
     renderTable();
   }
 
+  async function fetchAdminConfig() {
+    if (!isAdmin) return;
+    const res = await apiFetch('izzy-admin-leads?resource=admin-config');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast('❌ Error al cargar configuracion admin', '#b91c1c');
+      return;
+    }
+
+    adminUsers = data.users || [];
+    adminQuoters = data.quoters || [];
+    document.getElementById('adminPanel').style.display = 'grid';
+    renderAdminLists();
+  }
+
+  function renderAdminLists() {
+    const usersList = document.getElementById('usersList');
+    const quotersList = document.getElementById('quotersList');
+
+    usersList.innerHTML = adminUsers.length
+      ? adminUsers.map((user) => `
+        <div class="admin-item">
+          <div class="admin-item-title">${esc(user.nombre)}</div>
+          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)}${user.active ? '' : ' · inactivo'}</div>
+        </div>
+      `).join('')
+      : '<div class="admin-empty">No hay agentes configurados.</div>';
+
+    quotersList.innerHTML = adminQuoters.length
+      ? adminQuoters.map((quoter) => `
+        <div class="admin-item">
+          <div class="admin-item-title">${esc(quoter.nombre)}</div>
+          <div class="admin-item-sub">${esc(quoter.code)} · ${esc(quoter.telefono)}${quoter.active ? '' : ' · inactivo'}</div>
+        </div>
+      `).join('')
+      : '<div class="admin-empty">No hay cotizadores configurados.</div>';
+  }
+
+  async function createPortalUser() {
+    const payload = {
+      pin_code: document.getElementById('newAgentPin').value.trim().toUpperCase(),
+      nombre: document.getElementById('newAgentName').value.trim(),
+      rol: document.getElementById('newAgentRole').value,
+    };
+
+    if (!payload.pin_code || !payload.nombre) {
+      showToast('⚠️ Falta PIN o nombre del agente', '#b45309');
+      return;
+    }
+
+    const btn = document.getElementById('saveAgentBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=users', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Create user failed');
+      adminUsers.unshift(data.user);
+      renderAdminLists();
+      document.getElementById('newAgentPin').value = '';
+      document.getElementById('newAgentName').value = '';
+      document.getElementById('newAgentRole').value = 'agente';
+      showToast('✅ Agente guardado', '#16a34a');
+    } catch (error) {
+      showToast('❌ No se pudo guardar el agente', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar agente';
+    }
+  }
+
+  async function createQuoter() {
+    const payload = {
+      code: document.getElementById('newQuoterCode').value.trim().toUpperCase(),
+      nombre: document.getElementById('newQuoterName').value.trim(),
+      telefono: document.getElementById('newQuoterPhone').value.trim(),
+    };
+
+    if (!payload.code || !payload.nombre || !payload.telefono) {
+      showToast('⚠️ Faltan datos del cotizador', '#b45309');
+      return;
+    }
+
+    const btn = document.getElementById('saveQuoterBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=quoters', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Create quoter failed');
+      adminQuoters.unshift(data.quoter);
+      renderAdminLists();
+      document.getElementById('newQuoterCode').value = '';
+      document.getElementById('newQuoterName').value = '';
+      document.getElementById('newQuoterPhone').value = '';
+      showToast('✅ Cotizador guardado', '#16a34a');
+    } catch (error) {
+      showToast('❌ No se pudo guardar el cotizador', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar cotizador';
+    }
+  }
+
   // ── Filters ────────────────────────────────────────────
   function buildFilters() {
     const agtSel = document.getElementById('filterAgente');
+    agtSel.innerHTML = '<option value="">Todos los agentes</option>';
     if (!isAdmin) {
       agtSel.style.display = 'none';
     } else {
@@ -405,6 +623,7 @@
     }
     const provs  = [...new Set(allLeads.map(l => l.proveedor_internet).filter(Boolean))].sort();
     const prvSel = document.getElementById('filterProv');
+    prvSel.innerHTML = '<option value="">Todos los proveedores</option>';
     provs.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; prvSel.appendChild(o); });
   }
 
@@ -559,15 +778,15 @@
     };
 
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads?id=eq.${activeLead.id}`, {
+      const res = await apiFetch('izzy-admin-leads', {
         method: 'PATCH',
-        headers: { ...HEADERS, Prefer: 'return=minimal' },
-        body: JSON.stringify(updates)
+        body: JSON.stringify({ id: activeLead.id, updates })
       });
-      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Update failed');
       // Update local data
       const idx = allLeads.findIndex(l => l.id === activeLead.id);
-      if (idx >= 0) { allLeads[idx] = { ...allLeads[idx], ...updates }; activeLead = allLeads[idx]; }
+      if (idx >= 0) { allLeads[idx] = data.lead || { ...allLeads[idx], ...updates }; activeLead = allLeads[idx]; }
       document.getElementById('modalTitle').textContent = updates.cliente || 'Editar Lead';
       renderTable();
       updateStats();
@@ -605,6 +824,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   fetchLeads();
+  fetchAdminConfig();
 </script>
 </body>
 </html>

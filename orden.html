@@ -579,13 +579,13 @@
 
 <script>
   // ── Auth ──────────────────────────────────────────────
-  const USERS = {
-    '28211219d567800d7c18e3de9280f032344d98ba840315783f4413a9b0a79111': { nombre: 'Moises Caicedo',   rol: 'admin'  },
-    '626b4660147aaeb4acc717598f67220f24d687b0d872d55b3f97c4d2c7535737': { nombre: 'Patricia Caicedo', rol: 'agente' },
-    '07ba71d69de787494d45d3bd6524485fe5acfb4906b3fa6e41fb035df83a2fde': { nombre: 'Test',             rol: 'agente' }
-  };
-  const savedHash  = localStorage.getItem('izzy_access');
-  const currentUser = savedHash ? USERS[savedHash] : null;
+  const SESSION_KEY = 'izzy_session';
+  let currentUser = null;
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+  } catch {
+    currentUser = null;
+  }
   if (!currentUser) { window.location.href = 'index.html'; }
 
   const agentName = currentUser ? currentUser.nombre : '';
@@ -806,9 +806,11 @@
     for (let o of sel.options) { if (o.value === val) { o.selected = true; return; } }
   }
 
-  let acTimer, acResults = {};
+  let acTimer, acResults = {}, acTyped = {}, acPicking = false;
 
   function acType(inp) {
+    if (acPicking) return;                        // skip re-fetch after datalist pick
+    acTyped[inp.id] = inp.value;
     clearTimeout(acTimer);
     const q = inp.value.trim();
     if (q.length < 3) return;
@@ -817,34 +819,44 @@
 
   async function acFetch(q, inp) {
     try {
-      const url  = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en&limit=7&bbox=-180,18,-66,72`;
+      // No bbox — bbox was blocking all California results
+      const url  = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en&limit=8`;
       const data = await (await fetch(url)).json();
       const features = (data.features||[]).filter(f=>f.properties.countrycode==='US');
+      acResults[inp.id] = features;
       const dl = document.getElementById(inp.getAttribute('list'));
       if (!dl) return;
-      acResults[inp.id] = features;
       dl.innerHTML = features.map(f => {
-        const p = f.properties;
-        const val = [[p.housenumber,p.street].filter(Boolean).join(' '), p.city||p.town||p.village||p.municipality||'', stateAbbr(p.state), p.postcode||''].filter(Boolean).join(', ');
+        const p  = f.properties;
+        const st = stateAbbr(p.state);
+        const city = p.city||p.town||p.village||p.municipality||'';
+        // Show street name + city + state zip (no house# — user typed it already)
+        const val = [p.street, city, [st, p.postcode||''].filter(Boolean).join(' ')].filter(Boolean).join(', ');
         return `<option value="${val}"></option>`;
       }).join('');
     } catch { /* silent */ }
   }
 
   function acPick(inp, city, state, zip) {
+    acPicking = true;
     const chosen  = inp.value;
     const results = acResults[inp.id] || [];
     const match   = results.find(f => {
-      const p = f.properties;
-      const val = [[p.housenumber,p.street].filter(Boolean).join(' '), p.city||p.town||p.village||p.municipality||'', stateAbbr(p.state), p.postcode||''].filter(Boolean).join(', ');
-      return val === chosen;
+      const p  = f.properties;
+      const st = stateAbbr(p.state);
+      const cityN = p.city||p.town||p.village||p.municipality||'';
+      return [p.street, cityN, [st, p.postcode||''].filter(Boolean).join(' ')].filter(Boolean).join(', ') === chosen;
     });
-    if (!match) return;
-    const p = match.properties;
-    inp.value = [p.housenumber, p.street].filter(Boolean).join(' ');
-    const cityEl = document.getElementById(city); if (cityEl) cityEl.value = p.city||p.town||p.village||p.municipality||'';
-    const zipEl  = document.getElementById(zip);  if (zipEl)  zipEl.value  = p.postcode||'';
-    setSelectByValue(state, stateAbbr(p.state));
+    if (match) {
+      const p = match.properties;
+      const typed    = acTyped[inp.id] || '';
+      const houseNum = typed.match(/^\d+\S*/)?.[0] || p.housenumber || '';
+      inp.value = [houseNum, p.street].filter(Boolean).join(' ');
+      const cityEl = document.getElementById(city); if (cityEl) cityEl.value = p.city||p.town||p.village||p.municipality||'';
+      const zipEl  = document.getElementById(zip);  if (zipEl)  zipEl.value  = p.postcode||'';
+      setSelectByValue(state, stateAbbr(p.state));
+    }
+    setTimeout(() => acPicking = false, 300);
   }
 
   document.getElementById('street').addEventListener('change', function(){ acPick(this,'city','state','zip'); });

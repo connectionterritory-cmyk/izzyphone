@@ -60,6 +60,70 @@
     padding: 5px 14px; border-radius: 20px;
   }
 
+  .topnav {
+    max-width: 560px;
+    margin: 0 auto 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.05);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .topnav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-link, .nav-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1.5px solid #c7d4e8;
+    background: #fff;
+    color: var(--blue);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .nav-link.primary, .nav-action.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  .nav-link.success {
+    background: #e8faf1;
+    border-color: #86efac;
+    color: #15803d;
+  }
+
+  .nav-link.teal {
+    background: #0f766e;
+    border-color: #0f766e;
+    color: #fff;
+  }
+
+  .topnav-side {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
   /* Card */
   .card {
     max-width: 560px;
@@ -124,6 +188,23 @@
   .chip-input:checked + .chip-label {
     background: var(--blue); border-color: var(--blue); color: #fff;
   }
+
+  .cotizador-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid #86efac;
+    border-radius: 10px;
+    background: #e8faf1;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .cotizador-banner.show { display: flex; }
+  .cotizador-banner small { color: #15803d; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 
   /* Money */
   .money-wrap {
@@ -365,11 +446,19 @@
       <div class="brand-sub" id="brandSub">Enviar lead al cotizador</div>
     </div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <button onclick="nuevaCotizacion()" id="btnNueva" style="background:#e8faf1;color:#16a34a;border:1.5px solid #86efac;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Nueva</button>
-    <a href="tutorial.html" id="tutorialLink" style="display:flex;align-items:center;gap:5px;background:#edf1f8;color:#1a3a6b;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;border:1.5px solid #c7d4e8;">📚 Tutorial</a>
-    <a href="leads.html" id="leadsLink" style="display:none;align-items:center;gap:5px;background:#1a3a6b;color:#fff;font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;text-decoration:none;">📊 Leads</a>
-    <button id="langToggle" onclick="toggleLang()" style="background:#1a3a6b;color:#fff;border:none;border-radius:20px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🇺🇸 EN</button>
+</div>
+
+<div class="topnav">
+  <div class="topnav-links">
+    <button onclick="nuevaCotizacion()" id="btnNueva" class="nav-link success">🔄 Nueva</button>
+    <a href="index.html" id="navCotizador" class="nav-link primary">📋 Cotizador</a>
+    <a href="leads.html" id="leadsLink" class="nav-link" style="display:none;">📊 Leads</a>
+    <a href="leads.html#adminPanel" id="adminLink" class="nav-link" style="display:none;">🛠 Administración</a>
+    <a href="tutorial.html" id="tutorialLink" class="nav-link">📚 Tutorial</a>
+  </div>
+  <div class="topnav-side">
+    <button id="langToggle" class="nav-action primary" onclick="toggleLang()">🇺🇸 EN</button>
+    <button id="logoutBtn" class="nav-action" onclick="logout()">↪ Salir</button>
     <div class="badge" id="badgeText">📤 Para el Cotizador</div>
   </div>
 </div>
@@ -389,6 +478,18 @@
 <div class="card">
   <div class="card-header" id="hdrCotizador" style="background:#16a34a;">📲 Datos del Cotizador</div>
   <div class="card-body">
+    <div class="cotizador-banner" id="cotizadorBanner">
+      <div>
+        <small id="cotizadorBannerEyebrow">Cotizador del sistema</small><br>
+        <span id="cotizadorBannerText">Sin cotizador asignado</span>
+      </div>
+    </div>
+    <div class="field">
+      <label id="lblCotizadorLista">Cotizador asignado</label>
+      <select id="cotizadorSelect" onchange="applySelectedCotizador()" style="font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;outline:none;width:100%;">
+        <option value="">Selecciona un cotizador</option>
+      </select>
+    </div>
     <div class="row2">
       <div class="field">
         <label id="lblCotNombre">Nombre del cotizador</label>
@@ -737,28 +838,82 @@
 
 <script>
   // ── Acceso por código de usuario ───────────────────────
-  const USERS = {
-    '28211219d567800d7c18e3de9280f032344d98ba840315783f4413a9b0a79111': { nombre: 'Moises Caicedo',   rol: 'admin'  },
-    '626b4660147aaeb4acc717598f67220f24d687b0d872d55b3f97c4d2c7535737': { nombre: 'Patricia Caicedo', rol: 'agente' },
-    '07ba71d69de787494d45d3bd6524485fe5acfb4906b3fa6e41fb035df83a2fde': { nombre: 'Test',             rol: 'agente' }
-  };
+  const PROJECT_REF = 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const SESSION_KEY = 'izzy_session';
 
-  async function sha256(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  function getSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setSession(session) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  }
+
+  function clearSession() {
+    localStorage.removeItem(SESSION_KEY);
+  }
+
+  function logout() {
+    clearSession();
+    localStorage.removeItem('izzy_restore');
+    location.reload();
+  }
+
+  function showAuthenticatedApp() {
+    const role = getSession()?.user?.rol || '';
+    document.getElementById('pinScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    document.getElementById('leadsLink').style.display = 'flex';
+    document.getElementById('adminLink').style.display = role === 'admin' ? 'inline-flex' : 'none';
+  }
+
+  async function apiFetch(path, options = {}) {
+    const session = getSession();
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${path}`, {
+      ...options,
+      headers
+    });
+
+    if (res.status === 401) {
+      clearSession();
+    }
+
+    return res;
   }
 
   async function checkPin() {
-    const val = document.getElementById('pinInput').value.trim().toUpperCase();
-    const hash = await sha256(val);
-    const user = USERS[hash];
-    if (user) {
-      localStorage.setItem('izzy_access', hash);
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      document.getElementById('leadsLink').style.display = 'flex';
-    } else {
-      const err = document.getElementById('pinError');
+    const pin = document.getElementById('pinInput').value.trim().toUpperCase();
+    const err = document.getElementById('pinError');
+    if (!pin) {
+      err.textContent = '❌ Ingresa tu código de acceso.';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${FUNCTIONS_BASE_URL}/izzy-admin-leads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin })
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.token || !data?.user) throw new Error(data?.error || 'Auth failed');
+
+      setSession({ token: data.token, user: data.user });
+      showAuthenticatedApp();
+      restoreLead();
+    } catch {
       err.textContent = '❌ Código incorrecto. Intenta de nuevo.';
       document.getElementById('pinInput').value = '';
       document.getElementById('pinInput').focus();
@@ -766,13 +921,10 @@
     }
   }
 
-  // Verificar si ya tiene acceso guardado
   (function() {
-    const saved = localStorage.getItem('izzy_access');
-    if (saved && USERS[saved]) {
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      document.getElementById('leadsLink').style.display = 'flex';
+    const saved = getSession();
+    if (saved?.token && saved?.user) {
+      showAuthenticatedApp();
       restoreLead();
     }
   })();
@@ -790,6 +942,8 @@
       hdrCliente:'🏠 Datos del Cliente', hdrSituacion:'📡 Situación Actual del Cliente',
       hdrCelulares:'📱 Teléfonos Celulares', hdrOferta:'⚡ La Mejor Oferta Encontrada',
       lblMiNombre:'Mi nombre', phMiNombre:'Tu nombre',
+      lblCotizadorLista:'Cotizador asignado', phCotizadorDefault:'Selecciona un cotizador',
+      cotizadorBannerEyebrow:'Cotizador del sistema', cotizadorBannerEmpty:'Sin cotizador asignado',
       lblCotNombre:'Nombre del cotizador', phCotNombre:'Nombre',
       lblCotTel:'WhatsApp / Teléfono', cotSavedNote:'Este número se guarda automáticamente para la próxima vez.',
       lblClienteNombre:'Nombre del cliente', phClienteNombre:'Nombre completo',
@@ -858,6 +1012,8 @@
       hdrCliente:'🏠 Client Info', hdrSituacion:'📡 Client\'s Current Situation',
       hdrCelulares:'📱 Cell Phones', hdrOferta:'⚡ Best Offer Found',
       lblMiNombre:'My name', phMiNombre:'Your name',
+      lblCotizadorLista:'Assigned quoting agent', phCotizadorDefault:'Select a quoting agent',
+      cotizadorBannerEyebrow:'System quoter', cotizadorBannerEmpty:'No quoting agent assigned',
       lblCotNombre:'Quoting agent name', phCotNombre:'Name',
       lblCotTel:'WhatsApp / Phone', cotSavedNote:'This number is saved automatically for next time.',
       lblClienteNombre:'Client name', phClienteNombre:'Full name',
@@ -941,7 +1097,7 @@
     document.getElementById('hdrOfertaTel').textContent = t.hdrOfertaTel;
     document.getElementById('hdrOfertaTelOpt').textContent = t.hdrOfertaTelOpt;
     // Labels
-    const labels = ['lblMiNombre','lblCotNombre','lblCotTel','cotSavedNote','lblClienteNombre',
+    const labels = ['lblMiNombre','lblCotizadorLista','lblCotNombre','lblCotTel','cotSavedNote','lblClienteNombre',
       'lblClienteTel','lblZip','lblDirec','lblCiudad','lblIntProv','lblVelActual','lblPagoInternet',
       'lblTieneTV','lblTelProv','lblLineas','lblPagoTelefono','lblNota','previewTitle','lblChars',
       'paso2Divider','lblOfertaProv','lblOfertaVel','lblOfertaIntPrecio','lblOfertaLineas',
@@ -975,6 +1131,8 @@
     // Preview client title (in header)
     const pct = document.getElementById('previewClienteTitle');
     if(pct) pct.textContent = t.previewClienteTitle;
+    const cbe = document.getElementById('cotizadorBannerEyebrow');
+    if (cbe) cbe.textContent = t.cotizadorBannerEyebrow;
     // Regenerate messages
     generate();
     generateCliente();
@@ -987,6 +1145,74 @@
 
   let currentMsg = '';
   let currentMode = 'wa';
+  let knownQuoters = [];
+
+  async function loadQuoters() {
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=quoters');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return;
+
+      knownQuoters = data.quoters || [];
+      const sel = document.getElementById('cotizadorSelect');
+      const currentCode = localStorage.getItem('izzy_cotizador_code') || '';
+      sel.innerHTML = '';
+
+      const first = document.createElement('option');
+      first.value = '';
+      first.textContent = T[currentLang].phCotizadorDefault;
+      sel.appendChild(first);
+
+      knownQuoters.forEach((quoter) => {
+        const opt = document.createElement('option');
+        opt.value = quoter.code;
+        opt.textContent = `${quoter.nombre} · ${quoter.telefono}`;
+        if (quoter.code === currentCode) opt.selected = true;
+        sel.appendChild(opt);
+      });
+
+      if (currentCode) applySelectedCotizador(false);
+      else if (knownQuoters.length === 1 && !getVal('cotizadorNombre') && !getVal('cotizadorTel')) {
+        sel.value = knownQuoters[0].code;
+        applySelectedCotizador(true);
+      }
+    } catch {
+      // Keep manual fallback fields available
+    }
+  }
+
+  function applySelectedCotizador(shouldGenerate = true) {
+    const code = document.getElementById('cotizadorSelect').value;
+    localStorage.setItem('izzy_cotizador_code', code);
+    const match = knownQuoters.find((item) => item.code === code);
+    if (!match) {
+      updateCotizadorBanner(null);
+      saveCotizador();
+      if (shouldGenerate) generate();
+      return;
+    }
+
+    document.getElementById('cotizadorNombre').value = match.nombre;
+    document.getElementById('cotizadorTel').value = match.telefono;
+    updateCotizadorBanner(match);
+    saveCotizador();
+    if (shouldGenerate) generate();
+  }
+
+  function updateCotizadorBanner(quoter) {
+    const banner = document.getElementById('cotizadorBanner');
+    const text = document.getElementById('cotizadorBannerText');
+    if (!banner || !text) return;
+
+    if (!quoter) {
+      banner.classList.remove('show');
+      text.textContent = T[currentLang].cotizadorBannerEmpty;
+      return;
+    }
+
+    banner.classList.add('show');
+    text.textContent = `${quoter.nombre} · ${quoter.telefono}`;
+  }
 
   // Persistir datos del cotizador
   function saveCotizador() {
@@ -1118,9 +1344,6 @@
   }
 
   async function saveToSheets() {
-    const SUPA_URL = 'https://rxiarmbosgivaplygqug.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4aWFybWJvc2dpdmFwbHlncXVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzQ2NTMsImV4cCI6MjA4NjkxMDY1M30.2d7AJwe4iklQ8PSb0kxVUI3Ic0qYpHkNnc-yovyUUM0';
-
     const cliente = getVal('clienteNombre');
     if (!cliente) { showToast('⚠️ Falta el nombre del cliente', '#b45309'); return; }
 
@@ -1144,23 +1367,18 @@
     };
 
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/izzy_leads`, {
+      const res = await apiFetch('izzy-create-lead', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPA_KEY,
-          'Authorization': `Bearer ${SUPA_KEY}`,
-          'Prefer': 'return=minimal'
-        },
         body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        showToast(T[currentLang].toastSaved, '#16a34a');
-      } else {
-        const err = await res.text();
-        throw new Error(err);
-      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Save failed');
+      showToast(T[currentLang].toastSaved, '#16a34a');
     } catch (err) {
+      if (!getSession()) {
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('pinScreen').style.display = 'flex';
+      }
       showToast(T[currentLang].toastSaveError, '#b91c1c');
     } finally {
       btn.disabled = false;
@@ -1188,6 +1406,7 @@
   const savedCotTel    = localStorage.getItem('izzy_cotizador_tel');
   if (savedCotNombre) document.getElementById('cotizadorNombre').value = savedCotNombre;
   if (savedCotTel)    document.getElementById('cotizadorTel').value    = savedCotTel;
+  loadQuoters();
 
   // ═══ PASO 2: MENSAJE AL CLIENTE ═══
   let currentMsgCliente = '';
