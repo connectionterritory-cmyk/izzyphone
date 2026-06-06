@@ -3,6 +3,7 @@ export type Role = "admin" | "agente";
 export type SessionUser = {
   nombre: string;
   rol: Role;
+  pin_code?: string;
 };
 
 type UserRecord = SessionUser & {
@@ -75,7 +76,7 @@ function getUsers(): UserRecord[] {
 export function authenticatePin(pin: string): SessionUser | null {
   const normalized = normalizePin(pin);
   const match = getUsers().find((user) => user.pin === normalized);
-  return match ? { nombre: match.nombre, rol: match.rol } : null;
+  return match ? { nombre: match.nombre, rol: match.rol, pin_code: match.pin } : null;
 }
 
 export function normalizePassword(password: string): string {
@@ -140,6 +141,7 @@ export async function verifySessionToken(token: string): Promise<SessionUser | n
     return {
       nombre: payload.nombre,
       rol: payload.rol === "admin" ? "admin" : "agente",
+      pin_code: payload.pin_code ? String(payload.pin_code) : undefined,
     };
   } catch {
     return null;

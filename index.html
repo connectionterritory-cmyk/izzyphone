@@ -415,6 +415,66 @@
     font-size: 13px; font-weight: 600;
     min-height: 20px; text-align: center;
   }
+
+  .password-setup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(15, 23, 42, .72);
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .password-setup-overlay.show { display: flex; }
+  .password-setup-card {
+    width: 100%;
+    max-width: 360px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.28);
+    padding: 24px 22px;
+  }
+  .password-setup-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .password-setup-copy {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .password-setup-card input {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .password-setup-card button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: #16a34a;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .password-setup-card button:disabled {
+    background: #86efac;
+    cursor: not-allowed;
+  }
+  .password-setup-error {
+    min-height: 20px;
+    margin-top: 10px;
+    color: #b91c1c;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -428,6 +488,17 @@
   <input type="password" id="passwordInput" placeholder="PASSWORD" autocomplete="current-password" onkeydown="if(event.key==='Enter') checkPin()">
   <button class="pin-btn" id="pinBtn" onclick="checkPin()">✅ Entrar</button>
   <div class="pin-error" id="pinError"></div>
+</div>
+
+<div class="password-setup-overlay" id="passwordSetupOverlay">
+  <div class="password-setup-card">
+    <div class="password-setup-title">Crea tu password</div>
+    <div class="password-setup-copy">Tu usuario todavia no tiene password. Antes de seguir, crea una password personal para tus proximos ingresos.</div>
+    <input type="password" id="newOwnPassword" placeholder="Nuevo password" autocomplete="new-password">
+    <input type="password" id="confirmOwnPassword" placeholder="Confirmar password" autocomplete="new-password">
+    <button id="saveOwnPasswordBtn" onclick="saveOwnPassword()">Guardar password</button>
+    <div class="password-setup-error" id="passwordSetupError"></div>
+  </div>
 </div>
 
 <!-- App principal -->
@@ -845,6 +916,7 @@
   const PROJECT_REF = 'rxiarmbosgivaplygqug';
   const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
   const SESSION_KEY = 'izzy_session';
+  let mustSetOwnPassword = false;
 
   function getSession() {
     try {
@@ -875,6 +947,7 @@
     document.getElementById('mainApp').style.display = 'block';
     document.getElementById('leadsLink').style.display = 'flex';
     document.getElementById('adminLink').style.display = role === 'admin' ? 'inline-flex' : 'none';
+    document.getElementById('passwordSetupOverlay').classList.toggle('show', mustSetOwnPassword);
   }
 
   async function apiFetch(path, options = {}) {
@@ -915,9 +988,15 @@
       const data = await res.json();
       if (!res.ok || !data?.token || !data?.user) throw new Error(data?.error || 'Auth failed');
 
-      setSession({ token: data.token, user: data.user });
+      mustSetOwnPassword = Boolean(data?.must_set_password);
+      setSession({ token: data.token, user: data.user, must_set_password: mustSetOwnPassword });
       showAuthenticatedApp();
-      restoreLead();
+      if (mustSetOwnPassword) {
+        document.getElementById('passwordSetupError').textContent = 'Debes crear tu password para continuar.';
+        document.getElementById('newOwnPassword').focus();
+      } else {
+        restoreLead();
+      }
     } catch {
       err.textContent = '❌ Código incorrecto. Intenta de nuevo.';
       document.getElementById('pinInput').value = '';
@@ -930,10 +1009,56 @@
   (function() {
     const saved = getSession();
     if (saved?.token && saved?.user) {
+      mustSetOwnPassword = Boolean(saved?.must_set_password);
       showAuthenticatedApp();
-      restoreLead();
+      if (!mustSetOwnPassword) restoreLead();
     }
   })();
+
+  async function saveOwnPassword() {
+    const password = document.getElementById('newOwnPassword').value;
+    const confirm = document.getElementById('confirmOwnPassword').value;
+    const err = document.getElementById('passwordSetupError');
+    const btn = document.getElementById('saveOwnPasswordBtn');
+
+    if (!password || password.length < 8) {
+      err.textContent = 'Usa una password de al menos 8 caracteres.';
+      return;
+    }
+
+    if (password !== confirm) {
+      err.textContent = 'Las passwords no coinciden.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+    err.textContent = '';
+
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=self-password', {
+        method: 'POST',
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Save password failed');
+      mustSetOwnPassword = false;
+      const session = getSession();
+      if (session?.token && session?.user) {
+        setSession({ ...session, must_set_password: false });
+      }
+      document.getElementById('passwordSetupOverlay').classList.remove('show');
+      document.getElementById('newOwnPassword').value = '';
+      document.getElementById('confirmOwnPassword').value = '';
+      showToast('✅ Password guardado', '#16a34a');
+      restoreLead();
+    } catch {
+      err.textContent = 'No se pudo guardar la password. Intenta de nuevo.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar password';
+    }
+  }
   // ───────────────────────────────────────────────────────
 
   // ── Traducciones / Translations ────────────────────────

@@ -127,14 +127,16 @@ async function authenticatePortalUser(pin: string, password: string, supabase: R
   }
 
   if (data?.active) {
+    const mustSetPassword = !(data.password_hash && data.password_salt);
     if (data.password_hash && data.password_salt) {
       const validPassword = await verifyPassword(password, data.password_salt, data.password_hash);
       if (!validPassword) return null;
     }
-    return { nombre: data.nombre, rol: normalizeRole(data.rol) };
+    return { user: { nombre: data.nombre, rol: normalizeRole(data.rol), pin_code: normalized }, mustSetPassword };
   }
 
-  return authenticatePin(normalized);
+  const legacyUser = authenticatePin(normalized);
+  return legacyUser ? { user: legacyUser, mustSetPassword: false } : null;
 }
 
 function ensureAdmin(user: { rol: Role }) {
@@ -155,8 +157,8 @@ async function handleLogin(req: Request) {
     return jsonResponse({ error: "Invalid access code" }, { status: 401 });
   }
 
-  const token = await createSessionToken(user);
-  return jsonResponse({ token, user });
+  const token = await createSessionToken(user.user);
+  return jsonResponse({ token, user: user.user, must_set_password: user.mustSetPassword });
 }
 
 async function handleLeadList(user: { nombre: string; rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
@@ -249,6 +251,30 @@ async function handleResetUserPassword(req: Request, user: { rol: Role }, supaba
   }
 
   return jsonResponse({ user: data });
+}
+
+async function handleSelfPassword(req: Request, user: { nombre: string; rol: Role; pin_code?: string }, supabase: ReturnType<typeof createAdminClient>) {
+  const body = await req.json();
+  const password = normalizePassword(body?.password);
+
+  if (!user.pin_code || !password) {
+    return jsonResponse({ error: "password is required" }, { status: 400 });
+  }
+
+  const passwordData = await hashPassword(password);
+  const { data, error } = await supabase
+    .from("izzy_portal_users")
+    .update({ password_hash: passwordData.hash, password_salt: passwordData.salt })
+    .eq("pin_code", user.pin_code)
+    .select("id, pin_code, nombre, rol, active, created_at, updated_at")
+    .single();
+
+  if (error) {
+    console.error("[izzy-admin-leads] self password failed", error);
+    return jsonResponse({ error: "Could not save password" }, { status: 500 });
+  }
+
+  return jsonResponse({ user: data, password_set: true });
 }
 
 async function handleCreateQuoter(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
@@ -363,6 +389,10 @@ async function handlePost(req: Request) {
 
   if (resource === "user-password") {
     return await handleResetUserPassword(req, user, supabase);
+  }
+
+  if (resource === "self-password") {
+    return await handleSelfPassword(req, user, supabase);
   }
 
   if (resource === "quoters") {
