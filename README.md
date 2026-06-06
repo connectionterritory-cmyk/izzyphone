@@ -4,6 +4,8 @@ App web para capturar y enviar leads al equipo de ventas de Izzy Internet. El fo
 
 Los accesos del portal ahora pueden tener password persistido en `public.izzy_portal_users`. Los usuarios viejos sin password siguen entrando temporalmente solo con PIN hasta que un admin les asigne password desde `Leads > Administracion`.
 
+El flujo de recuperacion por correo usa `public.izzy_password_reset_requests` para trazabilidad y `public.izzy_password_reset_tokens` para enlaces temporales de un solo uso.
+
 ## Supabase
 
 - Proyecto enlazado: `rxiarmbosgivaplygqug` (`FlowSuiteCRM`)
@@ -21,6 +23,10 @@ Configura estos secrets antes de desplegar las funciones:
 - `IZZY_SESSION_SECRET`
 - `IZZY_USERS_JSON`
 - `IZZY_QUOTERS_JSON`
+- `IZZY_APP_URL`
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `RESEND_FROM_NAME`
 
 Ejemplo para `IZZY_USERS_JSON`:
 

@@ -539,6 +539,17 @@
   </div>
 </div>
 
+<div class="password-setup-overlay" id="resetTokenOverlay">
+  <div class="password-setup-card">
+    <div class="password-setup-title">Nueva password</div>
+    <div class="password-setup-copy">Este enlace viene desde tu correo. Crea una password nueva para volver a entrar al portal.</div>
+    <input type="password" id="resetTokenPassword" placeholder="Nueva password" autocomplete="new-password">
+    <input type="password" id="resetTokenConfirm" placeholder="Confirmar password" autocomplete="new-password">
+    <button id="resetTokenBtn" onclick="submitResetPassword()">Guardar nueva password</button>
+    <div class="password-setup-error" id="resetTokenError"></div>
+  </div>
+</div>
+
 <!-- App principal -->
 <div id="mainApp" style="display:none">
 
@@ -955,6 +966,7 @@
   const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
   const SESSION_KEY = 'izzy_session';
   let mustSetOwnPassword = false;
+  let resetToken = '';
 
   function getSession() {
     try {
@@ -980,6 +992,18 @@
       document.getElementById('forgotPasswordError').style.color = '#b91c1c';
       document.getElementById('forgotPin').focus();
     }
+  }
+
+  function showResetTokenOverlay(token) {
+    resetToken = token || '';
+    document.getElementById('pinScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('passwordSetupOverlay').classList.remove('show');
+    document.getElementById('forgotPasswordOverlay').classList.remove('show');
+    document.getElementById('resetTokenOverlay').classList.add('show');
+    document.getElementById('resetTokenError').style.color = '#b91c1c';
+    document.getElementById('resetTokenError').textContent = '';
+    document.getElementById('resetTokenPassword').focus();
   }
 
   function logout() {
@@ -1054,6 +1078,13 @@
   }
 
   (function() {
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromUrl = params.get('reset_token');
+    if (tokenFromUrl) {
+      showResetTokenOverlay(tokenFromUrl);
+      return;
+    }
+
     const saved = getSession();
     if (saved?.token && saved?.user) {
       mustSetOwnPassword = Boolean(saved?.must_set_password);
@@ -1140,6 +1171,51 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Enviar solicitud';
+    }
+  }
+
+  async function submitResetPassword() {
+    const password = document.getElementById('resetTokenPassword').value;
+    const confirm = document.getElementById('resetTokenConfirm').value;
+    const err = document.getElementById('resetTokenError');
+    const btn = document.getElementById('resetTokenBtn');
+
+    if (!password || password.length < 8) {
+      err.textContent = 'Usa una password de al menos 8 caracteres.';
+      return;
+    }
+
+    if (password !== confirm) {
+      err.textContent = 'Las passwords no coinciden.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+    err.textContent = '';
+
+    try {
+      const res = await fetch(`${FUNCTIONS_BASE_URL}/izzy-admin-leads?resource=reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: resetToken, password })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Reset failed');
+      document.getElementById('resetTokenOverlay').classList.remove('show');
+      document.getElementById('resetTokenPassword').value = '';
+      document.getElementById('resetTokenConfirm').value = '';
+      resetToken = '';
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+      document.getElementById('pinScreen').style.display = 'flex';
+      document.getElementById('pinError').textContent = '✅ Password actualizada. Ya puedes entrar.';
+      setTimeout(() => { document.getElementById('pinError').textContent = ''; }, 4000);
+    } catch (error) {
+      err.textContent = error?.message || 'No se pudo actualizar la password.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar nueva password';
     }
   }
   // ───────────────────────────────────────────────────────

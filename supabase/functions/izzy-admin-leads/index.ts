@@ -54,6 +54,7 @@ type UpdatePayload = {
 const DEFAULT_QUOTERS = [
   { code: "PCAI", nombre: "PATRICIA CAICEDO", telefono: "7862913042", active: true },
 ];
+const PASSWORD_RESET_TTL_HOURS = 2;
 
 const ALLOWED_UPDATE_FIELDS = [
   "cliente",
@@ -111,6 +112,91 @@ function sanitizeUpdates(raw: Record<string, unknown>, isAdmin: boolean) {
   }
 
   return updates;
+}
+
+function getAppUrl() {
+  return cleanString(Deno.env.get("IZZY_APP_URL")) || "https://izzyphone.vercel.app";
+}
+
+function getResendConfig() {
+  const apiKey = Deno.env.get("RESEND_API_KEY");
+  const fromEmail = Deno.env.get("RESEND_FROM_EMAIL");
+  const fromName = Deno.env.get("RESEND_FROM_NAME") || "Izzy Internet";
+  if (!apiKey || !fromEmail) return null;
+  return { apiKey, fromEmail, fromName };
+}
+
+async function sha256(input: string) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function createPasswordResetToken(supabase: ReturnType<typeof createAdminClient>, userId: number) {
+  const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
+  const tokenHash = await sha256(token);
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_TTL_HOURS * 60 * 60 * 1000).toISOString();
+
+  await supabase
+    .from("izzy_password_reset_tokens")
+    .update({ used_at: new Date().toISOString() })
+    .eq("user_id", userId)
+    .is("used_at", null);
+
+  const { error } = await supabase
+    .from("izzy_password_reset_tokens")
+    .insert({
+      user_id: userId,
+      token_hash: tokenHash,
+      expires_at: expiresAt,
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  return { token, expiresAt };
+}
+
+async function sendPasswordResetEmail(email: string, nombre: string, token: string) {
+  const resend = getResendConfig();
+  if (!resend) {
+    throw new Error("Missing Resend configuration");
+  }
+
+  const resetUrl = `${getAppUrl().replace(/\/$/, "")}/?reset_token=${encodeURIComponent(token)}`;
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resend.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: `${resend.fromName} <${resend.fromEmail}>`,
+      to: [email],
+      subject: "Recupera tu acceso a Izzy Internet",
+      html: `
+        <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
+          <h2 style="margin-bottom:12px;color:#1a3a6b">Izzy Internet</h2>
+          <p>Hola ${nombre || "equipo"},</p>
+          <p>Recibimos una solicitud para restablecer tu password del portal.</p>
+          <p>
+            <a href="${resetUrl}" style="display:inline-block;padding:12px 18px;background:#1a3a6b;color:#ffffff;text-decoration:none;border-radius:10px;font-weight:700">
+              Crear nueva password
+            </a>
+          </p>
+          <p>Este enlace vence en ${PASSWORD_RESET_TTL_HOURS} horas y solo se puede usar una vez.</p>
+          <p>Si no pediste este cambio, puedes ignorar este correo.</p>
+        </div>
+      `,
+    }),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Resend error: ${details}`);
+  }
+
+  return resetUrl;
 }
 
 async function getQuoters(supabase: ReturnType<typeof createAdminClient>) {
@@ -408,11 +494,69 @@ async function handleForgotPassword(req: Request) {
     }
   }
 
+  try {
+    const { token } = await createPasswordResetToken(supabase, portalUser.id);
+    await sendPasswordResetEmail(portalUser.email, portalUser.nombre, token);
+  } catch (sendError) {
+    console.error("[izzy-admin-leads] forgot password email failed", sendError);
+    return jsonResponse({
+      ok: false,
+      error: "No se pudo enviar el correo de recuperacion.",
+    }, { status: 500 });
+  }
+
   return jsonResponse({
     ok: true,
     created: true,
-    message: `Solicitud registrada para ${portalUser.email}. El administrador ya puede ayudarte con el reset.`,
+    message: `Te enviamos un enlace de recuperacion a ${portalUser.email}.`,
   });
+}
+
+async function handleResetPasswordWithToken(req: Request) {
+  const body = await req.json();
+  const token = cleanString(body?.token);
+  const password = normalizePassword(body?.password);
+  const supabase = createAdminClient();
+
+  if (!token || !password) {
+    return jsonResponse({ error: "token and password are required" }, { status: 400 });
+  }
+
+  const tokenHash = await sha256(token);
+  const now = new Date().toISOString();
+  const { data: resetRow, error } = await supabase
+    .from("izzy_password_reset_tokens")
+    .select("id, user_id, expires_at, used_at")
+    .eq("token_hash", tokenHash)
+    .maybeSingle();
+
+  if (error || !resetRow || resetRow.used_at || resetRow.expires_at < now) {
+    return jsonResponse({ error: "Reset link is invalid or expired" }, { status: 400 });
+  }
+
+  const passwordData = await hashPassword(password);
+  const { error: updateError } = await supabase
+    .from("izzy_portal_users")
+    .update({ password_hash: passwordData.hash, password_salt: passwordData.salt })
+    .eq("id", resetRow.user_id);
+
+  if (updateError) {
+    console.error("[izzy-admin-leads] token password update failed", updateError);
+    return jsonResponse({ error: "Could not update password" }, { status: 500 });
+  }
+
+  await supabase
+    .from("izzy_password_reset_tokens")
+    .update({ used_at: now })
+    .eq("id", resetRow.id);
+
+  await supabase
+    .from("izzy_password_reset_requests")
+    .update({ status: "resolved", resolved_at: now })
+    .eq("status", "pending")
+    .eq("user_id", resetRow.user_id);
+
+  return jsonResponse({ ok: true });
 }
 
 async function handleCreateQuoter(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
@@ -520,6 +664,10 @@ async function handlePost(req: Request) {
 
   if (resource === "forgot-password") {
     return await handleForgotPassword(req);
+  }
+
+  if (resource === "reset-password") {
+    return await handleResetPasswordWithToken(req);
   }
 
   const user = await requireSession(req);
