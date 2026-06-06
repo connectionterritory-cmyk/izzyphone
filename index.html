@@ -424,8 +424,8 @@
     <div class="row2">
       <div class="field">
         <label id="lblDirec">Dirección (calle y número)</label>
-        <input type="text" id="clienteDirec" placeholder="1234 Main St, Apt 5" data-ph="phDirec" oninput="generate(); acType(this)" autocomplete="off" list="direcDL">
-        <datalist id="direcDL"></datalist>
+        <input type="text" id="clienteDirec" placeholder="1234 Main St, Apt 5" data-ph="phDirec" oninput="generate(); acType(this)" autocomplete="off">
+        <span id="acSpinner" style="display:none;font-size:11px;color:var(--muted);margin-top:3px;">🔍 Buscando...</span>
       </div>
       <div class="field">
         <label id="lblCiudad">Ciudad y Estado</label>
@@ -953,7 +953,7 @@
     document.getElementById('lbl-pr-esp').textContent = t.promoEsp;
     // Buttons
     document.getElementById('btnCopyText').textContent = t.btnCopyText;
-    document.getElementById('btnGroupText').textContent = t.btnGroupText;
+    const elBtnGroup = document.getElementById('btnGroupText'); if (elBtnGroup) elBtnGroup.textContent = t.btnGroupText;
     document.getElementById('btnSaveText').textContent = t.btnSaveText;
     document.getElementById('btnCopyCliente').textContent = t.btnCopyCliente;
     document.getElementById('btnSendCliente').textContent = t.btnSendCliente;
@@ -1449,57 +1449,173 @@
 
   setLang(currentLang);
 
-  // ── Address autocomplete via native <datalist> + Photon ─────
+  // ── Address autocomplete (custom dropdown) ─────────────────────
   const STATE_MAP = {'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
   function stateAbbr(s) { return STATE_MAP[s] || s || ''; }
 
-  let acTimer, acLastResults = [];
+  var acTimer = null, acHouseNum = '';
+  const acInp = document.getElementById('clienteDirec');
+  const acSpin = document.getElementById('acSpinner');
+  // Create dropdown and attach to body so it's never clipped by overflow:hidden on parent cards
+  const acDrop = document.createElement('div');
+  acDrop.id = 'acDropdown';
+  acDrop.style.cssText = 'display:none;position:fixed;z-index:9999;background:#fff;border:1.5px solid var(--blue);border-top:none;border-radius:0 0 10px 10px;box-shadow:0 6px 20px rgba(0,0,0,.15);max-height:220px;overflow-y:auto;';
+  document.body.appendChild(acDrop);
+
+  function acPositionDrop() {
+    if (!acDrop || acDrop.style.display === 'none' || !acInp) return;
+    const r = acInp.getBoundingClientRect();
+    acDrop.style.left  = r.left + 'px';
+    acDrop.style.top   = (r.bottom) + 'px';
+    acDrop.style.width = r.width + 'px';
+  }
+
+  function acHide() { if (acDrop) acDrop.style.display = 'none'; }
 
   function acType(inp) {
     clearTimeout(acTimer);
+    acHide();
     const q = inp.value.trim();
-    if (q.length < 3) return;
-    acTimer = setTimeout(() => acFetch(q, inp), 500);
+    // save house number before fetch/pick can overwrite it
+    const hn = q.match(/^\d+\S*/)?.[0];
+    if (hn) acHouseNum = hn;
+    if (q.length < 3) { if (acSpin) acSpin.style.display = 'none'; return; }
+    if (acSpin) { acSpin.style.display = 'inline'; acSpin.textContent = '🔍 Buscando...'; }
+    acTimer = setTimeout(() => acFetch(q, inp), 600);
+  }
+
+  function acPick(entry, street) {
+    // if the API didn't include a house number, restore what the user typed
+    const hasHouseNum = /^\d/.test(street);
+    acInp.value = (!hasHouseNum && acHouseNum) ? `${acHouseNum} ${street}` : street;
+    document.getElementById('clienteCiudad').value = [entry.city, entry.state].filter(Boolean).join(', ');
+    document.getElementById('clienteZip').value = entry.zip;
+    acHide();
+    if (acSpin) acSpin.style.display = 'none';
+    generate();
+  }
+
+  function acRender(results, query) {
+    if (!acDrop) return;
+    if (!results.length) {
+      acDrop.style.display = 'none';
+      if (acSpin) {
+        // if query looks like "number streetname" without a street type, give a useful hint
+        const hint = /^\d+\s+\S+$/.test((query||'').trim())
+          ? '💡 Agrega el tipo: Blvd, Ave, St, Dr...'
+          : '⚠️ Sin resultados';
+        acSpin.textContent = hint;
+        acSpin.style.display = 'inline';
+      }
+      setTimeout(() => { if (acSpin) acSpin.style.display = 'none'; }, 3000);
+      return;
+    }
+    acDrop.innerHTML = '';
+    results.forEach(r => {
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:13px;line-height:1.4;border-bottom:1px solid #f0f0f0;';
+      row.innerHTML = `<span style="font-weight:600;color:#1a1814;">${r.street}</span><br><span style="color:#888;font-size:12px;">${[r.city, r.state, r.zip].filter(Boolean).join(', ')}</span>`;
+      row.addEventListener('mousedown', e => { e.preventDefault(); acPick(r, r.street); });
+      row.addEventListener('touchstart', e => { e.preventDefault(); acPick(r, r.street); }, {passive:false});
+      row.addEventListener('mouseenter', () => row.style.background = '#f0f6ff');
+      row.addEventListener('mouseleave', () => row.style.background = '');
+      acDrop.appendChild(row);
+    });
+    acDrop.style.display = 'block';
+    acPositionDrop();
+    if (acSpin) acSpin.style.display = 'none';
+  }
+
+  function parsePhoton(features) {
+    const seen = new Set(), results = [];
+    for (const f of features) {
+      const p = f.properties;
+      if (p.countrycode !== 'US') continue;
+      // p.street exists only for actual street results; p.osm_key='place' = city/village → skip
+      const road = p.street || '';
+      if (!road) continue;
+      const house = p.housenumber || '';
+      const city  = p.city || p.town || p.village || p.municipality || '';
+      const state = stateAbbr(p.state || '');
+      const zip   = p.postcode || '';
+      const street = [house, road].filter(Boolean).join(' ');
+      const key = street + city + state + zip;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      results.push({ street, house, road, city, state, zip });
+    }
+    return results;
+  }
+
+  function parseNominatim(items) {
+    const seen = new Set(), results = [];
+    for (const item of items) {
+      const a = item.address || {};
+      const house = a.house_number || '';
+      const road  = a.road || a.pedestrian || a.footway || a.path || '';
+      const city  = a.city || a.town || a.village || a.hamlet || a.municipality || a.county || '';
+      const state = stateAbbr(a.state || '');
+      const zip   = a.postcode || '';
+      if (!road) continue;
+      const street = [house, road].filter(Boolean).join(' ');
+      const key = street + city + state + zip;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      results.push({ street, house, road, city, state, zip });
+    }
+    return results;
+  }
+
+  async function photonFetch(q) {
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en&limit=8&lat=37.5&lon=-98.5`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Photon HTTP ${res.status}`);
+    return parsePhoton((await res.json()).features || []);
+  }
+
+  async function nominatimFetch(q) {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=jsonv2&addressdetails=1&limit=8&countrycodes=us`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    if (!res.ok) throw new Error(`Nominatim HTTP ${res.status}`);
+    return parseNominatim(await res.json());
   }
 
   async function acFetch(q, inp) {
+    let results = [];
     try {
-      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=en&limit=7&bbox=-180,18,-66,72`;
-      const r   = await fetch(url);
-      const data = await r.json();
-      acLastResults = (data.features || []).filter(f => f.properties.countrycode === 'US');
-      const dl = document.getElementById(inp.getAttribute('list'));
-      if (!dl) return;
-      dl.innerHTML = acLastResults.map(f => {
-        const p = f.properties;
-        const street = [p.housenumber, p.street].filter(Boolean).join(' ');
-        const city   = p.city || p.town || p.village || p.municipality || '';
-        const st     = stateAbbr(p.state);
-        const zip    = p.postcode || '';
-        const val    = [street, city, st, zip].filter(Boolean).join(', ');
-        return `<option value="${val}"></option>`;
-      }).join('');
-    } catch { /* silent — user can type manually */ }
+      results = await photonFetch(q);
+      // Photon confuses 5-digit house numbers with European postal codes → 0 US street results.
+      // Retry with just the street portion so Photon can match the street name.
+      if (!results.length && /^\d{4,}\s/.test(q)) {
+        const streetOnly = q.replace(/^\d+\s+/, '').trim();
+        if (streetOnly.length >= 3) results = await photonFetch(streetOnly);
+      }
+    } catch(e) {
+      console.warn('[AC] Photon:', e.message);
+    }
+    if (!results.length) {
+      try {
+        results = await nominatimFetch(q);
+        // Same retry for Nominatim if leading number causes it to return city matches
+        if (!results.length && /^\d{4,}\s/.test(q)) {
+          const streetOnly = q.replace(/^\d+\s+/, '').trim();
+          if (streetOnly.length >= 3) results = await nominatimFetch(streetOnly);
+        }
+      } catch(e2) {
+        console.warn('[AC] Nominatim:', e2.message);
+        if (acSpin) { acSpin.textContent = '❌ Sin conexión'; acSpin.style.display = 'inline'; setTimeout(()=>{ acSpin.style.display='none'; }, 3000); }
+        return;
+      }
+    }
+    acRender(results, q);
   }
 
-  // When user picks from datalist, fill other fields
-  document.getElementById('clienteDirec').addEventListener('change', function() {
-    const chosen = this.value;
-    const match  = acLastResults.find(f => {
-      const p = f.properties;
-      const street = [p.housenumber, p.street].filter(Boolean).join(' ');
-      const city   = p.city || p.town || p.village || p.municipality || '';
-      const st     = stateAbbr(p.state);
-      const zip    = p.postcode || '';
-      return [street, city, st, zip].filter(Boolean).join(', ') === chosen;
-    });
-    if (!match) return;
-    const p = match.properties;
-    this.value = [p.housenumber, p.street].filter(Boolean).join(' ');
-    document.getElementById('clienteCiudad').value = [p.city||p.town||p.village||p.municipality, stateAbbr(p.state)].filter(Boolean).join(', ');
-    document.getElementById('clienteZip').value    = p.postcode || '';
-    generate();
+  // Close dropdown when clicking outside
+  document.addEventListener('click', e => {
+    if (acInp && !acInp.contains(e.target) && acDrop && !acDrop.contains(e.target)) acHide();
   });
+  document.addEventListener('scroll', acPositionDrop, true);
+  window.addEventListener('resize', acPositionDrop);
 </script>
 </body>
 </html>
