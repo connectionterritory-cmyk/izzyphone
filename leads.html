@@ -359,12 +359,20 @@
           <input class="admin-input" id="newAgentName" type="text" placeholder="Nombre completo">
         </div>
         <div>
+          <label class="admin-label">Email</label>
+          <input class="admin-input" id="newAgentEmail" type="email" placeholder="nombre@correo.com">
+        </div>
+        <div>
           <label class="admin-label">Password</label>
           <input class="admin-input" id="newAgentPassword" type="password" placeholder="Password temporal o definitivo">
         </div>
         <button class="admin-submit" id="saveAgentBtn" onclick="createPortalUser()">Guardar agente</button>
       </div>
       <div class="admin-list" id="usersList"></div>
+      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
+        <div class="admin-label">Solicitudes de recuperacion</div>
+        <div class="admin-list" id="resetRequestsList"></div>
+      </div>
       <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
         <div class="admin-row2">
           <div>
@@ -377,6 +385,19 @@
           </div>
         </div>
         <button class="admin-submit" id="resetPasswordBtn" onclick="resetUserPassword()">Actualizar password</button>
+      </div>
+      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Usuario para email</label>
+            <select class="admin-select" id="updateEmailUserSelect"></select>
+          </div>
+          <div>
+            <label class="admin-label">Email</label>
+            <input class="admin-input" id="updateUserEmail" type="email" placeholder="nombre@correo.com">
+          </div>
+        </div>
+        <button class="admin-submit" id="updateEmailBtn" onclick="updateUserEmail()">Guardar email</button>
       </div>
     </div>
   </div>
@@ -501,6 +522,7 @@
   let activeLead = null;
   let adminUsers = [];
   let adminQuoters = [];
+  let resetRequests = [];
 
   // ── Fetch ──────────────────────────────────────────────
   async function fetchLeads() {
@@ -527,6 +549,7 @@
 
     adminUsers = data.users || [];
     adminQuoters = data.quoters || [];
+    resetRequests = data.reset_requests || [];
     document.getElementById('adminPanel').style.display = 'grid';
     renderAdminLists();
   }
@@ -534,12 +557,13 @@
   function renderAdminLists() {
     const usersList = document.getElementById('usersList');
     const quotersList = document.getElementById('quotersList');
+    const resetRequestsList = document.getElementById('resetRequestsList');
 
     usersList.innerHTML = adminUsers.length
       ? adminUsers.map((user) => `
         <div class="admin-item">
           <div class="admin-item-title">${esc(user.nombre)}</div>
-          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
+          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
         </div>
       `).join('')
       : '<div class="admin-empty">No hay agentes configurados.</div>';
@@ -557,18 +581,34 @@
     resetSelect.innerHTML = adminUsers.length
       ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
       : '<option value="">Sin usuarios</option>';
+
+    const updateEmailSelect = document.getElementById('updateEmailUserSelect');
+    updateEmailSelect.innerHTML = adminUsers.length
+      ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
+      : '<option value="">Sin usuarios</option>';
+
+    resetRequestsList.innerHTML = resetRequests.length
+      ? resetRequests.map((item) => `
+        <div class="admin-item">
+          <div class="admin-item-title">${esc(item.user?.nombre || item.pin_code || 'Solicitud')}</div>
+          <div class="admin-item-sub">${esc(item.email || 'sin email')} · ${item.status === 'pending' ? 'pendiente' : 'resuelta'} · ${new Date(item.requested_at).toLocaleString('es-US')}</div>
+          ${item.status === 'pending' ? `<button class="admin-submit" style="margin-top:8px;" onclick="resolveResetRequest(${item.id})">Marcar resuelta</button>` : ''}
+        </div>
+      `).join('')
+      : '<div class="admin-empty">No hay solicitudes pendientes.</div>';
   }
 
   async function createPortalUser() {
     const payload = {
       pin_code: document.getElementById('newAgentPin').value.trim().toUpperCase(),
       nombre: document.getElementById('newAgentName').value.trim(),
+      email: document.getElementById('newAgentEmail').value.trim().toLowerCase(),
       rol: document.getElementById('newAgentRole').value,
       password: document.getElementById('newAgentPassword').value,
     };
 
-    if (!payload.pin_code || !payload.nombre || !payload.password) {
-      showToast('⚠️ Falta PIN, nombre o password del agente', '#b45309');
+    if (!payload.pin_code || !payload.nombre || !payload.email || !payload.password) {
+      showToast('⚠️ Falta PIN, nombre, email o password del agente', '#b45309');
       return;
     }
 
@@ -588,6 +628,7 @@
       renderAdminLists();
       document.getElementById('newAgentPin').value = '';
       document.getElementById('newAgentName').value = '';
+      document.getElementById('newAgentEmail').value = '';
       document.getElementById('newAgentPassword').value = '';
       document.getElementById('newAgentRole').value = 'agente';
       showToast('✅ Agente guardado', '#16a34a');
@@ -621,6 +662,7 @@
       if (!res.ok) throw new Error(data?.error || 'Reset password failed');
       const idx = adminUsers.findIndex((item) => item.id === userId);
       if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user, password_set: true };
+      resetRequests = resetRequests.map((item) => item.user_id === userId ? { ...item, status: 'resolved' } : item);
       renderAdminLists();
       document.getElementById('resetUserPassword').value = '';
       showToast('✅ Password actualizado', '#16a34a');
@@ -629,6 +671,55 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Actualizar password';
+    }
+  }
+
+  async function updateUserEmail() {
+    const userId = Number(document.getElementById('updateEmailUserSelect').value);
+    const email = document.getElementById('updateUserEmail').value.trim().toLowerCase();
+
+    if (!userId) {
+      showToast('⚠️ Elige usuario', '#b45309');
+      return;
+    }
+
+    const btn = document.getElementById('updateEmailBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=user-email', {
+        method: 'POST',
+        body: JSON.stringify({ user_id: userId, email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Update email failed');
+      const idx = adminUsers.findIndex((item) => item.id === userId);
+      if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user };
+      renderAdminLists();
+      document.getElementById('updateUserEmail').value = '';
+      showToast('✅ Email actualizado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo guardar el email', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar email';
+    }
+  }
+
+  async function resolveResetRequest(requestId) {
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=resolve-reset-request', {
+        method: 'POST',
+        body: JSON.stringify({ request_id: requestId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Resolve request failed');
+      resetRequests = resetRequests.map((item) => item.id === requestId ? { ...item, ...data.request } : item);
+      renderAdminLists();
+      showToast('✅ Solicitud resuelta', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo resolver la solicitud', '#b91c1c');
     }
   }
 

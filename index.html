@@ -410,6 +410,17 @@
   }
   #pinScreen .pin-btn:hover { background: #1da851; }
   #pinScreen .pin-btn:active { transform: scale(.97); }
+  #pinScreen .pin-link {
+    margin-top: 14px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,.78);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+  }
   #pinScreen .pin-error {
     margin-top: 14px; color: #f87171;
     font-size: 13px; font-weight: 600;
@@ -450,6 +461,20 @@
   .password-setup-card input {
     width: 100%;
     margin-bottom: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .password-setup-card input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-light);
+    background: #fff;
   }
   .password-setup-card button {
     width: 100%;
@@ -487,6 +512,7 @@
   <input type="text" id="pinInput" placeholder="CÓDIGO" maxlength="10" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') checkPin()">
   <input type="password" id="passwordInput" placeholder="PASSWORD" autocomplete="current-password" onkeydown="if(event.key==='Enter') checkPin()">
   <button class="pin-btn" id="pinBtn" onclick="checkPin()">✅ Entrar</button>
+  <button class="pin-link" type="button" onclick="toggleForgotPassword(true)">Olvide mi password</button>
   <div class="pin-error" id="pinError"></div>
 </div>
 
@@ -498,6 +524,18 @@
     <input type="password" id="confirmOwnPassword" placeholder="Confirmar password" autocomplete="new-password">
     <button id="saveOwnPasswordBtn" onclick="saveOwnPassword()">Guardar password</button>
     <div class="password-setup-error" id="passwordSetupError"></div>
+  </div>
+</div>
+
+<div class="password-setup-overlay" id="forgotPasswordOverlay">
+  <div class="password-setup-card">
+    <div class="password-setup-title">Recuperar acceso</div>
+    <div class="password-setup-copy">Escribe tu PIN o tu email. Si tu correo esta registrado, tu solicitud quedara visible para el administrador.</div>
+    <input type="text" id="forgotPin" placeholder="PIN">
+    <input type="email" id="forgotEmail" placeholder="Email">
+    <button id="forgotPasswordBtn" onclick="submitForgotPassword()">Enviar solicitud</button>
+    <button type="button" onclick="toggleForgotPassword(false)" style="margin-top:10px;width:100%;padding:11px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--blue);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Cerrar</button>
+    <div class="password-setup-error" id="forgotPasswordError"></div>
   </div>
 </div>
 
@@ -935,6 +973,15 @@
     localStorage.removeItem(SESSION_KEY);
   }
 
+  function toggleForgotPassword(show) {
+    document.getElementById('forgotPasswordOverlay').classList.toggle('show', Boolean(show));
+    if (show) {
+      document.getElementById('forgotPasswordError').textContent = '';
+      document.getElementById('forgotPasswordError').style.color = '#b91c1c';
+      document.getElementById('forgotPin').focus();
+    }
+  }
+
   function logout() {
     clearSession();
     localStorage.removeItem('izzy_restore');
@@ -1057,6 +1104,42 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Guardar password';
+    }
+  }
+
+  async function submitForgotPassword() {
+    const pin = document.getElementById('forgotPin').value.trim().toUpperCase();
+    const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+    const err = document.getElementById('forgotPasswordError');
+    const btn = document.getElementById('forgotPasswordBtn');
+
+    if (!pin && !email) {
+      err.textContent = 'Escribe tu PIN o tu email.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    err.textContent = '';
+
+    try {
+      const res = await fetch(`${FUNCTIONS_BASE_URL}/izzy-admin-leads?resource=forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin, email })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Request failed');
+      err.style.color = '#15803d';
+      err.textContent = data?.message || 'Solicitud registrada.';
+      document.getElementById('forgotPin').value = '';
+      document.getElementById('forgotEmail').value = '';
+    } catch {
+      err.style.color = '#b91c1c';
+      err.textContent = 'No se pudo enviar la solicitud.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enviar solicitud';
     }
   }
   // ───────────────────────────────────────────────────────

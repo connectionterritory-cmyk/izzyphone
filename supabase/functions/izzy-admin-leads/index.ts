@@ -16,6 +16,7 @@ type PortalUser = {
   id: number;
   pin_code: string;
   nombre: string;
+  email?: string | null;
   rol: Role;
   active: boolean;
   password_hash?: string | null;
@@ -32,6 +33,17 @@ type Quoter = {
   active: boolean;
   created_at: string;
   updated_at: string;
+};
+
+type PasswordResetRequest = {
+  id: number;
+  user_id: number | null;
+  pin_code: string | null;
+  email: string | null;
+  status: "pending" | "resolved";
+  requested_at: string;
+  resolved_at: string | null;
+  user?: { nombre?: string | null } | null;
 };
 
 type UpdatePayload = {
@@ -77,6 +89,10 @@ function normalizeCode(code: string): string {
 
 function normalizeRole(role: unknown): Role {
   return role === "admin" ? "admin" : "agente";
+}
+
+function normalizeEmail(email: unknown): string {
+  return cleanString(email).toLowerCase();
 }
 
 function sanitizeUpdates(raw: Record<string, unknown>, isAdmin: boolean) {
@@ -179,19 +195,21 @@ async function handleLeadList(user: { nombre: string; rol: Role }, supabase: Ret
 async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
   ensureAdmin(user);
 
-  const [{ data: users, error: usersError }, { data: quoters, error: quotersError }] = await Promise.all([
-    supabase.from("izzy_portal_users").select("id, pin_code, nombre, rol, active, created_at, updated_at, password_hash").order("nombre", { ascending: true }),
+  const [{ data: users, error: usersError }, { data: quoters, error: quotersError }, { data: resetRequests, error: resetError }] = await Promise.all([
+    supabase.from("izzy_portal_users").select("id, pin_code, nombre, email, rol, active, created_at, updated_at, password_hash").order("nombre", { ascending: true }),
     supabase.from("izzy_quoters").select("*").order("nombre", { ascending: true }),
+    supabase.from("izzy_password_reset_requests").select("id, user_id, pin_code, email, status, requested_at, resolved_at, user:izzy_portal_users(nombre)").order("requested_at", { ascending: false }).limit(20),
   ]);
 
-  if (usersError || quotersError) {
-    console.error("[izzy-admin-leads] fetch admin config failed", { usersError, quotersError });
+  if (usersError || quotersError || resetError) {
+    console.error("[izzy-admin-leads] fetch admin config failed", { usersError, quotersError, resetError });
     return jsonResponse({ error: "Could not load admin config" }, { status: 500 });
   }
 
   return jsonResponse({
     users: (users ?? []).map((row) => ({ ...row, password_set: Boolean(row.password_hash) })),
     quoters: quoters ?? [],
+    reset_requests: resetRequests ?? [],
   });
 }
 
@@ -203,12 +221,13 @@ async function handleCreateUser(req: Request, user: { rol: Role }, supabase: Ret
   const payload = {
     pin_code: normalizePin(body?.pin_code || body?.pin || ""),
     nombre: cleanString(body?.nombre),
+    email: normalizeEmail(body?.email),
     rol: normalizeRole(body?.rol),
     active: body?.active === false ? false : true,
   };
 
-  if (!payload.pin_code || !payload.nombre || !password) {
-    return jsonResponse({ error: "pin_code, nombre and password are required" }, { status: 400 });
+  if (!payload.pin_code || !payload.nombre || !payload.email || !password) {
+    return jsonResponse({ error: "pin_code, nombre, email and password are required" }, { status: 400 });
   }
 
   const passwordData = await hashPassword(password);
@@ -216,7 +235,7 @@ async function handleCreateUser(req: Request, user: { rol: Role }, supabase: Ret
   const { data, error } = await supabase
     .from("izzy_portal_users")
     .insert({ ...payload, password_hash: passwordData.hash, password_salt: passwordData.salt })
-    .select("id, pin_code, nombre, rol, active, created_at, updated_at")
+    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
     .single();
 
   if (error) {
@@ -242,7 +261,7 @@ async function handleResetUserPassword(req: Request, user: { rol: Role }, supaba
     .from("izzy_portal_users")
     .update({ password_hash: passwordData.hash, password_salt: passwordData.salt })
     .eq("id", userId)
-    .select("id, pin_code, nombre, rol, active, created_at, updated_at")
+    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
     .single();
 
   if (error) {
@@ -250,7 +269,63 @@ async function handleResetUserPassword(req: Request, user: { rol: Role }, supaba
     return jsonResponse({ error: "Could not reset password" }, { status: 500 });
   }
 
+  await supabase
+    .from("izzy_password_reset_requests")
+    .update({ status: "resolved", resolved_at: new Date().toISOString() })
+    .eq("status", "pending")
+    .eq("user_id", userId);
+
   return jsonResponse({ user: data });
+}
+
+async function handleUpdateUserEmail(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
+  ensureAdmin(user);
+  const body = await req.json();
+  const userId = Number(body?.user_id);
+  const rawEmail = cleanString(body?.email);
+  const email = rawEmail ? normalizeEmail(rawEmail) : null;
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return jsonResponse({ error: "user_id is required" }, { status: 400 });
+  }
+
+  const { data, error } = await supabase
+    .from("izzy_portal_users")
+    .update({ email })
+    .eq("id", userId)
+    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
+    .single();
+
+  if (error) {
+    console.error("[izzy-admin-leads] update email failed", error);
+    return jsonResponse({ error: "Could not update email" }, { status: 500 });
+  }
+
+  return jsonResponse({ user: data });
+}
+
+async function handleResolveResetRequest(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
+  ensureAdmin(user);
+  const body = await req.json();
+  const requestId = Number(body?.request_id);
+
+  if (!Number.isInteger(requestId) || requestId <= 0) {
+    return jsonResponse({ error: "request_id is required" }, { status: 400 });
+  }
+
+  const { data, error } = await supabase
+    .from("izzy_password_reset_requests")
+    .update({ status: "resolved", resolved_at: new Date().toISOString() })
+    .eq("id", requestId)
+    .select("id, user_id, pin_code, email, status, requested_at, resolved_at, user:izzy_portal_users(nombre)")
+    .single();
+
+  if (error) {
+    console.error("[izzy-admin-leads] resolve reset request failed", error);
+    return jsonResponse({ error: "Could not resolve request" }, { status: 500 });
+  }
+
+  return jsonResponse({ request: data });
 }
 
 async function handleSelfPassword(req: Request, user: { nombre: string; rol: Role; pin_code?: string }, supabase: ReturnType<typeof createAdminClient>) {
@@ -266,7 +341,7 @@ async function handleSelfPassword(req: Request, user: { nombre: string; rol: Rol
     .from("izzy_portal_users")
     .update({ password_hash: passwordData.hash, password_salt: passwordData.salt })
     .eq("pin_code", user.pin_code)
-    .select("id, pin_code, nombre, rol, active, created_at, updated_at")
+    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
     .single();
 
   if (error) {
@@ -275,6 +350,69 @@ async function handleSelfPassword(req: Request, user: { nombre: string; rol: Rol
   }
 
   return jsonResponse({ user: data, password_set: true });
+}
+
+async function handleForgotPassword(req: Request) {
+  const body = await req.json();
+  const pin = normalizePin(body?.pin || "");
+  const email = normalizeEmail(body?.email);
+  const supabase = createAdminClient();
+
+  if (!pin && !email) {
+    return jsonResponse({ error: "pin or email is required" }, { status: 400 });
+  }
+
+  let query = supabase
+    .from("izzy_portal_users")
+    .select("id, pin_code, nombre, email, active")
+    .eq("active", true)
+    .limit(1);
+
+  query = pin ? query.eq("pin_code", pin) : query.eq("email", email);
+  const { data: portalUser, error } = await query.maybeSingle();
+
+  if (error) {
+    console.error("[izzy-admin-leads] forgot password lookup failed", error);
+    return jsonResponse({ error: "Could not create request" }, { status: 500 });
+  }
+
+  if (!portalUser?.email) {
+    return jsonResponse({
+      ok: true,
+      created: false,
+      message: "No encontramos un email registrado para este usuario. Contacta al administrador.",
+    });
+  }
+
+  const { data: existingRequest } = await supabase
+    .from("izzy_password_reset_requests")
+    .select("id")
+    .eq("user_id", portalUser.id)
+    .eq("status", "pending")
+    .limit(1)
+    .maybeSingle();
+
+  if (!existingRequest) {
+    const { error: insertError } = await supabase
+      .from("izzy_password_reset_requests")
+      .insert({
+        user_id: portalUser.id,
+        pin_code: portalUser.pin_code,
+        email: portalUser.email,
+        status: "pending",
+      });
+
+    if (insertError) {
+      console.error("[izzy-admin-leads] forgot password insert failed", insertError);
+      return jsonResponse({ error: "Could not create request" }, { status: 500 });
+    }
+  }
+
+  return jsonResponse({
+    ok: true,
+    created: true,
+    message: `Solicitud registrada para ${portalUser.email}. El administrador ya puede ayudarte con el reset.`,
+  });
 }
 
 async function handleCreateQuoter(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
@@ -380,6 +518,10 @@ async function handlePost(req: Request) {
     return await handleLogin(req);
   }
 
+  if (resource === "forgot-password") {
+    return await handleForgotPassword(req);
+  }
+
   const user = await requireSession(req);
   const supabase = createAdminClient();
 
@@ -389,6 +531,14 @@ async function handlePost(req: Request) {
 
   if (resource === "user-password") {
     return await handleResetUserPassword(req, user, supabase);
+  }
+
+  if (resource === "user-email") {
+    return await handleUpdateUserEmail(req, user, supabase);
+  }
+
+  if (resource === "resolve-reset-request") {
+    return await handleResolveResetRequest(req, user, supabase);
   }
 
   if (resource === "self-password") {
