@@ -278,6 +278,21 @@ async function handleLeadList(user: { nombre: string; rol: Role }, supabase: Ret
   return jsonResponse({ leads: data ?? [] });
 }
 
+async function handleOrderList(user: { nombre: string; rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
+  let query = supabase.from("izzy_orders").select("*").order("created_at", { ascending: false });
+  if (user.rol !== "admin") {
+    query = query.eq("agente", user.nombre);
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error("[izzy-admin-leads] fetch orders failed", error);
+    return jsonResponse({ error: "Could not fetch orders" }, { status: 500 });
+  }
+
+  return jsonResponse({ orders: data ?? [] });
+}
+
 async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
   ensureAdmin(user);
 
@@ -601,6 +616,10 @@ async function handleGet(req: Request) {
 
   if (resource === "admin-config") {
     return await handleAdminConfig(user, supabase);
+  }
+
+  if (resource === "orders") {
+    return await handleOrderList(user, supabase);
   }
 
   return await handleLeadList(user, supabase);

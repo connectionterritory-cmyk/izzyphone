@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Internet — Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f0f2f5; --surface: #fff; --border: #e2e0dc;
+    --text: #1a1814; --muted: #7a7570;
+    --blue: #1a3a6b; --blue-light: #edf1f8;
+    --green: #0f766e; --green-light: #ecfdf5;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px 16px 60px; }
+  .page-header {
+    max-width: 980px; margin: 0 auto 20px;
+    background: var(--blue); border-radius: 16px; padding: 18px 24px; color: #fff;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .brand-icon { width: 40px; height: 40px; background: rgba(255,255,255,.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .page-header h1 { font-size: 20px; font-weight: 700; }
+  .page-header .sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+  .header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .header-tag { background: rgba(255,255,255,.18); border-radius: 20px; padding: 5px 13px; font-size: 12px; font-weight: 600; }
+  .btn-back { background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.3); color: #fff; border-radius: 20px; padding: 5px 13px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background .15s; }
+  .btn-back:hover { background: rgba(255,255,255,.25); }
+  .stats-row { max-width: 980px; margin: 0 auto 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .stat-card { background: var(--surface); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); padding: 14px 18px; }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--blue); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .search-bar { max-width: 980px; margin: 0 auto 16px; background: var(--surface); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); padding: 14px 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .search-bar input, .search-bar select { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 8px 12px; outline: none; transition: border-color .15s; -webkit-appearance: none; }
+  .search-bar input { flex: 1; min-width: 200px; }
+  .search-bar input:focus, .search-bar select:focus { border-color: var(--blue); }
+  .search-bar select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
+  .result-count { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; margin-left: auto; }
+  .table-wrap { max-width: 980px; margin: 0 auto; background: var(--surface); border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  thead { background: var(--blue); }
+  thead th { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 12px 10px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; }
+  thead th.no-sort { cursor: default; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; cursor: pointer; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #edf1f8; }
+  tbody td { padding: 10px 10px; font-size: 13px; color: var(--text); vertical-align: middle; }
+  td.muted { color: var(--muted); }
+  td.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .money { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: #16a34a; }
+  .empty-state { padding: 48px 24px; text-align: center; color: var(--muted); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+  @media (max-width: 700px) { .table-scroll { display: none; } .card-list { display: block; } }
+  @media (min-width: 701px) { .card-list { display: none; } }
+  .order-card { border-bottom: 1px solid var(--border); padding: 14px 18px; cursor: pointer; transition: background .1s; }
+  .order-card:last-child { border-bottom: none; }
+  .order-card:hover { background: var(--bg); }
+  .order-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .order-card-name { font-size: 15px; font-weight: 700; }
+  .order-card-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .order-card-row { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+  .order-card-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tap-hint { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right; }
+  .modal-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(10,20,40,.55); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.25); width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+  .modal-header { padding: 18px 20px 16px; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+  .modal-header h2 { font-size: 16px; font-weight: 700; }
+  .modal-header .modal-sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+  .btn-close { background: rgba(255,255,255,.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-body { padding: 18px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 13px; }
+  .m-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .m-field { display: flex; flex-direction: column; gap: 5px; }
+  .m-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .m-value { padding: 10px 14px; background: #f7f7f5; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; color: var(--text); min-height: 42px; }
+  .sig-wrap { background: #fff; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px; }
+  .sig-wrap img { width: 100%; display: block; background: #fafaf8; border-radius: 8px; }
+  .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modalTitle">Order Detail</h2>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="page-header">
+  <div class="header-left">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M1.5 8.5C5.2 4.8 10.4 3 12 3s6.8 1.8 10.5 5.5L21 10c-3-3-5.7-5-9-5s-6 2-9 5l-1.5-1.5zM12 7c2.4 0 4.6.9 6.2 2.4L16.8 11C15.6 9.8 13.9 9 12 9s-3.6.8-4.8 2L5.8 9.4C7.4 7.9 9.6 7 12 7zm0 4c1.1 0 2.1.4 2.8 1.2L12 15l-2.8-2.8C9.9 11.4 10.9 11 12 11zm0 4l1.5 1.5L12 18l-1.5-1.5L12 15z"/></svg>
+    </div>
+    <div>
+      <h1>Orders — Izzy Internet</h1>
+      <div class="sub">Ordenes guardadas del portal</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-tag" id="agentTag"></span>
+    <a href="leads.html" class="btn-back">📊 Leads</a>
+    <a href="index.html" class="btn-back">← Cotizador</a>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label" id="statTotalLabel">Total Orders</div>
+    <div class="stat-value" id="statTotal">—</div>
+    <div class="stat-sub" id="statTotalSub">ordenes registradas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Hoy</div>
+    <div class="stat-value" id="statHoy">—</div>
+    <div class="stat-sub" id="statFecha">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Esta Semana</div>
+    <div class="stat-value" id="statSemana">—</div>
+    <div class="stat-sub">ultimos 7 dias</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Precio Promedio</div>
+    <div class="stat-value" id="statProm">—</div>
+    <div class="stat-sub">mensual</div>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍 Buscar por cliente, agente, telefono o order #..." oninput="renderTable()">
+  <select id="filterAgente" onchange="renderTable()">
+    <option value="">Todos los agentes</option>
+  </select>
+  <select id="filterProv" onchange="renderTable()">
+    <option value="">Todos los proveedores</option>
+  </select>
+  <span class="result-count" id="resultCount"></span>
+</div>
+
+<div class="table-wrap">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('created_at')">Fecha <span>↕</span></th>
+          <th onclick="sortBy('agente')">Agente <span>↕</span></th>
+          <th onclick="sortBy('cliente_nombre')">Cliente <span>↕</span></th>
+          <th class="no-sort">Telefono</th>
+          <th class="no-sort">Proveedor</th>
+          <th class="no-sort">Precio</th>
+          <th class="no-sort">Order #</th>
+          <th class="no-sort">Install Date</th>
+          <th class="no-sort">Ciudad</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div class="card-list" id="cardList"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="icon">🧾</div>
+    <p>No se encontraron ordenes con esos filtros.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PROJECT_REF = 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const SESSION_KEY = 'izzy_session';
+  let currentUser = null;
+  let allOrders = [];
+  let activeOrder = null;
+  let sortCol = 'created_at';
+  let sortAsc = false;
+
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+  } catch {
+    currentUser = null;
+  }
+  if (!currentUser) window.location.href = 'index.html';
+  const isAdmin = currentUser.rol === 'admin';
+  document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
+
+  function getSession() {
+    try {
+      return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  async function apiFetch(path, options = {}) {
+    const session = getSession();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${path}`, { ...options, headers });
+    if (res.status === 401) {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+    return res;
+  }
+
+  async function fetchOrders() {
+    const res = await apiFetch('izzy-admin-leads?resource=orders');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast('❌ Error al cargar ordenes', '#b91c1c');
+      return;
+    }
+    allOrders = data.orders || [];
+    buildFilters();
+    updateStats();
+    renderTable();
+  }
+
+  function buildFilters() {
+    const agtSel = document.getElementById('filterAgente');
+    agtSel.innerHTML = '<option value="">Todos los agentes</option>';
+    if (!isAdmin) {
+      agtSel.style.display = 'none';
+    } else {
+      [...new Set(allOrders.map(o => o.agente).filter(Boolean))].sort().forEach((a) => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        agtSel.appendChild(opt);
+      });
+    }
+
+    const prvSel = document.getElementById('filterProv');
+    prvSel.innerHTML = '<option value="">Todos los proveedores</option>';
+    [...new Set(allOrders.map(o => (o.proveedor_otro || o.proveedor_servicio)).filter(Boolean))].sort().forEach((p) => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = p;
+      prvSel.appendChild(opt);
+    });
+  }
+
+  function getFiltered() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const agt = document.getElementById('filterAgente').value;
+    const prov = document.getElementById('filterProv').value;
+    return allOrders.filter((o) => {
+      const fullName = [o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ');
+      const provider = o.proveedor_otro || o.proveedor_servicio || '';
+      const matchQ = !q || [fullName, o.agente, o.telefono_primario, o.order_number, o.ciudad, o.estado].some((v) => String(v || '').toLowerCase().includes(q));
+      const matchAgt = !agt || o.agente === agt;
+      const matchProv = !prov || provider === prov;
+      return matchQ && matchAgt && matchProv;
+    });
+  }
+
+  function updateStats() {
+    const today = new Date().toLocaleDateString('es-US');
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const hoy = allOrders.filter((o) => o.fecha === today).length;
+    const semana = allOrders.filter((o) => new Date(o.created_at) >= weekAgo).length;
+    const precios = allOrders.map((o) => parseFloat(o.monthly_price) || 0).filter((n) => n > 0);
+    const prom = precios.length ? precios.reduce((a, b) => a + b, 0) / precios.length : 0;
+    if (!isAdmin) {
+      document.getElementById('statTotalLabel').textContent = 'Mis Orders';
+      document.getElementById('statTotalSub').textContent = 'ordenes tuyas';
+    }
+    document.getElementById('statTotal').textContent = allOrders.length;
+    document.getElementById('statHoy').textContent = hoy;
+    document.getElementById('statSemana').textContent = semana;
+    document.getElementById('statProm').textContent = prom ? `$${prom.toFixed(0)}` : '—';
+    document.getElementById('statFecha').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function sortBy(col) {
+    sortAsc = sortCol === col ? !sortAsc : true;
+    sortCol = col;
+    renderTable();
+  }
+
+  function renderTable() {
+    const data = getFiltered().sort((a, b) => {
+      const va = String(a[sortCol] || '');
+      const vb = String(b[sortCol] || '');
+      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+
+    document.getElementById('resultCount').textContent = `${data.length} order${data.length !== 1 ? 's' : ''}`;
+    document.getElementById('emptyState').style.display = data.length === 0 ? 'block' : 'none';
+
+    document.getElementById('tableBody').innerHTML = data.map((o) => {
+      const fullName = esc([o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ') || '—');
+      const provider = esc(o.proveedor_otro || o.proveedor_servicio || '—');
+      const price = o.monthly_price ? `$${parseFloat(o.monthly_price).toFixed(2)}` : '—';
+      const installDate = esc(o.install_date || '—');
+      const city = esc([o.ciudad, o.estado].filter(Boolean).join(', ') || '—');
+      return `<tr onclick="openModalById(${Number(o.id)})">
+        <td class="mono">${esc(o.fecha || '—')}</td>
+        <td><strong>${esc(o.agente || '—')}</strong></td>
+        <td><strong>${fullName}</strong></td>
+        <td class="mono">${esc(o.telefono_primario || '—')}</td>
+        <td>${o.proveedor_servicio || o.proveedor_otro ? `<span class="badge badge-blue">${provider}</span>` : '<span class="muted">—</span>'}</td>
+        <td class="money">${price}</td>
+        <td class="mono">${esc(o.order_number || '—')}</td>
+        <td class="muted">${installDate}</td>
+        <td class="muted">${city}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('cardList').innerHTML = data.map((o) => {
+      const fullName = esc([o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ') || '—');
+      const provider = esc(o.proveedor_otro || o.proveedor_servicio || '');
+      const price = o.monthly_price ? `$${parseFloat(o.monthly_price).toFixed(2)}/mo` : '';
+      return `<div class="order-card" onclick="openModalById(${Number(o.id)})">
+        <div class="order-card-top">
+          <div class="order-card-name">${fullName}</div>
+          <div class="order-card-date">${esc(o.fecha || '—')}</div>
+        </div>
+        <div class="order-card-row">👤 <strong>${esc(o.agente || '—')}</strong></div>
+        <div class="order-card-row">📞 ${esc(o.telefono_primario || '—')}</div>
+        ${provider ? `<div class="order-card-row">🌐 ${provider}</div>` : ''}
+        ${o.order_number ? `<div class="order-card-row">🧾 ${esc(o.order_number)}</div>` : ''}
+        <div class="order-card-badges">
+          ${provider ? `<span class="badge badge-blue">${provider}</span>` : ''}
+          ${price ? `<span class="badge badge-green">${price}</span>` : ''}
+          ${o.install_date ? `<span class="badge" style="background:#fef3c7;color:#92400e;">${esc(o.install_date)}</span>` : ''}
+        </div>
+        <div class="tap-hint">Toca para ver detalles →</div>
+      </div>`;
+    }).join('');
+  }
+
+  function openModal(order) {
+    activeOrder = order;
+    const fullName = [order.cliente_nombre, order.cliente_apellido].filter(Boolean).join(' ');
+    document.getElementById('modalTitle').textContent = fullName || 'Order Detail';
+    document.getElementById('modalSub').textContent = `Order ID #${order.id} · ${order.fecha || '—'}`;
+    const provider = order.proveedor_otro || order.proveedor_servicio || '—';
+    const address = [order.direccion, order.apartamento, [order.ciudad, order.estado].filter(Boolean).join(', '), order.zip].filter(Boolean).join(' · ');
+    document.getElementById('modalBody').innerHTML = `
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Agente</div><div class="m-value">${esc(order.agente || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Order Number</div><div class="m-value">${esc(order.order_number || '—')}</div></div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Telefono Principal</div><div class="m-value">${esc(order.telefono_primario || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Telefono Secundario</div><div class="m-value">${esc(order.telefono_secundario || '—')}</div></div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Email</div><div class="m-value">${esc(order.email || '—')}</div></div>
+        <div class="m-field"><div class="m-label">DOB</div><div class="m-value">${esc(order.fecha_nacimiento || '—')}</div></div>
+      </div>
+      <div class="m-field"><div class="m-label">Direccion</div><div class="m-value">${esc(address || '—')}</div></div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Proveedor</div><div class="m-value">${esc(provider)}</div></div>
+        <div class="m-field"><div class="m-label">Velocidad</div><div class="m-value">${esc(order.velocidad_deseada || '—')}</div></div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Voice Service</div><div class="m-value">${order.voice_service ? 'Yes' : 'No'}</div></div>
+        <div class="m-field"><div class="m-label">Autopay</div><div class="m-value">${order.autopay ? 'Yes' : 'No'}</div></div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Monthly Price</div><div class="m-value">${order.monthly_price ? '$' + esc(Number(order.monthly_price).toFixed(2)) : '—'}</div></div>
+        <div class="m-field"><div class="m-label">Install Date</div><div class="m-value">${esc(order.install_date || '—')}</div></div>
+      </div>
+      <div class="m-field"><div class="m-label">Install Notes</div><div class="m-value">${esc(order.notas_instalacion || '—')}</div></div>
+      <div class="m-field"><div class="m-label">Special Notes</div><div class="m-value">${esc(order.special_notes || '—')}</div></div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">BTN</div><div class="m-value">${esc(order.btn || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Card Last 4</div><div class="m-value">${esc(order.card_last4 || '—')}</div></div>
+      </div>
+      ${order.signature_data ? `<div class="m-field"><div class="m-label">Firma</div><div class="sig-wrap"><img src="${order.signature_data}" alt="Firma del cliente"></div></div>` : ''}
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openModalById(id) {
+    const order = allOrders.find((item) => Number(item.id) === Number(id));
+    if (!order) {
+      showToast('❌ No se encontro la orden', '#b91c1c');
+      return;
+    }
+    openModal(order);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    activeOrder = null;
+  }
+
+  function handleOverlayClick(event) {
+    if (event.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function showToast(msg, color = '#111') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  fetchOrders();
+</script>
+</body>
+</html>
