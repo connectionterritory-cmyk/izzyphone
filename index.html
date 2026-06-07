@@ -1028,6 +1028,20 @@
     location.reload();
   }
 
+  function applyAgentDefaults() {
+    const agentName = getSession()?.user?.nombre || '';
+    const agentField = document.getElementById('miNombre');
+    if (!agentField) return;
+    agentField.value = agentName;
+    agentField.readOnly = Boolean(agentName);
+    agentField.style.background = agentName ? '#f8fafc' : '';
+    agentField.style.cursor = agentName ? 'not-allowed' : '';
+    setTimeout(() => {
+      if (typeof generate === 'function') generate();
+      if (typeof generateCliente === 'function') generateCliente();
+    }, 0);
+  }
+
   function showAuthenticatedApp() {
     const role = getSession()?.user?.rol || '';
     document.getElementById('pinScreen').style.display = 'none';
@@ -1035,6 +1049,7 @@
     document.getElementById('leadsLink').style.display = 'flex';
     document.getElementById('adminLink').style.display = role === 'admin' ? 'inline-flex' : 'none';
     document.getElementById('passwordSetupOverlay').classList.toggle('show', mustSetOwnPassword);
+    applyAgentDefaults();
   }
 
   async function apiFetch(path, options = {}) {

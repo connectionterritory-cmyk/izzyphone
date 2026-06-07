@@ -597,6 +597,37 @@
   const today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
   document.getElementById('orderDateDisplay').textContent = today;
 
+  const PROJECT_REF = 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+
+  async function apiFetch(path, options = {}) {
+    const session = (() => {
+      try {
+        return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+      } catch {
+        return null;
+      }
+    })();
+
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${path}`, {
+      ...options,
+      headers
+    });
+
+    if (res.status === 401) {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+
+    return res;
+  }
+
   // ── Role: admin unlocks Section 4 ─────────────────────
   if (agentRole === 'admin') {
     document.getElementById('adminBadge').style.display = 'inline-block';
@@ -822,17 +853,70 @@
   }
 
   // ── Submit ────────────────────────────────────────────
-  function submitOrder() {
+  async function submitOrder() {
     const first  = document.getElementById('firstName').value.trim();
     const last   = document.getElementById('lastName').value.trim();
     const phone  = document.getElementById('phone1').value.trim();
     const street = document.getElementById('street').value.trim();
+    const submitBtn = document.querySelector('.btn-submit');
 
     if (!first || !last) { showToast('⚠️ Client name is required', '#b45309'); return; }
     if (!phone)          { showToast('⚠️ Primary phone is required', '#b45309'); return; }
     if (!street)         { showToast('⚠️ Street address is required', '#b45309'); return; }
+    if (!hasSig)         { showToast('⚠️ Signature is required', '#b45309'); return; }
 
-    document.getElementById('successOverlay').classList.add('show');
+    const provider = document.querySelector('input[name="svcProv"]:checked')?.value || '';
+    const desiredSpeed = document.querySelector('input[name="desiredSpeed"]:checked')?.value || '';
+    const payload = {
+      first_name: first,
+      last_name: last,
+      phone1: phone,
+      phone2: document.getElementById('phone2').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      dob: [document.getElementById('dobMonth').value, document.getElementById('dobDay').value, document.getElementById('dobYear').value.trim()].filter(Boolean).join('/'),
+      street,
+      apt: document.getElementById('apt').value.trim(),
+      city: document.getElementById('city').value.trim(),
+      state: document.getElementById('state').value,
+      zip: document.getElementById('zip').value.trim(),
+      service_provider: provider,
+      service_provider_other: provider === 'Other' ? document.getElementById('svcProvOther').value.trim() : '',
+      desired_speed: desiredSpeed === 'Other' ? document.getElementById('speedOther').value.trim() : desiredSpeed,
+      voice_service: tglState.voice === 'yes',
+      install_notes: document.getElementById('installNotes').value.trim(),
+      autopay: tglState.autopay === 'yes',
+      monthly_price: agentRole === 'admin'
+        ? document.getElementById('monthlyPrice').value.trim()
+        : (document.getElementById('monthlyPriceReadonly').textContent || '').replace(/[^\d.]/g, ''),
+      special_notes: agentRole === 'admin'
+        ? document.getElementById('specialNotes').value.trim()
+        : document.getElementById('specialNotesReadonly').textContent.trim(),
+      order_number: agentRole === 'admin' ? document.getElementById('orderNum').value.trim() : '',
+      btn: agentRole === 'admin' ? document.getElementById('btnField').value.trim() : '',
+      order_date: document.getElementById('orderDateDisplay').textContent.trim(),
+      install_date: agentRole === 'admin' ? document.getElementById('installDate').value : '',
+      card_last4: document.getElementById('cardNumber').value.replace(/\D/g,'').slice(-4),
+      signature_data: canvas.toDataURL('image/png')
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving Order...';
+
+    try {
+      const res = await apiFetch('izzy-create-order', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Save failed');
+      localStorage.setItem('izzy_last_order_id', String(data?.order?.id || ''));
+      document.getElementById('successOverlay').classList.add('show');
+    } catch (error) {
+      showToast('❌ Could not save order', '#b91c1c');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '✅ Submit Order';
+    }
   }
 
   // ── Address autocomplete via native <datalist> + Photon ─────
