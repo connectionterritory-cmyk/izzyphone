@@ -632,20 +632,34 @@
   const tel = localStorage.getItem('izzy_orden_tel') || '';
   if (tel) document.getElementById('phone1').value = tel;
 
+  const streetSaved = localStorage.getItem('izzy_orden_street') || '';
+  const aptSaved = localStorage.getItem('izzy_orden_apt') || '';
+  const citySaved = localStorage.getItem('izzy_orden_city') || '';
+  const stateSaved = localStorage.getItem('izzy_orden_state') || '';
+  const zipSaved = localStorage.getItem('izzy_orden_zip') || '';
+
+  if (streetSaved) document.getElementById('street').value = streetSaved;
+  if (aptSaved) document.getElementById('apt').value = aptSaved;
+  if (citySaved) document.getElementById('city').value = citySaved;
+  if (stateSaved) setSelectByValue('state', stateSaved);
+  if (zipSaved) document.getElementById('zip').value = zipSaved;
+
   const fullAddr = localStorage.getItem('izzy_orden_direccion') || '';
-  if (fullAddr) {
+  if (fullAddr && !streetSaved && !citySaved && !zipSaved) {
     const parts = fullAddr.split(',').map(s => s.trim());
     if (parts[0]) document.getElementById('street').value = parts[0];
-    if (parts[1]) document.getElementById('city').value   = parts[1];
+    if (parts[1] && !/(apt|unit|suite|#)/i.test(parts[1])) document.getElementById('city').value = parts[1];
+    if (parts[1] && /(apt|unit|suite|#)/i.test(parts[1])) document.getElementById('apt').value = parts[1];
     if (parts[2]) {
       const chunk = parts[2];
       const m = chunk.match(/^([A-Z]{2})\s+(.+)$/);
       if (m) {
-        const stSel = document.getElementById('state');
-        for (let opt of stSel.options) { if (opt.value === m[1]) { opt.selected = true; break; } }
+        setSelectByValue('state', m[1]);
         document.getElementById('zip').value = m[2];
       } else {
-        document.getElementById('zip').value = chunk;
+        const cityState = chunk.split(',').map(s => s.trim()).filter(Boolean);
+        if (cityState[0]) document.getElementById('city').value = cityState[0];
+        if (cityState[1]) setSelectByValue('state', cityState[1]);
       }
     }
     if (parts[3]) document.getElementById('zip').value = parts[3];
@@ -653,7 +667,18 @@
 
   const offerProv = localStorage.getItem('izzy_orden_proveedor') || '';
   if (offerProv) {
-    document.querySelectorAll('input[name="svcProv"]').forEach(r => { if (r.value === offerProv) r.checked = true; });
+    let matchedProvider = false;
+    document.querySelectorAll('input[name="svcProv"]').forEach(r => {
+      if (r.value === offerProv) {
+        r.checked = true;
+        matchedProvider = true;
+      }
+    });
+    if (!matchedProvider) {
+      document.getElementById('sp-other').checked = true;
+      toggleOtherProv(true);
+      document.getElementById('svcProvOther').value = offerProv;
+    }
   }
 
   const offerSpeed = localStorage.getItem('izzy_orden_velocidad') || '';
@@ -669,9 +694,19 @@
     }
   }
 
-  if (agentRole === 'admin') {
-    const price = localStorage.getItem('izzy_orden_precio') || '';
-    if (price) document.getElementById('monthlyPrice').value = price;
+  const price = localStorage.getItem('izzy_orden_precio') || '';
+  if (price) {
+    document.getElementById('monthlyPriceReadonly').textContent = `$${price}`;
+    if (agentRole === 'admin') document.getElementById('monthlyPrice').value = price;
+  }
+
+  const installNotes = localStorage.getItem('izzy_orden_install_notes') || '';
+  if (installNotes) document.getElementById('installNotes').value = installNotes;
+
+  const specialNotes = localStorage.getItem('izzy_orden_special_notes') || '';
+  if (specialNotes) {
+    document.getElementById('specialNotesReadonly').textContent = specialNotes;
+    if (agentRole === 'admin') document.getElementById('specialNotes').value = specialNotes;
   }
 
   // ── Toggles ───────────────────────────────────────────
@@ -686,6 +721,9 @@
       document.getElementById('autopayNo').classList.toggle('active', val === 'no');
     }
   }
+
+  const savedVoice = localStorage.getItem('izzy_orden_voice') || '';
+  if (savedVoice === 'yes' || savedVoice === 'no') setTgl('voice', savedVoice);
 
   // ── Helpers ───────────────────────────────────────────
   function toggleOtherProv(show) {

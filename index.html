@@ -2016,13 +2016,38 @@
   }
 
   function procederOrden() {
-    localStorage.setItem('izzy_orden_cliente',   getVal('clienteNombre'));
-    localStorage.setItem('izzy_orden_tel',        getVal('clienteTel'));
-    const direc = [[getVal('clienteDirec'), getVal('clienteApt')].filter(Boolean).join(', '), getVal('clienteCiudad'), getVal('clienteZip')].filter(Boolean).join(', ');
-    localStorage.setItem('izzy_orden_direccion',  direc);
-    localStorage.setItem('izzy_orden_proveedor',  getRadio('ofertaProv'));
-    localStorage.setItem('izzy_orden_velocidad',  getRadio('ofertaVel'));
-    localStorage.setItem('izzy_orden_precio',     getVal('ofertaIntPrecio'));
+    const clienteCiudadRaw = getVal('clienteCiudad').trim();
+    const cityStateParts = clienteCiudadRaw.split(',').map(v => v.trim()).filter(Boolean);
+    const clienteCity = cityStateParts[0] || '';
+    const clienteState = cityStateParts[1] || '';
+    const voiceWanted = !!(getRadio('lineas') || getVal('ofertaTelBase') || getVal('ofertaTelAdicional'));
+    const specialNotes = [
+      getVal('nota'),
+      getVal('ofertaNota'),
+      getRadio('telProv') ? `Carrier teléfono actual: ${getRadio('telProv')}` : '',
+      getRadio('lineas') ? `Líneas solicitadas: ${getRadio('lineas')}` : '',
+      getVal('ofertaTelBase') ? `Oferta teléfono: $${getVal('ofertaTelBase')}` : '',
+      getVal('cotizadorNombre') ? `Cotizador: ${getVal('cotizadorNombre')}` : '',
+      getVal('cotizadorTel') ? `Tel cotizador: ${getVal('cotizadorTel')}` : ''
+    ].filter(Boolean).join('\n');
+
+    localStorage.setItem('izzy_orden_cliente', getVal('clienteNombre'));
+    localStorage.setItem('izzy_orden_tel', getVal('clienteTel'));
+    localStorage.setItem('izzy_orden_street', getVal('clienteDirec'));
+    localStorage.setItem('izzy_orden_apt', getVal('clienteApt'));
+    localStorage.setItem('izzy_orden_city', clienteCity);
+    localStorage.setItem('izzy_orden_state', clienteState);
+    localStorage.setItem('izzy_orden_zip', getVal('clienteZip'));
+    localStorage.setItem('izzy_orden_direccion', [[getVal('clienteDirec'), getVal('clienteApt')].filter(Boolean).join(', '), clienteCiudadRaw, getVal('clienteZip')].filter(Boolean).join(', '));
+    localStorage.setItem('izzy_orden_proveedor', getRadio('ofertaProv'));
+    localStorage.setItem('izzy_orden_velocidad', getRadio('ofertaVel'));
+    localStorage.setItem('izzy_orden_precio', getVal('ofertaIntPrecio'));
+    localStorage.setItem('izzy_orden_voice', voiceWanted ? 'yes' : 'no');
+    localStorage.setItem('izzy_orden_install_notes', getVal('nota'));
+    localStorage.setItem('izzy_orden_special_notes', specialNotes);
+    localStorage.setItem('izzy_orden_tel_provider', getRadio('telProv'));
+    localStorage.setItem('izzy_orden_tel_lines', getRadio('lineas'));
+    localStorage.setItem('izzy_orden_tel_price', getVal('ofertaTelBase'));
     window.location.href = 'orden.html';
   }
 
