@@ -965,6 +965,9 @@
       <button id="btnWaCliente" class="btn-copy" onclick="openWhatsAppCliente()" style="display:none;background:#25D366;">
         💬 <span id="btnSendCliente">Enviar al Cliente por WhatsApp</span>
       </button>
+      <button id="btnSmsCliente" class="btn-copy sms-mode" onclick="openSmsCliente()" style="display:none;">
+        📱 <span id="btnSendClienteSms">Enviar por SMS</span>
+      </button>
     </div>
   </div>
 </div>
@@ -1292,7 +1295,7 @@
       lblOfertaNota:'Nota para el cliente (opcional)', phOfertaNota:'Ej: Precio garantizado por 2 años, sin contrato...',
       previewClienteTitle:'📱 Mensaje para el Cliente',
       lblAhorro:'Ahorro:', previewClientePlaceholder:'Llena la oferta arriba para generar el mensaje al cliente...',
-      btnCopyCliente:'Copiar', btnSendCliente:'Enviar al Cliente',
+      btnCopyCliente:'Copiar', btnSendCliente:'Enviar al Cliente', btnSendClienteSms:'Enviar por SMS',
       toastCopied:'✅ ¡Copiado! Pégalo en WhatsApp o SMS',
       toastCopiedGroup:'✅ Mensaje copiado — pégalo en el grupo',
       toastCopiedClient:'✅ ¡Copiado! Envíalo al cliente',
@@ -1362,7 +1365,7 @@
       lblOfertaNota:'Note for client (optional)', phOfertaNota:'Ex: Price guaranteed for 2 years, no contract...',
       previewClienteTitle:'📱 Message for Client',
       lblAhorro:'Savings:', previewClientePlaceholder:'Fill in the offer above to generate the client message...',
-      btnCopyCliente:'Copy', btnSendCliente:'Send to Client',
+      btnCopyCliente:'Copy', btnSendCliente:'Send to Client', btnSendClienteSms:'Send by SMS',
       toastCopied:'✅ Copied! Paste it in WhatsApp or SMS',
       toastCopiedGroup:'✅ Message copied — paste it in the group',
       toastCopiedClient:'✅ Copied! Send it to the client',
@@ -1441,6 +1444,7 @@
     document.getElementById('btnSaveText').textContent = t.btnSaveText;
     document.getElementById('btnCopyCliente').textContent = t.btnCopyCliente;
     document.getElementById('btnSendCliente').textContent = t.btnSendCliente;
+    document.getElementById('btnSendClienteSms').textContent = t.btnSendClienteSms;
     // Preview titles
     document.querySelector('#previewClienteTitle') && (document.querySelector('[id="previewClienteTitle"]') ? document.getElementById('previewClienteTitle').textContent = t.previewClienteTitle : null);
     // Placeholders
@@ -1852,7 +1856,9 @@
 
     // Show/hide WhatsApp button inside cotizador card
     const btnWa = document.getElementById('btnWaCliente');
-    if (btnWa) btnWa.style.display = totalOferta > 0 ? 'block' : 'none';
+    const btnSms = document.getElementById('btnSmsCliente');
+    if (btnWa) btnWa.style.display = totalOferta > 0 ? 'inline-flex' : 'none';
+    if (btnSms) btnSms.style.display = totalOferta > 0 ? 'inline-flex' : 'none';
     if (totalOferta > 0) updateWaBtn();
 
     // Ahorro display footer
@@ -1945,15 +1951,19 @@
 
   function updateWaBtn() {
     const span = document.getElementById('btnSendCliente');
-    if (!span) return;
+    const spanSms = document.getElementById('btnSendClienteSms');
+    if (!span || !spanSms) return;
     const tel = getVal('clienteTel').trim();
     const nombre = getVal('clienteNombre').trim().split(' ')[0];
     if (tel && nombre) {
       span.textContent = `Enviar a ${nombre} — ${tel}`;
+      spanSms.textContent = `SMS a ${nombre} — ${tel}`;
     } else if (tel) {
       span.textContent = `Enviar a ${tel}`;
+      spanSms.textContent = `SMS a ${tel}`;
     } else {
       span.textContent = 'Enviar al Cliente por WhatsApp';
+      spanSms.textContent = 'Enviar por SMS';
     }
   }
 
@@ -1966,6 +1976,16 @@
     if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
     window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
+  }
+
+  function openSmsCliente() {
+    const t = T[currentLang];
+    if (!currentMsgCliente || currentMsgCliente.includes('Llena') || currentMsgCliente.includes('Fill')) {
+      showToast(t.toastFillOffer, '#b45309'); return;
+    }
+    const tel = getVal('clienteTel').replace(/\D/g, '');
+    if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
+    window.open(`sms:${tel}?body=${encodeURIComponent(currentMsgCliente)}`, '_blank');
   }
 
   function restoreLead() {
