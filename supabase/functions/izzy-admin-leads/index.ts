@@ -673,6 +673,54 @@ async function handleUpdate(req: Request) {
   return jsonResponse({ lead: data });
 }
 
+async function handleDelete(req: Request) {
+  const user = await requireSession(req);
+  const url = new URL(req.url);
+  const resource = url.searchParams.get("resource") || "lead";
+  const id = Number(url.searchParams.get("id"));
+
+  if (resource !== "lead") {
+    return jsonResponse({ error: "Unknown resource" }, { status: 400 });
+  }
+  const supabase = createAdminClient();
+  return await deleteLeadById(id, user, supabase);
+}
+
+async function deleteLeadById(id: number, user: { nombre: string; rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
+  if (!Number.isInteger(id) || id <= 0) {
+    return jsonResponse({ error: "Lead id is required" }, { status: 400 });
+  }
+
+  if (user.rol !== "admin") {
+    const { data: existing, error: existingError } = await supabase
+      .from("izzy_leads")
+      .select("id, agente")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (existingError) {
+      console.error("[izzy-admin-leads] ownership delete check failed", existingError);
+      return jsonResponse({ error: "Could not verify lead ownership" }, { status: 500 });
+    }
+
+    if (!existing || existing.agente !== user.nombre) {
+      return jsonResponse({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+
+  const { error } = await supabase
+    .from("izzy_leads")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("[izzy-admin-leads] delete lead failed", error);
+    return jsonResponse({ error: "Could not delete lead" }, { status: 500 });
+  }
+
+  return jsonResponse({ ok: true, id });
+}
+
 async function handlePost(req: Request) {
   const url = new URL(req.url);
   const resource = url.searchParams.get("resource");
@@ -716,6 +764,11 @@ async function handlePost(req: Request) {
     return await handleCreateQuoter(req, user, supabase);
   }
 
+  if (resource === "delete-lead") {
+    const body = await req.json().catch(() => ({}));
+    return await deleteLeadById(Number(body?.id), user, supabase);
+  }
+
   return jsonResponse({ error: "Unknown resource" }, { status: 400 });
 }
 
@@ -733,6 +786,9 @@ Deno.serve(async (req) => {
     }
     if (req.method === "PATCH") {
       return await handleUpdate(req);
+    }
+    if (req.method === "DELETE") {
+      return await handleDelete(req);
     }
     return jsonResponse({ error: "Method not allowed" }, { status: 405 });
   } catch (error) {
