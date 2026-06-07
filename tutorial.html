@@ -113,23 +113,25 @@ let tutLang = localStorage.getItem('izzy_lang') || 'es';
 const STEPS = {
   es: [
     {
-      title: 'Ingresar con tu PIN',
+      title: 'Ingresar con PIN y password',
       sub:   'Acceso seguro — solo el equipo puede entrar',
       visual: `
         <div class="vlabel">Pantalla de acceso</div>
         <div class="pin-mock">
           <div class="pm-emoji">📱</div>
           <div class="pm-title">Izzy Internet</div>
-          <div class="pm-sub">Ingresa tu código de acceso</div>
+          <div class="pm-sub">Ingresa tu codigo y password</div>
           <div class="pm-input">XXXX0000</div>
+          <div class="pm-input" style="margin-top:8px;">********</div>
           <div class="pm-btn">✅ Entrar</div>
         </div>`,
       tips: [
         ['🔑','<strong>Tu PIN es personal y único.</strong> Lo recibiste del administrador. Escríbelo exactamente como te lo dieron, en mayúsculas.'],
-        ['💾','Una vez que entras, el PIN queda <strong>guardado en tu dispositivo</strong>. No tendrás que escribirlo cada vez.'],
-        ['🚫','<strong>No compartas tu PIN</strong> con nadie. Cada vendedor tiene el suyo.'],
+        ['🔒','Ahora entras con <strong>PIN + password</strong>. Si tu usuario todavía no tenía password, la app te pedirá crear una propia al entrar.'],
+        ['💾','Una vez que entras, la sesión queda <strong>guardada en tu dispositivo</strong>. No tendrás que escribirla cada vez.'],
+        ['📩','Si olvidas la password, usa <strong>Olvidé mi password</strong>. Si tu email está registrado, recibirás un enlace para crear una nueva.'],
       ],
-      alert: { type:'red', icon:'❌', text:'<strong>¿No tienes PIN o no funciona?</strong><br>Llama al administrador del sistema. Solo el admin puede crear o resetear códigos de acceso. No puedes entrar sin él.' }
+      alert: { type:'red', icon:'❌', text:'<strong>¿No tienes acceso o no llega el correo?</strong><br>Llama al administrador del sistema. Solo el admin puede crear usuarios, asignar email o resetear accesos.' }
     },
     {
       title: 'Mis datos y el cotizador',
@@ -177,19 +179,21 @@ const STEPS = {
         <div class="mock-label">Compañía de Internet</div>
         <div class="chips-demo">
           <div class="chip-d sel">Spectrum</div><div class="chip-d">Frontier</div>
-          <div class="chip-d">AT&T</div><div class="chip-d">Cox</div><div class="chip-d">No tiene</div>
+          <div class="chip-d">AT&T</div><div class="chip-d">Cox</div><div class="chip-d">Otro</div><div class="chip-d">No tiene</div>
         </div>
+        <div class="mock-field" style="margin-top:8px;">Carrier personalizado</div>
         <div style="margin-top:12px;">
           <div class="mock-label">Compañía de Teléfono</div>
           <div class="chips-demo">
             <div class="chip-d">T-Mobile</div><div class="chip-d sel">Verizon</div>
-            <div class="chip-d">AT&T</div><div class="chip-d">Metro</div>
+            <div class="chip-d">AT&T</div><div class="chip-d">Metro</div><div class="chip-d">Otro</div>
           </div>
         </div>`,
       tips: [
         ['💵','Siempre pregunta <strong>cuánto paga hoy</strong> por internet y por teléfonos — es la base para calcular el ahorro.'],
         ['📺','Marca si tiene TV — algunos paquetes la incluyen y puede ser un argumento extra.'],
         ['📱','Anota cuántas <strong>líneas de celular</strong> tiene. Más líneas = más ahorro potencial.'],
+        ['✍️','Si la compañía no aparece en la lista, elige <strong>Otro</strong> y escribe el nombre del carrier manualmente.'],
       ]
     },
     {
@@ -300,7 +304,7 @@ Soy *María* de *Izzy Internet*.
       tips: [
         ['💾','Al presionar <strong>Guardar</strong>, todos los datos del cliente se registran automáticamente.'],
         ['📊','El administrador ve todos los leads en tiempo real. Siempre guarda antes de cerrar la app.'],
-        ['✅','Verás una notificación verde de confirmación cuando el registro sea exitoso.'],
+        ['✅','Verás una notificación verde de confirmación cuando el registro sea exitoso. Si no aparece, el cliente no quedó guardado todavía.'],
       ],
       alert: { type:'yellow', icon:'💡', text:'<strong>Flujo completo:</strong> Llena los datos del cliente → Envía al cotizador → Espera la oferta → Llena el desglose → Envía al cliente → Guarda el lead.' }
     }
@@ -308,23 +312,25 @@ Soy *María* de *Izzy Internet*.
 
   en: [
     {
-      title: 'Sign in with your PIN',
+      title: 'Sign in with PIN and password',
       sub:   'Secure access — team members only',
       visual: `
         <div class="vlabel">Access screen</div>
         <div class="pin-mock">
           <div class="pm-emoji">📱</div>
           <div class="pm-title">Izzy Internet</div>
-          <div class="pm-sub">Enter your access code</div>
+          <div class="pm-sub">Enter your PIN and password</div>
           <div class="pm-input">XXXX0000</div>
+          <div class="pm-input" style="margin-top:8px;">********</div>
           <div class="pm-btn">✅ Enter</div>
         </div>`,
       tips: [
         ['🔑','<strong>Your PIN is personal and unique.</strong> You received it from the system administrator. Type it exactly as given, in uppercase.'],
-        ['💾','Once you sign in, the PIN is <strong>saved on your device</strong>. You won\'t need to type it again.'],
-        ['🚫','<strong>Do not share your PIN</strong> with anyone. Each team member has their own.'],
+        ['🔒','You now sign in with <strong>PIN + password</strong>. If your account had no password yet, the app will ask you to create one.'],
+        ['💾','Once you sign in, the session is <strong>saved on your device</strong>. You won\'t need to type it every time.'],
+        ['📩','If you forget your password, use <strong>Forgot my password</strong>. If your email is registered, you will receive a recovery link.'],
       ],
-      alert: { type:'red', icon:'❌', text:'<strong>No PIN or it\'s not working?</strong><br>Call the system administrator. Only the admin can create or reset access codes. You cannot enter without one.' }
+      alert: { type:'red', icon:'❌', text:'<strong>No access or no recovery email?</strong><br>Call the system administrator. Only the admin can create users, assign email addresses, or reset access.' }
     },
     {
       title: 'My info and quoting agent',
@@ -372,19 +378,21 @@ Soy *María* de *Izzy Internet*.
         <div class="mock-label">Internet Provider</div>
         <div class="chips-demo">
           <div class="chip-d sel">Spectrum</div><div class="chip-d">Frontier</div>
-          <div class="chip-d">AT&T</div><div class="chip-d">Cox</div><div class="chip-d">None</div>
+          <div class="chip-d">AT&T</div><div class="chip-d">Cox</div><div class="chip-d">Other</div><div class="chip-d">None</div>
         </div>
+        <div class="mock-field" style="margin-top:8px;">Custom carrier name</div>
         <div style="margin-top:12px;">
           <div class="mock-label">Phone Provider</div>
           <div class="chips-demo">
             <div class="chip-d">T-Mobile</div><div class="chip-d sel">Verizon</div>
-            <div class="chip-d">AT&T</div><div class="chip-d">Metro</div>
+            <div class="chip-d">AT&T</div><div class="chip-d">Metro</div><div class="chip-d">Other</div>
           </div>
         </div>`,
       tips: [
         ['💵','Always ask <strong>how much they pay today</strong> for internet and phones — that\'s the base for calculating their savings.'],
         ['📺','Check if they have TV — some bundles include it and it can be an extra selling point.'],
         ['📱','Note how many <strong>cell phone lines</strong> the family has. More lines = more potential savings.'],
+        ['✍️','If the company is not in the list, choose <strong>Other</strong> and type the carrier name manually.'],
       ]
     },
     {
@@ -495,7 +503,7 @@ Interested? I can help you activate it *today*. 🙌</div>`,
       tips: [
         ['💾','When you press <strong>Save</strong>, all client data is automatically recorded for the admin to review.'],
         ['📊','The administrator sees all leads in real time. Always save before closing the app.'],
-        ['✅','You\'ll see a green confirmation notification when the record is successful.'],
+        ['✅','You\'ll see a green confirmation notification when the record is successful. If you do not see it, the client has not been saved yet.'],
       ],
       alert: { type:'yellow', icon:'💡', text:'<strong>Full flow:</strong> Fill in client info → Send to quoting agent → Wait for the offer → Enter the breakdown → Send to client → Save the lead.' }
     }
