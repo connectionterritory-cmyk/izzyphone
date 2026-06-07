@@ -941,11 +941,6 @@
       <input type="text" id="ofertaNota" placeholder="Ej: Precio garantizado por 2 años, sin contrato..." data-ph="phOfertaNota" oninput="generateCliente()">
     </div>
 
-    <!-- ENVIAR WHATSAPP -->
-    <button id="btnWaCliente" onclick="openWhatsAppCliente()" style="display:none;width:100%;margin-top:12px;padding:14px;border-radius:12px;border:none;background:#25D366;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(37,211,102,0.35);transition:all .15s;">
-      💬 <span id="btnSendCliente">Enviar al Cliente por WhatsApp</span>
-    </button>
-
   </div>
 </div>
 
@@ -967,6 +962,9 @@
     <div class="char-count"><span id="lblAhorro">Ahorro:</span> <span id="ahorro-display" style="font-weight:700;color:#16a34a;">$0.00/mes</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn-copy" onclick="copyMsgCliente()">📋 <span id="btnCopyCliente">Copiar</span></button>
+      <button id="btnWaCliente" class="btn-copy" onclick="openWhatsAppCliente()" style="display:none;background:#25D366;">
+        💬 <span id="btnSendCliente">Enviar al Cliente por WhatsApp</span>
+      </button>
     </div>
   </div>
 </div>
