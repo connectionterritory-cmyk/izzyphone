@@ -962,10 +962,10 @@
     <div class="char-count"><span id="lblAhorro">Ahorro:</span> <span id="ahorro-display" style="font-weight:700;color:#16a34a;">$0.00/mes</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn-copy" onclick="copyMsgCliente()">📋 <span id="btnCopyCliente">Copiar</span></button>
-      <button id="btnWaCliente" class="btn-copy" onclick="openWhatsAppCliente()" style="display:none;background:#25D366;">
+      <button id="btnWaCliente" class="btn-copy" onclick="openWhatsAppCliente()" style="display:inline-flex;background:#25D366;">
         💬 <span id="btnSendCliente">Enviar al Cliente por WhatsApp</span>
       </button>
-      <button id="btnSmsCliente" class="btn-copy sms-mode" onclick="openSmsCliente()" style="display:none;">
+      <button id="btnSmsCliente" class="btn-copy sms-mode" onclick="openSmsCliente()" style="display:inline-flex;">
         📱 <span id="btnSendClienteSms">Enviar por SMS</span>
       </button>
     </div>
@@ -1855,11 +1855,7 @@
     if (btnProceder) btnProceder.style.display = totalOferta > 0 ? 'block' : 'none';
 
     // Show/hide WhatsApp button inside cotizador card
-    const btnWa = document.getElementById('btnWaCliente');
-    const btnSms = document.getElementById('btnSmsCliente');
-    if (btnWa) btnWa.style.display = totalOferta > 0 ? 'inline-flex' : 'none';
-    if (btnSms) btnSms.style.display = totalOferta > 0 ? 'inline-flex' : 'none';
-    if (totalOferta > 0) updateWaBtn();
+    updateWaBtn();
 
     // Ahorro display footer
     const ahorroEl = document.getElementById('ahorro-display');
