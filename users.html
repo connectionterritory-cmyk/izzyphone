@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Internet — Usuarios</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f0f2f5; --surface: #fff; --border: #e2e0dc;
+    --text: #1a1814; --muted: #7a7570;
+    --blue: #1a3a6b; --blue-light: #edf1f8;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px 16px 60px; }
+  .page-header {
+    max-width: 980px; margin: 0 auto 20px;
+    background: var(--blue); border-radius: 16px; padding: 18px 24px; color: #fff;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .brand-icon { width: 40px; height: 40px; background: rgba(255,255,255,.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .page-header h1 { font-size: 20px; font-weight: 700; }
+  .page-header .sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+  .header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .header-tag { background: rgba(255,255,255,.18); border-radius: 20px; padding: 5px 13px; font-size: 12px; font-weight: 600; }
+  .btn-back { background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.3); color: #fff; border-radius: 20px; padding: 5px 13px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background .15s; }
+  .btn-back:hover { background: rgba(255,255,255,.25); }
+  .admin-panel { max-width: 980px; margin: 0 auto 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .admin-card { background: var(--surface); border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
+  .admin-card-header { background: #0f766e; color: #fff; padding: 14px 18px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .admin-card-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .admin-form { display: grid; gap: 10px; }
+  .admin-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .admin-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .admin-input, .admin-select { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; outline: none; }
+  .admin-input:focus, .admin-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: #fff; }
+  .admin-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; -webkit-appearance: none; }
+  .admin-submit { border: none; border-radius: 10px; padding: 11px 14px; background: #0f766e; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .admin-submit:disabled { background: #99f6e4; cursor: not-allowed; }
+  .admin-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
+  .admin-item { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: #fcfcfd; }
+  .admin-item-title { font-size: 14px; font-weight: 700; }
+  .admin-item-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .admin-empty { font-size: 13px; color: var(--muted); }
+  .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999; white-space: nowrap; }
+  @media (max-width: 760px) { .admin-panel { grid-template-columns: 1fr; } .admin-row2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="header-left">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M1.5 8.5C5.2 4.8 10.4 3 12 3s6.8 1.8 10.5 5.5L21 10c-3-3-5.7-5-9-5s-6 2-9 5l-1.5-1.5zM12 7c2.4 0 4.6.9 6.2 2.4L16.8 11C15.6 9.8 13.9 9 12 9s-3.6.8-4.8 2L5.8 9.4C7.4 7.9 9.6 7 12 7zm0 4c1.1 0 2.1.4 2.8 1.2L12 15l-2.8-2.8C9.9 11.4 10.9 11 12 11zm0 4l1.5 1.5L12 18l-1.5-1.5L12 15z"/></svg>
+    </div>
+    <div>
+      <h1>Usuarios — Izzy Internet</h1>
+      <div class="sub">Administración de agentes, cotizadores y accesos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-tag" id="agentTag"></span>
+    <a href="orders.html" class="btn-back">🧾 Orders</a>
+    <a href="leads.html" class="btn-back">📊 Leads</a>
+    <a href="index.html" class="btn-back">← Cotizador</a>
+  </div>
+</div>
+
+<div class="admin-panel">
+  <div class="admin-card">
+    <div class="admin-card-header">Agentes</div>
+    <div class="admin-card-body">
+      <div class="admin-form">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">PIN</label>
+            <input class="admin-input" id="newAgentPin" type="text" placeholder="ABCD0001">
+          </div>
+          <div>
+            <label class="admin-label">Rol</label>
+            <select class="admin-select" id="newAgentRole">
+              <option value="agente">Agente</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="admin-label">Nombre</label>
+          <input class="admin-input" id="newAgentName" type="text" placeholder="Nombre completo">
+        </div>
+        <div>
+          <label class="admin-label">Email</label>
+          <input class="admin-input" id="newAgentEmail" type="email" placeholder="nombre@correo.com">
+        </div>
+        <div>
+          <label class="admin-label">Password</label>
+          <input class="admin-input" id="newAgentPassword" type="password" placeholder="Password temporal o definitivo">
+        </div>
+        <button class="admin-submit" id="saveAgentBtn" onclick="createPortalUser()">Guardar agente</button>
+      </div>
+      <div class="admin-list" id="usersList"></div>
+      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
+        <div class="admin-label">Solicitudes de recuperacion</div>
+        <div class="admin-list" id="resetRequestsList"></div>
+      </div>
+      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Usuario existente</label>
+            <select class="admin-select" id="resetUserSelect"></select>
+          </div>
+          <div>
+            <label class="admin-label">Nuevo password</label>
+            <input class="admin-input" id="resetUserPassword" type="password" placeholder="Nuevo password">
+          </div>
+        </div>
+        <button class="admin-submit" id="resetPasswordBtn" onclick="resetUserPassword()">Actualizar password</button>
+      </div>
+      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Usuario para email</label>
+            <select class="admin-select" id="updateEmailUserSelect"></select>
+          </div>
+          <div>
+            <label class="admin-label">Email</label>
+            <input class="admin-input" id="updateUserEmail" type="email" placeholder="nombre@correo.com">
+          </div>
+        </div>
+        <button class="admin-submit" id="updateEmailBtn" onclick="updateUserEmail()">Guardar email</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-header">Cotizadores</div>
+    <div class="admin-card-body">
+      <div class="admin-form">
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Codigo</label>
+            <input class="admin-input" id="newQuoterCode" type="text" placeholder="PCAI">
+          </div>
+          <div>
+            <label class="admin-label">Telefono</label>
+            <input class="admin-input" id="newQuoterPhone" type="tel" placeholder="7862913042">
+          </div>
+        </div>
+        <div>
+          <label class="admin-label">Nombre</label>
+          <input class="admin-input" id="newQuoterName" type="text" placeholder="Nombre completo">
+        </div>
+        <button class="admin-submit" id="saveQuoterBtn" onclick="createQuoter()">Guardar cotizador</button>
+      </div>
+      <div class="admin-list" id="quotersList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PROJECT_REF = 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const SESSION_KEY = 'izzy_session';
+  let currentUser = null;
+  let adminUsers = [];
+  let adminQuoters = [];
+  let resetRequests = [];
+
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+  } catch {
+    currentUser = null;
+  }
+  if (!currentUser) window.location.href = 'index.html';
+  if (currentUser.rol !== 'admin') window.location.href = 'leads.html';
+  document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
+
+  function getSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function apiFetch(path, options = {}) {
+    const session = getSession();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${path}`, { ...options, headers });
+    if (res.status === 401) {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+    return res;
+  }
+
+  async function fetchAdminConfig() {
+    const res = await apiFetch('izzy-admin-leads?resource=admin-config');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast('❌ Error al cargar configuracion admin', '#b91c1c');
+      return;
+    }
+    adminUsers = data.users || [];
+    adminQuoters = data.quoters || [];
+    resetRequests = data.reset_requests || [];
+    renderAdminLists();
+  }
+
+  function renderAdminLists() {
+    const usersList = document.getElementById('usersList');
+    const quotersList = document.getElementById('quotersList');
+    const resetRequestsList = document.getElementById('resetRequestsList');
+
+    usersList.innerHTML = adminUsers.length
+      ? adminUsers.map((user) => `
+        <div class="admin-item">
+          <div class="admin-item-title">${esc(user.nombre)}</div>
+          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
+        </div>
+      `).join('')
+      : '<div class="admin-empty">No hay agentes configurados.</div>';
+
+    quotersList.innerHTML = adminQuoters.length
+      ? adminQuoters.map((quoter) => `
+        <div class="admin-item">
+          <div class="admin-item-title">${esc(quoter.nombre)}</div>
+          <div class="admin-item-sub">${esc(quoter.code)} · ${esc(quoter.telefono)}${quoter.active ? '' : ' · inactivo'}</div>
+        </div>
+      `).join('')
+      : '<div class="admin-empty">No hay cotizadores configurados.</div>';
+
+    document.getElementById('resetUserSelect').innerHTML = adminUsers.length
+      ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
+      : '<option value="">Sin usuarios</option>';
+
+    document.getElementById('updateEmailUserSelect').innerHTML = adminUsers.length
+      ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
+      : '<option value="">Sin usuarios</option>';
+
+    resetRequestsList.innerHTML = resetRequests.length
+      ? resetRequests.map((item) => `
+        <div class="admin-item">
+          <div class="admin-item-title">${esc(item.user?.nombre || item.pin_code || 'Solicitud')}</div>
+          <div class="admin-item-sub">${esc(item.email || 'sin email')} · ${item.status === 'pending' ? 'pendiente' : 'resuelta'} · ${new Date(item.requested_at).toLocaleString('es-US')}</div>
+          ${item.status === 'pending' ? `<button class="admin-submit" style="margin-top:8px;" onclick="resolveResetRequest(${item.id})">Marcar resuelta</button>` : ''}
+        </div>
+      `).join('')
+      : '<div class="admin-empty">No hay solicitudes pendientes.</div>';
+  }
+
+  async function createPortalUser() {
+    const payload = {
+      pin_code: document.getElementById('newAgentPin').value.trim().toUpperCase(),
+      nombre: document.getElementById('newAgentName').value.trim(),
+      email: document.getElementById('newAgentEmail').value.trim().toLowerCase(),
+      rol: document.getElementById('newAgentRole').value,
+      password: document.getElementById('newAgentPassword').value,
+    };
+    if (!payload.pin_code || !payload.nombre || !payload.email || !payload.password) {
+      showToast('⚠️ Falta PIN, nombre, email o password del agente', '#b45309');
+      return;
+    }
+    const btn = document.getElementById('saveAgentBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=users', { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Create user failed');
+      adminUsers.unshift({ ...data.user, password_set: true });
+      renderAdminLists();
+      ['newAgentPin','newAgentName','newAgentEmail','newAgentPassword'].forEach((id) => { document.getElementById(id).value = ''; });
+      document.getElementById('newAgentRole').value = 'agente';
+      showToast('✅ Agente guardado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo guardar el agente', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar agente';
+    }
+  }
+
+  async function resetUserPassword() {
+    const userId = Number(document.getElementById('resetUserSelect').value);
+    const password = document.getElementById('resetUserPassword').value;
+    if (!userId || !password) {
+      showToast('⚠️ Elige usuario y escribe password', '#b45309');
+      return;
+    }
+    const btn = document.getElementById('resetPasswordBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Actualizando...';
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=user-password', { method: 'POST', body: JSON.stringify({ user_id: userId, password }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Reset password failed');
+      const idx = adminUsers.findIndex((item) => item.id === userId);
+      if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user, password_set: true };
+      resetRequests = resetRequests.map((item) => item.user_id === userId ? { ...item, status: 'resolved' } : item);
+      renderAdminLists();
+      document.getElementById('resetUserPassword').value = '';
+      showToast('✅ Password actualizado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo actualizar el password', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Actualizar password';
+    }
+  }
+
+  async function updateUserEmail() {
+    const userId = Number(document.getElementById('updateEmailUserSelect').value);
+    const email = document.getElementById('updateUserEmail').value.trim().toLowerCase();
+    if (!userId) {
+      showToast('⚠️ Elige usuario', '#b45309');
+      return;
+    }
+    const btn = document.getElementById('updateEmailBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=user-email', { method: 'POST', body: JSON.stringify({ user_id: userId, email }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Update email failed');
+      const idx = adminUsers.findIndex((item) => item.id === userId);
+      if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user };
+      renderAdminLists();
+      document.getElementById('updateUserEmail').value = '';
+      showToast('✅ Email actualizado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo guardar el email', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar email';
+    }
+  }
+
+  async function resolveResetRequest(requestId) {
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=resolve-reset-request', { method: 'POST', body: JSON.stringify({ request_id: requestId }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Resolve request failed');
+      resetRequests = resetRequests.map((item) => item.id === requestId ? { ...item, ...data.request } : item);
+      renderAdminLists();
+      showToast('✅ Solicitud resuelta', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo resolver la solicitud', '#b91c1c');
+    }
+  }
+
+  async function createQuoter() {
+    const payload = {
+      code: document.getElementById('newQuoterCode').value.trim().toUpperCase(),
+      nombre: document.getElementById('newQuoterName').value.trim(),
+      telefono: document.getElementById('newQuoterPhone').value.trim(),
+    };
+    if (!payload.code || !payload.nombre || !payload.telefono) {
+      showToast('⚠️ Faltan datos del cotizador', '#b45309');
+      return;
+    }
+    const btn = document.getElementById('saveQuoterBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=quoters', { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Create quoter failed');
+      adminQuoters.unshift(data.quoter);
+      renderAdminLists();
+      ['newQuoterCode','newQuoterName','newQuoterPhone'].forEach((id) => { document.getElementById(id).value = ''; });
+      showToast('✅ Cotizador guardado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo guardar el cotizador', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar cotizador';
+    }
+  }
+
+  function showToast(msg, color = '#111') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  fetchAdminConfig();
+</script>
+</body>
+</html>

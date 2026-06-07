@@ -304,11 +304,12 @@
     </div>
     <div>
       <h1>Leads — Izzy Internet</h1>
-      <div class="sub">Panel de Administración</div>
+      <div class="sub">Seguimiento de cotizaciones</div>
     </div>
   </div>
   <div class="header-right">
     <span class="header-tag" id="agentTag"></span>
+    <a href="users.html" class="btn-back">👥 Usuarios</a>
     <a href="orders.html" class="btn-back">🧾 Orders</a>
     <a href="index.html" class="btn-back">← Cotizador</a>
   </div>
@@ -335,98 +336,6 @@
     <div class="stat-label">Pago Promedio</div>
     <div class="stat-value" id="statProm">—</div>
     <div class="stat-sub">internet + teléfono</div>
-  </div>
-</div>
-
-<!-- ── ADMIN CONFIG ───────────────────────────────────── -->
-<div class="admin-panel" id="adminPanel" style="display:none;">
-  <div class="admin-card">
-    <div class="admin-card-header">Agentes</div>
-    <div class="admin-card-body">
-      <div class="admin-form">
-        <div class="admin-row2">
-          <div>
-            <label class="admin-label">PIN</label>
-            <input class="admin-input" id="newAgentPin" type="text" placeholder="ABCD0001">
-          </div>
-          <div>
-            <label class="admin-label">Rol</label>
-            <select class="admin-select" id="newAgentRole">
-              <option value="agente">Agente</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="admin-label">Nombre</label>
-          <input class="admin-input" id="newAgentName" type="text" placeholder="Nombre completo">
-        </div>
-        <div>
-          <label class="admin-label">Email</label>
-          <input class="admin-input" id="newAgentEmail" type="email" placeholder="nombre@correo.com">
-        </div>
-        <div>
-          <label class="admin-label">Password</label>
-          <input class="admin-input" id="newAgentPassword" type="password" placeholder="Password temporal o definitivo">
-        </div>
-        <button class="admin-submit" id="saveAgentBtn" onclick="createPortalUser()">Guardar agente</button>
-      </div>
-      <div class="admin-list" id="usersList"></div>
-      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
-        <div class="admin-label">Solicitudes de recuperacion</div>
-        <div class="admin-list" id="resetRequestsList"></div>
-      </div>
-      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
-        <div class="admin-row2">
-          <div>
-            <label class="admin-label">Usuario existente</label>
-            <select class="admin-select" id="resetUserSelect"></select>
-          </div>
-          <div>
-            <label class="admin-label">Nuevo password</label>
-            <input class="admin-input" id="resetUserPassword" type="password" placeholder="Nuevo password">
-          </div>
-        </div>
-        <button class="admin-submit" id="resetPasswordBtn" onclick="resetUserPassword()">Actualizar password</button>
-      </div>
-      <div class="admin-form" style="padding-top:8px;border-top:1px solid var(--border);">
-        <div class="admin-row2">
-          <div>
-            <label class="admin-label">Usuario para email</label>
-            <select class="admin-select" id="updateEmailUserSelect"></select>
-          </div>
-          <div>
-            <label class="admin-label">Email</label>
-            <input class="admin-input" id="updateUserEmail" type="email" placeholder="nombre@correo.com">
-          </div>
-        </div>
-        <button class="admin-submit" id="updateEmailBtn" onclick="updateUserEmail()">Guardar email</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="admin-card">
-    <div class="admin-card-header">Cotizadores</div>
-    <div class="admin-card-body">
-      <div class="admin-form">
-        <div class="admin-row2">
-          <div>
-            <label class="admin-label">Codigo</label>
-            <input class="admin-input" id="newQuoterCode" type="text" placeholder="PCAI">
-          </div>
-          <div>
-            <label class="admin-label">Telefono</label>
-            <input class="admin-input" id="newQuoterPhone" type="tel" placeholder="7862913042">
-          </div>
-        </div>
-        <div>
-          <label class="admin-label">Nombre</label>
-          <input class="admin-input" id="newQuoterName" type="text" placeholder="Nombre completo">
-        </div>
-        <button class="admin-submit" id="saveQuoterBtn" onclick="createQuoter()">Guardar cotizador</button>
-      </div>
-      <div class="admin-list" id="quotersList"></div>
-    </div>
   </div>
 </div>
 
@@ -523,9 +432,6 @@
   let sortCol   = 'created_at';
   let sortAsc   = false;
   let activeLead = null;
-  let adminUsers = [];
-  let adminQuoters = [];
-  let resetRequests = [];
   const KNOWN_MODAL_INTERNET_PROVIDERS = ['Spectrum', 'Frontier', 'AT&T', 'Cox', 'EarthLink'];
   const KNOWN_MODAL_PHONE_PROVIDERS = ['T-Mobile', 'Verizon', 'AT&T', 'Metro', 'Cricket'];
 
@@ -541,228 +447,6 @@
     buildFilters();
     updateStats();
     renderTable();
-  }
-
-  async function fetchAdminConfig() {
-    if (!isAdmin) return;
-    const res = await apiFetch('izzy-admin-leads?resource=admin-config');
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      showToast('❌ Error al cargar configuracion admin', '#b91c1c');
-      return;
-    }
-
-    adminUsers = data.users || [];
-    adminQuoters = data.quoters || [];
-    resetRequests = data.reset_requests || [];
-    document.getElementById('adminPanel').style.display = 'grid';
-    renderAdminLists();
-  }
-
-  function renderAdminLists() {
-    const usersList = document.getElementById('usersList');
-    const quotersList = document.getElementById('quotersList');
-    const resetRequestsList = document.getElementById('resetRequestsList');
-
-    usersList.innerHTML = adminUsers.length
-      ? adminUsers.map((user) => `
-        <div class="admin-item">
-          <div class="admin-item-title">${esc(user.nombre)}</div>
-          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
-        </div>
-      `).join('')
-      : '<div class="admin-empty">No hay agentes configurados.</div>';
-
-    quotersList.innerHTML = adminQuoters.length
-      ? adminQuoters.map((quoter) => `
-        <div class="admin-item">
-          <div class="admin-item-title">${esc(quoter.nombre)}</div>
-          <div class="admin-item-sub">${esc(quoter.code)} · ${esc(quoter.telefono)}${quoter.active ? '' : ' · inactivo'}</div>
-        </div>
-      `).join('')
-      : '<div class="admin-empty">No hay cotizadores configurados.</div>';
-
-    const resetSelect = document.getElementById('resetUserSelect');
-    resetSelect.innerHTML = adminUsers.length
-      ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
-      : '<option value="">Sin usuarios</option>';
-
-    const updateEmailSelect = document.getElementById('updateEmailUserSelect');
-    updateEmailSelect.innerHTML = adminUsers.length
-      ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
-      : '<option value="">Sin usuarios</option>';
-
-    resetRequestsList.innerHTML = resetRequests.length
-      ? resetRequests.map((item) => `
-        <div class="admin-item">
-          <div class="admin-item-title">${esc(item.user?.nombre || item.pin_code || 'Solicitud')}</div>
-          <div class="admin-item-sub">${esc(item.email || 'sin email')} · ${item.status === 'pending' ? 'pendiente' : 'resuelta'} · ${new Date(item.requested_at).toLocaleString('es-US')}</div>
-          ${item.status === 'pending' ? `<button class="admin-submit" style="margin-top:8px;" onclick="resolveResetRequest(${item.id})">Marcar resuelta</button>` : ''}
-        </div>
-      `).join('')
-      : '<div class="admin-empty">No hay solicitudes pendientes.</div>';
-  }
-
-  async function createPortalUser() {
-    const payload = {
-      pin_code: document.getElementById('newAgentPin').value.trim().toUpperCase(),
-      nombre: document.getElementById('newAgentName').value.trim(),
-      email: document.getElementById('newAgentEmail').value.trim().toLowerCase(),
-      rol: document.getElementById('newAgentRole').value,
-      password: document.getElementById('newAgentPassword').value,
-    };
-
-    if (!payload.pin_code || !payload.nombre || !payload.email || !payload.password) {
-      showToast('⚠️ Falta PIN, nombre, email o password del agente', '#b45309');
-      return;
-    }
-
-    const btn = document.getElementById('saveAgentBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Guardando...';
-
-    try {
-      const res = await apiFetch('izzy-admin-leads?resource=users', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || 'Create user failed');
-      adminUsers.unshift(data.user);
-      if (adminUsers[0]) adminUsers[0].password_set = true;
-      renderAdminLists();
-      document.getElementById('newAgentPin').value = '';
-      document.getElementById('newAgentName').value = '';
-      document.getElementById('newAgentEmail').value = '';
-      document.getElementById('newAgentPassword').value = '';
-      document.getElementById('newAgentRole').value = 'agente';
-      showToast('✅ Agente guardado', '#16a34a');
-    } catch (error) {
-      showToast('❌ No se pudo guardar el agente', '#b91c1c');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Guardar agente';
-    }
-  }
-
-  async function resetUserPassword() {
-    const userId = Number(document.getElementById('resetUserSelect').value);
-    const password = document.getElementById('resetUserPassword').value;
-
-    if (!userId || !password) {
-      showToast('⚠️ Elige usuario y escribe password', '#b45309');
-      return;
-    }
-
-    const btn = document.getElementById('resetPasswordBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Actualizando...';
-
-    try {
-      const res = await apiFetch('izzy-admin-leads?resource=user-password', {
-        method: 'POST',
-        body: JSON.stringify({ user_id: userId, password }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || 'Reset password failed');
-      const idx = adminUsers.findIndex((item) => item.id === userId);
-      if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user, password_set: true };
-      resetRequests = resetRequests.map((item) => item.user_id === userId ? { ...item, status: 'resolved' } : item);
-      renderAdminLists();
-      document.getElementById('resetUserPassword').value = '';
-      showToast('✅ Password actualizado', '#16a34a');
-    } catch {
-      showToast('❌ No se pudo actualizar el password', '#b91c1c');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Actualizar password';
-    }
-  }
-
-  async function updateUserEmail() {
-    const userId = Number(document.getElementById('updateEmailUserSelect').value);
-    const email = document.getElementById('updateUserEmail').value.trim().toLowerCase();
-
-    if (!userId) {
-      showToast('⚠️ Elige usuario', '#b45309');
-      return;
-    }
-
-    const btn = document.getElementById('updateEmailBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Guardando...';
-
-    try {
-      const res = await apiFetch('izzy-admin-leads?resource=user-email', {
-        method: 'POST',
-        body: JSON.stringify({ user_id: userId, email }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || 'Update email failed');
-      const idx = adminUsers.findIndex((item) => item.id === userId);
-      if (idx >= 0) adminUsers[idx] = { ...adminUsers[idx], ...data.user };
-      renderAdminLists();
-      document.getElementById('updateUserEmail').value = '';
-      showToast('✅ Email actualizado', '#16a34a');
-    } catch {
-      showToast('❌ No se pudo guardar el email', '#b91c1c');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Guardar email';
-    }
-  }
-
-  async function resolveResetRequest(requestId) {
-    try {
-      const res = await apiFetch('izzy-admin-leads?resource=resolve-reset-request', {
-        method: 'POST',
-        body: JSON.stringify({ request_id: requestId }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || 'Resolve request failed');
-      resetRequests = resetRequests.map((item) => item.id === requestId ? { ...item, ...data.request } : item);
-      renderAdminLists();
-      showToast('✅ Solicitud resuelta', '#16a34a');
-    } catch {
-      showToast('❌ No se pudo resolver la solicitud', '#b91c1c');
-    }
-  }
-
-  async function createQuoter() {
-    const payload = {
-      code: document.getElementById('newQuoterCode').value.trim().toUpperCase(),
-      nombre: document.getElementById('newQuoterName').value.trim(),
-      telefono: document.getElementById('newQuoterPhone').value.trim(),
-    };
-
-    if (!payload.code || !payload.nombre || !payload.telefono) {
-      showToast('⚠️ Faltan datos del cotizador', '#b45309');
-      return;
-    }
-
-    const btn = document.getElementById('saveQuoterBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Guardando...';
-
-    try {
-      const res = await apiFetch('izzy-admin-leads?resource=quoters', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || 'Create quoter failed');
-      adminQuoters.unshift(data.quoter);
-      renderAdminLists();
-      document.getElementById('newQuoterCode').value = '';
-      document.getElementById('newQuoterName').value = '';
-      document.getElementById('newQuoterPhone').value = '';
-      showToast('✅ Cotizador guardado', '#16a34a');
-    } catch (error) {
-      showToast('❌ No se pudo guardar el cotizador', '#b91c1c');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Guardar cotizador';
-    }
   }
 
   // ── Filters ────────────────────────────────────────────
@@ -1025,7 +709,6 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   fetchLeads();
-  fetchAdminConfig();
   bindProviderOtherFields();
 </script>
 </body>
