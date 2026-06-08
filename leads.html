@@ -86,6 +86,15 @@
   .badge-blue { background: var(--blue-light); color: var(--blue); }
   .badge-purple { background: #f3e8ff; color: #6b21a8; }
 
+  /* Estado badges */
+  .estado-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
+  .estado-nuevo         { background: #f1f5f9; color: #475569; }
+  .estado-contactado    { background: var(--blue-light); color: var(--blue); }
+  .estado-vendido       { background: #dcfce7; color: #15803d; }
+  .estado-no-interes    { background: #fee2e2; color: #b91c1c; }
+  .estado-volver        { background: #fff7ed; color: #c2410c; }
+  .estado-otro          { background: #f5f3ff; color: #7c3aed; }
+
   /* Empty */
   .empty-state { padding: 48px 24px; text-align: center; color: var(--muted); }
   .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
@@ -287,6 +296,20 @@
         <label class="m-label">Nota</label>
         <textarea class="m-input" id="mNota" placeholder="Notas adicionales..."></textarea>
       </div>
+
+      <div style="height:1px;background:var(--border);"></div>
+
+      <div class="m-field">
+        <label class="m-label">Estado de seguimiento</label>
+        <select class="m-input" id="mEstado">
+          <option>Nuevo</option>
+          <option>Contactado</option>
+          <option>Vendido</option>
+          <option>No interesó</option>
+          <option>Volver a Contactar</option>
+          <option>Otro</option>
+        </select>
+      </div>
     </div>
 
     <div class="modal-footer">
@@ -337,6 +360,16 @@
     <div class="stat-value" id="statProm">—</div>
     <div class="stat-sub">internet + teléfono</div>
   </div>
+  <div class="stat-card">
+    <div class="stat-label">Vendidos</div>
+    <div class="stat-value" id="statVendidos" style="color:#16a34a;">—</div>
+    <div class="stat-sub">estado = Vendido</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Pendientes</div>
+    <div class="stat-value" id="statPendientes" style="color:#c2410c;">—</div>
+    <div class="stat-sub">Nuevo + Volver a Contactar</div>
+  </div>
 </div>
 
 <!-- ── SEARCH ─────────────────────────────────────────── -->
@@ -348,6 +381,15 @@
   <select id="filterProv" onchange="filterLeads()">
     <option value="">Todos los proveedores</option>
   </select>
+  <select id="filterEstado" onchange="filterLeads()">
+    <option value="">Todos los estados</option>
+    <option>Nuevo</option>
+    <option>Contactado</option>
+    <option>Vendido</option>
+    <option>No interesó</option>
+    <option>Volver a Contactar</option>
+    <option>Otro</option>
+  </select>
   <span class="result-count" id="resultCount"></span>
 </div>
 
@@ -357,6 +399,7 @@
     <table>
       <thead>
         <tr>
+          <th onclick="sortBy('estado')">Estado <span class="sort-icon">↕</span></th>
           <th onclick="sortBy('fecha')">Fecha <span class="sort-icon">↕</span></th>
           <th onclick="sortBy('agente')">Agente <span class="sort-icon">↕</span></th>
           <th onclick="sortBy('cliente')">Cliente <span class="sort-icon">↕</span></th>
@@ -466,14 +509,16 @@
   }
 
   function getFiltered() {
-    const q    = document.getElementById('searchInput').value.toLowerCase();
-    const agt  = document.getElementById('filterAgente').value;
-    const prov = document.getElementById('filterProv').value;
+    const q      = document.getElementById('searchInput').value.toLowerCase();
+    const agt    = document.getElementById('filterAgente').value;
+    const prov   = document.getElementById('filterProv').value;
+    const estado = document.getElementById('filterEstado').value;
     return allLeads.filter(l => {
-      const matchQ   = !q || [l.cliente, l.agente, l.telefono, l.direccion].some(v => (v||'').toLowerCase().includes(q));
-      const matchAgt = !agt  || l.agente === agt;
-      const matchPrv = !prov || l.proveedor_internet === prov;
-      return matchQ && matchAgt && matchPrv;
+      const matchQ      = !q      || [l.cliente, l.agente, l.telefono, l.direccion].some(v => (v||'').toLowerCase().includes(q));
+      const matchAgt    = !agt    || l.agente === agt;
+      const matchPrv    = !prov   || l.proveedor_internet === prov;
+      const matchEstado = !estado || (l.estado || 'Nuevo') === estado;
+      return matchQ && matchAgt && matchPrv && matchEstado;
     });
   }
 
@@ -491,11 +536,26 @@
       document.getElementById('statTotalLabel').textContent = 'Mis Leads';
       document.getElementById('statTotalSub').textContent   = 'cotizaciones tuyas';
     }
-    document.getElementById('statTotal').textContent  = allLeads.length;
-    document.getElementById('statHoy').textContent    = hoy;
-    document.getElementById('statSemana').textContent = semana;
-    document.getElementById('statProm').textContent   = prom > 0 ? `$${prom.toFixed(0)}` : '—';
-    document.getElementById('statFecha').textContent  = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const vendidos    = allLeads.filter(l => l.estado === 'Vendido').length;
+    const pendientes  = allLeads.filter(l => !l.estado || l.estado === 'Nuevo' || l.estado === 'Volver a Contactar').length;
+    document.getElementById('statTotal').textContent      = allLeads.length;
+    document.getElementById('statHoy').textContent        = hoy;
+    document.getElementById('statSemana').textContent     = semana;
+    document.getElementById('statProm').textContent       = prom > 0 ? `$${prom.toFixed(0)}` : '—';
+    document.getElementById('statVendidos').textContent   = vendidos;
+    document.getElementById('statPendientes').textContent = pendientes;
+    document.getElementById('statFecha').textContent      = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+  }
+
+  // ── Estado helpers ─────────────────────────────────────
+  const ESTADOS = ['Nuevo','Contactado','Vendido','No interesó','Volver a Contactar','Otro'];
+  function estadoClass(estado) {
+    const map = { 'Nuevo':'nuevo','Contactado':'contactado','Vendido':'vendido','No interesó':'no-interes','Volver a Contactar':'volver','Otro':'otro' };
+    return map[estado] || 'nuevo';
+  }
+  function estadoBadge(estado) {
+    const e = estado || 'Nuevo';
+    return `<span class="estado-badge estado-${estadoClass(e)}">${esc(e)}</span>`;
   }
 
   // ── Sort & Render ──────────────────────────────────────
@@ -521,6 +581,7 @@
       const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}` : '—';
       const id = JSON.stringify(l).replace(/'/g, '&apos;');
       return `<tr onclick='openModal(${id.replace(/"/g, "&quot;")})' title="Clic para editar">
+        <td>${estadoBadge(l.estado)}</td>
         <td class="mono">${l.fecha||'—'}</td>
         <td><strong>${esc(l.agente||'—')}</strong></td>
         <td><strong>${esc(l.cliente||'—')}</strong></td>
@@ -544,7 +605,7 @@
       return `<div class="lead-card" onclick='openModal(${id})'>
         <div class="lead-card-top">
           <div class="lead-card-name">${esc(l.cliente||'—')}</div>
-          <div class="lead-card-date">${l.fecha||'—'}</div>
+          <div style="display:flex;gap:6px;align-items:center;">${estadoBadge(l.estado)}<span class="lead-card-date">${l.fecha||'—'}</span></div>
         </div>
         <div class="lead-card-row">📞 <strong>${esc(l.telefono||'—')}</strong></div>
         ${l.direccion ? `<div class="lead-card-row">📍 ${esc(l.direccion)}</div>` : ''}
@@ -624,6 +685,7 @@
     document.getElementById('mPagoTel').value    = lead.pago_telefono  || '';
     setSelect('mLineas',    lead.lineas);
     document.getElementById('mNota').value       = lead.nota        || '';
+    setSelect('mEstado', lead.estado || 'Nuevo');
     document.getElementById('modalOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -659,7 +721,8 @@
       proveedor_telefono: getModalProviderValue('mProvTel'),
       pago_telefono:      parseFloat(document.getElementById('mPagoTel').value) || null,
       lineas:             document.getElementById('mLineas').value,
-      nota:               document.getElementById('mNota').value.trim()
+      nota:               document.getElementById('mNota').value.trim(),
+      estado:             document.getElementById('mEstado').value
     };
 
     try {

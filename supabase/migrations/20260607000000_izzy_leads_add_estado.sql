@@ -1,0 +1,2 @@
+ALTER TABLE izzy_leads
+  ADD COLUMN IF NOT EXISTS estado TEXT NOT NULL DEFAULT 'Nuevo';
