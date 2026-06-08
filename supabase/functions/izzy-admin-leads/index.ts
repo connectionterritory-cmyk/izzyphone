@@ -68,6 +68,7 @@ const ALLOWED_UPDATE_FIELDS = [
   "pago_telefono",
   "lineas",
   "nota",
+  "estado",
 ] as const;
 
 function cleanString(value: unknown): string {
