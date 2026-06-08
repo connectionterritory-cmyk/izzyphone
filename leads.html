@@ -166,6 +166,14 @@
   textarea.m-input { resize: vertical; min-height: 70px; line-height: 1.5; }
   select.m-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; -webkit-appearance: none; cursor: pointer; }
 
+  .btn-delete-modal {
+    padding: 12px 16px; border-radius: 10px; border: none;
+    background: #fee2e2; color: #b91c1c;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-delete-modal:hover { background: #fecaca; }
+
   .modal-footer {
     padding: 14px 20px; border-top: 1px solid var(--border);
     display: flex; gap: 10px; flex-shrink: 0;
@@ -313,6 +321,7 @@
     </div>
 
     <div class="modal-footer">
+      <button class="btn-delete-modal" id="btnDeleteModal" onclick="deleteLead()" style="display:none;">🗑 Borrar</button>
       <button class="btn-save-modal" id="btnSaveModal" onclick="saveChanges()">💾 Guardar cambios</button>
       <button class="btn-cotizar" onclick="cotizarDesdeModal()">⚡ Cotizar →</button>
     </div>
@@ -686,6 +695,7 @@
     setSelect('mLineas',    lead.lineas);
     document.getElementById('mNota').value       = lead.nota        || '';
     setSelect('mEstado', lead.estado || 'Nuevo');
+    document.getElementById('btnDeleteModal').style.display = isAdmin ? 'block' : 'none';
     document.getElementById('modalOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -743,6 +753,29 @@
       showToast('❌ Error al guardar', '#b91c1c');
     } finally {
       btn.disabled = false; btn.textContent = '💾 Guardar cambios';
+    }
+  }
+
+  async function deleteLead() {
+    if (!activeLead) return;
+    if (!confirm(`¿Borrar el lead de ${activeLead.cliente}? Esta acción no se puede deshacer.`)) return;
+    const btn = document.getElementById('btnDeleteModal');
+    btn.disabled = true; btn.textContent = '⏳ Borrando...';
+    try {
+      const res2 = await apiFetch('izzy-admin-leads?resource=delete-lead', {
+        method: 'POST',
+        body: JSON.stringify({ id: activeLead.id })
+      });
+      const data = await res2.json().catch(() => ({}));
+      if (!res2.ok) throw new Error(data?.error || 'Delete failed');
+      allLeads = allLeads.filter(l => l.id !== activeLead.id);
+      closeModal();
+      renderTable();
+      updateStats();
+      showToast('🗑 Lead eliminado', '#b91c1c');
+    } catch(e) {
+      showToast('❌ Error al borrar', '#b91c1c');
+      btn.disabled = false; btn.textContent = '🗑 Borrar';
     }
   }
 
