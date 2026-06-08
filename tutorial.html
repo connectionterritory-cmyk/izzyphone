@@ -86,7 +86,7 @@
 <div class="hero">
   <div class="hero-emoji">📚</div>
   <h1 id="heroTitle">Tutorial — Cotizador de Leads</h1>
-  <p id="heroSub">Aprende a usar la app en 8 pasos</p>
+  <p id="heroSub">Aprende a usar la app en 9 pasos</p>
   <div class="progress-wrap" id="progressWrap"></div>
 </div>
 
@@ -101,11 +101,11 @@
   <a href="index.html" class="btn-go" id="doneBtn">📱 Abrir la App</a>
 </div>
 
-<div class="step-counter" id="stepCounter">Paso 1 de 8</div>
+<div class="step-counter" id="stepCounter">Paso 1 de 9</div>
 <button class="lang-fab" id="langFab" onclick="toggleTutLang()">🇺🇸 EN</button>
 
 <script>
-const TOTAL = 8;
+const TOTAL = 9;
 let current = 1;
 let tutLang = localStorage.getItem('izzy_lang') || 'es';
 
@@ -307,6 +307,45 @@ Soy *María* de *Izzy Internet*.
         ['✅','Verás una notificación verde de confirmación cuando el registro sea exitoso. Si no aparece, el cliente no quedó guardado todavía.'],
       ],
       alert: { type:'yellow', icon:'💡', text:'<strong>Flujo completo:</strong> Llena los datos del cliente → Envía al cotizador → Espera la oferta → Llena el desglose → Envía al cliente → Guarda el lead.' }
+    },
+    {
+      title: 'Tabla de seguimiento de leads',
+      sub:   'Actualiza el estado y gestiona los registros',
+      visual: `
+        <div class="vlabel">Página de Leads — columna Estado</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#f1f5f9;color:#475569;">Nuevo</span>
+            <span style="font-size:12px;color:#7a7570;">Lead recién guardado</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#edf1f8;color:#1a3a6b;">Contactado</span>
+            <span style="font-size:12px;color:#7a7570;">Ya se habló con el cliente</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#dcfce7;color:#15803d;">Vendido</span>
+            <span style="font-size:12px;color:#7a7570;">Servicio activado ✅</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fff7ed;color:#c2410c;">Volver a Contactar</span>
+            <span style="font-size:12px;color:#7a7570;">Llamar después</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fee2e2;color:#b91c1c;">No interesó</span>
+            <span style="font-size:12px;color:#7a7570;">Cliente declinó</span>
+          </div>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#fee2e2;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;">
+          🗑 Borrar (solo admin)
+        </div>`,
+      tips: [
+        ['📊','Ve a <strong>📊 Leads</strong> desde el menú principal para ver toda la tabla de seguimiento.'],
+        ['🏷️','Haz clic en cualquier lead para abrir el modal. Ahí puedes cambiar el <strong>Estado de seguimiento</strong> y guardar.'],
+        ['🔍','Usa el filtro <strong>Todos los estados</strong> para ver solo los leads de un estado específico — muy útil para ver quién necesita seguimiento.'],
+        ['🗑️','Los <strong>admins</strong> pueden borrar un lead duplicado abriendo el modal y presionando el botón rojo <strong>🗑 Borrar</strong>.'],
+        ['📈','Las tarjetas de <strong>Vendidos</strong> y <strong>Pendientes</strong> en la parte superior te dan un resumen del equipo en tiempo real.'],
+      ],
+      alert: { type:'green', icon:'✅', text:'<strong>Recomendación:</strong> Actualiza el estado cada vez que contactes a un cliente. Así el admin sabe en qué punto está cada lead sin tener que preguntar.' }
     }
   ],
 
@@ -506,6 +545,45 @@ Interested? I can help you activate it *today*. 🙌</div>`,
         ['✅','You\'ll see a green confirmation notification when the record is successful. If you do not see it, the client has not been saved yet.'],
       ],
       alert: { type:'yellow', icon:'💡', text:'<strong>Full flow:</strong> Fill in client info → Send to quoting agent → Wait for the offer → Enter the breakdown → Send to client → Save the lead.' }
+    },
+    {
+      title: 'Lead follow-up table',
+      sub:   'Update the status and manage records',
+      visual: `
+        <div class="vlabel">Leads page — Status column</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#f1f5f9;color:#475569;">New</span>
+            <span style="font-size:12px;color:#7a7570;">Freshly saved lead</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#edf1f8;color:#1a3a6b;">Contacted</span>
+            <span style="font-size:12px;color:#7a7570;">Spoke with the client</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#dcfce7;color:#15803d;">Sold</span>
+            <span style="font-size:12px;color:#7a7570;">Service activated ✅</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fff7ed;color:#c2410c;">Call Back</span>
+            <span style="font-size:12px;color:#7a7570;">Follow up later</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fee2e2;color:#b91c1c;">Not Interested</span>
+            <span style="font-size:12px;color:#7a7570;">Client declined</span>
+          </div>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#fee2e2;color:#b91c1c;border-radius:10px;font-size:13px;font-weight:700;">
+          🗑 Delete (admin only)
+        </div>`,
+      tips: [
+        ['📊','Go to <strong>📊 Leads</strong> from the main menu to see the full follow-up table.'],
+        ['🏷️','Click any lead to open its modal. There you can change the <strong>Follow-up status</strong> and save.'],
+        ['🔍','Use the <strong>All statuses</strong> filter to show only leads with a specific status — great for seeing who still needs follow-up.'],
+        ['🗑️','<strong>Admins</strong> can delete a duplicate lead by opening the modal and pressing the red <strong>🗑 Delete</strong> button.'],
+        ['📈','The <strong>Sold</strong> and <strong>Pending</strong> stat cards at the top give you a real-time team summary.'],
+      ],
+      alert: { type:'green', icon:'✅', text:'<strong>Tip:</strong> Update the status every time you contact a client. That way the admin knows where each lead stands without having to ask.' }
     }
   ]
 };
@@ -514,10 +592,10 @@ Interested? I can help you activate it *today*. 🙌</div>`,
 const UI = {
   es: { stepOf:'Paso', of:'de', prev:'← Anterior', next:'Siguiente →', finish:'✅ ¡Listo, empezar!',
         doneTitle:'¡Ya estás listo!', doneSub:'Ahora sabes usar el cotizador de Izzy Internet. ¡A conseguir esos leads!',
-        doneBtn:'📱 Abrir la App', heroTitle:'Tutorial — Cotizador de Leads', heroSub:'Aprende a usar la app en 8 pasos', langBtn:'🇺🇸 EN' },
+        doneBtn:'📱 Abrir la App', heroTitle:'Tutorial — Cotizador de Leads', heroSub:'Aprende a usar la app en 9 pasos', langBtn:'🇺🇸 EN' },
   en: { stepOf:'Step', of:'of', prev:'← Previous', next:'Next →', finish:"✅ Ready, let's start!",
         doneTitle:"You're all set!", doneSub:'Now you know how to use the Izzy Internet quoter. Go get those leads!',
-        doneBtn:'📱 Open the App', heroTitle:'Tutorial — Lead Quoter', heroSub:'Learn to use the app in 8 steps', langBtn:'🇲🇽 ES' }
+        doneBtn:'📱 Open the App', heroTitle:'Tutorial — Lead Quoter', heroSub:'Learn to use the app in 9 steps', langBtn:'🇲🇽 ES' }
 };
 
 // ── Render ──────────────────────────────────────────────
