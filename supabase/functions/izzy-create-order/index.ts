@@ -28,6 +28,7 @@ type OrderPayload = {
   btn?: string;
   order_date?: string;
   install_date?: string;
+  id_dl?: string;
   card_last4?: string;
   signature_data?: string;
 };
@@ -78,6 +79,7 @@ function buildOrderPayload(raw: OrderPayload, agentName: string) {
     btn: cleanString(raw.btn),
     order_date: cleanString(raw.order_date),
     install_date: cleanDate(raw.install_date),
+    id_dl: cleanString(raw.id_dl),
     card_last4: cleanString(raw.card_last4),
     signature_data: cleanString(raw.signature_data),
     payload: raw,

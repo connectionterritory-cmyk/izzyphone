@@ -287,6 +287,11 @@
     </div>
 
     <div class="field">
+      <label>ID / Driver's License #</label>
+      <input type="text" id="idDl" placeholder="e.g. D1234567" autocomplete="off">
+    </div>
+
+    <div class="field">
       <label>Social Security Number <span style="font-size:10px;color:#b45309;font-weight:400;text-transform:none;letter-spacing:0;">(not saved)</span></label>
       <div class="ssn-wrap">
         <input type="tel" id="ssn1" placeholder="XXX" maxlength="3" oninput="ssnAdv(this,'ssn2',3)" autocomplete="off" inputmode="numeric">
@@ -335,6 +340,19 @@
         <label>ZIP *</label>
         <input type="text" id="zip" placeholder="90210" maxlength="10" autocomplete="postal-code">
       </div>
+    </div>
+
+    <div class="field">
+      <button type="button" onclick="verifyOnMaps()" style="
+        display:flex;align-items:center;justify-content:center;gap:8px;
+        width:100%;padding:10px 16px;border-radius:9px;
+        border:1.5px solid #e2e0dc;background:#f0f2f5;
+        font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+        color:#1a3a6b;cursor:pointer;transition:all .15s;
+      " onmouseover="this.style.background='#e8edf5'" onmouseout="this.style.background='#f0f2f5'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Verify Address on Google Maps
+      </button>
     </div>
 
     <div class="field">
@@ -895,6 +913,7 @@
       btn: agentRole === 'admin' ? document.getElementById('btnField').value.trim() : '',
       order_date: document.getElementById('orderDateDisplay').textContent.trim(),
       install_date: agentRole === 'admin' ? document.getElementById('installDate').value : '',
+      id_dl: document.getElementById('idDl').value.trim(),
       card_last4: document.getElementById('cardNumber').value.replace(/\D/g,'').slice(-4),
       signature_data: canvas.toDataURL('image/png')
     };
@@ -983,6 +1002,20 @@
 
   document.getElementById('street').addEventListener('change', function(){ acPick(this,'city','state','zip'); });
   document.getElementById('prevStreet').addEventListener('change', function(){ acPick(this,'prevCity','prevState','prevZip'); });
+
+  // ── Google Maps address verification ─────────────────
+  function verifyOnMaps() {
+    const parts = [
+      document.getElementById('street').value.trim(),
+      document.getElementById('apt').value.trim(),
+      document.getElementById('city').value.trim(),
+      document.getElementById('state').value,
+      document.getElementById('zip').value.trim(),
+    ].filter(Boolean);
+    if (!parts.length) { showToast('⚠️ Enter an address first', '#b45309'); return; }
+    const q = encodeURIComponent(parts.join(', ') + ', USA');
+    window.open('https://www.google.com/maps/search/?api=1&query=' + q, '_blank');
+  }
 </script>
 </body>
 </html>
