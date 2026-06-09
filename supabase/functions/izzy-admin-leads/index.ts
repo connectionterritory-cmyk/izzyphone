@@ -122,7 +122,7 @@ function getAppUrl() {
 function getResendConfig() {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   const fromEmail = Deno.env.get("RESEND_FROM_EMAIL");
-  const fromName = Deno.env.get("RESEND_FROM_NAME") || "Izzy Internet";
+  const fromName = Deno.env.get("RESEND_FROM_NAME") || "Izzy Communications";
   if (!apiKey || !fromEmail) return null;
   return { apiKey, fromEmail, fromName };
 }
@@ -174,10 +174,10 @@ async function sendPasswordResetEmail(email: string, nombre: string, token: stri
     body: JSON.stringify({
       from: `${resend.fromName} <${resend.fromEmail}>`,
       to: [email],
-      subject: "Recupera tu acceso a Izzy Internet",
+      subject: "Recupera tu acceso a Izzy Communications",
       html: `
         <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
-          <h2 style="margin-bottom:12px;color:#1a3a6b">Izzy Internet</h2>
+          <h2 style="margin-bottom:12px;color:#1a3a6b">Izzy Communications</h2>
           <p>Hola ${nombre || "equipo"},</p>
           <p>Recibimos una solicitud para restablecer tu password del portal.</p>
           <p>
