@@ -69,6 +69,8 @@ const ALLOWED_UPDATE_FIELDS = [
   "lineas",
   "nota",
   "estado",
+  "cotizacion_enviada",
+  "cotizacion_at",
 ] as const;
 
 function cleanString(value: unknown): string {

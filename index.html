@@ -1482,6 +1482,7 @@
   // ───────────────────────────────────────────────────────
 
   let currentMsg = '';
+  let currentLeadId = null;
   let currentMode = 'wa';
   let knownQuoters = [];
 
@@ -1755,6 +1756,7 @@
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || 'Save failed');
+      if (data.lead?.id) currentLeadId = data.lead.id;
       if (data.duplicate) {
         showToast('⚠️ Este teléfono ya existe como lead (ID #' + data.lead.id + ')', '#b45309', 5000);
       } else {
@@ -1988,6 +1990,24 @@
     if (!tel) { showToast(t.toastFillPhone, '#b45309'); return; }
     const telCompleto = tel.length === 10 ? '1' + tel : tel;
     window.open(`https://wa.me/${telCompleto}?text=${encodeURIComponent(currentMsgCliente)}`, '_blank');
+    saveCotizacion();
+  }
+
+  async function saveCotizacion() {
+    if (!currentLeadId || !currentMsgCliente) return;
+    try {
+      await apiFetch('izzy-admin-leads', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          id: currentLeadId,
+          updates: {
+            cotizacion_enviada: currentMsgCliente,
+            cotizacion_at: new Date().toISOString()
+          }
+        })
+      });
+      showToast('📋 Cotización guardada en el lead', '#1a3a6b', 3000);
+    } catch { /* silent — sending WA is the main action */ }
   }
 
   function openSmsCliente() {
