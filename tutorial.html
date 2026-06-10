@@ -86,7 +86,7 @@
 <div class="hero">
   <div class="hero-emoji">📚</div>
   <h1 id="heroTitle">Tutorial — Cotizador de Leads</h1>
-  <p id="heroSub">Aprende a usar la app en 9 pasos</p>
+  <p id="heroSub">Aprende a usar la app en 10 pasos</p>
   <div class="progress-wrap" id="progressWrap"></div>
 </div>
 
@@ -101,11 +101,11 @@
   <a href="index.html" class="btn-go" id="doneBtn">📱 Abrir la App</a>
 </div>
 
-<div class="step-counter" id="stepCounter">Paso 1 de 9</div>
+<div class="step-counter" id="stepCounter">Paso 1 de 10</div>
 <button class="lang-fab" id="langFab" onclick="toggleTutLang()">🇺🇸 EN</button>
 
 <script>
-const TOTAL = 9;
+const TOTAL = 10;
 let current = 1;
 let tutLang = localStorage.getItem('izzy_lang') || 'es';
 
@@ -169,6 +169,7 @@ const STEPS = {
       tips: [
         ['📍','La <strong>dirección completa</strong> es clave — el cotizador la necesita para verificar qué servicios están disponibles en esa zona.'],
         ['📞','El teléfono se formatea <strong>automáticamente</strong> mientras escribes.'],
+        ['🗺️','Usa el botón <strong>🗺 Verificar en Maps</strong> para abrir Google Maps con la dirección del cliente y confirmar que está bien escrita antes de enviarla al cotizador.'],
       ]
     },
     {
@@ -287,6 +288,7 @@ Soy *María* de *Izzy Communications*.
       tips: [
         ['📋','<strong>Copiar</strong> — copia el mensaje con el desglose completo.'],
         ['💬','<strong>Enviar al Cliente</strong> — abre WhatsApp directo al número del cliente con el mensaje ya escrito. Solo presiona enviar.'],
+        ['💾','Al presionar <strong>Enviar al Cliente</strong>, la cotización queda <strong>guardada automáticamente</strong> en el lead. El admin puede verla desde la tabla de leads.'],
       ]
     },
     {
@@ -305,6 +307,7 @@ Soy *María* de *Izzy Communications*.
         ['💾','Al presionar <strong>Guardar</strong>, todos los datos del cliente se registran automáticamente.'],
         ['📊','El administrador ve todos los leads en tiempo real. Siempre guarda antes de cerrar la app.'],
         ['✅','Verás una notificación verde de confirmación cuando el registro sea exitoso. Si no aparece, el cliente no quedó guardado todavía.'],
+        ['⚠️','Si el <strong>número de teléfono ya existe</strong>, la app muestra una advertencia naranja con el ID del lead duplicado — no se crea un registro nuevo. Busca el lead existente en la tabla.'],
       ],
       alert: { type:'yellow', icon:'💡', text:'<strong>Flujo completo:</strong> Llena los datos del cliente → Envía al cotizador → Espera la oferta → Llena el desglose → Envía al cliente → Guarda el lead.' }
     },
@@ -346,6 +349,37 @@ Soy *María* de *Izzy Communications*.
         ['📈','Las tarjetas de <strong>Vendidos</strong> y <strong>Pendientes</strong> en la parte superior te dan un resumen del equipo en tiempo real.'],
       ],
       alert: { type:'green', icon:'✅', text:'<strong>Recomendación:</strong> Actualiza el estado cada vez que contactes a un cliente. Así el admin sabe en qué punto está cada lead sin tener que preguntar.' }
+    },
+    {
+      title: 'Propaganda masiva por WhatsApp',
+      sub:   'Envía ofertas a múltiples leads de un jalón',
+      visual: `
+        <div class="vlabel">Modal de Propaganda — Paso 1</div>
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Filtros</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <div class="chip-d sel">Nuevo</div><div class="chip-d">Contactado</div><div class="chip-d sel">Volver a Contactar</div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 4px;">Mi teléfono (para CTA)</div>
+          <div class="mock-field" style="margin:0;">+1 (818) 555-1234</div>
+        </div>
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Plantillas</div>
+          <div class="chips-demo" style="margin-bottom:8px;">
+            <div class="chip-d sel">📡 Internet</div><div class="chip-d">📱 Celulares</div><div class="chip-d">💰 Combo</div>
+          </div>
+          <div class="mock-bubble" style="font-size:11px;">Hola *{nombre}* 👋
+¿Sigues pagando de más por internet?
+📞 Llámame: *{tel_agente}* — *{agente}*</div>
+        </div>`,
+      tips: [
+        ['📣','Entra a <strong>📊 Leads → 📣 Propaganda</strong> para abrir el modal de mensajes masivos.'],
+        ['🎯','En el <strong>Paso 1</strong> filtra por estado (ej. Nuevo + Volver a Contactar), elige una plantilla y personaliza el mensaje. Usa <code>{nombre}</code> para poner el nombre del cliente, <code>{agente}</code> para tu nombre y <code>{tel_agente}</code> para tu teléfono.'],
+        ['📋','En el <strong>Paso 2</strong> aparece la lista de leads que cumplen el filtro. Presiona el botón verde de cada lead para abrir WhatsApp con el mensaje listo — solo falta enviarlo.'],
+        ['📊','La barra de progreso se actualiza conforme vas enviando. Puedes pausar y retomar en cualquier momento.'],
+        ['💡','El teléfono del agente que escribes se <strong>guarda en el dispositivo</strong> para que no tengas que escribirlo cada vez.'],
+      ],
+      alert: { type:'yellow', icon:'💡', text:'<strong>Nota:</strong> Los mensajes se envían uno a uno por WhatsApp. No es una API masiva — cada mensaje lo abres y envías manualmente para evitar bloqueos de WhatsApp.' }
     }
   ],
 
@@ -407,6 +441,7 @@ Soy *María* de *Izzy Communications*.
       tips: [
         ['📍','The <strong>full address</strong> is key — the quoting agent needs it to check which services are available in that area.'],
         ['📞','The phone number is <strong>formatted automatically</strong> as you type.'],
+        ['🗺️','Use the <strong>🗺 Verify on Maps</strong> button to open Google Maps with the client\'s address and confirm it\'s spelled correctly before sending to the quoting agent.'],
       ]
     },
     {
@@ -525,6 +560,7 @@ Interested? I can help you activate it *today*. 🙌</div>`,
       tips: [
         ['📋','<strong>Copy</strong> — copies the full breakdown message.'],
         ['💬','<strong>Send to Client</strong> — opens WhatsApp directly to the client\'s number with the message already written. Just press send.'],
+        ['💾','When you tap <strong>Send to Client</strong>, the quote is <strong>automatically saved</strong> to the lead record so the admin can see exactly what was offered.'],
       ]
     },
     {
@@ -543,6 +579,7 @@ Interested? I can help you activate it *today*. 🙌</div>`,
         ['💾','When you press <strong>Save</strong>, all client data is automatically recorded for the admin to review.'],
         ['📊','The administrator sees all leads in real time. Always save before closing the app.'],
         ['✅','You\'ll see a green confirmation notification when the record is successful. If you do not see it, the client has not been saved yet.'],
+        ['⚠️','If the <strong>phone number already exists</strong>, the app shows an orange warning with the existing lead ID — no duplicate is created. Look up that lead in the table instead.'],
       ],
       alert: { type:'yellow', icon:'💡', text:'<strong>Full flow:</strong> Fill in client info → Send to quoting agent → Wait for the offer → Enter the breakdown → Send to client → Save the lead.' }
     },
@@ -584,6 +621,37 @@ Interested? I can help you activate it *today*. 🙌</div>`,
         ['📈','The <strong>Sold</strong> and <strong>Pending</strong> stat cards at the top give you a real-time team summary.'],
       ],
       alert: { type:'green', icon:'✅', text:'<strong>Tip:</strong> Update the status every time you contact a client. That way the admin knows where each lead stands without having to ask.' }
+    },
+    {
+      title: 'Mass WhatsApp broadcast',
+      sub:   'Send offers to multiple leads at once',
+      visual: `
+        <div class="vlabel">Broadcast modal — Step 1</div>
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Filters</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <div class="chip-d sel">New</div><div class="chip-d">Contacted</div><div class="chip-d sel">Call Back</div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 4px;">My phone (for CTA)</div>
+          <div class="mock-field" style="margin:0;">+1 (818) 555-1234</div>
+        </div>
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Templates</div>
+          <div class="chips-demo" style="margin-bottom:8px;">
+            <div class="chip-d sel">📡 Internet</div><div class="chip-d">📱 Cell</div><div class="chip-d">💰 Bundle</div>
+          </div>
+          <div class="mock-bubble" style="font-size:11px;">Hello *{nombre}* 👋
+Still overpaying for internet?
+📞 Call me: *{tel_agente}* — *{agente}*</div>
+        </div>`,
+      tips: [
+        ['📣','Go to <strong>📊 Leads → 📣 Broadcast</strong> to open the mass messaging modal.'],
+        ['🎯','In <strong>Step 1</strong>, filter by status (e.g. New + Call Back), pick a template, and customize the message. Use <code>{nombre}</code> for the client\'s name, <code>{agente}</code> for your name, and <code>{tel_agente}</code> for your phone number.'],
+        ['📋','In <strong>Step 2</strong>, the filtered lead list appears. Tap the green button on each lead to open WhatsApp with the message pre-filled — just hit send.'],
+        ['📊','The progress bar updates as you go. You can pause and resume at any time.'],
+        ['💡','The agent phone number you enter is <strong>saved on your device</strong> so you don\'t have to retype it each session.'],
+      ],
+      alert: { type:'yellow', icon:'💡', text:'<strong>Note:</strong> Messages are sent one by one via WhatsApp. This is not a bulk API — each message is opened and sent manually to avoid WhatsApp blocks.' }
     }
   ]
 };
@@ -592,10 +660,10 @@ Interested? I can help you activate it *today*. 🙌</div>`,
 const UI = {
   es: { stepOf:'Paso', of:'de', prev:'← Anterior', next:'Siguiente →', finish:'✅ ¡Listo, empezar!',
         doneTitle:'¡Ya estás listo!', doneSub:'Ahora sabes usar el cotizador de Izzy Communications. ¡A conseguir esos leads!',
-        doneBtn:'📱 Abrir la App', heroTitle:'Tutorial — Cotizador de Leads', heroSub:'Aprende a usar la app en 9 pasos', langBtn:'🇺🇸 EN' },
+        doneBtn:'📱 Abrir la App', heroTitle:'Tutorial — Cotizador de Leads', heroSub:'Aprende a usar la app en 10 pasos', langBtn:'🇺🇸 EN' },
   en: { stepOf:'Step', of:'of', prev:'← Previous', next:'Next →', finish:"✅ Ready, let's start!",
         doneTitle:"You're all set!", doneSub:'Now you know how to use the Izzy Communications quoter. Go get those leads!',
-        doneBtn:'📱 Open the App', heroTitle:'Tutorial — Lead Quoter', heroSub:'Learn to use the app in 9 steps', langBtn:'🇲🇽 ES' }
+        doneBtn:'📱 Open the App', heroTitle:'Tutorial — Lead Quoter', heroSub:'Learn to use the app in 10 steps', langBtn:'🇲🇽 ES' }
 };
 
 // ── Render ──────────────────────────────────────────────
