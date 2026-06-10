@@ -196,9 +196,135 @@
 
   /* Toast */
   .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999; white-space: nowrap; }
+
+  /* ── BROADCAST MODAL ────────────────────────────────── */
+  #broadcastOverlay { z-index: 600; }
+  #broadcastOverlay .modal { max-width: 540px; }
+
+  .bc-step { display: none; }
+  .bc-step.active { display: flex; flex-direction: column; gap: 13px; }
+
+  .bc-target-count {
+    background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .bc-target-count .bc-num { font-size: 28px; font-weight: 700; color: #16a34a; }
+  .bc-target-count .bc-desc { font-size: 13px; color: #15803d; }
+
+  .bc-preview-box {
+    background: #f7f7f5; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; font-size: 13px; line-height: 1.6; color: var(--text);
+    white-space: pre-wrap; word-break: break-word; min-height: 60px;
+  }
+
+  .bc-lead-list { display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto; padding-right: 4px; }
+  .bc-lead-item {
+    display: flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px;
+    background: #fff; transition: border-color .15s;
+  }
+  .bc-lead-item.sent { border-color: #86efac; background: #f0fdf4; }
+  .bc-lead-item .bc-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .bc-lead-item .bc-phone { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .bc-lead-item .bc-check { font-size: 18px; flex-shrink: 0; }
+  .btn-wa {
+    padding: 7px 14px; border-radius: 8px; border: none;
+    background: #25D366; color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: background .15s;
+  }
+  .btn-wa:hover { background: #1da851; }
+  .btn-wa:disabled { background: #86efac; cursor: not-allowed; }
+
+  .bc-progress {
+    background: var(--border); border-radius: 99px; height: 6px; overflow: hidden;
+  }
+  .bc-progress-bar {
+    height: 100%; background: #25D366; border-radius: 99px;
+    transition: width .3s; width: 0%;
+  }
+  .bc-progress-label { font-size: 12px; color: var(--muted); text-align: right; margin-top: 4px; }
 </style>
 </head>
 <body>
+
+<!-- ── BROADCAST MODAL ───────────────────────────────── -->
+<div class="modal-overlay" id="broadcastOverlay" onclick="handleBcOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header" style="background:#16a34a;">
+      <div>
+        <h2>📣 Enviar Propaganda</h2>
+        <div class="modal-sub" id="bcSubtitle">Selecciona destinatarios y redacta el mensaje</div>
+      </div>
+      <button class="btn-close" onclick="closeBroadcast()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- STEP 1: Filtros + Mensaje -->
+      <div class="bc-step active" id="bcStep1">
+
+        <div class="m-field">
+          <label class="m-label">Destinatarios</label>
+          <select class="m-input" id="bcFilterEstado" onchange="bcUpdateCount()">
+            <option value="">Todos los leads</option>
+            <option value="Nuevo">Solo Nuevos</option>
+            <option value="Contactado">Solo Contactados</option>
+            <option value="Volver a Contactar">Volver a Contactar</option>
+            <option value="No interesó">No interesó</option>
+            <option value="Vendido">Vendidos</option>
+          </select>
+        </div>
+
+        <div class="m-field" id="bcAgenteWrap">
+          <label class="m-label">Filtrar por agente</label>
+          <select class="m-input" id="bcFilterAgente" onchange="bcUpdateCount()">
+            <option value="">Todos los agentes</option>
+          </select>
+        </div>
+
+        <div class="bc-target-count">
+          <div class="bc-num" id="bcTargetNum">0</div>
+          <div class="bc-desc">leads con número de teléfono</div>
+        </div>
+
+        <div class="m-field">
+          <label class="m-label">Plantilla rápida</label>
+          <select class="m-input" id="bcTemplate" onchange="bcApplyTemplate()">
+            <option value="">— Mensaje personalizado —</option>
+            <option value="oferta">💰 Oferta especial de internet</option>
+            <option value="followup">🔄 Seguimiento</option>
+            <option value="promo">🎉 Promoción del mes</option>
+          </select>
+        </div>
+
+        <div class="m-field">
+          <label class="m-label">Mensaje <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8;">(usa {nombre} para el nombre del cliente)</span></label>
+          <textarea class="m-input" id="bcMessage" rows="5" placeholder="Hola {nombre}, tenemos una oferta especial para ti..." oninput="bcUpdatePreview()" style="min-height:110px;"></textarea>
+        </div>
+
+        <div class="m-field">
+          <label class="m-label">Vista previa</label>
+          <div class="bc-preview-box" id="bcPreview">El mensaje aparecerá aquí...</div>
+        </div>
+
+      </div>
+
+      <!-- STEP 2: Lista de envío -->
+      <div class="bc-step" id="bcStep2">
+        <div>
+          <div class="bc-progress"><div class="bc-progress-bar" id="bcProgressBar"></div></div>
+          <div class="bc-progress-label"><span id="bcSentCount">0</span> / <span id="bcTotalCount">0</span> enviados</div>
+        </div>
+        <div class="bc-lead-list" id="bcLeadList"></div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer" id="bcFooter">
+      <button class="btn-cotizar" onclick="bcNext()" id="bcNextBtn" style="background:#16a34a;">Iniciar envío →</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── MODAL ─────────────────────────────────────────── -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
@@ -341,6 +467,7 @@
   </div>
   <div class="header-right">
     <span class="header-tag" id="agentTag"></span>
+    <button onclick="openBroadcast()" class="btn-back" style="background:rgba(37,211,102,.25);border-color:rgba(37,211,102,.5);">📣 Propaganda</button>
     <a href="users.html" class="btn-back">👥 Usuarios</a>
     <a href="orders.html" class="btn-back">🧾 Orders</a>
     <a href="index.html" class="btn-back">← Cotizador</a>
@@ -802,10 +929,148 @@
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeBroadcast(); } });
 
   fetchLeads();
   bindProviderOtherFields();
+
+  // ── BROADCAST ─────────────────────────────────────────
+  const BC_TEMPLATES = {
+    oferta:   'Hola {nombre} 👋, soy de *Izzy Communications*.\n\n¡Tenemos una oferta especial de internet que podría interesarte! 🌐💰\n\n¿Te gustaría conocer los detalles? Respondeme aquí y con gusto te ayudo.',
+    followup: 'Hola {nombre}, ¿cómo estás? 😊\n\nTe escribo de *Izzy Communications* para hacer un seguimiento de tu cotización de internet.\n\n¿Tienes alguna pregunta o te gustaría avanzar con el servicio?',
+    promo:    '🎉 Hola {nombre}!\n\nSoy de *Izzy Communications* y este mes tenemos una *promoción especial* en planes de internet.\n\n¡Respóndeme para darte más información! 📶'
+  };
+
+  let bcLeads = [];
+  let bcSent  = 0;
+
+  function openBroadcast() {
+    // Populate agente filter
+    const sel = document.getElementById('bcFilterAgente');
+    sel.innerHTML = '<option value="">Todos los agentes</option>';
+    const agentes = [...new Set(allLeads.map(l => l.agente).filter(Boolean))].sort();
+    agentes.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; sel.appendChild(o); });
+    if (!isAdmin) document.getElementById('bcAgenteWrap').style.display = 'none';
+
+    // Reset to step 1
+    document.getElementById('bcStep1').classList.add('active');
+    document.getElementById('bcStep2').classList.remove('active');
+    document.getElementById('bcNextBtn').textContent = 'Iniciar envío →';
+    document.getElementById('bcNextBtn').style.background = '#16a34a';
+    document.getElementById('bcNextBtn').onclick = bcNext;
+    document.getElementById('bcMessage').value = '';
+    document.getElementById('bcTemplate').value = '';
+    document.getElementById('bcPreview').textContent = 'El mensaje aparecerá aquí...';
+    bcUpdateCount();
+    document.getElementById('broadcastOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBroadcast() {
+    document.getElementById('broadcastOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleBcOverlayClick(e) {
+    if (e.target === document.getElementById('broadcastOverlay')) closeBroadcast();
+  }
+
+  function bcGetTargets() {
+    const estado = document.getElementById('bcFilterEstado').value;
+    const agente = document.getElementById('bcFilterAgente').value;
+    return allLeads.filter(l => {
+      const phone = (l.telefono || '').replace(/\D/g, '');
+      if (!phone || phone.length < 7) return false;
+      if (estado && (l.estado || 'Nuevo') !== estado) return false;
+      if (agente && l.agente !== agente) return false;
+      return true;
+    });
+  }
+
+  function bcUpdateCount() {
+    document.getElementById('bcTargetNum').textContent = bcGetTargets().length;
+  }
+
+  function bcApplyTemplate() {
+    const key = document.getElementById('bcTemplate').value;
+    if (key && BC_TEMPLATES[key]) {
+      document.getElementById('bcMessage').value = BC_TEMPLATES[key];
+      bcUpdatePreview();
+    }
+  }
+
+  function bcUpdatePreview() {
+    const msg = document.getElementById('bcMessage').value;
+    const sample = allLeads.find(l => l.cliente) || { cliente: 'Juan Pérez' };
+    const nombre = (sample.cliente || 'Juan').split(' ')[0];
+    document.getElementById('bcPreview').textContent = msg.replace(/{nombre}/gi, nombre) || 'El mensaje aparecerá aquí...';
+  }
+
+  function bcBuildMessage(lead) {
+    const nombre = (lead.cliente || '').split(' ')[0] || 'amigo';
+    return document.getElementById('bcMessage').value.replace(/{nombre}/gi, nombre);
+  }
+
+  function bcNext() {
+    const msg = document.getElementById('bcMessage').value.trim();
+    if (!msg) { showToast('⚠️ Escribe un mensaje primero', '#b45309'); return; }
+    bcLeads = bcGetTargets();
+    if (!bcLeads.length) { showToast('⚠️ No hay leads con teléfono para ese filtro', '#b45309'); return; }
+
+    bcSent = 0;
+    document.getElementById('bcStep1').classList.remove('active');
+    document.getElementById('bcStep2').classList.add('active');
+    document.getElementById('bcSubtitle').textContent = `${bcLeads.length} destinatarios`;
+    document.getElementById('bcTotalCount').textContent = bcLeads.length;
+    document.getElementById('bcSentCount').textContent = 0;
+    document.getElementById('bcProgressBar').style.width = '0%';
+
+    document.getElementById('bcLeadList').innerHTML = bcLeads.map((l, i) => {
+      const nombre = (l.cliente || '').split(' ')[0] || 'Cliente';
+      return `<div class="bc-lead-item" id="bcItem-${i}">
+        <div style="flex:1;">
+          <div class="bc-name">${esc(l.cliente || '—')}</div>
+          <div class="bc-phone">${esc(l.telefono || '—')}</div>
+        </div>
+        <span class="bc-check" id="bcCheck-${i}">⬜</span>
+        <button class="btn-wa" id="bcBtn-${i}" onclick="bcSendOne(${i})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:4px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.86L.073 23.927l6.256-1.642A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.034-1.387l-.361-.214-3.713.974.99-3.617-.236-.372A9.81 9.81 0 0 1 2.182 12C2.182 6.573 6.573 2.182 12 2.182S21.818 6.573 21.818 12 17.427 21.818 12 21.818z"/></svg>
+          Enviar
+        </button>
+      </div>`;
+    }).join('');
+
+    document.getElementById('bcNextBtn').textContent = '← Volver';
+    document.getElementById('bcNextBtn').style.background = '#64748b';
+    document.getElementById('bcNextBtn').onclick = bcBack;
+  }
+
+  function bcSendOne(i) {
+    const lead = bcLeads[i];
+    const msg  = bcBuildMessage(lead);
+    const phone = (lead.telefono || '').replace(/\D/g, '');
+    const waPhone = phone.length === 10 ? '1' + phone : phone;
+    window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+
+    // Mark as sent
+    document.getElementById(`bcItem-${i}`).classList.add('sent');
+    document.getElementById(`bcCheck-${i}`).textContent = '✅';
+    document.getElementById(`bcBtn-${i}`).disabled = true;
+    document.getElementById(`bcBtn-${i}`).textContent = 'Enviado';
+
+    bcSent++;
+    document.getElementById('bcSentCount').textContent = bcSent;
+    document.getElementById('bcProgressBar').style.width = `${Math.round(bcSent / bcLeads.length * 100)}%`;
+  }
+
+  function bcBack() {
+    document.getElementById('bcStep2').classList.remove('active');
+    document.getElementById('bcStep1').classList.add('active');
+    document.getElementById('bcSubtitle').textContent = 'Selecciona destinatarios y redacta el mensaje';
+    document.getElementById('bcNextBtn').textContent = 'Iniciar envío →';
+    document.getElementById('bcNextBtn').style.background = '#16a34a';
+    document.getElementById('bcNextBtn').onclick = bcNext;
+  }
 </script>
 </body>
 </html>
