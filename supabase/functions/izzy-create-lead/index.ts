@@ -62,6 +62,21 @@ Deno.serve(async (req) => {
     }
 
     const supabase = createAdminClient();
+
+    // Check for duplicate by normalized phone (uses generated column telefono_digits)
+    const normalizedPhone = payload.telefono.replace(/\D/g, "");
+    if (normalizedPhone.length >= 7) {
+      const { data: existing } = await supabase
+        .from("izzy_leads")
+        .select("*")
+        .eq("telefono_digits", normalizedPhone)
+        .maybeSingle();
+
+      if (existing) {
+        return jsonResponse({ lead: existing, duplicate: true }, { status: 200 });
+      }
+    }
+
     const { data, error } = await supabase
       .from("izzy_leads")
       .insert(payload)

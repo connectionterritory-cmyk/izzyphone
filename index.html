@@ -1755,7 +1755,11 @@
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || 'Save failed');
-      showToast(T[currentLang].toastSaved, '#16a34a');
+      if (data.duplicate) {
+        showToast('⚠️ Este teléfono ya existe como lead (ID #' + data.lead.id + ')', '#b45309', 5000);
+      } else {
+        showToast(T[currentLang].toastSaved, '#16a34a');
+      }
     } catch (err) {
       if (!getSession()) {
         document.getElementById('mainApp').style.display = 'none';
@@ -1768,12 +1772,12 @@
     }
   }
 
-  function showToast(msg, color = '#111') {
+  function showToast(msg, color = '#111', duration = 3000) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
     toast.style.background = color;
     toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 3000);
+    setTimeout(() => toast.style.display = 'none', duration);
   }
 
   // Persist webhook URL
