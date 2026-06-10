@@ -439,6 +439,14 @@
 
       <div style="height:1px;background:var(--border);"></div>
 
+      <div class="m-field" id="cotizacionSection" style="display:none;">
+        <label class="m-label">📋 Cotización enviada al cliente</label>
+        <div id="mCotizacionAt" style="font-size:11px;color:var(--muted);margin-bottom:6px;"></div>
+        <div id="mCotizacion" style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:9px;padding:10px 13px;font-size:12px;line-height:1.65;white-space:pre-wrap;font-family:monospace;color:#111;max-height:180px;overflow-y:auto;"></div>
+      </div>
+
+      <div style="height:1px;background:var(--border);"></div>
+
       <div class="m-field">
         <label class="m-label">Estado de seguimiento</label>
         <select class="m-input" id="mEstado">
@@ -828,6 +836,15 @@
     setSelect('mLineas',    lead.lineas);
     document.getElementById('mNota').value       = lead.nota        || '';
     setSelect('mEstado', lead.estado || 'Nuevo');
+    const cotizSec = document.getElementById('cotizacionSection');
+    if (lead.cotizacion_enviada) {
+      document.getElementById('mCotizacion').textContent = lead.cotizacion_enviada;
+      const atDate = lead.cotizacion_at ? new Date(lead.cotizacion_at).toLocaleString('es-US', { dateStyle:'short', timeStyle:'short' }) : '';
+      document.getElementById('mCotizacionAt').textContent = atDate ? `Enviada el ${atDate}` : '';
+      cotizSec.style.display = 'block';
+    } else {
+      cotizSec.style.display = 'none';
+    }
     document.getElementById('btnDeleteModal').style.display = isAdmin ? 'block' : 'none';
     document.getElementById('modalOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
