@@ -288,6 +288,12 @@
         </div>
 
         <div class="m-field">
+          <label class="m-label">Tu teléfono de contacto (WhatsApp)</label>
+          <input class="m-input" type="tel" id="bcAgentPhone" placeholder="(786) 291-3042" oninput="bcUpdatePreview()">
+          <span style="font-size:11px;color:var(--muted);margin-top:3px;">Se guarda automáticamente para la próxima vez.</span>
+        </div>
+
+        <div class="m-field">
           <label class="m-label">Plantilla rápida</label>
           <select class="m-input" id="bcTemplate" onchange="bcApplyTemplate()">
             <option value="">— Mensaje personalizado —</option>
@@ -298,7 +304,7 @@
         </div>
 
         <div class="m-field">
-          <label class="m-label">Mensaje <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8;">(usa {nombre} para el nombre del cliente)</span></label>
+          <label class="m-label">Mensaje <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8;">{nombre} · {agente} · {tel_agente}</span></label>
           <textarea class="m-input" id="bcMessage" rows="5" placeholder="Hola {nombre}, tenemos una oferta especial para ti..." oninput="bcUpdatePreview()" style="min-height:110px;"></textarea>
         </div>
 
@@ -936,9 +942,9 @@
 
   // ── BROADCAST ─────────────────────────────────────────
   const BC_TEMPLATES = {
-    oferta:   'Hola {nombre} 👋, soy de *Izzy Communications*.\n\n¡Tenemos una oferta especial de internet que podría interesarte! 🌐💰\n\n¿Te gustaría conocer los detalles? Respondeme aquí y con gusto te ayudo.',
-    followup: 'Hola {nombre}, ¿cómo estás? 😊\n\nTe escribo de *Izzy Communications* para hacer un seguimiento de tu cotización de internet.\n\n¿Tienes alguna pregunta o te gustaría avanzar con el servicio?',
-    promo:    '🎉 Hola {nombre}!\n\nSoy de *Izzy Communications* y este mes tenemos una *promoción especial* en planes de internet.\n\n¡Respóndeme para darte más información! 📶'
+    oferta:   'Hola {nombre} 👋, soy *{agente}* de *Izzy Communications*.\n\n¡Tenemos una oferta especial de internet que podría interesarte! 🌐💰\n\n👉 *Escríbeme ahora y te doy todos los detalles:*\n📲 {tel_agente}',
+    followup: 'Hola {nombre} 😊, soy *{agente}* de *Izzy Communications*.\n\nTe escribo para hacer seguimiento de tu cotización de internet.\n\n👉 *¿Tienes 5 minutos para hablar? Contáctame:*\n📲 {tel_agente}',
+    promo:    '🎉 Hola {nombre}!\n\nSoy *{agente}* de *Izzy Communications* y este mes tenemos una *promoción especial* en planes de internet.\n\n👉 *¡No te la pierdas! Escríbeme ya:*\n📲 {tel_agente}'
   };
 
   let bcLeads = [];
@@ -961,6 +967,9 @@
     document.getElementById('bcMessage').value = '';
     document.getElementById('bcTemplate').value = '';
     document.getElementById('bcPreview').textContent = 'El mensaje aparecerá aquí...';
+    // Pre-fill agent phone from localStorage
+    const savedPhone = localStorage.getItem('izzy_bc_agent_phone') || '';
+    document.getElementById('bcAgentPhone').value = savedPhone;
     bcUpdateCount();
     document.getElementById('broadcastOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -999,21 +1008,32 @@
     }
   }
 
+  function bcReplace(msg, clienteNombre) {
+    const agente    = currentUser.nombre || '';
+    const telAgente = document.getElementById('bcAgentPhone').value.trim();
+    return msg
+      .replace(/{nombre}/gi,     clienteNombre)
+      .replace(/{agente}/gi,     agente)
+      .replace(/{tel_agente}/gi, telAgente);
+  }
+
   function bcUpdatePreview() {
     const msg = document.getElementById('bcMessage').value;
     const sample = allLeads.find(l => l.cliente) || { cliente: 'Juan Pérez' };
     const nombre = (sample.cliente || 'Juan').split(' ')[0];
-    document.getElementById('bcPreview').textContent = msg.replace(/{nombre}/gi, nombre) || 'El mensaje aparecerá aquí...';
+    document.getElementById('bcPreview').textContent = bcReplace(msg, nombre) || 'El mensaje aparecerá aquí...';
   }
 
   function bcBuildMessage(lead) {
     const nombre = (lead.cliente || '').split(' ')[0] || 'amigo';
-    return document.getElementById('bcMessage').value.replace(/{nombre}/gi, nombre);
+    return bcReplace(document.getElementById('bcMessage').value, nombre);
   }
 
   function bcNext() {
     const msg = document.getElementById('bcMessage').value.trim();
     if (!msg) { showToast('⚠️ Escribe un mensaje primero', '#b45309'); return; }
+    const agentPhone = document.getElementById('bcAgentPhone').value.trim();
+    if (agentPhone) localStorage.setItem('izzy_bc_agent_phone', agentPhone);
     bcLeads = bcGetTargets();
     if (!bcLeads.length) { showToast('⚠️ No hay leads con teléfono para ese filtro', '#b45309'); return; }
 
