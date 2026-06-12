@@ -33,6 +33,18 @@ type OrderPayload = {
   signature_data?: string;
 };
 
+type InstallationStatus =
+  | "submitted"
+  | "scheduled"
+  | "installed_pending_confirmation"
+  | "confirmed_satisfied"
+  | "cancelled"
+  | "failed_install";
+
+type SatisfactionStatus = "pending" | "satisfied" | "issue" | "cancelled";
+
+type CommissionStatus = "not_earned" | "earned" | "paid" | "cancelled";
+
 function cleanString(value: unknown): string {
   return String(value || "").trim();
 }
@@ -53,6 +65,7 @@ function cleanDate(value: unknown): string | null {
 }
 
 function buildOrderPayload(raw: OrderPayload, agentName: string) {
+  const scheduledInstallDate = cleanDate(raw.install_date);
   return {
     fecha: new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles" }).format(new Date()),
     agente: agentName,
@@ -78,7 +91,14 @@ function buildOrderPayload(raw: OrderPayload, agentName: string) {
     order_number: cleanString(raw.order_number),
     btn: cleanString(raw.btn),
     order_date: cleanString(raw.order_date),
-    install_date: cleanDate(raw.install_date),
+    install_date: scheduledInstallDate,
+    installation_status: (scheduledInstallDate ? "scheduled" : "submitted") as InstallationStatus,
+    scheduled_install_date: scheduledInstallDate,
+    actual_install_date: null,
+    satisfaction_status: "pending" as SatisfactionStatus,
+    commission_status: "not_earned" as CommissionStatus,
+    commission_earned_at: null,
+    commission_amount: null,
     id_dl: cleanString(raw.id_dl),
     card_last4: cleanString(raw.card_last4),
     signature_data: cleanString(raw.signature_data),

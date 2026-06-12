@@ -54,6 +54,9 @@
   .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
   .badge-blue { background: var(--blue-light); color: var(--blue); }
   .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fee2e2; color: #b91c1c; }
+  .badge-slate { background: #e2e8f0; color: #334155; }
   .money { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: #16a34a; }
   .empty-state { padding: 48px 24px; text-align: center; color: var(--muted); }
   .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
@@ -81,9 +84,18 @@
   .m-field { display: flex; flex-direction: column; gap: 5px; }
   .m-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
   .m-value { padding: 10px 14px; background: #f7f7f5; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; color: var(--text); min-height: 42px; }
+  .actions-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .action-btn { border: none; border-radius: 10px; padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform .08s ease, opacity .12s ease; }
+  .action-btn:hover { transform: translateY(-1px); }
+  .action-btn:disabled { opacity: .55; cursor: wait; transform: none; }
+  .action-blue { background: #1a3a6b; color: #fff; }
+  .action-green { background: #0f766e; color: #fff; }
+  .action-amber { background: #f59e0b; color: #fff; }
+  .action-red { background: #b91c1c; color: #fff; }
   .sig-wrap { background: #fff; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px; }
   .sig-wrap img { width: 100%; display: block; background: #fafaf8; border-radius: 8px; }
   .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999; white-space: nowrap; }
+  @media (max-width: 560px) { .actions-wrap, .m-row2 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -149,6 +161,12 @@
   <select id="filterProv" onchange="renderTable()">
     <option value="">Todos los proveedores</option>
   </select>
+  <select id="filterStatus" onchange="renderTable()">
+    <option value="">Todos los estados</option>
+  </select>
+  <select id="filterCommission" onchange="renderTable()">
+    <option value="">Todas las comisiones</option>
+  </select>
   <span class="result-count" id="resultCount"></span>
 </div>
 
@@ -162,9 +180,10 @@
           <th onclick="sortBy('cliente_nombre')">Cliente <span>↕</span></th>
           <th class="no-sort">Telefono</th>
           <th class="no-sort">Proveedor</th>
+          <th class="no-sort">Estado</th>
           <th class="no-sort">Precio</th>
-          <th class="no-sort">Order #</th>
-          <th class="no-sort">Install Date</th>
+          <th class="no-sort">Comisión</th>
+          <th class="no-sort">Programada</th>
           <th class="no-sort">Ciudad</th>
         </tr>
       </thead>
@@ -189,6 +208,9 @@
   let activeOrder = null;
   let sortCol = 'created_at';
   let sortAsc = false;
+  let actionBusy = false;
+  const INSTALLATION_STATUS_OPTIONS = ['submitted', 'scheduled', 'installed_pending_confirmation', 'confirmed_satisfied', 'cancelled', 'failed_install'];
+  const COMMISSION_STATUS_OPTIONS = ['not_earned', 'earned', 'paid', 'cancelled'];
 
   try {
     currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
@@ -233,6 +255,11 @@
   }
 
   function buildFilters() {
+    const currentAgent = document.getElementById('filterAgente').value;
+    const currentProvider = document.getElementById('filterProv').value;
+    const currentStatus = document.getElementById('filterStatus').value;
+    const currentCommission = document.getElementById('filterCommission').value;
+
     const agtSel = document.getElementById('filterAgente');
     agtSel.innerHTML = '<option value="">Todos los agentes</option>';
     if (!isAdmin) {
@@ -244,6 +271,7 @@
         opt.textContent = a;
         agtSel.appendChild(opt);
       });
+      agtSel.value = currentAgent;
     }
 
     const prvSel = document.getElementById('filterProv');
@@ -254,19 +282,44 @@
       opt.textContent = p;
       prvSel.appendChild(opt);
     });
+    prvSel.value = currentProvider;
+
+    const statusSel = document.getElementById('filterStatus');
+    statusSel.innerHTML = '<option value="">Todos los estados</option>';
+    INSTALLATION_STATUS_OPTIONS.forEach((status) => {
+      const opt = document.createElement('option');
+      opt.value = status;
+      opt.textContent = installationStatusLabel(status);
+      statusSel.appendChild(opt);
+    });
+    statusSel.value = currentStatus;
+
+    const commissionSel = document.getElementById('filterCommission');
+    commissionSel.innerHTML = '<option value="">Todas las comisiones</option>';
+    COMMISSION_STATUS_OPTIONS.forEach((status) => {
+      const opt = document.createElement('option');
+      opt.value = status;
+      opt.textContent = commissionStatusLabel(status);
+      commissionSel.appendChild(opt);
+    });
+    commissionSel.value = currentCommission;
   }
 
   function getFiltered() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     const agt = document.getElementById('filterAgente').value;
     const prov = document.getElementById('filterProv').value;
+    const installationStatus = document.getElementById('filterStatus').value;
+    const commissionStatus = document.getElementById('filterCommission').value;
     return allOrders.filter((o) => {
       const fullName = [o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ');
       const provider = o.proveedor_otro || o.proveedor_servicio || '';
       const matchQ = !q || [fullName, o.agente, o.telefono_primario, o.order_number, o.ciudad, o.estado].some((v) => String(v || '').toLowerCase().includes(q));
       const matchAgt = !agt || o.agente === agt;
       const matchProv = !prov || provider === prov;
-      return matchQ && matchAgt && matchProv;
+      const matchStatus = !installationStatus || (o.installation_status || 'submitted') === installationStatus;
+      const matchCommission = !commissionStatus || (o.commission_status || 'not_earned') === commissionStatus;
+      return matchQ && matchAgt && matchProv && matchStatus && matchCommission;
     });
   }
 
@@ -309,16 +362,18 @@
       const fullName = esc([o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ') || '—');
       const provider = esc(o.proveedor_otro || o.proveedor_servicio || '—');
       const price = o.monthly_price ? `$${parseFloat(o.monthly_price).toFixed(2)}` : '—';
-      const installDate = esc(o.install_date || '—');
+      const installDate = esc(o.scheduled_install_date || o.install_date || '—');
       const city = esc([o.ciudad, o.estado].filter(Boolean).join(', ') || '—');
+      const commission = renderCommissionBadge(o);
       return `<tr onclick="openModalById(${Number(o.id)})">
         <td class="mono">${esc(o.fecha || '—')}</td>
         <td><strong>${esc(o.agente || '—')}</strong></td>
         <td><strong>${fullName}</strong></td>
         <td class="mono">${esc(o.telefono_primario || '—')}</td>
         <td>${o.proveedor_servicio || o.proveedor_otro ? `<span class="badge badge-blue">${provider}</span>` : '<span class="muted">—</span>'}</td>
+        <td>${renderInstallationBadge(o)}</td>
         <td class="money">${price}</td>
-        <td class="mono">${esc(o.order_number || '—')}</td>
+        <td>${commission}</td>
         <td class="muted">${installDate}</td>
         <td class="muted">${city}</td>
       </tr>`;
@@ -328,6 +383,7 @@
       const fullName = esc([o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ') || '—');
       const provider = esc(o.proveedor_otro || o.proveedor_servicio || '');
       const price = o.monthly_price ? `$${parseFloat(o.monthly_price).toFixed(2)}/mo` : '';
+      const scheduledInstall = o.scheduled_install_date || o.install_date || '';
       return `<div class="order-card" onclick="openModalById(${Number(o.id)})">
         <div class="order-card-top">
           <div class="order-card-name">${fullName}</div>
@@ -340,7 +396,9 @@
         <div class="order-card-badges">
           ${provider ? `<span class="badge badge-blue">${provider}</span>` : ''}
           ${price ? `<span class="badge badge-green">${price}</span>` : ''}
-          ${o.install_date ? `<span class="badge" style="background:#fef3c7;color:#92400e;">${esc(o.install_date)}</span>` : ''}
+          ${renderInstallationBadge(o)}
+          ${renderCommissionBadge(o)}
+          ${scheduledInstall ? `<span class="badge badge-amber">${esc(scheduledInstall)}</span>` : ''}
         </div>
         <div class="tap-hint">Toca para ver detalles →</div>
       </div>`;
@@ -354,7 +412,12 @@
     document.getElementById('modalSub').textContent = `Order ID #${order.id} · ${order.fecha || '—'}`;
     const provider = order.proveedor_otro || order.proveedor_servicio || '—';
     const address = [order.direccion, order.apartamento, [order.ciudad, order.estado].filter(Boolean).join(', '), order.zip].filter(Boolean).join(' · ');
+    const commissionAmount = order.commission_amount ? '$' + esc(Number(order.commission_amount).toFixed(2)) : '—';
     document.getElementById('modalBody').innerHTML = `
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Estado</div><div class="m-value">${renderInstallationBadge(order)}</div></div>
+        <div class="m-field"><div class="m-label">Comisión</div><div class="m-value">${renderCommissionBadge(order)}${order.commission_earned_at ? `<div style="margin-top:8px;font-size:12px;color:#7a7570;">Ganada: ${esc(formatDateTime(order.commission_earned_at))}</div>` : ''}${order.commission_paid_at ? `<div style="font-size:12px;color:#7a7570;">Pagada: ${esc(formatDateTime(order.commission_paid_at))}${order.commission_paid_by ? ` por ${esc(order.commission_paid_by)}` : ''}</div>` : ''}</div></div>
+      </div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">Agente</div><div class="m-value">${esc(order.agente || '—')}</div></div>
         <div class="m-field"><div class="m-label">Order Number</div><div class="m-value">${esc(order.order_number || '—')}</div></div>
@@ -378,13 +441,32 @@
       </div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">Monthly Price</div><div class="m-value">${order.monthly_price ? '$' + esc(Number(order.monthly_price).toFixed(2)) : '—'}</div></div>
-        <div class="m-field"><div class="m-label">Install Date</div><div class="m-value">${esc(order.install_date || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Commission Amount</div><div class="m-value">${commissionAmount}</div></div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Programada</div><div class="m-value">${esc(order.scheduled_install_date || order.install_date || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Instalada</div><div class="m-value">${esc(order.actual_install_date || '—')}</div></div>
+      </div>
+      <div class="m-row2">
+        <div class="m-field"><div class="m-label">Satisfaction</div><div class="m-value">${esc(satisfactionStatusLabel(order.satisfaction_status || 'pending'))}${order.satisfaction_confirmed_at ? `<div style="margin-top:8px;font-size:12px;color:#7a7570;">Confirmado: ${esc(formatDateTime(order.satisfaction_confirmed_at))}${order.satisfaction_confirmed_by ? ` por ${esc(order.satisfaction_confirmed_by)}` : ''}</div>` : ''}${order.satisfaction_notes ? `<div style="margin-top:6px;font-size:12px;color:#374151;background:#f9fafb;border-radius:7px;padding:6px 10px;">${esc(order.satisfaction_notes)}</div>` : ''}</div></div>
+        <div class="m-field"><div class="m-label">Legacy Install Date</div><div class="m-value">${esc(order.install_date || '—')}</div></div>
       </div>
       <div class="m-field"><div class="m-label">Install Notes</div><div class="m-value">${esc(order.notas_instalacion || '—')}</div></div>
       <div class="m-field"><div class="m-label">Special Notes</div><div class="m-value">${esc(order.special_notes || '—')}</div></div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">BTN</div><div class="m-value">${esc(order.btn || '—')}</div></div>
         <div class="m-field"><div class="m-label">Card Last 4</div><div class="m-value">${esc(order.card_last4 || '—')}</div></div>
+      </div>
+      <div class="m-field">
+        <div class="m-label">Acciones</div>
+        <div class="actions-wrap">
+          <button class="action-btn action-blue" onclick="event.stopPropagation(); scheduleInstallation(${Number(order.id)})" ${actionBusy ? 'disabled' : ''}>Programar instalación</button>
+          <button class="action-btn action-green" onclick="event.stopPropagation(); markInstalled(${Number(order.id)})" ${actionBusy ? 'disabled' : ''}>Marcar como instalada</button>
+          <button class="action-btn action-amber" onclick="event.stopPropagation(); confirmSatisfaction(${Number(order.id)})" ${actionBusy ? 'disabled' : ''}>Confirmar satisfacción</button>
+          <button class="action-btn action-amber" onclick="event.stopPropagation(); markIncident(${Number(order.id)})" ${actionBusy ? 'disabled' : ''}>Marcar incidencia</button>
+          <button class="action-btn action-red" onclick="event.stopPropagation(); cancelOrder(${Number(order.id)})" ${actionBusy ? 'disabled' : ''}>Cancelar orden</button>
+          ${isAdmin && order.commission_status === 'earned' ? `<button class="action-btn action-green" onclick="event.stopPropagation(); markCommissionPaid(${Number(order.id)})" ${actionBusy ? 'disabled' : ''}>💰 Marcar comisión pagada</button>` : ''}
+        </div>
       </div>
       ${order.signature_data ? `<div class="m-field"><div class="m-label">Firma</div><div class="sig-wrap"><img src="${order.signature_data}" alt="Firma del cliente"></div></div>` : ''}
     `;
@@ -421,6 +503,176 @@
 
   function esc(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function installationStatusLabel(status) {
+    return ({
+      submitted: 'Submitted',
+      scheduled: 'Scheduled',
+      installed_pending_confirmation: 'Installed / Pending Confirmation',
+      confirmed_satisfied: 'Confirmed Satisfied',
+      cancelled: 'Cancelled',
+      failed_install: 'Failed Install'
+    })[status] || 'Submitted';
+  }
+
+  function satisfactionStatusLabel(status) {
+    return ({
+      pending: 'Pending',
+      satisfied: 'Satisfied',
+      issue: 'Issue Reported',
+      cancelled: 'Cancelled'
+    })[status] || 'Pending';
+  }
+
+  function commissionStatusLabel(status) {
+    return ({
+      not_earned: 'Not Earned',
+      earned: 'Earned',
+      paid: 'Paid',
+      cancelled: 'Cancelled'
+    })[status] || 'Not Earned';
+  }
+
+  function badgeClassForInstallation(status) {
+    return ({
+      submitted: 'badge-slate',
+      scheduled: 'badge-blue',
+      installed_pending_confirmation: 'badge-amber',
+      confirmed_satisfied: 'badge-green',
+      cancelled: 'badge-red',
+      failed_install: 'badge-red'
+    })[status] || 'badge-slate';
+  }
+
+  function badgeClassForCommission(status) {
+    return ({
+      not_earned: 'badge-slate',
+      earned: 'badge-green',
+      paid: 'badge-blue',
+      cancelled: 'badge-red'
+    })[status] || 'badge-slate';
+  }
+
+  function renderInstallationBadge(order) {
+    const status = order.installation_status || 'submitted';
+    return `<span class="badge ${badgeClassForInstallation(status)}">${esc(installationStatusLabel(status))}</span>`;
+  }
+
+  function renderCommissionBadge(order) {
+    const status = order.commission_status || 'not_earned';
+    const amount = order.commission_amount ? ` · $${esc(Number(order.commission_amount).toFixed(2))}` : '';
+    return `<span class="badge ${badgeClassForCommission(status)}">${esc(commissionStatusLabel(status))}${amount}</span>`;
+  }
+
+  function formatDateTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value || '—';
+    return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+
+  function getOrderById(id) {
+    return allOrders.find((item) => Number(item.id) === Number(id)) || null;
+  }
+
+  async function patchOrder(id, updates, successMessage) {
+    actionBusy = true;
+    openModal(getOrderById(id) || activeOrder);
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=orders', {
+        method: 'PATCH',
+        body: JSON.stringify({ id, updates })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Update failed');
+      const idx = allOrders.findIndex((item) => Number(item.id) === Number(id));
+      if (idx >= 0) allOrders[idx] = data.order;
+      activeOrder = data.order;
+      buildFilters();
+      updateStats();
+      renderTable();
+      openModal(data.order);
+      showToast(successMessage, '#0f766e');
+    } catch (error) {
+      showToast(`❌ ${error.message || 'No se pudo actualizar la orden'}`, '#b91c1c');
+    } finally {
+      actionBusy = false;
+      if (activeOrder) openModal(activeOrder);
+    }
+  }
+
+  function askDate(message, currentValue = '') {
+    const value = window.prompt(message, currentValue || '');
+    if (value === null) return null;
+    const trimmed = value.trim();
+    if (!trimmed) {
+      showToast('⚠️ Debes ingresar una fecha en formato YYYY-MM-DD', '#b45309');
+      return null;
+    }
+    return trimmed;
+  }
+
+  async function scheduleInstallation(id) {
+    const order = getOrderById(id);
+    const date = askDate('Fecha programada de instalación (YYYY-MM-DD)', order?.scheduled_install_date || order?.install_date || '');
+    if (!date) return;
+    await patchOrder(id, {
+      installation_status: 'scheduled',
+      scheduled_install_date: date
+    }, 'Instalación programada');
+  }
+
+  async function markInstalled(id) {
+    const order = getOrderById(id);
+    const date = askDate('Fecha real de instalación (YYYY-MM-DD)', order?.actual_install_date || order?.scheduled_install_date || order?.install_date || '');
+    if (!date) return;
+    await patchOrder(id, {
+      installation_status: 'installed_pending_confirmation',
+      actual_install_date: date,
+      satisfaction_status: 'pending'
+    }, 'Orden marcada como instalada');
+  }
+
+  async function confirmSatisfaction(id) {
+    const order = getOrderById(id);
+    if (!order?.actual_install_date) {
+      showToast('⚠️ Primero registra la fecha real de instalación', '#b45309');
+      return;
+    }
+    const notes = window.prompt('Notas de satisfacción (opcional):', order?.satisfaction_notes || '');
+    if (notes === null) return;
+    const updates = { installation_status: 'confirmed_satisfied', satisfaction_status: 'satisfied' };
+    if (notes.trim()) updates.satisfaction_notes = notes.trim();
+    await patchOrder(id, updates, 'Cliente confirmado y comisión ganada');
+  }
+
+  async function markIncident(id) {
+    const order = getOrderById(id);
+    const notes = window.prompt('Describe la incidencia (requerido):', order?.satisfaction_notes || '');
+    if (notes === null) return;
+    if (!notes.trim()) {
+      showToast('⚠️ Debes describir la incidencia', '#b45309');
+      return;
+    }
+    await patchOrder(id, {
+      installation_status: 'failed_install',
+      satisfaction_status: 'issue',
+      satisfaction_notes: notes.trim()
+    }, 'Orden marcada con incidencia');
+  }
+
+  async function markCommissionPaid(id) {
+    const shouldPay = window.confirm('¿Confirmas que esta comisión fue pagada? Esta acción no se puede revertir.');
+    if (!shouldPay) return;
+    await patchOrder(id, { commission_status: 'paid' }, '💰 Comisión marcada como pagada');
+  }
+
+  async function cancelOrder(id) {
+    const shouldCancel = window.confirm('¿Seguro que quieres cancelar esta orden?');
+    if (!shouldCancel) return;
+    await patchOrder(id, {
+      installation_status: 'cancelled'
+    }, 'Orden cancelada');
   }
 
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });

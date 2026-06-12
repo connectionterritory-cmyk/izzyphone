@@ -51,6 +51,33 @@ type UpdatePayload = {
   updates?: Record<string, unknown>;
 };
 
+type InstallationStatus =
+  | "submitted"
+  | "scheduled"
+  | "installed_pending_confirmation"
+  | "confirmed_satisfied"
+  | "cancelled"
+  | "failed_install";
+
+type SatisfactionStatus = "pending" | "satisfied" | "issue" | "cancelled";
+
+type CommissionStatus = "not_earned" | "earned" | "paid" | "cancelled";
+
+type OrderRow = {
+  id: number;
+  agente: string;
+  install_date: string | null;
+  installation_status: InstallationStatus | null;
+  scheduled_install_date: string | null;
+  actual_install_date: string | null;
+  satisfaction_status: SatisfactionStatus | null;
+  satisfaction_confirmed_at: string | null;
+  commission_status: CommissionStatus | null;
+  commission_earned_at: string | null;
+  commission_amount: number | null;
+  commission_paid_at: string | null;
+};
+
 const DEFAULT_QUOTERS = [
   { code: "PCAI", nombre: "PATRICIA CAICEDO", telefono: "7862913042", active: true },
 ];
@@ -73,6 +100,29 @@ const ALLOWED_UPDATE_FIELDS = [
   "cotizacion_at",
 ] as const;
 
+const ORDER_INSTALLATION_STATUSES = new Set<InstallationStatus>([
+  "submitted",
+  "scheduled",
+  "installed_pending_confirmation",
+  "confirmed_satisfied",
+  "cancelled",
+  "failed_install",
+]);
+
+const ORDER_SATISFACTION_STATUSES = new Set<SatisfactionStatus>([
+  "pending",
+  "satisfied",
+  "issue",
+  "cancelled",
+]);
+
+const ORDER_COMMISSION_STATUSES = new Set<CommissionStatus>([
+  "not_earned",
+  "earned",
+  "paid",
+  "cancelled",
+]);
+
 function cleanString(value: unknown): string {
   return String(value || "").trim();
 }
@@ -81,6 +131,11 @@ function cleanNumber(value: unknown): number | null {
   if (value === null || value === undefined || value === "") return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function cleanDate(value: unknown): string | null {
+  const raw = cleanString(value);
+  return raw || null;
 }
 
 function normalizePin(pin: string): string {
@@ -115,6 +170,141 @@ function sanitizeUpdates(raw: Record<string, unknown>, isAdmin: boolean) {
   }
 
   return updates;
+}
+
+function sanitizeOrderUpdates(raw: Record<string, unknown>, isAdmin: boolean) {
+  const updates: Record<string, string | number | null> = {};
+
+  if ("scheduled_install_date" in raw) {
+    updates.scheduled_install_date = cleanDate(raw.scheduled_install_date);
+    updates.install_date = updates.scheduled_install_date;
+  }
+
+  if ("actual_install_date" in raw) {
+    updates.actual_install_date = cleanDate(raw.actual_install_date);
+  }
+
+  if ("installation_status" in raw) {
+    const value = cleanString(raw.installation_status) as InstallationStatus;
+    if (ORDER_INSTALLATION_STATUSES.has(value)) {
+      updates.installation_status = value;
+    }
+  }
+
+  if ("satisfaction_status" in raw) {
+    const value = cleanString(raw.satisfaction_status) as SatisfactionStatus;
+    if (ORDER_SATISFACTION_STATUSES.has(value)) {
+      updates.satisfaction_status = value;
+    }
+  }
+
+  if (isAdmin && "commission_status" in raw) {
+    const value = cleanString(raw.commission_status) as CommissionStatus;
+    if (ORDER_COMMISSION_STATUSES.has(value)) {
+      updates.commission_status = value;
+    }
+  }
+
+  if (isAdmin && "commission_amount" in raw) {
+    updates.commission_amount = cleanNumber(raw.commission_amount);
+  }
+
+  if ("satisfaction_notes" in raw) {
+    updates.satisfaction_notes = cleanString(raw.satisfaction_notes) || null;
+  }
+
+  return updates;
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function deriveOrderUpdates(
+  existing: OrderRow,
+  incoming: Record<string, string | number | null>,
+  agentName: string,
+): Record<string, string | number | null> {
+  const next: Record<string, string | number | null> = { ...incoming };
+
+  const installationStatus = (next.installation_status ?? existing.installation_status ?? "submitted") as InstallationStatus;
+  const actualInstallDate = cleanDate(next.actual_install_date ?? existing.actual_install_date);
+  const currentCommissionStatus = (next.commission_status ?? existing.commission_status ?? "not_earned") as CommissionStatus;
+
+  if (installationStatus === "scheduled" && !("scheduled_install_date" in next)) {
+    next.scheduled_install_date = existing.scheduled_install_date ?? existing.install_date;
+    next.install_date = next.scheduled_install_date;
+  }
+
+  if (installationStatus === "confirmed_satisfied") {
+    if (!actualInstallDate) {
+      throw new Response(JSON.stringify({ error: "actual_install_date is required before confirming satisfaction" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    next.satisfaction_status = "satisfied";
+    // Record who confirmed and when (only set once, never overwrite)
+    if (!existing.satisfaction_confirmed_at) {
+      next.satisfaction_confirmed_at = nowIso();
+      next.satisfaction_confirmed_by = agentName;
+    }
+  }
+
+  if ((next.satisfaction_status ?? existing.satisfaction_status) === "satisfied" && !actualInstallDate) {
+    throw new Response(JSON.stringify({ error: "actual_install_date is required when satisfaction_status is satisfied" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const resolvedSatisfactionStatus = (next.satisfaction_status ?? existing.satisfaction_status ?? "pending") as SatisfactionStatus;
+
+  if (installationStatus === "cancelled") {
+    next.satisfaction_status = "cancelled";
+    if (currentCommissionStatus !== "paid") {
+      next.commission_status = "cancelled";
+      next.commission_earned_at = null;
+    }
+  } else if (installationStatus === "failed_install") {
+    if (resolvedSatisfactionStatus === "pending") {
+      next.satisfaction_status = "issue";
+    }
+    if (currentCommissionStatus !== "paid") {
+      next.commission_status = "cancelled";
+      next.commission_earned_at = null;
+    }
+  }
+
+  const finalSatisfactionStatus = (next.satisfaction_status ?? existing.satisfaction_status ?? "pending") as SatisfactionStatus;
+
+  if (actualInstallDate && finalSatisfactionStatus === "satisfied") {
+    next.installation_status = "confirmed_satisfied";
+    if (currentCommissionStatus !== "paid") {
+      next.commission_status = "earned";
+      next.commission_earned_at = existing.commission_status === "earned" && existing.commission_earned_at
+        ? existing.commission_earned_at
+        : nowIso();
+    }
+  } else {
+    // FIX: use next.commission_status (which may have been set to "cancelled" by the blocks
+    // above) rather than currentCommissionStatus (the stale value from before those mutations).
+    const latestCommissionStatus = (
+      next.commission_status != null ? next.commission_status as CommissionStatus : currentCommissionStatus
+    );
+    if (latestCommissionStatus !== "paid" && latestCommissionStatus !== "cancelled") {
+      next.commission_status = "not_earned";
+      next.commission_earned_at = null;
+    }
+  }
+
+  // When admin marks commission as paid, stamp who paid and when (only once)
+  if (next.commission_status === "paid" && existing.commission_status !== "paid") {
+    if (!next.commission_paid_at) next.commission_paid_at = nowIso();
+    if (!next.commission_paid_by) next.commission_paid_by = agentName;
+  }
+
+  return next;
 }
 
 function getAppUrl() {
@@ -294,6 +484,48 @@ async function handleOrderList(user: { nombre: string; rol: Role }, supabase: Re
   }
 
   return jsonResponse({ orders: data ?? [] });
+}
+
+async function updateOrderById(
+  id: number,
+  user: { nombre: string; rol: Role },
+  supabase: ReturnType<typeof createAdminClient>,
+  updates: Record<string, string | number | null>,
+) {
+  const { data: existing, error: existingError } = await supabase
+    .from("izzy_orders")
+    .select("id, agente, install_date, installation_status, scheduled_install_date, actual_install_date, satisfaction_status, satisfaction_confirmed_at, commission_status, commission_earned_at, commission_amount, commission_paid_at")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (existingError) {
+    console.error("[izzy-admin-leads] order ownership check failed", existingError);
+    return jsonResponse({ error: "Could not verify order ownership" }, { status: 500 });
+  }
+
+  if (!existing) {
+    return jsonResponse({ error: "Order not found" }, { status: 404 });
+  }
+
+  if (user.rol !== "admin" && existing.agente !== user.nombre) {
+    return jsonResponse({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const derivedUpdates = deriveOrderUpdates(existing as OrderRow, updates, user.nombre);
+
+  const { data, error } = await supabase
+    .from("izzy_orders")
+    .update(derivedUpdates)
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) {
+    console.error("[izzy-admin-leads] update order failed", error);
+    return jsonResponse({ error: "Could not update order" }, { status: 500 });
+  }
+
+  return jsonResponse({ order: data });
 }
 
 async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
@@ -630,19 +862,29 @@ async function handleGet(req: Request) {
 
 async function handleUpdate(req: Request) {
   const user = await requireSession(req);
+  const url = new URL(req.url);
+  const resource = url.searchParams.get("resource") || "leads";
   const body = await req.json() as UpdatePayload;
   const id = Number(body?.id);
 
   if (!Number.isInteger(id) || id <= 0) {
-    return jsonResponse({ error: "Lead id is required" }, { status: 400 });
+    return jsonResponse({ error: `${resource === "orders" ? "Order" : "Lead"} id is required` }, { status: 400 });
+  }
+
+  const supabase = createAdminClient();
+
+  if (resource === "orders") {
+    const updates = sanitizeOrderUpdates(body?.updates || {}, user.rol === "admin");
+    if (Object.keys(updates).length === 0) {
+      return jsonResponse({ error: "No valid order updates provided" }, { status: 400 });
+    }
+    return await updateOrderById(id, user, supabase, updates);
   }
 
   const updates = sanitizeUpdates(body?.updates || {}, user.rol === "admin");
   if (Object.keys(updates).length === 0) {
     return jsonResponse({ error: "No valid updates provided" }, { status: 400 });
   }
-
-  const supabase = createAdminClient();
 
   if (user.rol !== "admin") {
     const { data: existing, error: existingError } = await supabase
