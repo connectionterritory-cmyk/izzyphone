@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial Admin — Izzy Communications</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue:#1a3a6b; --green:#25D366; --green-dark:#0f766e;
+    --bg:#f0f2f5; --surface:#fff; --border:#e2e0dc; --text:#1a1814; --muted:#7a7570;
+    --admin:#7c3aed;
+  }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:80px; }
+  .hero { background:var(--admin); padding:36px 24px 32px; text-align:center; color:#fff; }
+  .hero-emoji { font-size:48px; margin-bottom:12px; }
+  .hero h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
+  .hero p { font-size:14px; color:rgba(255,255,255,.75); max-width:360px; margin:0 auto; }
+  .progress-wrap { max-width:560px; margin:24px auto 0; padding:0 20px; display:flex; align-items:center; }
+  .prog-step {
+    width:28px; height:28px; border-radius:50%;
+    background:rgba(255,255,255,.2); border:2px solid rgba(255,255,255,.3);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; color:rgba(255,255,255,.5);
+    flex-shrink:0; cursor:pointer; transition:all .2s;
+  }
+  .prog-step.done { background:var(--green); border-color:var(--green); color:#fff; }
+  .prog-step.active { background:#fff; border-color:#fff; color:var(--admin); }
+  .prog-line { flex:1; height:2px; background:rgba(255,255,255,.2); }
+  .prog-line.done { background:var(--green); }
+  .steps-wrap { max-width:560px; margin:0 auto; padding:24px 16px 0; }
+  .step-card { display:none; background:var(--surface); border-radius:20px; box-shadow:0 2px 16px rgba(0,0,0,.08); overflow:hidden; animation:slideIn .3s ease; }
+  .step-card.active { display:block; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .step-header { padding:20px 24px 16px; display:flex; align-items:center; gap:14px; border-bottom:1px solid var(--border); }
+  .step-num { width:42px; height:42px; border-radius:12px; background:var(--admin); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0; }
+  .step-header-text h2 { font-size:17px; font-weight:700; color:var(--admin); }
+  .step-header-text p { font-size:12px; color:var(--muted); margin-top:2px; }
+  .step-body { padding:20px 24px; }
+  .step-visual { background:var(--bg); border-radius:12px; padding:16px; margin-bottom:18px; border:1.5px solid var(--border); }
+  .step-visual .vlabel { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--admin); margin-bottom:10px; }
+  .tip-list { display:flex; flex-direction:column; gap:10px; }
+  .tip { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:10px; background:var(--bg); border:1px solid var(--border); }
+  .tip-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+  .tip-text { font-size:14px; line-height:1.55; }
+  .tip-text strong { color:var(--text); font-weight:600; }
+  .alert { border-radius:10px; padding:13px 15px; font-size:13px; line-height:1.55; margin-top:14px; display:flex; gap:10px; align-items:flex-start; }
+  .alert-red { background:#fff5f5; border:1.5px solid #fca5a5; color:#991b1b; }
+  .alert-yellow { background:#fefce8; border:1.5px solid #fde68a; color:#92400e; }
+  .alert-green { background:#f0fdf4; border:1.5px solid #86efac; color:#15803d; }
+  .alert-purple { background:#faf5ff; border:1.5px solid #d8b4fe; color:#6b21a8; }
+  .alert-icon { font-size:18px; flex-shrink:0; }
+  .mock-field { background:#fff; border:1.5px solid var(--border); border-radius:9px; padding:10px 14px; font-size:14px; color:var(--text); margin-bottom:8px; }
+  .mock-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+  .badge-mock { display:inline-block; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700; margin:2px; }
+  .bm-slate { background:#e2e8f0; color:#334155; }
+  .bm-blue { background:#edf1f8; color:#1a3a6b; }
+  .bm-amber { background:#fef3c7; color:#92400e; }
+  .bm-green { background:#ecfdf5; color:#0f766e; }
+  .bm-red { background:#fee2e2; color:#b91c1c; }
+  .bm-purple { background:#faf5ff; color:#6b21a8; }
+  .state-flow { display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin:10px 0; }
+  .state-flow .arrow { color:var(--muted); font-size:16px; }
+  .table-mock { width:100%; border-collapse:collapse; font-size:12px; }
+  .table-mock th { background:#1a3a6b; color:#fff; padding:7px 10px; text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.05em; }
+  .table-mock td { padding:7px 10px; border-bottom:1px solid var(--border); }
+  .table-mock tr:last-child td { border-bottom:none; }
+  .action-btn-mock { display:inline-block; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; margin:3px; }
+  .abm-blue { background:#1a3a6b; color:#fff; }
+  .abm-green { background:#0f766e; color:#fff; }
+  .abm-amber { background:#f59e0b; color:#fff; }
+  .abm-red { background:#b91c1c; color:#fff; }
+  .abm-purple { background:#7c3aed; color:#fff; }
+  .commission-flow { display:flex; flex-direction:column; gap:8px; }
+  .comm-row { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; border:1.5px solid var(--border); background:#fff; }
+  .comm-icon { font-size:22px; flex-shrink:0; }
+  .comm-text { font-size:13px; line-height:1.5; }
+  .comm-text strong { display:block; font-size:14px; margin-bottom:2px; }
+  .step-nav { padding:16px 24px 20px; display:flex; gap:10px; border-top:1px solid var(--border); }
+  .btn-prev, .btn-next { flex:1; padding:13px; border-radius:12px; border:none; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; }
+  .btn-prev { background:var(--bg); color:var(--muted); border:1.5px solid var(--border); }
+  .btn-prev:hover { background:var(--border); }
+  .btn-next { background:var(--admin); color:#fff; }
+  .btn-next:hover { background:#6d28d9; }
+  .btn-next.final { background:var(--green-dark); }
+  .done-screen { display:none; text-align:center; padding:40px 24px; }
+  .done-screen.active { display:block; }
+  .done-emoji { font-size:64px; margin-bottom:16px; }
+  .done-screen h2 { font-size:22px; font-weight:700; color:var(--admin); margin-bottom:8px; }
+  .done-screen p { font-size:14px; color:var(--muted); max-width:320px; margin:0 auto 24px; line-height:1.6; }
+  .done-links { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .btn-go { display:inline-block; padding:13px 24px; background:var(--admin); color:#fff; border-radius:12px; font-size:15px; font-weight:700; text-decoration:none; }
+  .btn-go-secondary { display:inline-block; padding:13px 24px; background:var(--green-dark); color:#fff; border-radius:12px; font-size:15px; font-weight:700; text-decoration:none; }
+  .step-counter { text-align:center; font-size:12px; color:var(--muted); margin-top:14px; font-weight:500; }
+  .audit-block { background:#f9fafb; border:1.5px solid #e2e8f0; border-radius:10px; padding:12px 14px; font-size:12px; color:var(--muted); line-height:1.7; }
+  .audit-block strong { color:var(--text); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-emoji">🛡️</div>
+  <h1>Tutorial de Administrador</h1>
+  <p>Guía completa para gestionar el equipo, las órdenes y las comisiones en Izzy Communications.</p>
+  <div class="progress-wrap" id="progressWrap"></div>
+</div>
+
+<div class="steps-wrap">
+
+  <!-- STEP 1: Acceso Admin -->
+  <div class="step-card active" id="step-1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-header-text">
+        <h2>Acceso como Administrador</h2>
+        <p>Diferencias entre admin y agente</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">Lo que solo ve el admin</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <span style="background:#7c3aed;color:#fff;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;">👥 Usuarios</span>
+          <span style="font-size:12px;color:var(--muted);">← aparece en el menú solo para admin</span>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--muted);">Agentes <strong>no</strong> ven este enlace ni pueden acceder a <code>users.html</code>.</div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">🔑</div>
+          <div class="tip-text"><strong>Mismo login que los agentes:</strong> PIN en mayúsculas + password. El sistema detecta el rol automáticamente al iniciar sesión.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">👁️</div>
+          <div class="tip-text"><strong>Admin ve todo:</strong> leads de todos los agentes, órdenes de todo el equipo y el panel de comisiones.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">✏️</div>
+          <div class="tip-text"><strong>Admin puede editar el campo "Agente"</strong> en leads y órdenes — los agentes solo ven y editan sus propios registros.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🗑️</div>
+          <div class="tip-text"><strong>Eliminar leads:</strong> el botón "Eliminar lead" en el modal solo aparece para administradores.</div>
+        </div>
+      </div>
+      <div class="alert alert-purple" style="margin-top:14px;">
+        <div class="alert-icon">🛡️</div>
+        <div>Si un agente intenta acceder a <strong>users.html</strong> directamente, el sistema lo redirige a <strong>leads.html</strong> automáticamente.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" disabled onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Leads admin -->
+  <div class="step-card" id="step-2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-header-text">
+        <h2>Panel de Leads — Vista Admin</h2>
+        <p>Supervisión completa del equipo</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">Filtros exclusivos de admin</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+          <span style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;">🔍 Buscar cliente / teléfono...</span>
+          <span style="background:#1a3a6b;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;">Filtrar por agente ▼</span>
+          <span style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;">Estado ▼</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);">El filtro de agente solo aparece en la sesión admin.</div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">🔍</div>
+          <div class="tip-text"><strong>Ver leads de un agente específico:</strong> usa el filtro "Filtrar por agente" para ver solo los leads de ese agente.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">✏️</div>
+          <div class="tip-text"><strong>Reasignar un lead:</strong> abre el lead → edita el campo "Agente" → Guardar. Solo admin puede cambiar ese campo.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📋</div>
+          <div class="tip-text"><strong>Cotización guardada:</strong> si el agente envió cotización al cliente, aparece en verde dentro del modal del lead.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🗑️</div>
+          <div class="tip-text"><strong>Eliminar un lead:</strong> abre el modal → botón "Eliminar lead" al fondo (visible solo para admin). La acción pide confirmación.</div>
+        </div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:14px;">
+        <div class="alert-icon">⚠️</div>
+        <div>Eliminar un lead es <strong>permanente</strong>. Si hay una orden asociada a ese cliente, la orden no se borra — están en tablas separadas.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Broadcast -->
+  <div class="step-card" id="step-3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-header-text">
+        <h2>Broadcast / Propaganda</h2>
+        <p>Mensajes masivos por WhatsApp desde Leads</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">Modal de Broadcast</div>
+        <div style="background:#1a3a6b;border-radius:10px;padding:14px 16px;color:#fff;font-size:13px;">
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px;">📢 Mensaje de Propaganda</div>
+          <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px;font-size:12px;margin-bottom:8px;">
+            <div style="opacity:.6;font-size:10px;margin-bottom:4px;">AGENTE (solo admin)</div>
+            <div>TODOS LOS AGENTES ▼</div>
+          </div>
+          <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px;font-size:12px;height:64px;">Hola {nombre}, tenemos una oferta especial esta semana...</div>
+          <div style="margin-top:8px;opacity:.7;font-size:11px;">📤 Enviar a 18 leads filtrados → abre WhatsApp por cada uno</div>
+        </div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">📢</div>
+          <div class="tip-text"><strong>Cómo abrir el broadcast:</strong> en <strong>leads.html</strong>, botón "📢 Propaganda" en la barra superior derecha.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🎯</div>
+          <div class="tip-text"><strong>Leads que reciben el mensaje:</strong> solo los que están visibles con los filtros activos en ese momento. Filtra por estado o agente antes de abrir el modal para segmentar.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">👤</div>
+          <div class="tip-text"><strong>Admin puede elegir el agente:</strong> el campo "Agente" aparece en el modal solo para admin, para enviar como cualquier agente del equipo.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📱</div>
+          <div class="tip-text"><strong>Cómo funciona:</strong> el sistema abre una pestaña de WhatsApp por cada lead con el número y el mensaje pre-escrito. Tú confirmas el envío desde WhatsApp.</div>
+        </div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:14px;">
+        <div class="alert-icon">⚠️</div>
+        <div>Los navegadores pueden bloquear la apertura de múltiples pestañas a la vez. <strong>Permite los pop-ups</strong> del sitio en la configuración del navegador para que funcione correctamente.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Órdenes - Vista general -->
+  <div class="step-card" id="step-4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-header-text">
+        <h2>Panel de Órdenes</h2>
+        <p>Seguimiento de servicios instalados</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">Estados de instalación</div>
+        <div class="state-flow">
+          <span class="badge-mock bm-slate">Submitted</span>
+          <span class="arrow">→</span>
+          <span class="badge-mock bm-blue">Scheduled</span>
+          <span class="arrow">→</span>
+          <span class="badge-mock bm-amber">Installed / Pending</span>
+          <span class="arrow">→</span>
+          <span class="badge-mock bm-green">Confirmed Satisfied</span>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="badge-mock bm-red">Cancelled</span>
+          <span class="badge-mock bm-red">Failed Install</span>
+        </div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">🔍</div>
+          <div class="tip-text"><strong>4 filtros disponibles:</strong> agente, proveedor, estado de instalación y estado de comisión. Úsalos combinados para encontrar rápido.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">👆</div>
+          <div class="tip-text"><strong>Click en cualquier fila</strong> abre el modal de detalle con toda la información de la orden y los botones de acción.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💰</div>
+          <div class="tip-text"><strong>Columna Comisión:</strong> muestra el estado actual — Not Earned, Earned (con monto si aplica), Paid o Cancelled.</div>
+        </div>
+      </div>
+      <div class="alert alert-purple" style="margin-top:14px;">
+        <div class="alert-icon">🛡️</div>
+        <div>Agentes ven solo sus propias órdenes. Admin ve todas. El botón <strong>"💰 Marcar comisión pagada"</strong> es exclusivo de administradores.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Flujo de instalación -->
+  <div class="step-card" id="step-5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div class="step-header-text">
+        <h2>Flujo de Instalación</h2>
+        <p>Del pedido a la confirmación de satisfacción</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">📅</div>
+          <div class="tip-text">
+            <strong>1. Programar instalación</strong><br>
+            Botón "Programar instalación" → ingresa la fecha programada (YYYY-MM-DD) → estado cambia a <span class="badge-mock bm-blue" style="font-size:11px;">Scheduled</span>
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🔧</div>
+          <div class="tip-text">
+            <strong>2. Marcar como instalada</strong><br>
+            Botón "Marcar como instalada" → ingresa la <em>fecha real</em> de instalación → estado cambia a <span class="badge-mock bm-amber" style="font-size:11px;">Installed / Pending</span>
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">✅</div>
+          <div class="tip-text">
+            <strong>3. Confirmar satisfacción</strong><br>
+            Botón "Confirmar satisfacción" → nota opcional (ej: "cliente feliz, autopay activo") → estado <span class="badge-mock bm-green" style="font-size:11px;">Confirmed Satisfied</span> + comisión ganada automáticamente.
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">⚠️</div>
+          <div class="tip-text">
+            <strong>Si hay problema:</strong> "Marcar incidencia" → <em>nota requerida</em> explicando qué pasó → estado <span class="badge-mock bm-red" style="font-size:11px;">Failed Install</span> + comisión cancelada.
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🚫</div>
+          <div class="tip-text">
+            <strong>Cancelar orden:</strong> botón "Cancelar orden" → confirmar → estado <span class="badge-mock bm-red" style="font-size:11px;">Cancelled</span> + comisión cancelada (si no había sido pagada ya).
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:14px;">
+        <div class="alert-icon">📌</div>
+        <div><strong>La fecha real de instalación es obligatoria</strong> para confirmar satisfacción. Si no se ingresó en el paso 2, el sistema bloquea la confirmación.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: Comisiones -->
+  <div class="step-card" id="step-6">
+    <div class="step-header">
+      <div class="step-num">6</div>
+      <div class="step-header-text">
+        <h2>Gestión de Comisiones</h2>
+        <p>Reglas, auditoría y pago</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">Ciclo de vida de una comisión</div>
+        <div class="commission-flow">
+          <div class="comm-row">
+            <div class="comm-icon">⬜</div>
+            <div class="comm-text"><strong>Not Earned</strong>Orden recién creada o sin instalación confirmada.</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-icon">✅</div>
+            <div class="comm-text"><strong>Earned</strong>Fecha real de instalación registrada + satisfacción confirmada. El sistema la gana automáticamente.</div>
+          </div>
+          <div class="comm-row" style="border-color:#86efac;">
+            <div class="comm-icon">💰</div>
+            <div class="comm-text"><strong>Paid</strong>Admin presiona "Marcar comisión pagada". <em>Nunca se revierte.</em></div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-icon">🚫</div>
+            <div class="comm-text"><strong>Cancelled</strong>Orden cancelada o con incidencia (excepto si ya estaba Paid).</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">💰</div>
+          <div class="tip-text"><strong>"Marcar comisión pagada"</strong> aparece en el modal de la orden <em>solo cuando</em> el estado es <span class="badge-mock bm-green" style="font-size:11px;">Earned</span> y solo para el admin.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📋</div>
+          <div class="tip-text"><strong>Auditoría automática:</strong> el sistema registra quién confirmó la satisfacción, cuándo, y quién marcó la comisión como pagada.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">💵</div>
+          <div class="tip-text"><strong>Monto de comisión:</strong> se puede ingresar manualmente en el modal de la orden (campo "Commission Amount") — solo admin puede editarlo.</div>
+        </div>
+      </div>
+      <div class="audit-block" style="margin-top:14px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin);margin-bottom:6px;">Ejemplo de auditoría en el modal</div>
+        Comisión: <strong>Earned</strong><br>
+        Ganada: <strong>Jun 12, 2026, 3:45 PM</strong><br>
+        Satisfacción confirmada: <strong>Jun 12 por MOISES CAICEDO</strong><br>
+        Pagada: <strong>Jun 14, 2026, 10:02 AM por PATRICIA CAICEDO</strong>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7: Gestión de usuarios -->
+  <div class="step-card" id="step-7">
+    <div class="step-header">
+      <div class="step-num">7</div>
+      <div class="step-header-text">
+        <h2>Gestión de Usuarios</h2>
+        <p>Crear agentes, passwords y accesos</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">Campos para crear un agente</div>
+        <div>
+          <div class="mock-label">PIN (ej. MCAI, JPAT...)</div>
+          <div class="mock-field">MCAI</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <div class="mock-label">Nombre</div>
+              <div class="mock-field">MOISES CAICEDO</div>
+            </div>
+            <div>
+              <div class="mock-label">Rol</div>
+              <div class="mock-field">Agente ▼</div>
+            </div>
+          </div>
+          <div class="mock-label">Email</div>
+          <div class="mock-field">moises@ejemplo.com</div>
+          <div class="mock-label">Password</div>
+          <div class="mock-field">••••••••</div>
+        </div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">🆕</div>
+          <div class="tip-text"><strong>Nuevo agente:</strong> rellena todos los campos en la sección "Agentes" y presiona "Guardar agente". El PIN debe ser único y en mayúsculas.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🔒</div>
+          <div class="tip-text"><strong>Resetear password:</strong> sección inferior "Usuario existente" → elige el agente → escribe el nuevo password → "Actualizar password".</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📧</div>
+          <div class="tip-text"><strong>Actualizar email:</strong> sección "Usuario para email" → elige el agente → ingresa el email → "Guardar email". El email es necesario para la recuperación de cuenta.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🆘</div>
+          <div class="tip-text"><strong>Solicitudes de recuperación:</strong> cuando un agente usa "Olvidé mi password", aparece una solicitud aquí. Puedes resetear su password y luego "Marcar resuelta".</div>
+        </div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:14px;">
+        <div class="alert-icon">⚠️</div>
+        <div>Si el agente no tiene email registrado, <strong>no puede recibir el enlace de recuperación</strong> automático. Asegúrate de agregar el email antes de que lo necesiten.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: Cotizadores -->
+  <div class="step-card" id="step-8">
+    <div class="step-header">
+      <div class="step-num">8</div>
+      <div class="step-header-text">
+        <h2>Gestión de Cotizadores</h2>
+        <p>Personas que aparecen como opción en el cotizador</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="step-visual">
+        <div class="vlabel">¿Qué es un cotizador?</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text);">
+          Un cotizador es una persona (p.ej. Patricia Caicedo) que aparece en la lista de opciones del cotizador <strong>index.html</strong>. Cuando el agente selecciona un cotizador, el mensaje de WhatsApp se dirige al teléfono de esa persona.
+        </div>
+        <div style="margin-top:10px;background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;">
+          <span style="background:#edf1f8;color:#1a3a6b;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;margin-right:6px;">PCAI</span>
+          PATRICIA CAICEDO · 786-291-3042
+        </div>
+      </div>
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">➕</div>
+          <div class="tip-text"><strong>Agregar cotizador:</strong> en <strong>users.html</strong>, sección "Cotizadores" → código único (4 letras) + nombre + teléfono → "Guardar cotizador". Aparece en el cotizador de todos los agentes inmediatamente.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📞</div>
+          <div class="tip-text"><strong>Teléfono:</strong> ingresa solo dígitos sin guiones ni espacios (ej: <code>7862913042</code>). Este número es al que se envía el WhatsApp de la cotización.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🔤</div>
+          <div class="tip-text"><strong>Código:</strong> sigla única del cotizador en mayúsculas (ej: PCAI = Patricia Caicedo). Se usa internamente para identificar las cotizaciones.</div>
+        </div>
+      </div>
+      <div class="alert alert-green" style="margin-top:14px;">
+        <div class="alert-icon">✅</div>
+        <div>Si no hay cotizadores en la base de datos, el sistema usa <strong>PATRICIA CAICEDO</strong> como cotizador por defecto automáticamente.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next final" onclick="finishTutorial()">Completar ✓</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div class="done-screen" id="doneScreen">
+    <div class="done-emoji">🏆</div>
+    <h2>¡Tutorial Admin completado!</h2>
+    <p>Ya tienes el control total del equipo, las órdenes y las comisiones de Izzy Communications.</p>
+    <div class="done-links">
+      <a href="leads.html" class="btn-go">📊 Ir a Leads</a>
+      <a href="orders.html" class="btn-go-secondary">🧾 Ir a Orders</a>
+      <a href="users.html" class="btn-go" style="background:#7c3aed;">👥 Usuarios</a>
+    </div>
+    <div style="margin-top:20px;">
+      <a href="tutorial.html" style="font-size:13px;color:var(--muted);text-decoration:underline;">Ver tutorial del agente →</a>
+    </div>
+  </div>
+
+  <div class="step-counter" id="stepCounter">Paso 1 de 8</div>
+</div>
+
+<script>
+  const TOTAL = 8;
+  let current = 1;
+  const done = new Set();
+
+  function buildProgress() {
+    const wrap = document.getElementById('progressWrap');
+    wrap.innerHTML = '';
+    for (let i = 1; i <= TOTAL; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'prog-step' + (done.has(i) ? ' done' : (i === current ? ' active' : ''));
+      dot.textContent = done.has(i) ? '✓' : i;
+      dot.onclick = () => goTo(i);
+      wrap.appendChild(dot);
+      if (i < TOTAL) {
+        const line = document.createElement('div');
+        line.className = 'prog-line' + (done.has(i) ? ' done' : '');
+        wrap.appendChild(line);
+      }
+    }
+  }
+
+  function goTo(n) {
+    document.getElementById('step-' + current)?.classList.remove('active');
+    document.getElementById('doneScreen')?.classList.remove('active');
+    current = n;
+    const card = document.getElementById('step-' + current);
+    if (card) {
+      card.classList.add('active');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    const counter = document.getElementById('stepCounter');
+    counter.style.display = 'block';
+    counter.textContent = `Paso ${current} de ${TOTAL}`;
+    buildProgress();
+    const prevBtn = card?.querySelector('.btn-prev');
+    if (prevBtn) prevBtn.disabled = current === 1;
+  }
+
+  function nextStep() {
+    done.add(current);
+    if (current < TOTAL) {
+      goTo(current + 1);
+    }
+  }
+
+  function prevStep() {
+    if (current > 1) goTo(current - 1);
+  }
+
+  function finishTutorial() {
+    done.add(current);
+    document.getElementById('step-' + current).classList.remove('active');
+    document.getElementById('doneScreen').classList.add('active');
+    document.getElementById('stepCounter').style.display = 'none';
+    buildProgress();
+    document.getElementById('doneScreen').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  buildProgress();
+  document.getElementById('stepCounter').textContent = `Paso 1 de ${TOTAL}`;
+</script>
+</body>
+</html>
