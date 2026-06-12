@@ -124,6 +124,7 @@
   </div>
   <div class="header-right">
     <span class="header-tag" id="agentTag"></span>
+    <a href="tutorial-admin.html" class="btn-back" id="adminTutorialLink" style="display:none;">📖 Tutorial Admin</a>
     <a href="users.html" class="btn-back">👥 Usuarios</a>
     <a href="leads.html" class="btn-back">📊 Leads</a>
     <a href="index.html" class="btn-back">← Cotizador</a>
@@ -220,6 +221,7 @@
   if (!currentUser) window.location.href = 'index.html';
   const isAdmin = currentUser.rol === 'admin';
   document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
+  if (isAdmin) document.getElementById('adminTutorialLink').style.display = 'inline-block';
 
   function getSession() {
     try {

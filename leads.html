@@ -482,6 +482,7 @@
   <div class="header-right">
     <span class="header-tag" id="agentTag"></span>
     <button onclick="openBroadcast()" class="btn-back" style="background:rgba(37,211,102,.25);border-color:rgba(37,211,102,.5);">📣 Propaganda</button>
+    <a href="tutorial-admin.html" class="btn-back" id="adminTutorialLink" style="display:none;">📖 Tutorial Admin</a>
     <a href="users.html" class="btn-back">👥 Usuarios</a>
     <a href="orders.html" class="btn-back">🧾 Orders</a>
     <a href="index.html" class="btn-back">← Cotizador</a>
@@ -590,6 +591,7 @@
   if (!currentUser) { window.location.href = 'index.html'; }
   const isAdmin = currentUser.rol === 'admin';
   document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
+  if (isAdmin) document.getElementById('adminTutorialLink').style.display = 'inline-block';
 
   function getSession() {
     try {
