@@ -10,10 +10,23 @@
       ]
     },
     {
+      section: 'compensation',
+      label: 'Plan de Compensacion',
+      items: [
+        { key: 'comp-level', href: 'compensation.html?tab=level', icon: '🏅', text: 'Mi Nivel' },
+        { key: 'comp-table', href: 'compensation.html?tab=table', icon: '💵', text: 'Tabla de Comisiones' },
+        { key: 'comp-elite', href: 'compensation.html?tab=elite', icon: '⭐', text: 'Productor Elite' },
+        { key: 'comp-progress', href: 'compensation.html?tab=progress', icon: '📈', text: 'Progreso de Carrera' },
+        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: '🎯', text: 'Bonos' },
+        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: '🤝', text: 'Programa Embajador' }
+      ]
+    },
+    {
       section: 'admin',
       label: 'Admin',
       items: [
         { key: 'users', href: 'users.html', icon: '👥', text: 'Usuarios', adminOnly: true },
+        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: '⚙️', text: 'Compensacion', adminOnly: true },
         { key: 'tutorial', href: 'tutorial.html', icon: '📖', text: 'Tutorial' }
       ]
     }
@@ -23,6 +36,7 @@
     { key: 'cotizador', href: 'index.html', icon: '📋', text: 'Cotizador' },
     { key: 'leads', href: 'leads.html', icon: '📊', text: 'Leads' },
     { key: 'orders', href: 'orders.html', icon: '🧾', text: 'Orders' },
+    { key: 'compensation', href: 'compensation.html', icon: '🏅', text: 'Compensacion' },
     { key: 'admin', href: 'users.html', icon: '👥', text: 'Admin' }
   ];
 

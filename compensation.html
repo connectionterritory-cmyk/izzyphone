@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Communications — Plan de Compensación</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f0f2f5; --surface: #fff; --border: #e2e0dc;
+    --text: #1a1814; --muted: #7a7570;
+    --blue: #1a3a6b; --blue-light: #edf1f8;
+    --green: #0f766e; --amber: #b45309; --red: #b91c1c;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  .page-shell { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  .hero {
+    background: linear-gradient(135deg, #10284d 0%, #1a3a6b 65%, #24548b 100%);
+    border-radius: 24px; color: #fff; padding: 22px 24px;
+    display: grid; grid-template-columns: 1.3fr .7fr; gap: 16px;
+  }
+  .hero h1 { font-size: 28px; line-height: 1.1; margin-bottom: 8px; }
+  .hero p { color: rgba(255,255,255,.78); font-size: 14px; max-width: 640px; }
+  .hero-meta { display: grid; gap: 12px; }
+  .hero-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 12px; font-weight: 700; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .stat-card, .panel, .editor-card { background: var(--surface); border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .stat-card { padding: 16px 18px; }
+  .stat-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--blue); }
+  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tab-btn {
+    border: 1px solid var(--border); background: #fff; color: var(--muted); border-radius: 999px;
+    padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .tab-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .panel { padding: 18px; display: none; }
+  .panel.active { display: block; }
+  .panel h2 { font-size: 18px; margin-bottom: 12px; }
+  .panel p.lead { color: var(--muted); margin-bottom: 16px; }
+  .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .mini-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+  .mini-card h3 { font-size: 14px; margin-bottom: 8px; }
+  .mini-card .value { font-size: 24px; font-weight: 700; color: var(--blue); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 700; }
+  .badge.green { background: #ecfdf5; color: var(--green); }
+  .badge.amber { background: #fff7ed; color: var(--amber); }
+  .badge.blue { background: var(--blue-light); color: var(--blue); }
+  .badge.red { background: #fee2e2; color: var(--red); }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; }
+  table { width: 100%; border-collapse: collapse; min-width: 620px; }
+  th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+  th { background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  tr:last-child td { border-bottom: none; }
+  .mono { font-family: 'DM Mono', monospace; }
+  .editor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .editor-card { padding: 16px; }
+  .editor-card h3 { font-size: 14px; margin-bottom: 10px; }
+  .admin-toolbar {
+    display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; margin-bottom: 14px;
+  }
+  .admin-toolbar textarea, .admin-toolbar input {
+    width: 100%; border-radius: 12px; border: 1px solid var(--border); padding: 12px; font: inherit; background: #fbfbfd;
+  }
+  .admin-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .admin-summary .mini-card { background: #fff; }
+  .editor-card textarea {
+    width: 100%; min-height: 180px; resize: vertical; border-radius: 12px; border: 1px solid var(--border);
+    padding: 12px; font: 12px/1.5 'DM Mono', monospace; background: #fbfbfd; color: var(--text);
+  }
+  .actions { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .btn {
+    border: none; border-radius: 12px; padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    background: var(--blue); color: #fff;
+  }
+  .btn.secondary { background: #0f766e; }
+  .muted { color: var(--muted); font-size: 12px; }
+  .list { display: grid; gap: 10px; }
+  .list-item { border: 1px solid var(--border); background: #fafafa; border-radius: 14px; padding: 12px; }
+  .toast { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#111; color:#fff; padding:10px 20px; border-radius:999px; z-index:999; }
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .admin-toolbar { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="appNav"></div>
+<div class="app-main">
+  <div class="page-shell">
+    <section class="hero">
+      <div>
+        <div class="hero-chip" id="heroLevel">Plan de Compensación</div>
+        <h1>Plan de Compensación IZZY</h1>
+        <p>Tu vista muestra cuánto ganas, qué necesitas para subir y qué necesitas para mantenerte activo. No expone pagos de carriers ni márgenes internos.</p>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-chip" id="heroActive">Estado: —</div>
+        <div class="hero-chip" id="heroElite">Productor Elite: —</div>
+        <div class="hero-chip" id="heroUser">Usuario: —</div>
+      </div>
+    </section>
+
+    <section class="stat-grid" id="topStats"></section>
+
+    <section class="tabs" id="tabs"></section>
+
+    <section class="panel" data-tab="level">
+      <h2>Mi Nivel</h2>
+      <p class="lead">Resumen de nivel, actividad, instalaciones del mes y comisiones visibles para ti.</p>
+      <div class="two-col" id="levelCards"></div>
+    </section>
+
+    <section class="panel" data-tab="table">
+      <h2>Tabla de Comisiones</h2>
+      <p class="lead">Tarifas actuales por categoría y tipo de venta según tu nivel vigente.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Ejemplos</th>
+              <th>Residencial</th>
+              <th>Comercial</th>
+            </tr>
+          </thead>
+          <tbody id="commissionTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" data-tab="elite">
+      <h2>Productor Elite</h2>
+      <p class="lead">Reconocimiento mensual para quienes instalan 10 o más servicios personales en el mes.</p>
+      <div class="two-col" id="eliteCards"></div>
+    </section>
+
+    <section class="panel" data-tab="progress">
+      <h2>Progreso de Carrera</h2>
+      <p class="lead">Ruta de ascenso, estado actual y lo que te falta para el siguiente rango.</p>
+      <div class="two-col" id="progressCards"></div>
+    </section>
+
+    <section class="panel" data-tab="bonuses">
+      <h2>Bonos</h2>
+      <p class="lead">Bonos visibles y métricas de liderazgo por rol.</p>
+      <div class="two-col" id="bonusCards"></div>
+    </section>
+
+    <section class="panel" data-tab="ambassadors">
+      <h2>Programa de Embajadores IZZY</h2>
+      <p class="lead">Módulo independiente para clientes, amigos o familiares que refieren instalaciones.</p>
+      <div class="two-col" id="ambassadorCards"></div>
+    </section>
+
+    <section class="panel" data-tab="admin" id="adminPanel">
+      <h2>Administración</h2>
+      <p class="lead">Configuración viva del plan. Solo admin puede editar comisiones, carriers, planes, promociones y reglas visibles del sistema.</p>
+      <div class="admin-toolbar">
+        <div class="editor-card">
+          <h3>Razón del Cambio</h3>
+          <textarea id="changeReason" style="min-height:120px;font:14px/1.5 'DM Sans',sans-serif;" placeholder="Ejemplo: Ajuste de comisiones de Spectrum para campaña de julio."></textarea>
+        </div>
+        <div class="admin-summary" id="adminSummary"></div>
+      </div>
+      <div class="editor-grid" id="editorGrid"></div>
+      <div class="panel" style="display:block;padding:0;margin-top:14px;">
+        <h2 style="margin-bottom:8px;">Historial de Cambios</h2>
+        <div class="list" id="auditList"></div>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="nav.js"></script>
+<script>
+  const PROJECT_REF = 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const SESSION_KEY = 'izzy_session';
+  const FUNCTION_NAME = 'izzy-compensation';
+  const TAB_LABELS = {
+    level: 'Mi Nivel',
+    table: 'Tabla de Comisiones',
+    elite: 'Productor Elite',
+    progress: 'Progreso de Carrera',
+    bonuses: 'Bonos',
+    ambassadors: 'Programa Embajador',
+    admin: 'Administración'
+  };
+  let currentUser = null;
+  let dashboardData = null;
+  let adminData = null;
+
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+  } catch {
+    currentUser = null;
+  }
+  if (!currentUser) window.location.href = 'index.html';
+
+  const isAdmin = currentUser.rol === 'admin';
+  const activeTab = (() => {
+    const raw = new URLSearchParams(window.location.search).get('tab') || 'level';
+    if (raw === 'admin' && !isAdmin) return 'level';
+    return TAB_LABELS[raw] ? raw : 'level';
+  })();
+
+  renderIzzyNavigation({
+    mountId: 'appNav',
+    user: currentUser,
+    isAdmin,
+    activeSidebar: ({
+      level: 'comp-level',
+      table: 'comp-table',
+      elite: 'comp-elite',
+      progress: 'comp-progress',
+      bonuses: 'comp-bonuses',
+      ambassadors: 'comp-ambassadors',
+      admin: 'comp-admin'
+    })[activeTab],
+    activeMobile: 'compensation',
+    pageTitle: 'Plan de Compensación',
+    mobileTitle: 'Compensación',
+    tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
+    mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html'
+  });
+
+  function showToast(msg, color = '#111') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2600);
+  }
+
+  function getSession() {
+    try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; }
+  }
+
+  async function apiFetch(resource = 'dashboard', options = {}) {
+    const session = getSession();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+    const join = resource ? `?resource=${encodeURIComponent(resource)}` : '';
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${FUNCTION_NAME}${join}`, { ...options, headers });
+    if (res.status === 401) {
+      localStorage.removeItem(SESSION_KEY);
+      window.location.href = 'index.html';
+    }
+    return res;
+  }
+
+  function money(value) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value || 0));
+  }
+
+  function esc(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderTabs() {
+    const tabs = Object.entries(TAB_LABELS).filter(([key]) => key !== 'admin' || isAdmin);
+    document.getElementById('tabs').innerHTML = tabs.map(([key, label]) => `
+      <button class="tab-btn${key === activeTab ? ' active' : ''}" onclick="switchTab('${key}')">${label}</button>
+    `).join('');
+    document.querySelectorAll('.panel[data-tab]').forEach((panel) => {
+      panel.classList.toggle('active', panel.dataset.tab === activeTab);
+    });
+  }
+
+  function switchTab(tab) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.location.href = url.toString();
+  }
+  window.switchTab = switchTab;
+
+  function renderTopStats(data) {
+    document.getElementById('heroLevel').textContent = `Nivel actual: ${data.current_level.name}`;
+    document.getElementById('heroActive').textContent = `Estado: ${data.active_status === 'active' ? 'Activo' : 'Inactivo'}`;
+    document.getElementById('heroElite').textContent = `Productor Elite: ${data.producer_elite.achieved ? 'Sí' : 'Aún no'}`;
+    document.getElementById('heroUser').textContent = `Usuario: ${data.user.nombre}`;
+    document.getElementById('topStats').innerHTML = `
+      <article class="stat-card">
+        <div class="stat-label">Instalaciones del Mes</div>
+        <div class="stat-value">${data.installs_month}</div>
+        <div class="stat-sub">producción personal confirmada</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">Estimado</div>
+        <div class="stat-value mono">${money(data.commissions.estimated)}</div>
+        <div class="stat-sub">incluye reservas y liberadas</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">Aprobado</div>
+        <div class="stat-value mono">${money(data.commissions.approved)}</div>
+        <div class="stat-sub">listo para corte mensual</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">Pagado</div>
+        <div class="stat-value mono">${money(data.commissions.paid)}</div>
+        <div class="stat-sub">histórico visible del agente</div>
+      </article>
+    `;
+  }
+
+  function renderLevel(data) {
+    document.getElementById('levelCards').innerHTML = `
+      <div class="mini-card">
+        <h3>Estado Operativo</h3>
+        <div class="badge ${data.active_status === 'active' ? 'green' : 'amber'}">${data.active_status === 'active' ? 'Activo' : 'Inactivo'}</div>
+        <p class="muted" style="margin-top:10px;">Debes cumplir tus reglas mensuales para mantenerte activo.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Tu Nivel</h3>
+        <div class="value">${esc(data.current_level.name)}</div>
+        <p class="muted" style="margin-top:8px;">Instalaciones del mes: ${data.installs_month}</p>
+      </div>
+      <div class="mini-card">
+        <h3>Pipeline de Comisión</h3>
+        <p class="muted">Reserva: ${money(data.commissions.reserve)}</p>
+        <p class="muted">Liberada: ${money(data.commissions.released)}</p>
+        <p class="muted">Chargeback: ${money(data.commissions.chargeback)}</p>
+      </div>
+      <div class="mini-card">
+        <h3>Órdenes Recientes</h3>
+        <div class="list">
+          ${data.recent_orders.length ? data.recent_orders.slice(0, 4).map((order) => `
+            <div class="list-item">
+              <strong>${esc(order.carrier_name || 'Carrier')}</strong>
+              <div class="muted">${esc(order.service_category_code || 'standard')} · ${esc(order.compensation_status || 'estimated')} · ${money(order.compensation_estimated_amount || 0)}</div>
+            </div>
+          `).join('') : '<div class="muted">Sin órdenes recientes.</div>'}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCommissionTable(data) {
+    document.getElementById('commissionTableBody').innerHTML = data.commission_table.map((row) => `
+      <tr>
+        <td><strong>${esc(row.category_name)}</strong></td>
+        <td>${esc((row.examples || []).join(', '))}</td>
+        <td class="mono">${money(row.residential_amount)}</td>
+        <td class="mono">${money(row.commercial_amount)}</td>
+      </tr>
+    `).join('');
+  }
+
+  function renderElite(data) {
+    document.getElementById('eliteCards').innerHTML = `
+      <div class="mini-card">
+        <h3>Badge</h3>
+        <div class="badge ${data.producer_elite.achieved ? 'green' : 'blue'}">${data.producer_elite.achieved ? 'Productor Elite Activo' : 'Sigue empujando'}</div>
+      </div>
+      <div class="mini-card">
+        <h3>Meta del Mes</h3>
+        <div class="value">${data.producer_elite.installs_month}/${data.producer_elite.threshold}</div>
+        <p class="muted" style="margin-top:8px;">Necesitas 10 o más instalaciones mensuales para el reconocimiento.</p>
+      </div>
+    `;
+  }
+
+  function renderProgress(data) {
+    const req = data.progress.requirements;
+    document.getElementById('progressCards').innerHTML = `
+      <div class="mini-card">
+        <h3>Siguiente Nivel</h3>
+        <div class="value">${esc(data.progress.next_rank || 'Nivel tope actual')}</div>
+        <p class="muted" style="margin-top:8px;">Instalaciones personales acumuladas: ${data.progress.lifetime_personal_installs}</p>
+      </div>
+      <div class="mini-card">
+        <h3>Requisitos Actuales</h3>
+        ${req ? `
+          <p class="muted">Instalaciones acumuladas: ${data.progress.lifetime_personal_installs}/${req.min_lifetime_personal_installs}</p>
+          <p class="muted">Agentes activos: ${data.progress.active_agents}/${req.min_active_agents}</p>
+          <p class="muted">Supervisores activos: ${data.progress.active_supervisors}/${req.min_active_supervisors}</p>
+          <p class="muted">Producción organizacional del mes: ${data.progress.org_installs_month}/${req.min_org_installs_month}</p>
+        ` : '<p class="muted">No hay requisitos siguientes configurados para este nivel.</p>'}
+      </div>
+    `;
+  }
+
+  function renderBonuses(data) {
+    const supervisor = data.supervisor_view;
+    const director = data.director_view;
+    document.getElementById('bonusCards').innerHTML = `
+      <div class="mini-card">
+        <h3>Vista Supervisor</h3>
+        ${supervisor ? `
+          <p class="muted">Producción personal: ${supervisor.personal_production}</p>
+          <p class="muted">Producción de equipo: ${supervisor.team_production}</p>
+          <p class="muted">Agentes activos: ${supervisor.active_agents}</p>
+          <p class="muted">Agentes inactivos: ${supervisor.inactive_agents}</p>
+        ` : '<p class="muted">Se habilita para Supervisor y Director.</p>'}
+      </div>
+      <div class="mini-card">
+        <h3>Vista Director</h3>
+        ${director ? `
+          <p class="muted">Producción organizacional: ${director.organizational_production}</p>
+          <p class="muted">Supervisores activos: ${director.active_supervisors}</p>
+          <p class="muted">Bono Director acumulado: ${money(director.director_bonus_accumulated)}</p>
+          <p class="muted">Residencial: ${director.residential_production} · Comercial: ${director.commercial_production}</p>
+        ` : '<p class="muted">El Bono Director aparece cuando el rango actual es Director.</p>'}
+      </div>
+    `;
+  }
+
+  function renderAmbassadors(data) {
+    document.getElementById('ambassadorCards').innerHTML = `
+      <div class="mini-card">
+        <h3>Regla del Programa</h3>
+        <p class="muted">Pago por instalación: ${money(data.ambassador_program.payout_per_install)}</p>
+        <p class="muted">Actividad mínima: ${data.ambassador_program.minimum_installs_to_stay_active} referido instalado cada ${data.ambassador_program.active_window_days} días.</p>
+      </div>
+      <div class="mini-card">
+        <h3>No Incluye</h3>
+        <p class="muted">Rangos, bonos, overrides ni comisiones de equipo.</p>
+        <p class="muted" style="margin-top:8px;">Embajadores activos registrados: ${data.ambassador_program.active_ambassadors}</p>
+        <p class="muted">Instalaciones válidas recientes: ${data.ambassador_program.installs_last_window}</p>
+      </div>
+    `;
+  }
+
+  function buildEditorCard(title, section, rows, note = '') {
+    return `
+      <div class="editor-card">
+        <h3>${title}</h3>
+        ${note ? `<p class="muted" style="margin-bottom:8px;">${note}</p>` : ''}
+        <textarea id="editor-${section}">${esc(JSON.stringify(rows, null, 2))}</textarea>
+        <div class="actions">
+          <span class="muted">${section}</span>
+          <button class="btn secondary" onclick="saveSection('${section}')">Guardar</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderAdmin(data) {
+    if (!isAdmin) return;
+    const carrierNameById = Object.fromEntries((data.config.carriers || []).map((carrier) => [carrier.id, carrier.name]));
+    document.getElementById('adminSummary').innerHTML = `
+      <div class="mini-card">
+        <h3>Carriers</h3>
+        <div class="value">${data.config.carriers.length}</div>
+      </div>
+      <div class="mini-card">
+        <h3>Planes</h3>
+        <div class="value">${data.config.plans.length}</div>
+      </div>
+      <div class="mini-card">
+        <h3>Promociones</h3>
+        <div class="value">${data.config.promotions.length}</div>
+      </div>
+      <div class="mini-card">
+        <h3>Seguridad</h3>
+        <div class="badge blue">Solo Admin Edita</div>
+      </div>
+    `;
+    document.getElementById('editorGrid').innerHTML = [
+      buildEditorCard('Carriers', 'carriers', data.config.carriers, 'Campos: nombre, service_type, active, internal_notes.'),
+      buildEditorCard('Planes', 'plans', data.config.plans.map((plan) => ({
+        ...plan,
+        carrier_name: carrierNameById[plan.carrier_id] || null
+      })), 'Cada plan define carrier, categoría, tipo, comisiones por rol, bono director, multiplicador comercial y anti-chargeback.'),
+      buildEditorCard('Promociones', 'promotions', data.config.promotions.map((promotion) => ({
+        ...promotion,
+        carrier_name: promotion.carrier_id ? carrierNameById[promotion.carrier_id] || null : null
+      })), 'Tipos sugeridos: install_bonus, commercial_bonus, campaign_bonus, carrier_bonus, elite_bonus, special_bonus.'),
+      buildEditorCard('Settings', 'settings', Object.entries(data.config.settings).map(([key, value]) => ({ key, value }))),
+      buildEditorCard('Categorías', 'categories', data.config.categories),
+      buildEditorCard('Comisiones', 'rates', data.config.rates),
+      buildEditorCard('Bono Director', 'director_bonuses', data.config.directorBonuses),
+      buildEditorCard('Reglas de Actividad', 'activity_rules', data.config.activityRules),
+      buildEditorCard('Reglas de Ascenso', 'rank_requirements', data.config.rankRequirements),
+      buildEditorCard('Usuarios y Jerarquía', 'users', data.users, 'Edita compensation_role, sponsor_user_id y manager_user_id.'),
+      buildEditorCard('Embajadores', 'ambassadors', data.config.ambassadors)
+    ].join('');
+
+    document.getElementById('auditList').innerHTML = data.audit_log.length
+      ? data.audit_log.map((item) => `
+        <div class="list-item">
+          <strong>${esc(item.entity_type)} · ${esc(item.entity_key)}</strong>
+          <div class="muted">${esc(item.action)} · ${esc(item.actor_name || 'sistema')} · ${new Date(item.created_at).toLocaleString('es-US')}</div>
+          <div class="muted">Razón: ${esc(item.reason || 'sin razón documentada')}</div>
+        </div>
+      `).join('')
+      : '<div class="muted">Sin cambios auditados todavía.</div>';
+  }
+
+  async function saveSection(section) {
+    const raw = document.getElementById(`editor-${section}`).value;
+    let rows = null;
+    try {
+      rows = JSON.parse(raw);
+    } catch {
+      showToast('JSON inválido', '#b91c1c');
+      return;
+    }
+    const res = await apiFetch('', {
+      method: 'POST',
+      body: JSON.stringify({ section, rows, reason: document.getElementById('changeReason').value.trim() })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(data.error || 'No se pudo guardar', '#b91c1c');
+      return;
+    }
+    showToast('Configuración guardada', '#0f766e');
+    await loadAdmin();
+  }
+  window.saveSection = saveSection;
+
+  async function loadDashboard() {
+    const res = await apiFetch('dashboard');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(data.error || 'No se pudo cargar compensación', '#b91c1c');
+      return;
+    }
+    dashboardData = data;
+    renderTopStats(data);
+    renderLevel(data);
+    renderCommissionTable(data);
+    renderElite(data);
+    renderProgress(data);
+    renderBonuses(data);
+    renderAmbassadors(data);
+  }
+
+  async function loadAdmin() {
+    if (!isAdmin) return;
+    const res = await apiFetch('admin');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(data.error || 'No se pudo cargar admin', '#b91c1c');
+      return;
+    }
+    adminData = data;
+    renderAdmin(data);
+  }
+
+  renderTabs();
+  loadDashboard();
+  if (isAdmin) loadAdmin();
+</script>
+</body>
+</html>

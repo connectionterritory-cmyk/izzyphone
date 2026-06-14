@@ -557,6 +557,29 @@
       </div>
     </div>
 
+    <div class="row2">
+      <div class="field">
+        <label>Sale Type</label>
+        <select id="saleType">
+          <option value="residential">Residential</option>
+          <option value="commercial">Commercial</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Service Category</label>
+        <select id="serviceCategory">
+          <option value="">Loading...</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Embajador Referral (Optional)</label>
+      <select id="ambassadorId">
+        <option value="">No embajador referral</option>
+      </select>
+    </div>
+
     <div class="field">
       <label>Special Notes</label>
       <div class="readonly-field" id="specialNotesReadonly" style="min-height:60px;">—</div>
@@ -644,6 +667,22 @@
     }
 
     return res;
+  }
+
+  async function loadCompensationConfig() {
+    try {
+      const res = await apiFetch('izzy-compensation?resource=config');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return;
+      const categorySelect = document.getElementById('serviceCategory');
+      const ambassadorSelect = document.getElementById('ambassadorId');
+      categorySelect.innerHTML = (data.categories || []).map(cat =>
+        `<option value="${cat.code}">${cat.name}</option>`
+      ).join('') || '<option value="standard">Standard</option>';
+      ambassadorSelect.innerHTML = '<option value="">No embajador referral</option>' + (data.ambassadors || []).map(amb =>
+        `<option value="${amb.id}">${amb.code} · ${amb.nombre}</option>`
+      ).join('');
+    } catch {}
   }
 
   // ── Role: admin unlocks Section 4 ─────────────────────
@@ -773,6 +812,7 @@
 
   const savedVoice = localStorage.getItem('izzy_orden_voice') || '';
   if (savedVoice === 'yes' || savedVoice === 'no') setTgl('voice', savedVoice);
+  loadCompensationConfig();
 
   // ── Helpers ───────────────────────────────────────────
   function toggleOtherProv(show) {
@@ -900,6 +940,9 @@
       service_provider: provider,
       service_provider_other: provider === 'Other' ? document.getElementById('svcProvOther').value.trim() : '',
       desired_speed: desiredSpeed === 'Other' ? document.getElementById('speedOther').value.trim() : desiredSpeed,
+      sale_type: document.getElementById('saleType').value,
+      service_category_code: document.getElementById('serviceCategory').value,
+      ambassador_id: document.getElementById('ambassadorId').value || null,
       voice_service: tglState.voice === 'yes',
       install_notes: document.getElementById('installNotes').value.trim(),
       autopay: tglState.autopay === 'yes',
