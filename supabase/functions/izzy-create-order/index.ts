@@ -2,6 +2,7 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { requireSession } from "../_shared/auth.ts";
+import { buildOrderCompensationSnapshot, getPortalUserBySession, loadCompensationConfig } from "../_shared/compensation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type OrderPayload = {
@@ -19,6 +20,9 @@ type OrderPayload = {
   service_provider?: string;
   service_provider_other?: string;
   desired_speed?: string;
+  sale_type?: string;
+  service_category_code?: string;
+  ambassador_id?: number | string | null;
   voice_service?: boolean;
   install_notes?: string;
   autopay?: boolean;
@@ -64,7 +68,11 @@ function cleanDate(value: unknown): string | null {
   return raw || null;
 }
 
-function buildOrderPayload(raw: OrderPayload, agentName: string) {
+function buildOrderPayload(
+  raw: OrderPayload,
+  agentName: string,
+  compensation: ReturnType<typeof buildOrderCompensationSnapshot>,
+) {
   const scheduledInstallDate = cleanDate(raw.install_date);
   return {
     fecha: new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles" }).format(new Date()),
@@ -83,6 +91,14 @@ function buildOrderPayload(raw: OrderPayload, agentName: string) {
     proveedor_servicio: cleanString(raw.service_provider),
     proveedor_otro: cleanString(raw.service_provider_other),
     velocidad_deseada: cleanString(raw.desired_speed),
+    portal_user_id: compensation.portal_user_id,
+    sale_type: compensation.sale_type,
+    service_category_code: compensation.service_category_code,
+    carrier_name: compensation.carrier_name,
+    ambassador_id: raw.ambassador_id ? Number(raw.ambassador_id) : null,
+    compensation_rank_code: compensation.compensation_rank_code,
+    compensation_estimated_amount: compensation.compensation_estimated_amount,
+    compensation_status: compensation.compensation_status,
     voice_service: cleanBoolean(raw.voice_service),
     notas_instalacion: cleanString(raw.install_notes),
     autopay: cleanBoolean(raw.autopay),
@@ -117,7 +133,14 @@ Deno.serve(async (req) => {
 
   try {
     const user = await requireSession(req);
-    const payload = buildOrderPayload(await req.json(), user.nombre);
+    const raw = await req.json() as OrderPayload;
+    const supabase = createAdminClient();
+    const [config, portalUser] = await Promise.all([
+      loadCompensationConfig(supabase),
+      getPortalUserBySession(supabase, user),
+    ]);
+    const compensation = buildOrderCompensationSnapshot(config, portalUser, raw);
+    const payload = buildOrderPayload(raw, user.nombre, compensation);
 
     if (!payload.cliente_nombre || !payload.cliente_apellido) {
       return jsonResponse({ error: "Client full name is required" }, { status: 400 });
@@ -131,7 +154,6 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Street address is required" }, { status: 400 });
     }
 
-    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("izzy_orders")
       .insert(payload)

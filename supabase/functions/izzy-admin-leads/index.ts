@@ -66,6 +66,7 @@ type CommissionStatus = "not_earned" | "earned" | "paid" | "cancelled";
 type OrderRow = {
   id: number;
   agente: string;
+  carrier_name: string | null;
   install_date: string | null;
   installation_status: InstallationStatus | null;
   scheduled_install_date: string | null;
@@ -76,6 +77,8 @@ type OrderRow = {
   commission_earned_at: string | null;
   commission_amount: number | null;
   commission_paid_at: string | null;
+  compensation_status: string | null;
+  reserve_release_at: string | null;
 };
 
 const DEFAULT_QUOTERS = [
@@ -220,6 +223,13 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+function addReserveDays(dateValue: string, days: number) {
+  const date = new Date(`${dateValue}T12:00:00Z`);
+  if (Number.isNaN(date.getTime())) return null;
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString();
+}
+
 function deriveOrderUpdates(
   existing: OrderRow,
   incoming: Record<string, string | number | null>,
@@ -266,6 +276,7 @@ function deriveOrderUpdates(
       next.commission_status = "cancelled";
       next.commission_earned_at = null;
     }
+    next.compensation_status = "chargeback";
   } else if (installationStatus === "failed_install") {
     if (resolvedSatisfactionStatus === "pending") {
       next.satisfaction_status = "issue";
@@ -274,6 +285,7 @@ function deriveOrderUpdates(
       next.commission_status = "cancelled";
       next.commission_earned_at = null;
     }
+    next.compensation_status = "chargeback";
   }
 
   const finalSatisfactionStatus = (next.satisfaction_status ?? existing.satisfaction_status ?? "pending") as SatisfactionStatus;
@@ -285,6 +297,10 @@ function deriveOrderUpdates(
       next.commission_earned_at = existing.commission_status === "earned" && existing.commission_earned_at
         ? existing.commission_earned_at
         : nowIso();
+    }
+    if (existing.compensation_status !== "paid") {
+      next.compensation_status = "reserve";
+      next.reserve_release_at = existing.reserve_release_at || addReserveDays(actualInstallDate, 120);
     }
   } else {
     // FIX: use next.commission_status (which may have been set to "cancelled" by the blocks
@@ -302,6 +318,7 @@ function deriveOrderUpdates(
   if (next.commission_status === "paid" && existing.commission_status !== "paid") {
     if (!next.commission_paid_at) next.commission_paid_at = nowIso();
     if (!next.commission_paid_by) next.commission_paid_by = agentName;
+    next.compensation_status = "paid";
   }
 
   return next;
@@ -494,7 +511,7 @@ async function updateOrderById(
 ) {
   const { data: existing, error: existingError } = await supabase
     .from("izzy_orders")
-    .select("id, agente, install_date, installation_status, scheduled_install_date, actual_install_date, satisfaction_status, satisfaction_confirmed_at, commission_status, commission_earned_at, commission_amount, commission_paid_at")
+    .select("id, agente, carrier_name, install_date, installation_status, scheduled_install_date, actual_install_date, satisfaction_status, satisfaction_confirmed_at, commission_status, commission_earned_at, commission_amount, commission_paid_at, compensation_status, reserve_release_at")
     .eq("id", id)
     .maybeSingle();
 

@@ -1,9 +1,11 @@
 export type Role = "admin" | "agente";
+export type CompensationRole = "novato" | "agente" | "supervisor" | "director" | "embajador";
 
 export type SessionUser = {
   nombre: string;
   rol: Role;
   pin_code?: string;
+  compensation_role?: CompensationRole;
 };
 
 type UserRecord = SessionUser & {

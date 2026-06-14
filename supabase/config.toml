@@ -9,3 +9,15 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/izzy-admin-leads/deno.json"
 entrypoint = "./functions/izzy-admin-leads/index.ts"
+
+[functions.izzy-create-order]
+enabled = true
+verify_jwt = false
+import_map = "./functions/izzy-create-order/deno.json"
+entrypoint = "./functions/izzy-create-order/index.ts"
+
+[functions.izzy-compensation]
+enabled = true
+verify_jwt = false
+import_map = "./functions/izzy-compensation/deno.json"
+entrypoint = "./functions/izzy-compensation/index.ts"
