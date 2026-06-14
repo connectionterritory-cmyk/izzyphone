@@ -19,7 +19,9 @@ body.has-app-shell {
 /* ── Shell ─────────────────────────────────────────────── */
 
 .app-shell {
-  min-height: 100vh;
+  position: relative;
+  width: 0;
+  height: 0;
 }
 
 /* ── Sidebar ───────────────────────────────────────────── */
