@@ -32,99 +32,6 @@
     padding: 0;
   }
 
-  /* Header */
-  .header {
-    max-width: 560px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-icon {
-    width: 40px; height: 40px;
-    background: var(--blue);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .brand-icon svg { width: 20px; height: 20px; fill: #fff; }
-  .brand-name { font-size: 18px; font-weight: 700; color: var(--blue); }
-  .brand-sub { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-
-  .badge {
-    background: var(--green-dark);
-    color: #fff;
-    font-size: 12px; font-weight: 600;
-    padding: 5px 14px; border-radius: 20px;
-  }
-
-  .topnav {
-    max-width: 560px;
-    margin: 0 auto 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.05);
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .topnav-links {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .nav-link, .nav-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 1.5px solid #c7d4e8;
-    background: #fff;
-    color: var(--blue);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .nav-link.primary, .nav-action.primary {
-    background: var(--blue);
-    border-color: var(--blue);
-    color: #fff;
-  }
-
-  .nav-link.success {
-    background: #e8faf1;
-    border-color: #86efac;
-    color: #15803d;
-  }
-
-  .nav-link.teal {
-    background: #0f766e;
-    border-color: #0f766e;
-    color: #fff;
-  }
-
-  .topnav-side {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-left: auto;
-  }
-
   /* Card */
   .card {
     max-width: 560px;
@@ -1426,7 +1333,6 @@
     // Header
     document.getElementById('brandSub').textContent = t.brandSub;
     document.getElementById('badgeText').textContent = t.badge;
-    document.getElementById('tutorialLink').textContent = t.tutorialLink;
     document.getElementById('langToggle').textContent = t.langToggle;
     // Card headers
     ['hdrAgente','hdrCotizador','hdrCliente','hdrSituacion','hdrOferta'].forEach(id => {
