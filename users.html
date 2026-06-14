@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Izzy Communications — Usuarios</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -12,7 +13,7 @@
     --text: #1a1814; --muted: #7a7570;
     --blue: #1a3a6b; --blue-light: #edf1f8;
   }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px 16px 60px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0; }
   .page-header {
     max-width: 980px; margin: 0 auto 20px;
     background: var(--blue); border-radius: 16px; padding: 18px 24px; color: #fff;
@@ -49,22 +50,17 @@
 </style>
 </head>
 <body>
-<div class="page-header">
-  <div class="header-left">
-    <div class="brand-icon">
-      <svg viewBox="0 0 24 24"><path d="M1.5 8.5C5.2 4.8 10.4 3 12 3s6.8 1.8 10.5 5.5L21 10c-3-3-5.7-5-9-5s-6 2-9 5l-1.5-1.5zM12 7c2.4 0 4.6.9 6.2 2.4L16.8 11C15.6 9.8 13.9 9 12 9s-3.6.8-4.8 2L5.8 9.4C7.4 7.9 9.6 7 12 7zm0 4c1.1 0 2.1.4 2.8 1.2L12 15l-2.8-2.8C9.9 11.4 10.9 11 12 11zm0 4l1.5 1.5L12 18l-1.5-1.5L12 15z"/></svg>
-    </div>
-    <div>
-      <h1>Usuarios — Izzy Communications</h1>
-      <div class="sub">Administración de agentes, cotizadores y accesos</div>
-    </div>
+<div id="appNav"></div>
+<div class="app-main">
+<div class="page-shell-header" style="max-width:980px;">
+  <div class="page-shell-title">
+    <span class="page-shell-eyebrow">Admin</span>
+    <h1>👥 Usuarios</h1>
+    <p>Administración de agentes, cotizadores y accesos del portal.</p>
   </div>
-  <div class="header-right">
-    <span class="header-tag" id="agentTag"></span>
-    <a href="tutorial-admin.html" class="btn-back">📖 Tutorial Admin</a>
-    <a href="orders.html" class="btn-back">🧾 Orders</a>
-    <a href="leads.html" class="btn-back">📊 Leads</a>
-    <a href="index.html" class="btn-back">← Cotizador</a>
+  <div class="page-shell-actions">
+    <span class="page-action" id="agentTag"></span>
+    <a href="tutorial-admin.html" class="page-action">📖 Tutorial Admin</a>
   </div>
 </div>
 
@@ -159,8 +155,10 @@
   </div>
 </div>
 
+ </div>
 <div class="toast" id="toast"></div>
 
+<script src="nav.js"></script>
 <script>
   const PROJECT_REF = 'rxiarmbosgivaplygqug';
   const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
@@ -178,6 +176,17 @@
   if (!currentUser) window.location.href = 'index.html';
   if (currentUser.rol !== 'admin') window.location.href = 'leads.html';
   document.getElementById('agentTag').textContent = '👤 ' + currentUser.nombre;
+  renderIzzyNavigation({
+    mountId: 'appNav',
+    user: currentUser,
+    isAdmin: true,
+    activeSidebar: 'users',
+    activeMobile: 'admin',
+    pageTitle: 'Usuarios',
+    mobileTitle: 'Usuarios',
+    tutorialHref: 'tutorial-admin.html',
+    mobileAdminHref: 'users.html'
+  });
 
   function getSession() {
     try {

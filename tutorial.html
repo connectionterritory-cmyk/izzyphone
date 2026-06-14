@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tutorial — Izzy Communications Cotizador</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --blue:#1a3a6b; --green:#25D366; --green-dark:#128C7E;
     --bg:#f0f2f5; --surface:#fff; --border:#e2e0dc; --text:#1a1814; --muted:#7a7570;
   }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:80px; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:0; }
   .hero { background:var(--blue); padding:36px 24px 32px; text-align:center; color:#fff; }
   .hero-emoji { font-size:48px; margin-bottom:12px; }
   .hero h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
@@ -83,6 +84,9 @@
 </head>
 <body>
 
+<div id="appNav"></div>
+<div class="app-main">
+
 <div class="hero">
   <div class="hero-emoji">📚</div>
   <h1 id="heroTitle">Tutorial — Cotizador de Leads</h1>
@@ -104,10 +108,31 @@
 <div class="step-counter" id="stepCounter">Paso 1 de 10</div>
 <button class="lang-fab" id="langFab" onclick="toggleTutLang()">🇺🇸 EN</button>
 
+</div>
+<script src="nav.js"></script>
 <script>
 const TOTAL = 10;
 let current = 1;
 let tutLang = localStorage.getItem('izzy_lang') || 'es';
+let tutorialUser = null;
+
+try {
+  tutorialUser = JSON.parse(localStorage.getItem('izzy_session') || 'null')?.user || null;
+} catch {
+  tutorialUser = null;
+}
+
+renderIzzyNavigation({
+  mountId: 'appNav',
+  user: tutorialUser,
+  isAdmin: tutorialUser?.rol === 'admin',
+  activeSidebar: 'tutorial',
+  activeMobile: 'admin',
+  pageTitle: 'Tutorial',
+  mobileTitle: 'Tutorial',
+  tutorialHref: tutorialUser?.rol === 'admin' ? 'tutorial-admin.html' : 'tutorial.html',
+  mobileAdminHref: tutorialUser?.rol === 'admin' ? 'users.html' : 'tutorial.html'
+});
 
 // ── Content data ────────────────────────────────────────
 const STEPS = {
