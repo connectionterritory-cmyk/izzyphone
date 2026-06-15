@@ -38,6 +38,13 @@
       ]
     },
     {
+      section: 'ambassadors',
+      label: 'Embajadores',
+      items: [
+        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: ICONS.ambassadors, text: 'Programa Embajador' }
+      ]
+    },
+    {
       section: 'admin',
       label: 'Administración',
       items: [
@@ -111,7 +118,7 @@
 
   // ── Dropdown HTML (shared between sidebar and mobile) ────
 
-  function renderDropdownItems(prefix, userName, userRole) {
+  function renderDropdownItems(prefix, userName, userRole, labels) {
     return `
       <div class="user-menu-hd">
         <div class="user-menu-hd-name">${esc(userName)}</div>
@@ -119,10 +126,10 @@
       </div>
       <div class="user-menu-divider"></div>
       <button class="user-menu-item" type="button" id="${prefix}ProfileBtn" role="menuitem">
-        ${ICON_PERSON}<span>Mi perfil</span>
+        ${ICON_PERSON}<span>${esc(labels.profile)}</span>
       </button>
       <button class="user-menu-item user-menu-item--danger" type="button" id="${prefix}LogoutBtn" role="menuitem">
-        ${ICON_LOGOUT}<span>Cerrar sesi&oacute;n</span>
+        ${ICON_LOGOUT}<span>${esc(labels.logout)}</span>
       </button>`;
   }
 
@@ -132,22 +139,46 @@
     sections: {
       principal: 'Main',
       compensation: 'Compensation Plan',
+      ambassadors: 'Ambassadors',
       admin: 'Administration'
     },
     items: {
       cotizador: 'Quote Desk',
+      leads: 'Leads',
       orders: 'Orders',
+      tutorial: 'Tutorial',
       'comp-level': 'My Level',
       'comp-tree': 'My Tree',
       'comp-table': 'Commissions',
       'comp-bonuses': 'Bonuses',
+      'comp-ambassadors': 'Ambassador Program',
       users: 'Users',
       'comp-admin': 'Compensation',
       'tutorial-admin': 'Admin Tutorial'
     },
     mobile: {
       cotizador: 'Quote',
+      leads: 'Leads',
       orders: 'Orders'
+    },
+    shell: {
+      profile: 'My Profile',
+      logout: 'Log Out',
+      roleAdmin: 'Administrator',
+      roleAgent: 'Agent',
+      roleGuest: 'Not signed in',
+      userMenuLabel: 'User menu'
+    }
+  };
+
+  const NAV_ES = {
+    shell: {
+      profile: 'Mi perfil',
+      logout: 'Cerrar sesión',
+      roleAdmin: 'Administrador',
+      roleAgent: 'Agente',
+      roleGuest: 'Sesión no iniciada',
+      userMenuLabel: 'Menú de usuario'
     }
   };
 
@@ -157,6 +188,11 @@
       if (localStorage.getItem('izzy_lang') === 'en') return NAV_EN;
     } catch {}
     return {};
+  }
+
+  function getShellCopy(options) {
+    const navCopy = getAutoNavCopy(options);
+    return navCopy.shell || NAV_ES.shell;
   }
 
   function renderSidebarGroups(options) {
@@ -293,8 +329,13 @@
     if (!mount) return;
 
     const user = options.user || null;
+    const shellCopy = getShellCopy(options);
     const userName = user?.nombre || 'Invitado';
-    const userRole = user?.rol === 'admin' ? 'Administrador' : user?.rol ? 'Agente' : 'Sesión no iniciada';
+    const userRole = user?.rol === 'admin'
+      ? shellCopy.roleAdmin
+      : user?.rol
+        ? shellCopy.roleAgent
+        : shellCopy.roleGuest;
 
     mount.innerHTML = `
       <div class="app-shell">
@@ -328,7 +369,7 @@
                   ${ICON_CARET}
                 </button>
                 <div class="user-menu-dropdown user-menu-dropdown--up" id="sidebarDropdown" role="menu">
-                  ${renderDropdownItems('sidebar', userName, userRole)}
+                  ${renderDropdownItems('sidebar', userName, userRole, shellCopy)}
                 </div>
               </div>
             </div>
@@ -345,11 +386,11 @@
           <div class="mobile-user-profile" id="mobileUserProfile">
             <button class="mobile-user-btn" type="button" id="mobileUserBtn"
                     aria-expanded="false" aria-haspopup="true"
-                    aria-label="Menú de usuario">
+                    aria-label="${esc(shellCopy.userMenuLabel)}">
               ${renderAvatar(user, 'sm')}
             </button>
             <div class="user-menu-dropdown user-menu-dropdown--mobile" id="mobileDropdown" role="menu">
-              ${renderDropdownItems('mobile', userName, userRole)}
+              ${renderDropdownItems('mobile', userName, userRole, shellCopy)}
             </div>
           </div>
         </div>
