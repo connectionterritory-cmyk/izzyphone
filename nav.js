@@ -21,7 +21,7 @@
       section: 'principal',
       label: 'Principal',
       items: [
-        { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
+        { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Centro de Cotizacion' },
         { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
         { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
         { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
@@ -56,7 +56,7 @@
   ];
 
   const MOBILE_ITEMS = [
-    { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
+    { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizacion' },
     { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
     { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
     { key: 'compensation', href: 'compensation.html', icon: ICONS.level, text: 'Compensación' },
@@ -139,6 +139,9 @@
     const isAdmin = Boolean(options.isAdmin);
     const compRole = options.compRole || options.user?.compensation_role || 'agent';
     const tutorialHref = options.tutorialHref || 'tutorial.html';
+    const navCopy = options.navCopy || {};
+    const sectionLabels = navCopy.sections || {};
+    const itemLabels = navCopy.items || {};
 
     return SIDEBAR_ITEMS.map((group) => {
       const allowedItems = group.items.filter((item) => {
@@ -157,14 +160,14 @@
           const active = item.key === options.activeSidebar ? ' active' : '';
           return `<a class="app-sidebar-link${active}" href="${item.href}">
             <span class="app-sidebar-icon">${item.icon}</span>
-            <span class="app-sidebar-text">${item.text}</span>
+            <span class="app-sidebar-text">${itemLabels[item.key] || item.text}</span>
           </a>`;
         })
         .join('');
 
       return `<div class="app-sidebar-group${collapsedClass}">
         <button class="app-sidebar-label-btn" type="button">
-          <span class="app-sidebar-label-text">${group.label}</span>
+          <span class="app-sidebar-label-text">${sectionLabels[group.section] || group.label}</span>
           <span class="app-sidebar-chevron">${ICONS.chevronDown}</span>
         </button>
         <div class="app-sidebar-links">
@@ -178,6 +181,7 @@
 
   function renderMobileLinks(options) {
     const tutorialHref = options.tutorialHref || 'tutorial.html';
+    const itemLabels = options.navCopy?.items || {};
     return MOBILE_ITEMS.map((item) => {
       let href = item.href;
       if (item.key === 'admin' && options.mobileAdminHref) href = options.mobileAdminHref;
@@ -185,7 +189,7 @@
       const active = item.key === options.activeMobile ? ' active' : '';
       return `<a class="mobile-bottom-link${active}" href="${href}">
         <span class="mobile-bottom-icon">${item.icon}</span>
-        <span>${item.text}</span>
+        <span>${itemLabels[item.key] || item.text}</span>
       </a>`;
     }).join('');
   }

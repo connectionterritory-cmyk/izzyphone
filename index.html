@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Izzy Communications — Enviar Lead al Cotizador</title>
+<title>Izzy Communications — Centro de Cotización</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="nav.css">
 <style>
@@ -621,7 +621,7 @@
 <div class="page-shell-header">
   <div class="page-shell-title">
     <span class="page-shell-eyebrow">Principal</span>
-    <h1><span class="page-title-icon">📋</span><span class="page-title-text">Cotizador</span></h1>
+    <h1><span class="page-title-icon">📋</span><span class="page-title-text">Centro de Cotización</span></h1>
     <p id="brandSub">Enviar lead al cotizador asignado</p>
   </div>
   <div class="page-shell-actions">
@@ -1039,6 +1039,63 @@
   let resetToken = '';
   let shouldRestoreLeadAfterBoot = false;
 
+  function getNavCopy(lang) {
+    if (lang === 'en') {
+      return {
+        sections: {
+          principal: 'Main',
+          compensation: 'Compensation Plan',
+          ambassadors: 'Ambassadors',
+          admin: 'Administration'
+        },
+        items: {
+          cotizador: 'Quote Desk',
+          leads: 'Leads',
+          orders: 'Orders',
+          tutorial: 'Tutorial',
+          compensation: 'Comp Plan',
+          admin: 'Admin'
+        }
+      };
+    }
+
+    return {
+      sections: {
+        principal: 'Principal',
+        compensation: 'Plan de Compensación',
+        ambassadors: 'Embajadores',
+        admin: 'Administración'
+      },
+      items: {
+        cotizador: 'Centro de Cotización',
+        leads: 'Leads',
+        orders: 'Órdenes',
+        tutorial: 'Tutorial',
+        compensation: 'Compensación',
+        admin: 'Admin'
+      }
+    };
+  }
+
+  function renderCurrentNavigation() {
+    const sessionUser = getSession()?.user || null;
+    const isAdmin = (sessionUser?.rol || '') === 'admin';
+    const t = T[currentLang];
+    renderIzzyNavigation({
+      mountId: 'appNav',
+      user: sessionUser,
+      isAdmin,
+      activeSidebar: 'cotizador',
+      activeMobile: 'cotizador',
+      pageTitle: t.pageTitle,
+      mobileTitle: t.pageTitle,
+      tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
+      mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html',
+      navCopy: getNavCopy(currentLang),
+      onLogout: logout
+    });
+  }
+
   function getSession() {
     try {
       const raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
@@ -1101,22 +1158,9 @@
   }
 
   function showAuthenticatedApp() {
-    const sessionUser = getSession()?.user || null;
-    const isAdmin = (sessionUser?.rol || '') === 'admin';
     document.getElementById('pinScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
-    renderIzzyNavigation({
-      mountId: 'appNav',
-      user: sessionUser,
-      isAdmin,
-      activeSidebar: 'cotizador',
-      activeMobile: 'cotizador',
-      pageTitle: 'Cotizador',
-      mobileTitle: 'Cotizador',
-      tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
-      mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html',
-      onLogout: logout
-    });
+    renderCurrentNavigation();
     document.getElementById('passwordSetupOverlay').classList.toggle('show', mustSetOwnPassword);
     applyAgentDefaults();
     loadQuoters();
@@ -1329,6 +1373,7 @@
       pinSub:'Ingresa tu código de acceso', pinBtn:'✅ Entrar', pinPlaceholder:'CÓDIGO',
       pinError:'❌ Código incorrecto. Intenta de nuevo.',
       brandSub:'Enviar lead al cotizador asignado', badge:'📤 Para el Cotizador', tutorialLink:'📚 Tutorial', langToggle:'🇺🇸 EN',
+      pageTitle:'Centro de Cotización',
       hdrAgente:'👤 Mis Datos (Agente)', hdrCotizador:'📲 Datos del Cotizador',
       hdrCliente:'🏠 Datos del Cliente', hdrSituacion:'📡 Situación Actual del Cliente',
       hdrCelulares:'📱 Teléfonos Celulares', hdrOferta:'⚡ La Mejor Oferta Encontrada',
@@ -1399,6 +1444,7 @@
       pinSub:'Enter your access code', pinBtn:'✅ Enter', pinPlaceholder:'CODE',
       pinError:'❌ Incorrect code. Please try again.',
       brandSub:'Send lead to quoting agent', badge:'📤 For Quoting Agent', tutorialLink:'📚 Tutorial', langToggle:'🇲🇽 ES',
+      pageTitle:'Quote Desk',
       hdrAgente:'👤 My Info (Agent)', hdrCotizador:'📲 Quoting Agent Info',
       hdrCliente:'🏠 Client Info', hdrSituacion:'📡 Client\'s Current Situation',
       hdrCelulares:'📱 Cell Phones', hdrOferta:'⚡ Best Offer Found',
@@ -1471,12 +1517,18 @@
     currentLang = lang;
     localStorage.setItem('izzy_lang', lang);
     const t = T[lang];
+    document.title = lang === 'en'
+      ? 'Izzy Communications — Quote Desk'
+      : 'Izzy Communications — Centro de Cotización';
     // PIN screen
     document.getElementById('pinSub').textContent = t.pinSub;
     document.getElementById('pinBtn').textContent = t.pinBtn;
     document.getElementById('pinInput').placeholder = t.pinPlaceholder;
+    if (document.getElementById('mainApp').style.display !== 'none') renderCurrentNavigation();
     // Header
     document.getElementById('brandSub').textContent = t.brandSub;
+    const pageTitleText = document.querySelector('.page-title-text');
+    if (pageTitleText && t.pageTitle) pageTitleText.textContent = t.pageTitle;
     document.getElementById('badgeText').textContent = t.badge;
     document.getElementById('langToggle').textContent = t.langToggle;
     // Card headers
