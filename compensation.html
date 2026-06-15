@@ -146,6 +146,8 @@
 
     <section class="panel" data-tab="level">
       <div class="two-col" id="levelCards"></div>
+      <div class="two-col" id="eliteCards" style="margin-top:12px;"></div>
+      <div class="two-col" id="progressCards" style="margin-top:12px;"></div>
     </section>
 
     <section class="panel" data-tab="tree">
@@ -167,14 +169,6 @@
           <tbody id="commissionTableBody"></tbody>
         </table>
       </div>
-    </section>
-
-    <section class="panel" data-tab="elite">
-      <div class="two-col" id="eliteCards"></div>
-    </section>
-
-    <section class="panel" data-tab="progress">
-      <div class="two-col" id="progressCards"></div>
     </section>
 
     <section class="panel" data-tab="bonuses">
@@ -227,11 +221,13 @@
     level: 'Mi Nivel',
     tree: 'Mi Árbol',
     table: 'Tabla de Comisiones',
-    elite: 'Productor Elite',
-    progress: 'Progreso de Carrera',
     bonuses: 'Bonos',
     ambassadors: 'Programa Embajador',
     admin: 'Administración'
+  };
+  const TAB_ROLE_FILTER = {
+    tree: ['supervisor', 'director'],
+    bonuses: ['supervisor', 'director'],
   };
   let currentUser = null;
   let dashboardData = null;
@@ -334,7 +330,12 @@
   }
 
   function renderTabs() {
-    const tabs = Object.entries(TAB_LABELS).filter(([key]) => key !== 'admin' || isAdmin);
+    const role = dashboardData?.user?.compensation_role || null;
+    const tabs = Object.entries(TAB_LABELS).filter(([key]) => {
+      if (key === 'admin') return isAdmin;
+      if (TAB_ROLE_FILTER[key]) return role && TAB_ROLE_FILTER[key].includes(role);
+      return true;
+    });
     document.getElementById('tabs').innerHTML = tabs.map(([key, label]) => `
       <button class="tab-btn${key === activeTab ? ' active' : ''}" onclick="switchTab('${key}')">${label}</button>
     `).join('');
@@ -769,6 +770,7 @@
         return;
       }
       dashboardData = data;
+      renderTabs();
       renderTopStats(data);
       renderLevel(data);
       renderTree(data);
