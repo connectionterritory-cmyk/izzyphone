@@ -276,11 +276,6 @@ async function handleGet(req: Request) {
     });
   }
 
-  const portalUser = await getPortalUserBySession(supabase, user);
-  if (!portalUser) {
-    return jsonResponse({ error: "Portal user not found" }, { status: 404 });
-  }
-
   if (resource === "admin") {
     ensureAdmin(user.rol);
     const [config, usersRes, auditRes] = await Promise.all([
@@ -293,6 +288,11 @@ async function handleGet(req: Request) {
       users: usersRes,
       audit_log: auditRes.data || [],
     });
+  }
+
+  const portalUser = await getPortalUserBySession(supabase, user);
+  if (!portalUser) {
+    return jsonResponse({ error: "Portal user not found" }, { status: 404 });
   }
 
   const dashboard = await buildDashboard(portalUser, supabase);
