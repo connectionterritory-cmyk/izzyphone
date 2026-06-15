@@ -43,7 +43,8 @@
       label: 'Admin',
       items: [
         { key: 'users', href: 'users.html', icon: ICONS.users, text: 'Usuarios', adminOnly: true },
-        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensacion', adminOnly: true }
+        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensacion', adminOnly: true },
+        { key: 'tutorial-admin', href: 'tutorial-admin.html', icon: ICONS.tutorial, text: 'Tutorial Admin', adminOnly: true }
       ]
     }
   ];
@@ -147,9 +148,8 @@
 
       const links = allowedItems
         .map((item) => {
-          const href = item.key === 'tutorial' ? tutorialHref : item.href;
           const active = item.key === options.activeSidebar ? ' active' : '';
-          return `<a class="app-sidebar-link${active}" href="${href}">
+          return `<a class="app-sidebar-link${active}" href="${item.href}">
             <span class="app-sidebar-icon">${item.icon}</span>
             <span class="app-sidebar-text">${item.text}</span>
           </a>`;
