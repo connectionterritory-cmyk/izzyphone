@@ -167,7 +167,7 @@
 
     <section class="panel" data-tab="progress">
       <h2>Progreso de Carrera</h2>
-      <p class="lead">Referencia de carrera visible para el agente. El nivel actual lo asigna administración según experiencia y criterio operativo.</p>
+      <p class="lead">Administración puede asignar el rango inicial por experiencia previa. Desde ahí, las promociones se ganan cumpliendo las reglas configuradas.</p>
       <div class="two-col" id="progressCards"></div>
     </section>
 
@@ -438,19 +438,19 @@
     const req = data.progress.requirements;
     document.getElementById('progressCards').innerHTML = `
       <div class="mini-card">
-        <h3>Nivel Asignado</h3>
+        <h3>Nivel Actual</h3>
         <div class="value">${esc(data.current_level.name)}</div>
-        <p class="muted" style="margin-top:8px;">Este nivel lo asigna administración según experiencia, desempeño y estructura del equipo.</p>
+        <p class="muted" style="margin-top:8px;">El rango inicial puede ser asignado por administración según experiencia previa del recluta.</p>
       </div>
       <div class="mini-card">
-        <h3>Referencia para Subir</h3>
+        <h3>Promoción al Siguiente Nivel</h3>
         ${req ? `
-          <p class="muted">Próximo nivel sugerido: ${esc(data.progress.next_rank || 'Nivel tope actual')}</p>
+          <p class="muted">Próximo nivel: ${esc(data.progress.next_rank || 'Nivel tope actual')}</p>
           <p class="muted">Instalaciones acumuladas: ${data.progress.lifetime_personal_installs}/${req.min_lifetime_personal_installs}</p>
           <p class="muted">Agentes activos: ${data.progress.active_agents}/${req.min_active_agents}</p>
           <p class="muted">Supervisores activos: ${data.progress.active_supervisors}/${req.min_active_supervisors}</p>
           <p class="muted">Producción organizacional del mes: ${data.progress.org_installs_month}/${req.min_org_installs_month}</p>
-        ` : '<p class="muted">No hay una referencia de siguiente nivel configurada para este rango.</p>'}
+        ` : '<p class="muted">No hay una promoción siguiente configurada para este rango.</p>'}
       </div>
     `;
   }
@@ -663,8 +663,8 @@
       buildEditorCard('Bono Director', 'director_bonuses', data.config.directorBonuses, 'Bonos acumulados por instalación válida de la organización.'),
       buildEditorCard('Categorías', 'categories', data.config.categories, 'Clasificación de servicios visibles para el agente: Básico, Estándar, Premium.'),
       buildEditorCard('Reglas de Actividad', 'activity_rules', data.config.activityRules, 'Define qué necesita cada rango para mantenerse activo.'),
-      buildEditorCard('Reglas de Ascenso', 'rank_requirements', data.config.rankRequirements, 'Referencia sugerida para promociones manuales. El sistema no cambia niveles automáticamente.'),
-      buildEditorCard('Usuarios y Jerarquía', 'users', data.users, 'Aquí admin asigna el rol de compensación según experiencia y define la estructura sponsor/manager.'),
+      buildEditorCard('Reglas de Ascenso', 'rank_requirements', data.config.rankRequirements, 'Estas reglas determinan cuándo el sistema promueve al siguiente rango.'),
+      buildEditorCard('Usuarios y Jerarquía', 'users', data.users, 'Aquí admin asigna el rango inicial según experiencia y define la estructura sponsor/manager.'),
       buildEditorCard('Embajadores', 'ambassadors', data.config.ambassadors, 'Referidores externos del Programa de Embajadores IZZY.'),
       buildEditorCard('Settings', 'settings', Object.entries(data.config.settings).map(([key, value]) => ({ key, value })), 'Parámetros generales como multiplicador comercial, anti-chargeback y reglas globales.')
     ].join('');
