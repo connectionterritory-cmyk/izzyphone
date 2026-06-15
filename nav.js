@@ -1,44 +1,61 @@
 (function () {
+  const ICONS = {
+    cotizador: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+    leads: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="4" height="7" rx="1"/><rect x="15" y="4" width="4" height="13" rx="1"/></svg>`,
+    orders: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>`,
+    level: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>`,
+    tree: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M12 8v3"/></svg>`,
+    table: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`,
+    elite: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    progress: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`,
+    bonuses: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>`,
+    ambassadors: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3-6 6"/><path d="M21 3v6"/><path d="M21 3h-6"/><path d="M8.12 9.25 4.53 13.6a2 2 0 0 0 0 2.8l2.07 2.07a2 2 0 0 0 2.8 0l4.35-3.59"/></svg>`,
+    users: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    admin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    tutorial: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+    chevronDown: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`
+  };
+
   const SIDEBAR_ITEMS = [
     {
       section: 'principal',
       label: 'Principal',
       items: [
-        { key: 'cotizador', href: 'index.html', icon: '📋', text: 'Cotizador' },
-        { key: 'leads', href: 'leads.html', icon: '📊', text: 'Leads' },
-        { key: 'orders', href: 'orders.html', icon: '🧾', text: 'Orders' }
+        { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
+        { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
+        { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Orders' }
       ]
     },
     {
       section: 'compensation',
       label: 'Plan de Compensacion',
       items: [
-        { key: 'comp-level', href: 'compensation.html?tab=level', icon: '🏅', text: 'Mi Nivel' },
-        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: '🌿', text: 'Mi Arbol' },
-        { key: 'comp-table', href: 'compensation.html?tab=table', icon: '💵', text: 'Tabla de Comisiones' },
-        { key: 'comp-elite', href: 'compensation.html?tab=elite', icon: '⭐', text: 'Productor Elite' },
-        { key: 'comp-progress', href: 'compensation.html?tab=progress', icon: '📈', text: 'Progreso de Carrera' },
-        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: '🎯', text: 'Bonos' },
-        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: '🤝', text: 'Programa Embajador' }
+        { key: 'comp-level', href: 'compensation.html?tab=level', icon: ICONS.level, text: 'Mi Nivel' },
+        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: ICONS.tree, text: 'Mi Arbol' },
+        { key: 'comp-table', href: 'compensation.html?tab=table', icon: ICONS.table, text: 'Tabla de Comisiones' },
+        { key: 'comp-elite', href: 'compensation.html?tab=elite', icon: ICONS.elite, text: 'Productor Elite' },
+        { key: 'comp-progress', href: 'compensation.html?tab=progress', icon: ICONS.progress, text: 'Progreso de Carrera' },
+        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: ICONS.bonuses, text: 'Bonos' },
+        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: ICONS.ambassadors, text: 'Programa Embajador' }
       ]
     },
     {
       section: 'admin',
       label: 'Admin',
       items: [
-        { key: 'users', href: 'users.html', icon: '👥', text: 'Usuarios', adminOnly: true },
-        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: '⚙️', text: 'Compensacion', adminOnly: true },
-        { key: 'tutorial', href: 'tutorial.html', icon: '📖', text: 'Tutorial' }
+        { key: 'users', href: 'users.html', icon: ICONS.users, text: 'Usuarios', adminOnly: true },
+        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensacion', adminOnly: true },
+        { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
       ]
     }
   ];
 
   const MOBILE_ITEMS = [
-    { key: 'cotizador', href: 'index.html', icon: '📋', text: 'Cotizador' },
-    { key: 'leads', href: 'leads.html', icon: '📊', text: 'Leads' },
-    { key: 'orders', href: 'orders.html', icon: '🧾', text: 'Orders' },
-    { key: 'compensation', href: 'compensation.html', icon: '🏅', text: 'Compensacion' },
-    { key: 'admin', href: 'users.html', icon: '👥', text: 'Admin' }
+    { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
+    { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
+    { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Orders' },
+    { key: 'compensation', href: 'compensation.html', icon: ICONS.level, text: 'Compensacion' },
+    { key: 'admin', href: 'users.html', icon: ICONS.users, text: 'Admin' }
   ];
 
   // ── Helpers ─────────────────────────────────────────────
@@ -118,18 +135,32 @@
     const tutorialHref = options.tutorialHref || 'tutorial.html';
 
     return SIDEBAR_ITEMS.map((group) => {
-      const links = group.items
-        .filter((item) => !item.adminOnly || isAdmin)
+      const allowedItems = group.items.filter((item) => !item.adminOnly || isAdmin);
+      if (allowedItems.length === 0) return '';
+      
+      const isGroupActive = allowedItems.some(item => item.key === options.activeSidebar);
+      // We will add logic in JS to toggle the 'collapsed' class on click
+      const collapsedClass = isGroupActive ? '' : ' collapsed';
+
+      const links = allowedItems
         .map((item) => {
           const href = item.key === 'tutorial' ? tutorialHref : item.href;
           const active = item.key === options.activeSidebar ? ' active' : '';
-          return `<a class="app-sidebar-link${active}" href="${href}"><span>${item.icon}</span><span>${item.text}</span></a>`;
+          return `<a class="app-sidebar-link${active}" href="${href}">
+            <span class="app-sidebar-icon">${item.icon}</span>
+            <span class="app-sidebar-text">${item.text}</span>
+          </a>`;
         })
         .join('');
 
-      return `<div class="app-sidebar-group">
-        <div class="app-sidebar-label">${group.label}</div>
-        ${links}
+      return `<div class="app-sidebar-group${collapsedClass}">
+        <button class="app-sidebar-label-btn" type="button">
+          <span class="app-sidebar-label-text">${group.label}</span>
+          <span class="app-sidebar-chevron">${ICONS.chevronDown}</span>
+        </button>
+        <div class="app-sidebar-links">
+          ${links}
+        </div>
       </div>`;
     }).join('');
   }
@@ -293,6 +324,16 @@
     `;
 
     // ── Wire dropdowns ───────────────────────────────────
+
+    // ── Dropdowns & Collapse ─────────────────────────────
+    
+    // Group collapsibles
+    document.querySelectorAll('.app-sidebar-label-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const group = e.currentTarget.closest('.app-sidebar-group');
+        if (group) group.classList.toggle('collapsed');
+      });
+    });
 
     const sidebarBtn = document.getElementById('sidebarUserBtn');
     const sidebarDrop = document.getElementById('sidebarDropdown');
