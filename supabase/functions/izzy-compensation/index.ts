@@ -215,7 +215,7 @@ async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof 
 
   return {
     generated_at: new Date().toISOString(),
-    user: freshUser,
+    user: { nombre: freshUser.nombre, compensation_role: freshUser.compensation_role, active: freshUser.active },
     current_level: config.ranks.find((rank) => rank.code === freshUser.compensation_role) || { code: freshUser.compensation_role, name: freshUser.compensation_role },
     installs_month: personalMonthInstalled,
     active_status: activity.isActive ? "active" : "inactive",
@@ -274,7 +274,15 @@ async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof 
       active_ambassadors: config.ambassadors.filter((ambassador) => ambassador.active).length,
     },
     visible_categories: config.categories.filter((category) => category.active),
-    recent_orders: personalAllOrders.slice(0, 12),
+    recent_orders: personalAllOrders.slice(0, 12).map((order) => ({
+      carrier_name: order.carrier_name,
+      service_category_code: order.service_category_code,
+      sale_type: order.sale_type,
+      compensation_status: order.compensation_status,
+      compensation_estimated_amount: order.compensation_estimated_amount,
+      actual_install_date: order.actual_install_date,
+      reserve_release_at: order.reserve_release_at,
+    })),
   };
 }
 

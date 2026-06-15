@@ -395,6 +395,16 @@
     `;
   }
 
+  function statusLabel(status) {
+    const labels = { estimated: 'Estimado', approved: 'Aprobado', reserve: 'En Reserva', released: 'Liberado', paid: 'Pagado', chargeback: 'Chargeback' };
+    return labels[status] || 'Estimado';
+  }
+
+  function categoryName(data, code) {
+    const cat = (data.visible_categories || []).find((c) => c.code === code);
+    return cat ? cat.name : (code || 'Servicio');
+  }
+
   function renderLevel(data) {
     document.getElementById('levelCards').innerHTML = `
       <div class="mini-card">
@@ -419,7 +429,7 @@
           ${data.recent_orders.length ? data.recent_orders.slice(0, 4).map((order) => `
             <div class="list-item">
               <strong>${esc(order.carrier_name || 'Carrier')}</strong>
-              <div class="muted">${esc(order.service_category_code || 'standard')} · ${esc(order.compensation_status || 'estimated')} · ${money(order.compensation_estimated_amount || 0)}</div>
+              <div class="muted">${esc(categoryName(data, order.service_category_code))} · ${statusLabel(order.compensation_status)} · ${money(order.compensation_estimated_amount || 0)}</div>
             </div>
           `).join('') : '<div class="muted">Sin órdenes recientes.</div>'}
         </div>
