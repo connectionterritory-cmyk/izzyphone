@@ -244,7 +244,8 @@ async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof 
     },
     recruit_tree: {
       direct_recruits: getSponsoredRecruits(users, freshUser.id).length,
-      network_size: Array.from(users).filter((candidate) => candidate.id !== freshUser.id && collectSponsoredDescendants(users, freshUser.id).has(candidate.id)).length,
+      indirect_recruits: Math.max(0, collectSponsoredDescendants(users, freshUser.id).size - getSponsoredRecruits(users, freshUser.id).length),
+      network_size: collectSponsoredDescendants(users, freshUser.id).size,
       recruits: buildRecruitTree(users, freshUser.id),
     },
     supervisor_view: ["supervisor", "director"].includes(freshUser.compensation_role)

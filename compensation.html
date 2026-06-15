@@ -427,8 +427,9 @@
     `;
   }
 
-  function renderRecruitNode(node) {
+  function renderRecruitNode(node, depth = 0) {
     const recruits = Array.isArray(node.recruits) ? node.recruits : [];
+    const relationship = depth === 0 ? 'Reclutado directo' : 'Reclutado indirecto';
     return `
       <div class="tree-node">
         <div class="tree-card">
@@ -437,11 +438,11 @@
             <div class="badge blue">${esc(node.compensation_role || 'novato')}</div>
           </div>
           <div class="tree-lines">
-            <span>Reclutado por ti</span>
+            <span>${relationship}</span>
             <span>${node.manager_user_id ? `Directo de supervisor #${esc(node.manager_user_id)}` : 'Sin supervisor directo asignado'}</span>
           </div>
         </div>
-        ${recruits.length ? `<div class="tree-children">${recruits.map((child) => renderRecruitNode(child)).join('')}</div>` : ''}
+        ${recruits.length ? `<div class="tree-children">${recruits.map((child) => renderRecruitNode(child, depth + 1)).join('')}</div>` : ''}
       </div>
     `;
   }
@@ -455,9 +456,14 @@
         <p class="muted" style="margin-top:8px;">Personas que entraron al sistema con tu patrocinio.</p>
       </div>
       <div class="mini-card">
+        <h3>Reclutados Indirectos</h3>
+        <div class="value">${root.indirect_recruits || 0}</div>
+        <p class="muted" style="margin-top:8px;">Personas dentro de tu red que fueron reclutadas por tus directos o descendientes.</p>
+      </div>
+      <div class="mini-card">
         <h3>Red Total</h3>
         <div class="value">${root.network_size || 0}</div>
-        <p class="muted" style="margin-top:8px;">Incluye toda tu red descendente por reclutamiento.</p>
+        <p class="muted" style="margin-top:8px;">Suma de directos e indirectos visibles en tu árbol.</p>
       </div>
     `;
     const recruits = Array.isArray(root.recruits) ? root.recruits : [];
