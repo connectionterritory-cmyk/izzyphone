@@ -197,7 +197,14 @@
   let adminData = null;
 
   try {
-    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+    const rawSession = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null';
+    const parsedSession = JSON.parse(rawSession);
+    if (parsedSession) {
+      const serialized = JSON.stringify(parsedSession);
+      localStorage.setItem(SESSION_KEY, serialized);
+      sessionStorage.setItem(SESSION_KEY, serialized);
+    }
+    currentUser = parsedSession?.user || null;
   } catch {
     currentUser = null;
   }
@@ -239,7 +246,18 @@
   }
 
   function getSession() {
-    try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; }
+    try {
+      const raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null';
+      const parsed = JSON.parse(raw);
+      if (parsed) {
+        const serialized = JSON.stringify(parsed);
+        localStorage.setItem(SESSION_KEY, serialized);
+        sessionStorage.setItem(SESSION_KEY, serialized);
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
   }
 
   async function apiFetch(resource = 'dashboard', options = {}) {
@@ -255,8 +273,7 @@
       return new Response('{}', { status: 503 });
     }
     if (res.status === 401) {
-      localStorage.removeItem(SESSION_KEY);
-      window.location.href = 'index.html';
+      console.warn('[compensation] unauthorized response; preserving session for diagnosis');
     }
     return res;
   }

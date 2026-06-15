@@ -169,7 +169,7 @@
   let resetRequests = [];
 
   try {
-    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null')?.user || null;
   } catch {
     currentUser = null;
   }
@@ -190,7 +190,7 @@
 
   function getSession() {
     try {
-      const raw = localStorage.getItem(SESSION_KEY);
+      const raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;

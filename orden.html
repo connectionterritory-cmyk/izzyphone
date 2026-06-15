@@ -623,7 +623,7 @@
   const SESSION_KEY = 'izzy_session';
   let currentUser = null;
   try {
-    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null')?.user || null;
   } catch {
     currentUser = null;
   }
@@ -644,7 +644,7 @@
   async function apiFetch(path, options = {}) {
     const session = (() => {
       try {
-        return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        return JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null');
       } catch {
         return null;
       }
