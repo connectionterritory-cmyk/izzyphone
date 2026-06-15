@@ -528,32 +528,42 @@
   window.saveSection = saveSection;
 
   async function loadDashboard() {
-    const res = await apiFetch('dashboard');
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      showToast(data.error || 'No se pudo cargar compensación', '#b91c1c');
-      return;
+    try {
+      const res = await apiFetch('dashboard');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data.error || 'No se pudo cargar compensación', '#b91c1c');
+        return;
+      }
+      dashboardData = data;
+      renderTopStats(data);
+      renderLevel(data);
+      renderCommissionTable(data);
+      renderElite(data);
+      renderProgress(data);
+      renderBonuses(data);
+      renderAmbassadors(data);
+    } catch (error) {
+      console.error('[compensation] loadDashboard failed', error);
+      showToast('No se pudo conectar con compensación', '#b91c1c');
     }
-    dashboardData = data;
-    renderTopStats(data);
-    renderLevel(data);
-    renderCommissionTable(data);
-    renderElite(data);
-    renderProgress(data);
-    renderBonuses(data);
-    renderAmbassadors(data);
   }
 
   async function loadAdmin() {
     if (!isAdmin) return;
-    const res = await apiFetch('admin');
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      showToast(data.error || 'No se pudo cargar admin', '#b91c1c');
-      return;
+    try {
+      const res = await apiFetch('admin');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data.error || 'No se pudo cargar admin', '#b91c1c');
+        return;
+      }
+      adminData = data;
+      renderAdmin(data);
+    } catch (error) {
+      console.error('[compensation] loadAdmin failed', error);
+      showToast('No se pudo cargar configuración admin', '#b91c1c');
     }
-    adminData = data;
-    renderAdmin(data);
   }
 
   renderTabs();
