@@ -10,7 +10,6 @@ import {
   loadCompensationConfig,
   normalizeCompensationRole,
   normalizeSaleType,
-  syncRankPromotions,
   syncReserveStatuses,
   type CompensationConfig,
   type CompensationOrder,
@@ -142,11 +141,8 @@ function sumOrderAmounts(orders: CompensationOrder[], statuses: string[]) {
 async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof createAdminClient>) {
   await syncReserveStatuses(supabase);
   const config = await loadCompensationConfig(supabase);
-  let users = await getAllCompUsers(supabase);
-  let orders = await getCompOrders(supabase);
-  await syncRankPromotions(supabase, config, users, orders);
-  users = await getAllCompUsers(supabase);
-  orders = await getCompOrders(supabase);
+  const users = await getAllCompUsers(supabase);
+  const orders = await getCompOrders(supabase);
 
   const freshUser = users.find((row) => row.id === user.id) || user;
   const activity = buildUserActivity(freshUser, users, orders, config);
@@ -208,6 +204,7 @@ async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof 
       active_supervisors: activity.activeSupervisors.length,
       org_installs_month: activity.descendantOrdersMonth.length,
       requirements: progressRequirement,
+      admin_assigned_level: true,
     },
     supervisor_view: ["supervisor", "director"].includes(freshUser.compensation_role)
       ? {
