@@ -247,7 +247,13 @@
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
     if (session?.token) headers.Authorization = `Bearer ${session.token}`;
     const join = resource ? `?resource=${encodeURIComponent(resource)}` : '';
-    const res = await fetch(`${FUNCTIONS_BASE_URL}/${FUNCTION_NAME}${join}`, { ...options, headers });
+    let res;
+    try {
+      res = await fetch(`${FUNCTIONS_BASE_URL}/${FUNCTION_NAME}${join}`, { ...options, headers });
+    } catch {
+      // fetch aborted (e.g. concurrent redirect) or network error — swallow silently
+      return new Response('{}', { status: 0 });
+    }
     if (res.status === 401) {
       localStorage.removeItem(SESSION_KEY);
       window.location.href = 'index.html';
