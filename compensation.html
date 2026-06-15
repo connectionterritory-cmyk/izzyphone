@@ -756,6 +756,18 @@
         return;
       }
       dashboardData = data;
+      renderIzzyNavigation({
+        mountId: 'appNav',
+        user: currentUser,
+        isAdmin,
+        activeSidebar: 'compensation',
+        compRole: data.user.compensation_role,
+        activeMobile: 'compensation',
+        pageTitle: 'Plan de Compensación',
+        mobileTitle: 'Compensación',
+        tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
+        mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html'
+      });
       renderTabs(data.user.compensation_role);
       renderTopStats(data);
       renderLevel(data);

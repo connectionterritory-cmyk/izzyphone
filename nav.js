@@ -31,11 +31,9 @@
       label: 'Plan de Compensacion',
       items: [
         { key: 'comp-level', href: 'compensation.html?tab=level', icon: ICONS.level, text: 'Mi Nivel' },
-        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: ICONS.tree, text: 'Mi Arbol' },
+        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: ICONS.tree, text: 'Mi Arbol', roles: ['supervisor', 'director'] },
         { key: 'comp-table', href: 'compensation.html?tab=table', icon: ICONS.table, text: 'Tabla de Comisiones' },
-        { key: 'comp-elite', href: 'compensation.html?tab=elite', icon: ICONS.elite, text: 'Productor Elite' },
-        { key: 'comp-progress', href: 'compensation.html?tab=progress', icon: ICONS.progress, text: 'Progreso de Carrera' },
-        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: ICONS.bonuses, text: 'Bonos' },
+        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: ICONS.bonuses, text: 'Bonos', roles: ['supervisor', 'director'] },
         { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: ICONS.ambassadors, text: 'Programa Embajador' }
       ]
     },
@@ -132,10 +130,15 @@
 
   function renderSidebarGroups(options) {
     const isAdmin = Boolean(options.isAdmin);
+    const compRole = options.compRole || options.user?.compensation_role || 'agent';
     const tutorialHref = options.tutorialHref || 'tutorial.html';
 
     return SIDEBAR_ITEMS.map((group) => {
-      const allowedItems = group.items.filter((item) => !item.adminOnly || isAdmin);
+      const allowedItems = group.items.filter((item) => {
+        if (item.adminOnly && !isAdmin) return false;
+        if (item.roles && !item.roles.includes(compRole) && !isAdmin) return false;
+        return true;
+      });
       if (allowedItems.length === 0) return '';
       
       const isGroupActive = allowedItems.some(item => item.key === options.activeSidebar);
