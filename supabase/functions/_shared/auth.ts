@@ -17,7 +17,7 @@ type SessionPayload = SessionUser & {
   iat: number;
 };
 
-const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const encoder = new TextEncoder();
 const PASSWORD_ITERATIONS = 100_000;
 
