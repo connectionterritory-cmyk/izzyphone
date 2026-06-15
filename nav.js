@@ -23,27 +23,26 @@
       items: [
         { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
         { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
-        { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Orders' },
+        { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
         { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
       ]
     },
     {
       section: 'compensation',
-      label: 'Plan de Compensacion',
+      label: 'Plan de Compensación',
       items: [
         { key: 'comp-level', href: 'compensation.html?tab=level', icon: ICONS.level, text: 'Mi Nivel' },
-        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: ICONS.tree, text: 'Mi Arbol', roles: ['supervisor', 'director'] },
+        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: ICONS.tree, text: 'Mi Árbol', roles: ['supervisor', 'director'] },
         { key: 'comp-table', href: 'compensation.html?tab=table', icon: ICONS.table, text: 'Tabla de Comisiones' },
-        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: ICONS.bonuses, text: 'Bonos', roles: ['supervisor', 'director'] },
-        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: ICONS.ambassadors, text: 'Programa Embajador' }
+        { key: 'comp-bonuses', href: 'compensation.html?tab=bonuses', icon: ICONS.bonuses, text: 'Bonos', roles: ['supervisor', 'director'] }
       ]
     },
     {
       section: 'admin',
-      label: 'Admin',
+      label: 'Administración',
       items: [
         { key: 'users', href: 'users.html', icon: ICONS.users, text: 'Usuarios', adminOnly: true },
-        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensacion', adminOnly: true },
+        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensación', adminOnly: true },
         { key: 'tutorial-admin', href: 'tutorial-admin.html', icon: ICONS.tutorial, text: 'Tutorial Admin', adminOnly: true }
       ]
     }
@@ -52,8 +51,8 @@
   const MOBILE_ITEMS = [
     { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
     { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
-    { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Orders' },
-    { key: 'compensation', href: 'compensation.html', icon: ICONS.level, text: 'Compensacion' },
+    { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
+    { key: 'compensation', href: 'compensation.html', icon: ICONS.level, text: 'Compensación' },
     { key: 'admin', href: 'users.html', icon: ICONS.users, text: 'Admin' }
   ];
 
