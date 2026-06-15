@@ -91,6 +91,16 @@
           <input class="admin-input" id="newAgentEmail" type="email" placeholder="nombre@correo.com">
         </div>
         <div>
+          <label class="admin-label">Nivel Inicial</label>
+          <select class="admin-select" id="newAgentCompRole">
+            <option value="novato">Novato</option>
+            <option value="agente">Agente</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="director">Director</option>
+            <option value="embajador">Embajador</option>
+          </select>
+        </div>
+        <div>
           <label class="admin-label">Password</label>
           <input class="admin-input" id="newAgentPassword" type="password" placeholder="Password temporal o definitivo">
         </div>
@@ -231,7 +241,7 @@
       ? adminUsers.map((user) => `
         <div class="admin-item">
           <div class="admin-item-title">${esc(user.nombre)}</div>
-          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
+          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · nivel ${esc(user.compensation_role || 'novato')} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
         </div>
       `).join('')
       : '<div class="admin-empty">No hay agentes configurados.</div>';
@@ -270,6 +280,7 @@
       nombre: document.getElementById('newAgentName').value.trim(),
       email: document.getElementById('newAgentEmail').value.trim().toLowerCase(),
       rol: document.getElementById('newAgentRole').value,
+      compensation_role: document.getElementById('newAgentCompRole').value,
       password: document.getElementById('newAgentPassword').value,
     };
     if (!payload.pin_code || !payload.nombre || !payload.email || !payload.password) {
@@ -287,6 +298,7 @@
       renderAdminLists();
       ['newAgentPin','newAgentName','newAgentEmail','newAgentPassword'].forEach((id) => { document.getElementById(id).value = ''; });
       document.getElementById('newAgentRole').value = 'agente';
+      document.getElementById('newAgentCompRole').value = 'novato';
       showToast('✅ Agente guardado', '#16a34a');
     } catch {
       showToast('❌ No se pudo guardar el agente', '#b91c1c');

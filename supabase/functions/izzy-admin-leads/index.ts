@@ -549,7 +549,7 @@ async function handleAdminConfig(user: { rol: Role }, supabase: ReturnType<typeo
   ensureAdmin(user);
 
   const [{ data: users, error: usersError }, { data: quoters, error: quotersError }, { data: resetRequests, error: resetError }] = await Promise.all([
-    supabase.from("izzy_portal_users").select("id, pin_code, nombre, email, rol, active, created_at, updated_at, password_hash").order("nombre", { ascending: true }),
+    supabase.from("izzy_portal_users").select("id, pin_code, nombre, email, rol, compensation_role, active, created_at, updated_at, password_hash").order("nombre", { ascending: true }),
     supabase.from("izzy_quoters").select("*").order("nombre", { ascending: true }),
     supabase.from("izzy_password_reset_requests").select("id, user_id, pin_code, email, status, requested_at, resolved_at, user:izzy_portal_users(nombre)").order("requested_at", { ascending: false }).limit(20),
   ]);
@@ -576,6 +576,7 @@ async function handleCreateUser(req: Request, user: { rol: Role }, supabase: Ret
     nombre: cleanString(body?.nombre),
     email: normalizeEmail(body?.email),
     rol: normalizeRole(body?.rol),
+    compensation_role: normalizeCompensationRole(body?.compensation_role),
     active: body?.active === false ? false : true,
   };
 
@@ -588,7 +589,7 @@ async function handleCreateUser(req: Request, user: { rol: Role }, supabase: Ret
   const { data, error } = await supabase
     .from("izzy_portal_users")
     .insert({ ...payload, password_hash: passwordData.hash, password_salt: passwordData.salt })
-    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
+    .select("id, pin_code, nombre, email, rol, compensation_role, active, created_at, updated_at")
     .single();
 
   if (error) {
@@ -614,7 +615,7 @@ async function handleResetUserPassword(req: Request, user: { rol: Role }, supaba
     .from("izzy_portal_users")
     .update({ password_hash: passwordData.hash, password_salt: passwordData.salt })
     .eq("id", userId)
-    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
+    .select("id, pin_code, nombre, email, rol, compensation_role, active, created_at, updated_at")
     .single();
 
   if (error) {
@@ -646,7 +647,7 @@ async function handleUpdateUserEmail(req: Request, user: { rol: Role }, supabase
     .from("izzy_portal_users")
     .update({ email })
     .eq("id", userId)
-    .select("id, pin_code, nombre, email, rol, active, created_at, updated_at")
+    .select("id, pin_code, nombre, email, rol, compensation_role, active, created_at, updated_at")
     .single();
 
   if (error) {
