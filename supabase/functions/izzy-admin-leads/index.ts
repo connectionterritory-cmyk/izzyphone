@@ -667,6 +667,45 @@ async function handleUpdateUserEmail(req: Request, user: { rol: Role }, supabase
   return jsonResponse({ user: data });
 }
 
+async function handleUpdateUser(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
+  ensureAdmin(user);
+  const body = await req.json();
+  const userId = Number(body?.user_id);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return jsonResponse({ error: "user_id is required" }, { status: 400 });
+  }
+
+  const payload = {
+    pin_code: normalizePin(body?.pin_code || body?.pin || ""),
+    nombre: cleanString(body?.nombre),
+    email: cleanString(body?.email) ? normalizeEmail(body?.email) : null,
+    rol: normalizeRole(body?.rol),
+    compensation_role: normalizeCompensationRole(body?.compensation_role),
+    sponsor_user_id: body?.sponsor_user_id ? Number(body.sponsor_user_id) : null,
+    manager_user_id: body?.manager_user_id ? Number(body.manager_user_id) : null,
+    active: body?.active === false ? false : true,
+  };
+
+  if (!payload.pin_code || !payload.nombre) {
+    return jsonResponse({ error: "pin_code and nombre are required" }, { status: 400 });
+  }
+
+  const { data, error } = await supabase
+    .from("izzy_portal_users")
+    .update(payload)
+    .eq("id", userId)
+    .select("id, pin_code, nombre, email, rol, compensation_role, sponsor_user_id, manager_user_id, active, created_at, updated_at")
+    .single();
+
+  if (error) {
+    console.error("[izzy-admin-leads] update user failed", error);
+    return jsonResponse({ error: "Could not update user" }, { status: 500 });
+  }
+
+  return jsonResponse({ user: data });
+}
+
 async function handleResolveResetRequest(req: Request, user: { rol: Role }, supabase: ReturnType<typeof createAdminClient>) {
   ensureAdmin(user);
   const body = await req.json();
@@ -1023,6 +1062,10 @@ async function handlePost(req: Request) {
 
   if (resource === "user-email") {
     return await handleUpdateUserEmail(req, user, supabase);
+  }
+
+  if (resource === "user-update") {
+    return await handleUpdateUser(req, user, supabase);
   }
 
   if (resource === "resolve-reset-request") {

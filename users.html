@@ -45,6 +45,11 @@
   .admin-item { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: #fcfcfd; }
   .admin-item-title { font-size: 14px; font-weight: 700; }
   .admin-item-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .admin-item-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .admin-item-btn {
+    border: 1px solid var(--border); background: #fff; color: var(--blue);
+    border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
   .admin-empty { font-size: 13px; color: var(--muted); }
   .tree-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
   .tree-meta { font-size: 12px; color: var(--muted); }
@@ -61,6 +66,20 @@
   .tree-lines { display: grid; gap: 3px; margin-top: 8px; }
   .tree-lines span { font-size: 12px; color: var(--muted); }
   .tree-children { margin-left: 22px; margin-top: 10px; padding-left: 14px; border-left: 2px solid #dbe4f3; display: grid; gap: 10px; }
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, .45);
+    z-index: 1200; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-card {
+    width: min(760px, 100%); max-height: 88vh; overflow: auto; background: #fff;
+    border-radius: 18px; box-shadow: 0 20px 40px rgba(15, 23, 42, .22); padding: 18px;
+  }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .modal-head h3 { font-size: 18px; }
+  .modal-close {
+    border: none; background: #eef2ff; color: var(--blue); border-radius: 10px; width: 34px; height: 34px; font-size: 18px; cursor: pointer;
+  }
   .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999; white-space: nowrap; }
   @media (max-width: 760px) { .admin-panel { grid-template-columns: 1fr; } .admin-row2 { grid-template-columns: 1fr; } }
 </style>
@@ -206,6 +225,70 @@
 
  </div>
 <div class="toast" id="toast"></div>
+<div class="modal-overlay" id="editUserModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Editar Recluta</h3>
+      <button class="modal-close" type="button" onclick="closeEditUserModal()">&times;</button>
+    </div>
+    <div class="admin-form">
+      <input type="hidden" id="editUserId">
+      <div class="admin-row2">
+        <div>
+          <label class="admin-label">PIN</label>
+          <input class="admin-input" id="editUserPin" type="text" placeholder="ABCD0001">
+        </div>
+        <div>
+          <label class="admin-label">Rol Portal</label>
+          <select class="admin-select" id="editUserRole">
+            <option value="agente">Agente</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-row2">
+        <div>
+          <label class="admin-label">Nombre</label>
+          <input class="admin-input" id="editUserName" type="text" placeholder="Nombre completo">
+        </div>
+        <div>
+          <label class="admin-label">Email</label>
+          <input class="admin-input" id="editUserEmailField" type="email" placeholder="nombre@correo.com">
+        </div>
+      </div>
+      <div class="admin-row2">
+        <div>
+          <label class="admin-label">Nivel</label>
+          <select class="admin-select" id="editUserCompRole">
+            <option value="novato">Novato</option>
+            <option value="agente">Agente</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="director">Director</option>
+            <option value="embajador">Embajador</option>
+          </select>
+        </div>
+        <div>
+          <label class="admin-label">Estado</label>
+          <select class="admin-select" id="editUserActive">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-row2">
+        <div>
+          <label class="admin-label">Quien lo recluto</label>
+          <select class="admin-select" id="editUserSponsor"></select>
+        </div>
+        <div>
+          <label class="admin-label">Supervisor directo</label>
+          <select class="admin-select" id="editUserManager"></select>
+        </div>
+      </div>
+      <button class="admin-submit" id="saveEditUserBtn" onclick="saveUserEdits()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
 
 <script src="nav.js"></script>
 <script>
@@ -216,6 +299,7 @@
   let adminUsers = [];
   let adminQuoters = [];
   let resetRequests = [];
+  let editingUserId = null;
 
   try {
     currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null')?.user || null;
@@ -281,6 +365,9 @@
         <div class="admin-item">
           <div class="admin-item-title">${esc(user.nombre)}</div>
           <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · nivel ${esc(user.compensation_role || 'novato')} · reclutado por ${esc(user.sponsor_name || 'sin asignar')} · directo de ${esc(user.manager_name || 'sin asignar')} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
+          <div class="admin-item-actions">
+            <button class="admin-item-btn" type="button" onclick="openEditUserModal(${user.id})">Editar</button>
+          </div>
         </div>
       `).join('')
       : '<div class="admin-empty">No hay agentes configurados.</div>';
@@ -307,6 +394,8 @@
     ).join('');
     document.getElementById('newAgentSponsorUser').innerHTML = hierarchyOptions;
     document.getElementById('newAgentManagerUser').innerHTML = hierarchyOptions;
+    document.getElementById('editUserSponsor').innerHTML = hierarchyOptions;
+    document.getElementById('editUserManager').innerHTML = hierarchyOptions;
 
     resetRequestsList.innerHTML = resetRequests.length
       ? resetRequests.map((item) => `
@@ -320,6 +409,65 @@
 
     renderHierarchyTree();
   }
+  function openEditUserModal(userId) {
+    const user = adminUsers.find((item) => item.id === userId);
+    if (!user) return;
+    editingUserId = userId;
+    document.getElementById('editUserId').value = String(user.id);
+    document.getElementById('editUserPin').value = user.pin_code || '';
+    document.getElementById('editUserRole').value = user.rol || 'agente';
+    document.getElementById('editUserName').value = user.nombre || '';
+    document.getElementById('editUserEmailField').value = user.email || '';
+    document.getElementById('editUserCompRole').value = user.compensation_role || 'novato';
+    document.getElementById('editUserActive').value = String(user.active !== false);
+    document.getElementById('editUserSponsor').value = user.sponsor_user_id ? String(user.sponsor_user_id) : '';
+    document.getElementById('editUserManager').value = user.manager_user_id ? String(user.manager_user_id) : '';
+    document.getElementById('editUserModal').classList.add('show');
+  }
+  window.openEditUserModal = openEditUserModal;
+
+  function closeEditUserModal() {
+    editingUserId = null;
+    document.getElementById('editUserModal').classList.remove('show');
+  }
+  window.closeEditUserModal = closeEditUserModal;
+
+  async function saveUserEdits() {
+    const userId = Number(document.getElementById('editUserId').value || editingUserId);
+    if (!userId) return;
+    const payload = {
+      user_id: userId,
+      pin_code: document.getElementById('editUserPin').value.trim().toUpperCase(),
+      rol: document.getElementById('editUserRole').value,
+      nombre: document.getElementById('editUserName').value.trim(),
+      email: document.getElementById('editUserEmailField').value.trim().toLowerCase(),
+      compensation_role: document.getElementById('editUserCompRole').value,
+      active: document.getElementById('editUserActive').value === 'true',
+      sponsor_user_id: document.getElementById('editUserSponsor').value || null,
+      manager_user_id: document.getElementById('editUserManager').value || null,
+    };
+    if (!payload.pin_code || !payload.nombre) {
+      showToast('⚠️ PIN y nombre son requeridos', '#b45309');
+      return;
+    }
+    const btn = document.getElementById('saveEditUserBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=user-update', { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Update user failed');
+      await fetchAdminConfig();
+      closeEditUserModal();
+      showToast('✅ Recluta actualizado', '#16a34a');
+    } catch {
+      showToast('❌ No se pudo actualizar el recluta', '#b91c1c');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar cambios';
+    }
+  }
+  window.saveUserEdits = saveUserEdits;
 
   function buildHierarchyNode(user, childrenByManager) {
     const children = childrenByManager.get(user.id) || [];
