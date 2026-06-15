@@ -43,7 +43,7 @@ body.has-app-shell {
 .app-sidebar-inner {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 8px;
   height: 100%;
   padding: 24px 16px 18px;
   overflow-y: auto;
@@ -551,7 +551,7 @@ body.has-app-shell {
 
 .page-shell-eyebrow {
   display: inline-block;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
   font-size: 11px;
   font-weight: 700;
   color: var(--app-shell-green);
@@ -682,7 +682,7 @@ body.has-app-shell {
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
 }
 
 .profile-avatar-change {
