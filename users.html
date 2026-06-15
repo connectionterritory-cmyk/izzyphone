@@ -58,6 +58,7 @@
     min-width: 240px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff;
     padding: 9px 12px; font: inherit; color: var(--text);
   }
+  .tree-controls .admin-select { max-width: 220px; }
   .tree-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
   .tree-summary-card {
     border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
@@ -81,9 +82,66 @@
   .tree-name { font-size: 14px; font-weight: 700; color: var(--text); }
   .tree-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 10px; background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 700; }
   .tree-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 9px; background: #eef6ff; color: #24548b; font-size: 11px; font-weight: 700; }
+  .tree-pill.alert { background: #fff7ed; color: #b45309; }
+  .tree-pill.ok { background: #ecfdf5; color: #0f766e; }
   .tree-lines { display: grid; gap: 3px; margin-top: 8px; }
   .tree-lines span { font-size: 12px; color: var(--muted); }
   .tree-children { margin-left: 22px; margin-top: 10px; padding-left: 14px; border-left: 2px solid #dbe4f3; display: grid; gap: 10px; }
+  .tree-layout { display: grid; gap: 14px; }
+  .tree-audit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .tree-audit-card {
+    border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; background: #fff;
+  }
+  .tree-audit-card strong { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .tree-audit-card span { display: block; margin-top: 6px; font-size: 24px; font-weight: 700; color: var(--blue); }
+  .tree-audit-card small { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+  .tree-audit-card.warn span { color: #b45309; }
+  .tree-audit-card.error span { color: #b91c1c; }
+  .org-chart-shell {
+    border: 1px solid var(--border); border-radius: 18px; background:
+      radial-gradient(circle at top right, rgba(36, 84, 139, .08), transparent 28%),
+      linear-gradient(180deg, #ffffff 0%, #f7f9fd 100%);
+    padding: 16px;
+    overflow: hidden;
+  }
+  .org-chart-toolbar {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .org-chart-meta { font-size: 12px; color: var(--muted); }
+  .org-chart-stage {
+    overflow: auto; padding-bottom: 6px;
+  }
+  .org-chart {
+    display: flex; gap: 28px; align-items: flex-start; min-width: max-content; transform-origin: top left;
+  }
+  .org-column {
+    min-width: 240px; display: grid; gap: 12px; position: relative;
+  }
+  .org-column::before {
+    content: ""; position: absolute; left: -14px; top: 18px; bottom: 18px; width: 2px; background: #dbe4f3;
+  }
+  .org-column:first-child::before { display: none; }
+  .org-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+    padding-left: 2px;
+  }
+  .org-card {
+    border: 1px solid #cfe0fb; border-radius: 18px; background: linear-gradient(135deg, #1a3a6b 0%, #4d87e8 100%);
+    color: #fff; padding: 14px; box-shadow: 0 10px 24px rgba(26, 58, 107, .15); position: relative;
+  }
+  .org-card::before {
+    content: ""; position: absolute; left: -14px; top: 24px; width: 14px; height: 2px; background: #dbe4f3;
+  }
+  .org-column:first-child .org-card::before { display: none; }
+  .org-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .org-card-title { font-size: 15px; font-weight: 700; line-height: 1.2; }
+  .org-card-sub { font-size: 12px; color: rgba(255,255,255,.78); margin-top: 6px; line-height: 1.45; }
+  .org-card-footer { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .org-chip {
+    display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 8px;
+    background: rgba(255,255,255,.14); color: #fff; font-size: 11px; font-weight: 700;
+  }
+  .org-empty { font-size: 13px; color: var(--muted); padding: 10px 0 4px; }
   .modal-overlay {
     display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, .45);
     z-index: 1200; align-items: center; justify-content: center; padding: 20px;
@@ -237,16 +295,33 @@
         <div class="tree-meta" id="treeCount">0 usuarios</div>
       </div>
       <div class="tree-controls">
-        <select class="admin-select" id="treeViewMode" style="max-width:220px;" onchange="updateHierarchyControls()">
+        <select class="admin-select" id="treeViewMode" onchange="updateHierarchyControls()">
           <option value="manager">Ver por supervisor</option>
           <option value="sponsor">Ver por reclutador</option>
         </select>
+        <select class="admin-select" id="treeRenderMode" onchange="updateHierarchyControls()">
+          <option value="org">Vista organigrama</option>
+          <option value="list">Vista lista</option>
+        </select>
         <input class="tree-search" id="treeSearch" type="search" placeholder="Buscar por nombre, PIN o nivel..." oninput="updateHierarchyControls()">
+        <select class="admin-select" id="treeRootSelect" onchange="updateHierarchyControls()">
+          <option value="">Toda la red</option>
+        </select>
+        <select class="admin-select" id="treeZoom" onchange="updateHierarchyControls()">
+          <option value="0.85">Zoom 85%</option>
+          <option value="1" selected>Zoom 100%</option>
+          <option value="1.15">Zoom 115%</option>
+          <option value="1.3">Zoom 130%</option>
+        </select>
         <button class="admin-item-btn" type="button" onclick="setTreeExpansion(true)">Expandir todo</button>
         <button class="admin-item-btn" type="button" onclick="setTreeExpansion(false)">Colapsar todo</button>
       </div>
       <div id="treeSummary" class="tree-summary-grid"></div>
-      <div id="hierarchyTree" class="tree-root-list"></div>
+      <div id="treeAudit" class="tree-audit-grid"></div>
+      <div class="tree-layout">
+        <div id="orgChartMount"></div>
+        <div id="hierarchyTree" class="tree-root-list"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -330,8 +405,11 @@
   let editingUserId = null;
   const hierarchyState = {
     mode: 'manager',
+    render: 'org',
     query: '',
-    expandAll: false
+    expandAll: false,
+    rootId: '',
+    zoom: 1
   };
 
   try {
@@ -429,6 +507,10 @@
     document.getElementById('newAgentManagerUser').innerHTML = hierarchyOptions;
     document.getElementById('editUserSponsor').innerHTML = hierarchyOptions;
     document.getElementById('editUserManager').innerHTML = hierarchyOptions;
+    document.getElementById('treeRootSelect').innerHTML = ['<option value="">Toda la red</option>'].concat(
+      adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`)
+    ).join('');
+    document.getElementById('treeRootSelect').value = hierarchyState.rootId;
 
     resetRequestsList.innerHTML = resetRequests.length
       ? resetRequests.map((item) => `
@@ -506,6 +588,10 @@
     return hierarchyState.mode === 'sponsor' ? 'sponsor' : 'manager';
   }
 
+  function getHierarchyRenderMode() {
+    return hierarchyState.render === 'list' ? 'list' : 'org';
+  }
+
   function getHierarchyLabel(mode) {
     return mode === 'sponsor' ? 'reclutador' : 'supervisor';
   }
@@ -529,6 +615,99 @@
       items.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
     });
     return childrenByParent;
+  }
+
+  function getSubtreeIds(rootId, childrenByParent) {
+    if (!rootId) return new Set(adminUsers.map((user) => user.id));
+    const allowed = new Set([rootId]);
+    const queue = [rootId];
+    while (queue.length) {
+      const current = queue.shift();
+      const children = childrenByParent.get(current) || [];
+      children.forEach((child) => {
+        if (!allowed.has(child.id)) {
+          allowed.add(child.id);
+          queue.push(child.id);
+        }
+      });
+    }
+    return allowed;
+  }
+
+  function computeAudit(mode, childrenByParent) {
+    const issues = {
+      selfLinks: 0,
+      orphanLinks: 0,
+      cycles: 0,
+      inactiveUsers: 0,
+    };
+    const parentField = mode === 'sponsor' ? 'sponsor_user_id' : 'manager_user_id';
+    const ids = new Set(adminUsers.map((user) => user.id));
+    adminUsers.forEach((user) => {
+      if (user.active === false) issues.inactiveUsers += 1;
+      if (user[parentField] && user[parentField] === user.id) issues.selfLinks += 1;
+      if (user[parentField] && !ids.has(user[parentField])) issues.orphanLinks += 1;
+    });
+
+    const visited = new Set();
+    const stack = new Set();
+    function walk(userId) {
+      if (stack.has(userId)) {
+        issues.cycles += 1;
+        return;
+      }
+      if (visited.has(userId)) return;
+      visited.add(userId);
+      stack.add(userId);
+      const children = childrenByParent.get(userId) || [];
+      children.forEach((child) => walk(child.id));
+      stack.delete(userId);
+    }
+    adminUsers.forEach((user) => walk(user.id));
+    return issues;
+  }
+
+  function renderAudit(mode, roots, childrenByParent, visibleCount) {
+    const mount = document.getElementById('treeAudit');
+    const issues = computeAudit(mode, childrenByParent);
+    const health = issues.selfLinks + issues.orphanLinks + issues.cycles;
+    mount.innerHTML = `
+      <div class="tree-audit-card ${health ? 'warn' : ''}">
+        <strong>Validación</strong>
+        <span>${health ? 'Atención' : 'Saludable'}</span>
+        <small>${health ? 'Hay relaciones que conviene corregir antes de seguir creciendo.' : 'No se detectaron errores estructurales en la jerarquía visible.'}</small>
+      </div>
+      <div class="tree-audit-card ${issues.cycles ? 'error' : ''}">
+        <strong>Ciclos</strong>
+        <span>${issues.cycles}</span>
+        <small>Un ciclo rompe la lectura del árbol porque alguien termina colgando de sí mismo por cadena.</small>
+      </div>
+      <div class="tree-audit-card ${issues.orphanLinks ? 'warn' : ''}">
+        <strong>Huérfanos</strong>
+        <span>${issues.orphanLinks}</span>
+        <small>Usuarios apuntando a un supervisor o reclutador que ya no existe.</small>
+      </div>
+      <div class="tree-audit-card ${issues.selfLinks ? 'error' : ''}">
+        <strong>Autoasignados</strong>
+        <span>${issues.selfLinks}</span>
+        <small>Usuarios asignados como su propio supervisor o reclutador.</small>
+      </div>
+      <div class="tree-audit-card ${issues.inactiveUsers ? 'warn' : ''}">
+        <strong>Inactivos</strong>
+        <span>${issues.inactiveUsers}</span>
+        <small>Conviene revisar si deben seguir apareciendo en la estructura activa.</small>
+      </div>
+      <div class="tree-audit-card">
+        <strong>Nodos visibles</strong>
+        <span>${visibleCount}</span>
+        <small>${roots.length} raíz${roots.length === 1 ? '' : 'es'} en modo ${mode === 'sponsor' ? 'reclutador' : 'supervisor'}.</small>
+      </div>
+    `;
+  }
+
+  function collectVisibleUsers(mode, childrenByParent, query) {
+    const subtreeIds = getSubtreeIds(hierarchyState.rootId ? Number(hierarchyState.rootId) : null, childrenByParent);
+    return adminUsers.filter((user) => subtreeIds.has(user.id) && matchesTreeQuery(user, query));
   }
 
   function collectTreeMetrics(user, childrenByParent) {
@@ -600,6 +779,86 @@
     `;
   }
 
+  function buildOrgChartColumns(roots, childrenByParent, query) {
+    const subtreeIds = getSubtreeIds(hierarchyState.rootId ? Number(hierarchyState.rootId) : null, childrenByParent);
+    const levels = [];
+    const queue = roots.map((user) => ({ user, depth: 0 }));
+    const seen = new Set();
+    while (queue.length) {
+      const { user, depth } = queue.shift();
+      if (seen.has(user.id) || !subtreeIds.has(user.id)) continue;
+      seen.add(user.id);
+      if (!matchesTreeQuery(user, query) && !hierarchyState.rootId) {
+        const descendants = getSubtreeIds(user.id, childrenByParent);
+        const hasMatchBelow = Array.from(descendants).some((id) => {
+          const candidate = adminUsers.find((row) => row.id === id);
+          return candidate && matchesTreeQuery(candidate, query);
+        });
+        if (query && !hasMatchBelow) continue;
+      }
+      if (!levels[depth]) levels[depth] = [];
+      levels[depth].push(user);
+      const children = childrenByParent.get(user.id) || [];
+      children.forEach((child) => queue.push({ user: child, depth: depth + 1 }));
+    }
+    levels.forEach((items) => items.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || ''))));
+    return levels.filter(Boolean);
+  }
+
+  function renderOrgChart(roots, childrenByParent, query) {
+    const mount = document.getElementById('orgChartMount');
+    const listMount = document.getElementById('hierarchyTree');
+    if (getHierarchyRenderMode() === 'list') {
+      mount.innerHTML = '';
+      listMount.style.display = 'grid';
+      return;
+    }
+    listMount.style.display = 'none';
+    const levels = buildOrgChartColumns(roots, childrenByParent, query);
+    const scale = Number(hierarchyState.zoom || 1);
+    mount.innerHTML = `
+      <div class="org-chart-shell">
+        <div class="org-chart-toolbar">
+          <div class="org-chart-meta">Vista visual para leer la red por generaciones y detectar cuellos de crecimiento.</div>
+          <div class="tree-card-meta">
+            <span class="tree-pill ok">${levels.length} nivel${levels.length === 1 ? '' : 'es'}</span>
+            <span class="tree-pill">${roots.length} raíz${roots.length === 1 ? '' : 'es'}</span>
+          </div>
+        </div>
+        <div class="org-chart-stage">
+          ${levels.length ? `
+            <div class="org-chart" style="transform:scale(${scale});">
+              ${levels.map((items, index) => `
+                <div class="org-column">
+                  <div class="org-label">Nivel ${index + 1}</div>
+                  ${items.map((user) => {
+                    const metrics = collectTreeMetrics(user, childrenByParent);
+                    return `
+                      <article class="org-card">
+                        <div class="org-card-head">
+                          <div>
+                            <div class="org-card-title">${esc(user.nombre)}</div>
+                            <div class="org-card-sub">${esc(user.pin_code)} · ${esc(user.rol)}<br>${esc(user.email || 'sin email')}</div>
+                          </div>
+                          <div class="tree-badge" style="background:rgba(255,255,255,.16);color:#fff;">${esc(user.compensation_role || 'novato')}</div>
+                        </div>
+                        <div class="org-card-footer">
+                          <span class="org-chip">${metrics.directChildren} directos</span>
+                          <span class="org-chip">${metrics.descendants} en red</span>
+                          <span class="org-chip">${user.active === false ? 'Inactivo' : 'Activo'}</span>
+                        </div>
+                      </article>
+                    `;
+                  }).join('')}
+                </div>
+              `).join('')}
+            </div>
+          ` : '<div class="org-empty">No hay nodos para mostrar en esta combinación de filtros.</div>'}
+        </div>
+      </div>
+    `;
+  }
+
   function renderHierarchyTree() {
     const treeMount = document.getElementById('hierarchyTree');
     const treeCount = document.getElementById('treeCount');
@@ -614,15 +873,20 @@
 
     if (!adminUsers.length) {
       treeSummary.innerHTML = '';
+      document.getElementById('treeAudit').innerHTML = '';
+      document.getElementById('orgChartMount').innerHTML = '';
       treeMount.innerHTML = '<div class="admin-empty">No hay usuarios para mostrar en la jerarquia.</div>';
       return;
     }
 
     const childrenByParent = buildHierarchyMaps(mode);
-    const roots = adminUsers.filter((user) => {
+    const allRoots = adminUsers.filter((user) => {
       const parentId = getHierarchyParentId(user, mode);
       return !parentId || !adminUsers.some((candidate) => candidate.id === parentId);
     });
+    const roots = hierarchyState.rootId
+      ? adminUsers.filter((user) => user.id === Number(hierarchyState.rootId))
+      : allRoots;
     const visibleRoots = roots
       .map((user) => ({ user, html: buildHierarchyNode(user, childrenByParent, query) }))
       .filter((entry) => entry.html);
@@ -631,12 +895,13 @@
       const role = user.compensation_role || 'novato';
       topRoles[role] = (topRoles[role] || 0) + 1;
     });
-    const biggestRoot = roots.reduce((best, root) => {
+    const biggestRoot = allRoots.reduce((best, root) => {
       const metrics = collectTreeMetrics(root, childrenByParent);
       return !best || metrics.descendants > best.descendants
         ? { name: root.nombre, descendants: metrics.descendants, maxDepth: metrics.maxDepth }
         : best;
     }, null);
+    const visibleUsers = collectVisibleUsers(mode, childrenByParent, query);
     treeSummary.innerHTML = `
       <div class="tree-summary-card">
         <div class="tree-summary-label">Vista</div>
@@ -645,7 +910,7 @@
       </div>
       <div class="tree-summary-card">
         <div class="tree-summary-label">Raices</div>
-        <div class="tree-summary-value">${roots.length}</div>
+        <div class="tree-summary-value">${allRoots.length}</div>
         <div class="tree-summary-sub">Puntos de inicio del arbol por ${getHierarchyLabel(mode)}</div>
       </div>
       <div class="tree-summary-card">
@@ -654,11 +919,17 @@
         <div class="tree-summary-sub">${biggestRoot ? `${esc(biggestRoot.name)} · profundidad ${biggestRoot.maxDepth}` : 'Sin datos'}</div>
       </div>
       <div class="tree-summary-card">
-        <div class="tree-summary-label">Niveles</div>
-        <div class="tree-summary-value">${Object.keys(topRoles).length}</div>
+        <div class="tree-summary-label">Lectura</div>
+        <div class="tree-summary-value">${getHierarchyRenderMode() === 'org' ? 'Visual' : 'Lista'}</div>
         <div class="tree-summary-sub">${Object.entries(topRoles).map(([role, count]) => `${esc(role)} ${count}`).join(' · ')}</div>
       </div>
     `;
+    renderAudit(mode, roots, childrenByParent, visibleUsers.length);
+    renderOrgChart(roots, childrenByParent, query);
+    if (getHierarchyRenderMode() === 'org') {
+      treeMount.innerHTML = '';
+      return;
+    }
     treeMount.innerHTML = visibleRoots.length
       ? visibleRoots.map(({ html }) => `<div class="tree-branch">${html}</div>`).join('')
       : `<div class="admin-empty">${query ? 'No hubo coincidencias para ese filtro dentro del arbol.' : 'Todos los usuarios tienen relacion asignada, pero no se encontro una raiz valida.'}</div>`;
@@ -666,7 +937,10 @@
 
   function updateHierarchyControls() {
     hierarchyState.mode = document.getElementById('treeViewMode').value || 'manager';
+    hierarchyState.render = document.getElementById('treeRenderMode').value || 'org';
     hierarchyState.query = document.getElementById('treeSearch').value || '';
+    hierarchyState.rootId = document.getElementById('treeRootSelect').value || '';
+    hierarchyState.zoom = Number(document.getElementById('treeZoom').value || 1);
     renderHierarchyTree();
   }
   window.updateHierarchyControls = updateHierarchyControls;
