@@ -1031,7 +1031,7 @@ async function handleUpdate(req: Request) {
 
   if (error) {
     console.error("[izzy-admin-leads] update lead failed", error);
-    return jsonResponse({ error: "Could not update lead" }, { status: 500 });
+    return jsonResponse({ error: `Could not update lead: ${error.message}` }, { status: 500 });
   }
 
   return jsonResponse({ lead: data });
