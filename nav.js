@@ -128,11 +128,42 @@
 
   // ── Sidebar nav groups ───────────────────────────────────
 
+  const NAV_EN = {
+    sections: {
+      principal: 'Main',
+      compensation: 'Compensation Plan',
+      admin: 'Administration'
+    },
+    items: {
+      cotizador: 'Quote Desk',
+      orders: 'Orders',
+      'comp-level': 'My Level',
+      'comp-tree': 'My Tree',
+      'comp-table': 'Commissions',
+      'comp-bonuses': 'Bonuses',
+      users: 'Users',
+      'comp-admin': 'Compensation',
+      'tutorial-admin': 'Admin Tutorial'
+    },
+    mobile: {
+      cotizador: 'Quote',
+      orders: 'Orders'
+    }
+  };
+
+  function getAutoNavCopy(options) {
+    if (options.navCopy) return options.navCopy;
+    try {
+      if (localStorage.getItem('izzy_lang') === 'en') return NAV_EN;
+    } catch {}
+    return {};
+  }
+
   function renderSidebarGroups(options) {
     const isAdmin = Boolean(options.isAdmin);
     const compRole = options.compRole || options.user?.compensation_role || 'agent';
     const tutorialHref = options.tutorialHref || 'tutorial.html';
-    const navCopy = options.navCopy || {};
+    const navCopy = getAutoNavCopy(options);
     const sectionLabels = navCopy.sections || {};
     const itemLabels = navCopy.items || {};
 
@@ -174,7 +205,9 @@
 
   function renderMobileLinks(options) {
     const tutorialHref = options.tutorialHref || 'tutorial.html';
-    const itemLabels = options.navCopy?.items || {};
+    const navCopy = getAutoNavCopy(options);
+    const mobileLabels = navCopy.mobile || {};
+    const itemLabels = { ...navCopy.items, ...mobileLabels };
     return MOBILE_ITEMS.map((item) => {
       let href = item.href;
       if (item.key === 'admin' && options.mobileAdminHref) href = options.mobileAdminHref;
