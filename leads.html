@@ -359,6 +359,28 @@
           <input class="m-input" type="text" id="mAgente" placeholder="Nombre agente">
         </div>
       </div>
+      <div class="m-row2">
+        <div class="m-field">
+          <label class="m-label">Origen del lead</label>
+          <select class="m-input" id="mOrigen">
+            <option value="">— Seleccionar —</option>
+            <option>Puerta a Puerta</option>
+            <option>Referido</option>
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>WhatsApp</option>
+            <option>Llamada en Frío</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="m-field">
+          <label class="m-label">Correo del cliente</label>
+          <input class="m-input" type="email" id="mCorreoCliente" placeholder="correo@ejemplo.com">
+        </div>
+      </div>
+      <div class="m-field">
+        <label class="m-label" style="font-size:10px;color:var(--muted);" id="mFechaIngreso"></label>
+      </div>
       <div class="m-field">
         <label class="m-label">Dirección</label>
         <input class="m-input" type="text" id="mDireccion" placeholder="Calle, ciudad, estado, ZIP">
@@ -440,6 +462,29 @@
 
       <div style="height:1px;background:var(--border);"></div>
 
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;padding:2px 0 6px;">Seguimiento de contacto</div>
+      <div class="m-field">
+        <label class="m-label">Disposición del último contacto</label>
+        <select class="m-input" id="mDisposicion">
+          <option value="">— Sin contacto aún —</option>
+          <option>Teléfono equivocado</option>
+          <option>Desconectado</option>
+          <option>No le interesa</option>
+          <option>Habló con el prospecto</option>
+          <option>Volver a contactar</option>
+        </select>
+      </div>
+      <div class="m-field">
+        <label class="m-label">Nota de seguimiento</label>
+        <textarea class="m-input" id="mNotaSeguimiento" placeholder="¿Qué pasó en el último contacto?..." style="min-height:60px;"></textarea>
+      </div>
+      <div class="m-field">
+        <label class="m-label">Próximo contacto</label>
+        <input class="m-input" type="date" id="mProximoContacto">
+      </div>
+
+      <div style="height:1px;background:var(--border);"></div>
+
       <div class="m-field" id="cotizacionSection" style="display:none;">
         <label class="m-label">📋 Cotización enviada al cliente</label>
         <div id="mCotizacionAt" style="font-size:11px;color:var(--muted);margin-bottom:6px;"></div>
@@ -464,6 +509,7 @@
     <div class="modal-footer">
       <button class="btn-delete-modal" id="btnDeleteModal" onclick="deleteLead()" style="display:none;">🗑 Borrar</button>
       <button class="btn-save-modal" id="btnSaveModal" onclick="saveChanges()">💾 Guardar cambios</button>
+      <button class="btn-cotizar" id="btnEmailQuote" onclick="sendQuoteEmail()" style="display:none;background:#0ea5e9;">📧 Enviar cotización</button>
       <button class="btn-cotizar" onclick="cotizarDesdeModal()">⚡ Cotizar →</button>
     </div>
   </div>
@@ -536,6 +582,16 @@
     <option>Volver a Contactar</option>
     <option>Otro</option>
   </select>
+  <select id="filterOrigen" onchange="filterLeads()">
+    <option value="">Todos los orígenes</option>
+    <option>Puerta a Puerta</option>
+    <option>Referido</option>
+    <option>Facebook</option>
+    <option>Instagram</option>
+    <option>WhatsApp</option>
+    <option>Llamada en Frío</option>
+    <option>Otro</option>
+  </select>
   <span class="result-count" id="resultCount"></span>
 </div>
 
@@ -550,6 +606,8 @@
           <th onclick="sortBy('agente')">Agente <span class="sort-icon">↕</span></th>
           <th onclick="sortBy('cliente')">Cliente <span class="sort-icon">↕</span></th>
           <th class="no-sort">Teléfono</th>
+          <th class="no-sort">Origen</th>
+          <th onclick="sortBy('proximo_contacto')">Próx. Contacto <span class="sort-icon">↕</span></th>
           <th class="no-sort">Dirección</th>
           <th class="no-sort">Internet</th>
           <th class="no-sort">Pago Int.</th>
@@ -671,16 +729,18 @@
   }
 
   function getFiltered() {
-    const q      = document.getElementById('searchInput').value.toLowerCase();
-    const agt    = document.getElementById('filterAgente').value;
-    const prov   = document.getElementById('filterProv').value;
-    const estado = document.getElementById('filterEstado').value;
+    const q       = document.getElementById('searchInput').value.toLowerCase();
+    const agt     = document.getElementById('filterAgente').value;
+    const prov    = document.getElementById('filterProv').value;
+    const estado  = document.getElementById('filterEstado').value;
+    const origen  = document.getElementById('filterOrigen').value;
     return allLeads.filter(l => {
-      const matchQ      = !q      || [l.cliente, l.agente, l.telefono, l.direccion].some(v => (v||'').toLowerCase().includes(q));
+      const matchQ      = !q      || [l.cliente, l.agente, l.telefono, l.direccion, l.correo_cliente].some(v => (v||'').toLowerCase().includes(q));
       const matchAgt    = !agt    || l.agente === agt;
       const matchPrv    = !prov   || l.proveedor_internet === prov;
       const matchEstado = !estado || (l.estado || 'Nuevo') === estado;
-      return matchQ && matchAgt && matchPrv && matchEstado;
+      const matchOrigen = !origen || l.origen === origen;
+      return matchQ && matchAgt && matchPrv && matchEstado && matchOrigen;
     });
   }
 
@@ -737,17 +797,31 @@
     document.getElementById('resultCount').textContent = `${data.length} lead${data.length !== 1 ? 's' : ''}`;
     document.getElementById('emptyState').style.display = data.length === 0 ? 'block' : 'none';
 
+    const todayStr = new Date().toISOString().slice(0, 10);
+
     // Desktop table — rows clickable
     document.getElementById('tableBody').innerHTML = data.map(l => {
       const pagoInt = l.pago_internet ? `$${parseFloat(l.pago_internet).toFixed(0)}` : '—';
       const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}` : '—';
       const id = JSON.stringify(l).replace(/'/g, '&apos;');
+      const origenCell = l.origen
+        ? `<span class="badge" style="background:#f0f9ff;color:#0369a1;font-size:10px;">${esc(l.origen)}</span>`
+        : '<span class="muted">—</span>';
+      const proxCell = l.proximo_contacto
+        ? (() => {
+            const overdue = l.proximo_contacto < todayStr;
+            const color = overdue ? 'background:#fff7ed;color:#c2410c;font-weight:700;' : 'color:var(--muted);';
+            return `<span class="mono" style="font-size:12px;${color}">${overdue ? '⚠️ ' : ''}${l.proximo_contacto}</span>`;
+          })()
+        : '<span class="muted">—</span>';
       return `<tr onclick='openModal(${id.replace(/"/g, "&quot;")})' title="Clic para editar">
         <td>${estadoBadge(l.estado)}</td>
         <td class="mono">${l.fecha||'—'}</td>
         <td><strong>${esc(l.agente||'—')}</strong></td>
         <td><strong>${esc(l.cliente||'—')}</strong></td>
         <td class="mono">${esc(l.telefono||'—')}</td>
+        <td>${origenCell}</td>
+        <td>${proxCell}</td>
         <td class="muted" style="max-width:150px;font-size:12px;">${esc(l.direccion||'—')}</td>
         <td>${l.proveedor_internet ? `<span class="badge badge-blue">${esc(l.proveedor_internet)}</span>` : '<span class="muted">—</span>'}</td>
         <td class="money">${pagoInt}</td>
@@ -764,16 +838,21 @@
       const pagoInt = l.pago_internet ? `$${parseFloat(l.pago_internet).toFixed(0)}/mo` : null;
       const pagoTel = l.pago_telefono ? `$${parseFloat(l.pago_telefono).toFixed(0)}/mo` : null;
       const id = JSON.stringify(l).replace(/"/g, '&quot;');
+      const proxOverdue = l.proximo_contacto && l.proximo_contacto < todayStr;
       return `<div class="lead-card" onclick='openModal(${id})'>
         <div class="lead-card-top">
           <div class="lead-card-name">${esc(l.cliente||'—')}</div>
           <div style="display:flex;gap:6px;align-items:center;">${estadoBadge(l.estado)}<span class="lead-card-date">${l.fecha||'—'}</span></div>
         </div>
         <div class="lead-card-row">📞 <strong>${esc(l.telefono||'—')}</strong></div>
+        ${l.correo_cliente ? `<div class="lead-card-row" style="font-size:12px;color:var(--muted);">✉️ ${esc(l.correo_cliente)}</div>` : ''}
         ${l.direccion ? `<div class="lead-card-row">📍 ${esc(l.direccion)}</div>` : ''}
         ${l.agente    ? `<div class="lead-card-row">👤 <strong>${esc(l.agente)}</strong></div>` : ''}
+        ${l.proximo_contacto ? `<div class="lead-card-row" style="font-size:12px;${proxOverdue ? 'color:#c2410c;font-weight:700;' : 'color:var(--muted);'}">📅 ${proxOverdue ? '⚠️ ' : ''}Próx. contacto: ${l.proximo_contacto}</div>` : ''}
+        ${l.nota_seguimiento ? `<div class="lead-card-row" style="font-size:12px;color:var(--muted);">💬 ${esc(l.nota_seguimiento)}</div>` : ''}
         ${l.nota      ? `<div class="lead-card-row">📝 ${esc(l.nota)}</div>` : ''}
         <div class="lead-card-badges">
+          ${l.origen ? `<span class="badge" style="background:#f0f9ff;color:#0369a1;">📍 ${esc(l.origen)}</span>` : ''}
           ${l.proveedor_internet ? `<span class="badge badge-blue">🌐 ${esc(l.proveedor_internet)}${pagoInt?' · '+pagoInt:''}</span>` : ''}
           ${l.proveedor_telefono ? `<span class="badge badge-purple">📱 ${esc(l.proveedor_telefono)}${pagoTel?' · '+pagoTel:''}</span>` : ''}
           ${l.velocidad ? `<span class="badge" style="background:#f0fdf4;color:#16a34a;">⚡ ${esc(l.velocidad)}</span>` : ''}
@@ -835,11 +914,18 @@
   function openModal(lead) {
     activeLead = lead;
     document.getElementById('modalTitle').textContent = lead.cliente || 'Editar Lead';
-    document.getElementById('modalSub').textContent   = `Guardado: ${lead.fecha || '—'} · ID #${lead.id}`;
+    document.getElementById('modalSub').textContent   = `ID #${lead.id} · ${lead.agente || '—'}`;
     document.getElementById('mCliente').value    = lead.cliente    || '';
     document.getElementById('mTelefono').value   = lead.telefono   || '';
     document.getElementById('mAgente').value     = lead.agente     || '';
     document.getElementById('mDireccion').value  = lead.direccion  || '';
+    setSelect('mOrigen', lead.origen || '');
+    document.getElementById('mCorreoCliente').value = lead.correo_cliente || '';
+    const fechaIngreso = document.getElementById('mFechaIngreso');
+    if (fechaIngreso) {
+      const createdStr = lead.created_at ? new Date(lead.created_at).toLocaleString('es-US', { dateStyle:'medium', timeStyle:'short' }) : (lead.fecha || '—');
+      fechaIngreso.textContent = `📅 Ingresado: ${createdStr}`;
+    }
     setModalProviderValue('mProvInt', lead.proveedor_internet);
     document.getElementById('mPagoInt').value    = lead.pago_internet  || '';
     setSelect('mVelocidad', lead.velocidad);
@@ -847,15 +933,21 @@
     document.getElementById('mPagoTel').value    = lead.pago_telefono  || '';
     setSelect('mLineas',    lead.lineas);
     document.getElementById('mNota').value       = lead.nota        || '';
+    setSelect('mDisposicion', lead.disposicion || '');
+    document.getElementById('mNotaSeguimiento').value = lead.nota_seguimiento || '';
+    document.getElementById('mProximoContacto').value = lead.proximo_contacto || '';
     setSelect('mEstado', lead.estado || 'Nuevo');
     const cotizSec = document.getElementById('cotizacionSection');
+    const btnEmail = document.getElementById('btnEmailQuote');
     if (lead.cotizacion_enviada) {
       document.getElementById('mCotizacion').textContent = lead.cotizacion_enviada;
       const atDate = lead.cotizacion_at ? new Date(lead.cotizacion_at).toLocaleString('es-US', { dateStyle:'short', timeStyle:'short' }) : '';
       document.getElementById('mCotizacionAt').textContent = atDate ? `Enviada el ${atDate}` : '';
       cotizSec.style.display = 'block';
+      if (btnEmail) btnEmail.style.display = 'inline-flex';
     } else {
       cotizSec.style.display = 'none';
+      if (btnEmail) btnEmail.style.display = 'none';
     }
     document.getElementById('btnDeleteModal').style.display = isAdmin ? 'block' : 'none';
     document.getElementById('modalOverlay').classList.add('open');
@@ -887,6 +979,8 @@
       telefono:           document.getElementById('mTelefono').value.trim(),
       agente:             document.getElementById('mAgente').value.trim(),
       direccion:          document.getElementById('mDireccion').value.trim(),
+      origen:             document.getElementById('mOrigen').value,
+      correo_cliente:     document.getElementById('mCorreoCliente').value.trim().toLowerCase(),
       proveedor_internet: getModalProviderValue('mProvInt'),
       pago_internet:      parseFloat(document.getElementById('mPagoInt').value) || null,
       velocidad:          document.getElementById('mVelocidad').value,
@@ -894,6 +988,9 @@
       pago_telefono:      parseFloat(document.getElementById('mPagoTel').value) || null,
       lineas:             document.getElementById('mLineas').value,
       nota:               document.getElementById('mNota').value.trim(),
+      disposicion:        document.getElementById('mDisposicion').value,
+      nota_seguimiento:   document.getElementById('mNotaSeguimiento').value.trim(),
+      proximo_contacto:   document.getElementById('mProximoContacto').value,
       estado:             document.getElementById('mEstado').value
     };
 
@@ -938,6 +1035,46 @@
     } catch(e) {
       showToast('❌ Error al borrar', '#b91c1c');
       btn.disabled = false; btn.textContent = '🗑 Borrar';
+    }
+  }
+
+  async function sendQuoteEmail() {
+    if (!activeLead) return;
+    if (!activeLead.cotizacion_enviada) {
+      showToast('❌ Este lead no tiene cotización guardada', '#b91c1c');
+      return;
+    }
+    let email = document.getElementById('mCorreoCliente').value.trim().toLowerCase();
+    if (!email) {
+      const typed = prompt('No hay correo guardado para este lead.\nEscribe el correo del cliente:');
+      if (!typed || !typed.trim()) return;
+      email = typed.trim().toLowerCase();
+      document.getElementById('mCorreoCliente').value = email;
+    }
+    const btn = document.getElementById('btnEmailQuote');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = '⏳ Enviando...';
+    try {
+      const res = await apiFetch('izzy-admin-leads?resource=send-quote-email', {
+        method: 'POST',
+        body: JSON.stringify({ id: activeLead.id, email })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Error al enviar');
+      // Update local lead data
+      const idx = allLeads.findIndex(l => l.id === activeLead.id);
+      if (idx >= 0) {
+        allLeads[idx].correo_cliente = email;
+        allLeads[idx].cotizacion_at = data.cotizacion_at || new Date().toISOString();
+        activeLead = allLeads[idx];
+      }
+      const atDate = new Date().toLocaleString('es-US', { dateStyle:'short', timeStyle:'short' });
+      document.getElementById('mCotizacionAt').textContent = `Enviada el ${atDate}`;
+      showToast(`✅ Cotización enviada a ${email}`, '#16a34a');
+    } catch(e) {
+      showToast(`❌ ${e.message || 'Error al enviar correo'}`, '#b91c1c');
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
     }
   }
 

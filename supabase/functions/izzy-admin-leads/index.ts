@@ -105,6 +105,11 @@ const ALLOWED_UPDATE_FIELDS = [
   "estado",
   "cotizacion_enviada",
   "cotizacion_at",
+  "origen",
+  "correo_cliente",
+  "disposicion",
+  "nota_seguimiento",
+  "proximo_contacto",
 ] as const;
 
 const ORDER_INSTALLATION_STATUSES = new Set<InstallationStatus>([
@@ -170,6 +175,12 @@ function sanitizeUpdates(raw: Record<string, unknown>, isAdmin: boolean) {
 
     if (field === "pago_internet" || field === "pago_telefono") {
       updates[field] = cleanNumber(raw[field]);
+      continue;
+    }
+
+    if (field === "correo_cliente") {
+      const v = cleanString(raw[field]);
+      updates[field] = v ? v.toLowerCase() : "";
       continue;
     }
 
@@ -1074,6 +1085,104 @@ async function deleteLeadById(id: number, user: { nombre: string; rol: Role }, s
   return jsonResponse({ ok: true, id });
 }
 
+async function handleSendQuoteEmail(
+  req: Request,
+  user: { nombre: string; rol: Role },
+  supabase: ReturnType<typeof createAdminClient>,
+) {
+  const body = await req.json().catch(() => ({}));
+  const id = Number(body?.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    return jsonResponse({ error: "Lead id is required" }, { status: 400 });
+  }
+
+  const { data: lead, error } = await supabase
+    .from("izzy_leads")
+    .select("id, cliente, correo_cliente, cotizacion_enviada, agente")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !lead) {
+    return jsonResponse({ error: "Lead not found" }, { status: 404 });
+  }
+
+  if (user.rol !== "admin" && lead.agente !== user.nombre) {
+    return jsonResponse({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const email = cleanString(body?.email || lead?.correo_cliente).toLowerCase();
+  if (!email) {
+    return jsonResponse({ error: "No hay correo disponible para este lead" }, { status: 400 });
+  }
+
+  if (!lead.cotizacion_enviada) {
+    return jsonResponse({ error: "Este lead no tiene cotización guardada" }, { status: 400 });
+  }
+
+  const resend = getResendConfig();
+  if (!resend) {
+    return jsonResponse({ error: "Email service not configured" }, { status: 500 });
+  }
+
+  const quoteLines = String(lead.cotizacion_enviada)
+    .split("\n")
+    .map((line: string) =>
+      line.trim()
+        ? `<p style="margin:3px 0;font-family:monospace;font-size:13px;">${line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`
+        : `<p style="margin:6px 0;">&nbsp;</p>`
+    )
+    .join("");
+
+  const clienteLabel = cleanString(lead.cliente) || "estimado cliente";
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resend.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: `${resend.fromName} <${resend.fromEmail}>`,
+      to: [email],
+      subject: `Tu cotización de Izzy Communications`,
+      html: `
+        <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;max-width:600px;margin:0 auto;">
+          <div style="background:#1a3a6b;padding:24px 28px;border-radius:12px 12px 0 0;">
+            <h2 style="margin:0;color:#ffffff;font-size:20px;">Izzy Communications</h2>
+            <p style="margin:6px 0 0;color:#93c5fd;font-size:14px;">Tu cotización personalizada</p>
+          </div>
+          <div style="background:#f8fafc;padding:24px 28px;border:1px solid #e2e8f0;border-top:none;">
+            <p style="margin:0 0 16px;">Hola ${clienteLabel},</p>
+            <p style="margin:0 0 16px;">Aquí están los detalles de tu cotización:</p>
+            <div style="background:#ffffff;border:1.5px solid #bfdbfe;border-radius:10px;padding:20px 24px;line-height:1.7;color:#1e293b;">
+              ${quoteLines}
+            </div>
+            <p style="margin:20px 0 0;color:#64748b;font-size:13px;">¿Tienes preguntas? Contáctanos por WhatsApp o llámanos directamente.</p>
+          </div>
+          <div style="background:#f1f5f9;padding:14px 28px;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;border-top:none;">
+            <p style="margin:0;color:#94a3b8;font-size:11px;">Izzy Communications · Este correo fue generado automáticamente desde el portal de ventas.</p>
+          </div>
+        </div>
+      `,
+    }),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    console.error("[izzy-admin-leads] send-quote-email failed", details);
+    return jsonResponse({ error: "No se pudo enviar el correo" }, { status: 500 });
+  }
+
+  const nowTs = new Date().toISOString();
+  const dbUpdates: Record<string, string> = { cotizacion_at: nowTs };
+  if (body?.email && cleanString(body.email).toLowerCase() !== cleanString(lead.correo_cliente).toLowerCase()) {
+    dbUpdates.correo_cliente = email;
+  }
+  await supabase.from("izzy_leads").update(dbUpdates).eq("id", id);
+
+  return jsonResponse({ ok: true, email, cotizacion_at: nowTs });
+}
+
 async function handlePost(req: Request) {
   const url = new URL(req.url);
   const resource = url.searchParams.get("resource");
@@ -1124,6 +1233,10 @@ async function handlePost(req: Request) {
   if (resource === "delete-lead") {
     const body = await req.json().catch(() => ({}));
     return await deleteLeadById(Number(body?.id), user, supabase);
+  }
+
+  if (resource === "send-quote-email") {
+    return await handleSendQuoteEmail(req, user, supabase);
   }
 
   return jsonResponse({ error: "Unknown resource" }, { status: 400 });

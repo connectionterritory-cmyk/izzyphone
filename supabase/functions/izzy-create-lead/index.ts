@@ -15,6 +15,8 @@ type LeadPayload = {
   velocidad?: string;
   lineas?: string;
   nota?: string;
+  origen?: string;
+  correo_cliente?: string;
 };
 
 function cleanString(value: unknown): string {
@@ -41,6 +43,8 @@ function buildLeadPayload(raw: LeadPayload, agentName: string) {
     velocidad: cleanString(raw.velocidad),
     lineas: cleanString(raw.lineas),
     nota: cleanString(raw.nota),
+    origen: cleanString(raw.origen) || null,
+    correo_cliente: raw.correo_cliente ? cleanString(raw.correo_cliente).toLowerCase() : null,
   };
 }
 
