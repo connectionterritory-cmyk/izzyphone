@@ -424,9 +424,9 @@
     <div class="field">
       <label>Desired Speed</label>
       <div class="chips">
-        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-500" value="500 Mbps" onchange="document.getElementById('speedOther').style.display='none'">
+        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-500" value="500 Mbps" onchange="document.getElementById('speedOther').style.display='none';autoSetCategory(this.value)">
         <label class="chip-label" for="ds-500">500 Mb</label>
-        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-1g" value="1 Gig" onchange="document.getElementById('speedOther').style.display='none'">
+        <input type="radio" class="chip-input" name="desiredSpeed" id="ds-1g" value="1 Gig" onchange="document.getElementById('speedOther').style.display='none';autoSetCategory(this.value)">
         <label class="chip-label" for="ds-1g">1 Gig</label>
         <input type="radio" class="chip-input" name="desiredSpeed" id="ds-other" value="Other" onchange="document.getElementById('speedOther').style.display='block'">
         <label class="chip-label" for="ds-other">Other</label>
@@ -667,6 +667,16 @@
     }
 
     return res;
+  }
+
+  function autoSetCategory(speed) {
+    const sel = document.getElementById('serviceCategory');
+    if (!sel) return;
+    const text = (speed || '').toLowerCase();
+    let code = '';
+    if (text.includes('2 gig') || text.includes('1 gig') || text.includes('fiber')) code = 'premium';
+    else if (text.includes('500') || text.includes('300') || text.includes('home internet')) code = 'standard';
+    if (code && sel.querySelector(`option[value="${code}"]`)) sel.value = code;
   }
 
   async function loadCompensationConfig() {
