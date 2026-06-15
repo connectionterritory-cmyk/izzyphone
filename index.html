@@ -716,7 +716,7 @@
     <div class="row2">
       <div class="field">
         <label id="lblOrigen">Origen del lead</label>
-        <select id="origenLead">
+        <select id="origenLead" onchange="toggleOrigenOtro('origenLead','origenOtro')">
           <option value="">— Seleccionar —</option>
           <option>Puerta a Puerta</option>
           <option>Referido</option>
@@ -726,6 +726,7 @@
           <option>Llamada en Frío</option>
           <option>Otro</option>
         </select>
+        <input type="text" id="origenOtro" placeholder="Especifica el origen..." style="display:none;margin-top:8px;">
       </div>
       <div class="field">
         <label id="lblCorreoCliente">Correo del cliente</label>
@@ -1754,6 +1755,17 @@
   const KNOWN_PHONE_PROVIDERS = ['T-Mobile', 'Verizon', 'AT&T', 'Metro', 'Cricket', 'No tiene'];
 
   function getVal(id) { return document.getElementById(id)?.value?.trim() || ''; }
+  function toggleOrigenOtro(selId, inputId) {
+    const show = document.getElementById(selId).value === 'Otro';
+    const inp = document.getElementById(inputId);
+    inp.style.display = show ? 'block' : 'none';
+    if (!show) inp.value = '';
+  }
+  function getOrigenValue() {
+    const sel = document.getElementById('origenLead');
+    if (sel.value === 'Otro') return document.getElementById('origenOtro').value.trim() || 'Otro';
+    return sel.value;
+  }
   function getRadio(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; }
   function getChecks(ids) { return ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value); }
 
@@ -1908,7 +1920,7 @@
       velocidad:          getRadio('velActual'),
       lineas:             getRadio('lineas'),
       nota:               getVal('nota'),
-      origen:             getVal('origenLead'),
+      origen:             getOrigenValue(),
       correo_cliente:     getVal('correoCliente')
     };
 
@@ -2232,6 +2244,8 @@
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
     const origenEl = document.getElementById('origenLead');
     if (origenEl) origenEl.value = '';
+    const origenOtroEl = document.getElementById('origenOtro');
+    if (origenOtroEl) { origenOtroEl.value = ''; origenOtroEl.style.display = 'none'; }
     document.getElementById('intProvOtherWrap').classList.remove('show');
     document.getElementById('telProvOtherWrap').classList.remove('show');
     // Clear all checkboxes

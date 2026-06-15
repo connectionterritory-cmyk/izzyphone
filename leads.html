@@ -362,7 +362,7 @@
       <div class="m-row2">
         <div class="m-field">
           <label class="m-label">Origen del lead</label>
-          <select class="m-input" id="mOrigen">
+          <select class="m-input" id="mOrigen" onchange="toggleModalOrigenOtro()">
             <option value="">— Seleccionar —</option>
             <option>Puerta a Puerta</option>
             <option>Referido</option>
@@ -372,6 +372,7 @@
             <option>Llamada en Frío</option>
             <option>Otro</option>
           </select>
+          <input class="m-input" type="text" id="mOrigenOtro" placeholder="Especifica el origen..." style="display:none;margin-top:8px;">
         </div>
         <div class="m-field">
           <label class="m-label">Correo del cliente</label>
@@ -864,6 +865,34 @@
   }
 
   // ── Modal ──────────────────────────────────────────────
+  const KNOWN_ORIGENES = ['Puerta a Puerta','Referido','Facebook','Instagram','WhatsApp','Llamada en Frío','Otro'];
+
+  function toggleModalOrigenOtro() {
+    const show = document.getElementById('mOrigen').value === 'Otro';
+    const inp = document.getElementById('mOrigenOtro');
+    inp.style.display = show ? 'block' : 'none';
+    if (!show) inp.value = '';
+  }
+
+  function setModalOrigen(value) {
+    const sel = document.getElementById('mOrigen');
+    const inp = document.getElementById('mOrigenOtro');
+    if (!value) { sel.value = ''; inp.style.display = 'none'; inp.value = ''; return; }
+    if (KNOWN_ORIGENES.includes(value)) {
+      sel.value = value;
+      inp.style.display = 'none'; inp.value = '';
+    } else {
+      sel.value = 'Otro';
+      inp.style.display = 'block'; inp.value = value;
+    }
+  }
+
+  function getModalOrigenValue() {
+    const sel = document.getElementById('mOrigen');
+    if (sel.value === 'Otro') return document.getElementById('mOrigenOtro').value.trim() || 'Otro';
+    return sel.value;
+  }
+
   function bindProviderOtherFields() {
     document.getElementById('mProvInt').addEventListener('change', () => toggleModalOtherProvider('mProvInt'));
     document.getElementById('mProvTel').addEventListener('change', () => toggleModalOtherProvider('mProvTel'));
@@ -919,7 +948,7 @@
     document.getElementById('mTelefono').value   = lead.telefono   || '';
     document.getElementById('mAgente').value     = lead.agente     || '';
     document.getElementById('mDireccion').value  = lead.direccion  || '';
-    setSelect('mOrigen', lead.origen || '');
+    setModalOrigen(lead.origen || '');
     document.getElementById('mCorreoCliente').value = lead.correo_cliente || '';
     const fechaIngreso = document.getElementById('mFechaIngreso');
     if (fechaIngreso) {
@@ -979,7 +1008,7 @@
       telefono:           document.getElementById('mTelefono').value.trim(),
       agente:             document.getElementById('mAgente').value.trim(),
       direccion:          document.getElementById('mDireccion').value.trim(),
-      origen:             document.getElementById('mOrigen').value,
+      origen:             getModalOrigenValue(),
       correo_cliente:     document.getElementById('mCorreoCliente').value.trim().toLowerCase(),
       proveedor_internet: getModalProviderValue('mProvInt'),
       pago_internet:      parseFloat(document.getElementById('mPagoInt').value) || null,
