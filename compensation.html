@@ -67,10 +67,36 @@
   }
   .admin-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
   .admin-summary .mini-card { background: #fff; }
+  .admin-guide {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 14px;
+  }
+  .guide-step {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; padding: 14px;
+  }
+  .guide-step strong { display: block; font-size: 13px; color: var(--blue); margin-bottom: 6px; }
+  .guide-step p { font-size: 12px; color: var(--muted); line-height: 1.45; }
   .editor-card textarea {
     width: 100%; min-height: 180px; resize: vertical; border-radius: 12px; border: 1px solid var(--border);
     padding: 12px; font: 12px/1.5 'DM Mono', monospace; background: #fbfbfd; color: var(--text);
   }
+  .editor-preview { display: grid; gap: 8px; margin-bottom: 12px; }
+  .preview-item {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
+  }
+  .preview-item strong { display: block; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .preview-item span { display: block; font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .preview-more {
+    font-size: 12px; color: var(--blue); font-weight: 700; padding: 2px 2px 0;
+  }
+  .admin-json {
+    border: 1px solid var(--border); border-radius: 14px; background: #fff;
+  }
+  .admin-json summary {
+    cursor: pointer; list-style: none; padding: 12px 14px; font-size: 12px; font-weight: 700; color: var(--blue);
+  }
+  .admin-json summary::-webkit-details-marker { display: none; }
+  .admin-json[open] summary { border-bottom: 1px solid var(--border); }
+  .admin-json-body { padding: 12px; }
   .actions { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
   .btn {
     border: none; border-radius: 12px; padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
@@ -166,6 +192,20 @@
           <textarea id="changeReason" style="min-height:120px;font:14px/1.5 'DM Sans',sans-serif;" placeholder="Ejemplo: Ajuste de comisiones de Spectrum para campaña de julio."></textarea>
         </div>
         <div class="admin-summary" id="adminSummary"></div>
+      </div>
+      <div class="admin-guide">
+        <div class="guide-step">
+          <strong>1. Revisa el resumen</strong>
+          <p>Cada bloque ahora te muestra primero qué carriers, planes o reglas existen sin obligarte a leer JSON completo.</p>
+        </div>
+        <div class="guide-step">
+          <strong>2. Edita solo si hace falta</strong>
+          <p>Abre “Editar modo avanzado” únicamente cuando realmente necesites cambiar datos o agregar nuevos registros.</p>
+        </div>
+        <div class="guide-step">
+          <strong>3. Guarda con motivo</strong>
+          <p>Escribe la razón del cambio antes de guardar para dejar trazabilidad clara en el historial.</p>
+        </div>
       </div>
       <div class="editor-grid" id="editorGrid"></div>
       <div class="panel" style="display:block;padding:0;margin-top:14px;">
@@ -455,16 +495,134 @@
     `;
   }
 
+  function describeAdminRow(section, row) {
+    const text = (value) => String(value ?? '').trim();
+    const yesNo = (value) => value === false ? 'Inactivo' : 'Activo';
+    if (section === 'carriers') {
+      return {
+        title: text(row.name) || 'Carrier sin nombre',
+        lines: [`Tipo: ${text(row.service_type) || 'No definido'}`, `Estado: ${yesNo(row.active)}`, row.internal_notes ? `Nota: ${text(row.internal_notes)}` : ''],
+      };
+    }
+    if (section === 'plans') {
+      return {
+        title: `${text(row.plan_name) || 'Plan'} · ${text(row.carrier_name || row.carrier_id || 'Carrier')}`,
+        lines: [
+          `Categoria: ${text(row.service_category_code)} · ${text(row.sale_type)}`,
+          `Novato ${money(row.novice_commission)} · Agente ${money(row.agent_commission)}`,
+          `Supervisor ${money(row.supervisor_commission)} · Director ${money(row.director_commission)}`,
+        ],
+      };
+    }
+    if (section === 'promotions') {
+      return {
+        title: text(row.name) || 'Promoción',
+        lines: [
+          `Tipo: ${text(row.promotion_type || 'special_bonus')} · Monto: ${money(row.amount)}`,
+          `Vigencia: ${text(row.start_date || 'sin inicio')} - ${text(row.end_date || 'abierta')}`,
+          row.carrier_name ? `Carrier: ${text(row.carrier_name)}` : '',
+        ],
+      };
+    }
+    if (section === 'settings') {
+      return {
+        title: text(row.key) || 'Configuración',
+        lines: [typeof row.value === 'object' ? JSON.stringify(row.value) : text(row.value)],
+      };
+    }
+    if (section === 'categories') {
+      return {
+        title: text(row.name) || text(row.code) || 'Categoría',
+        lines: [
+          `Código: ${text(row.code)} · Orden: ${text(row.sort_order)}`,
+          Array.isArray(row.visible_examples) && row.visible_examples.length ? `Ejemplos: ${row.visible_examples.join(', ')}` : 'Sin ejemplos visibles',
+        ],
+      };
+    }
+    if (section === 'rates') {
+      return {
+        title: `${text(row.rank_code)} · ${text(row.service_category_code)} · ${text(row.sale_type)}`,
+        lines: [`Comisión: ${money(row.amount)}`, `Estado: ${yesNo(row.active)}`],
+      };
+    }
+    if (section === 'director_bonuses') {
+      return {
+        title: `${text(row.service_category_code)} · ${text(row.sale_type)}`,
+        lines: [`Bono director: ${money(row.amount)}`, `Estado: ${yesNo(row.active)}`],
+      };
+    }
+    if (section === 'activity_rules') {
+      return {
+        title: `Actividad ${text(row.rank_code)}`,
+        lines: [
+          `Instalaciones personales/mes: ${text(row.min_personal_installs_month)}`,
+          `Agentes activos: ${text(row.min_active_agents)} · Supervisores activos: ${text(row.min_active_supervisors)}`,
+          `Producción organizacional mínima: ${text(row.min_org_installs_month)}`,
+        ],
+      };
+    }
+    if (section === 'rank_requirements') {
+      return {
+        title: `${text(row.from_rank_code)} -> ${text(row.to_rank_code)}`,
+        lines: [
+          `Instalaciones acumuladas: ${text(row.min_lifetime_personal_installs)}`,
+          `Agentes activos: ${text(row.min_active_agents)} · Supervisores activos: ${text(row.min_active_supervisors)}`,
+          `Producción organizacional del mes: ${text(row.min_org_installs_month)}`,
+        ],
+      };
+    }
+    if (section === 'users') {
+      return {
+        title: text(row.nombre) || `Usuario ${text(row.id)}`,
+        lines: [
+          `Rol compensación: ${text(row.compensation_role || 'novato')}`,
+          `Sponsor: ${text(row.sponsor_user_id || 'sin sponsor')} · Manager: ${text(row.manager_user_id || 'sin manager')}`,
+        ],
+      };
+    }
+    if (section === 'ambassadors') {
+      return {
+        title: text(row.nombre) || text(row.code) || 'Embajador',
+        lines: [
+          `Código: ${text(row.code)} · Estado: ${yesNo(row.active)}`,
+          text(row.telefono) || text(row.email) ? `Contacto: ${text(row.telefono || row.email)}` : 'Sin contacto registrado',
+        ],
+      };
+    }
+    return {
+      title: text(row.name || row.code || row.id || 'Registro'),
+      lines: [JSON.stringify(row)],
+    };
+  }
+
+  function buildPreviewList(section, rows) {
+    const items = Array.isArray(rows) ? rows.slice(0, 3) : [];
+    if (!items.length) return '<div class="muted">Sin registros todavía.</div>';
+    const preview = items.map((row) => {
+      const info = describeAdminRow(section, row);
+      const lines = info.lines.filter(Boolean).map((line) => `<span>${esc(line)}</span>`).join('');
+      return `<div class="preview-item"><strong>${esc(info.title)}</strong>${lines}</div>`;
+    }).join('');
+    const extra = rows.length > 3 ? `<div class="preview-more">+${rows.length - 3} registros más</div>` : '';
+    return `<div class="editor-preview">${preview}${extra}</div>`;
+  }
+
   function buildEditorCard(title, section, rows, note = '') {
     return `
       <div class="editor-card">
         <h3>${title}</h3>
         ${note ? `<p class="muted" style="margin-bottom:8px;">${note}</p>` : ''}
-        <textarea id="editor-${section}">${esc(JSON.stringify(rows, null, 2))}</textarea>
-        <div class="actions">
-          <span class="muted">${section}</span>
-          <button class="btn secondary" onclick="saveSection('${section}')">Guardar</button>
-        </div>
+        ${buildPreviewList(section, rows)}
+        <details class="admin-json">
+          <summary>Editar modo avanzado</summary>
+          <div class="admin-json-body">
+            <textarea id="editor-${section}">${esc(JSON.stringify(rows, null, 2))}</textarea>
+            <div class="actions">
+              <span class="muted">${section}</span>
+              <button class="btn secondary" onclick="saveSection('${section}')">Guardar</button>
+            </div>
+          </div>
+        </details>
       </div>
     `;
   }
@@ -491,7 +649,7 @@
       </div>
     `;
     document.getElementById('editorGrid').innerHTML = [
-      buildEditorCard('Carriers', 'carriers', data.config.carriers, 'Campos: nombre, service_type, active, internal_notes.'),
+      buildEditorCard('Carriers', 'carriers', data.config.carriers, 'Lista de compañías disponibles en el portal y si siguen activas.'),
       buildEditorCard('Planes', 'plans', data.config.plans.map((plan) => ({
         ...plan,
         carrier_name: carrierNameById[plan.carrier_id] || null
@@ -499,15 +657,15 @@
       buildEditorCard('Promociones', 'promotions', data.config.promotions.map((promotion) => ({
         ...promotion,
         carrier_name: promotion.carrier_id ? carrierNameById[promotion.carrier_id] || null : null
-      })), 'Tipos sugeridos: install_bonus, commercial_bonus, campaign_bonus, carrier_bonus, elite_bonus, special_bonus.'),
-      buildEditorCard('Settings', 'settings', Object.entries(data.config.settings).map(([key, value]) => ({ key, value }))),
-      buildEditorCard('Categorías', 'categories', data.config.categories),
-      buildEditorCard('Comisiones', 'rates', data.config.rates),
-      buildEditorCard('Bono Director', 'director_bonuses', data.config.directorBonuses),
-      buildEditorCard('Reglas de Actividad', 'activity_rules', data.config.activityRules),
-      buildEditorCard('Reglas de Ascenso', 'rank_requirements', data.config.rankRequirements),
-      buildEditorCard('Usuarios y Jerarquía', 'users', data.users, 'Edita compensation_role, sponsor_user_id y manager_user_id.'),
-      buildEditorCard('Embajadores', 'ambassadors', data.config.ambassadors)
+      })), 'Bonos temporales o especiales por metas, campañas o carriers específicos.'),
+      buildEditorCard('Comisiones', 'rates', data.config.rates, 'Tarifas visibles por rango, categoría y tipo de venta.'),
+      buildEditorCard('Bono Director', 'director_bonuses', data.config.directorBonuses, 'Bonos acumulados por instalación válida de la organización.'),
+      buildEditorCard('Categorías', 'categories', data.config.categories, 'Clasificación de servicios visibles para el agente: Básico, Estándar, Premium.'),
+      buildEditorCard('Reglas de Actividad', 'activity_rules', data.config.activityRules, 'Define qué necesita cada rango para mantenerse activo.'),
+      buildEditorCard('Reglas de Ascenso', 'rank_requirements', data.config.rankRequirements, 'Define qué necesita cada rango para subir al siguiente.'),
+      buildEditorCard('Usuarios y Jerarquía', 'users', data.users, 'Aquí se define el rol de compensación y la estructura sponsor/manager.'),
+      buildEditorCard('Embajadores', 'ambassadors', data.config.ambassadors, 'Referidores externos del Programa de Embajadores IZZY.'),
+      buildEditorCard('Settings', 'settings', Object.entries(data.config.settings).map(([key, value]) => ({ key, value })), 'Parámetros generales como multiplicador comercial, anti-chargeback y reglas globales.')
     ].join('');
 
     document.getElementById('auditList').innerHTML = data.audit_log.length
