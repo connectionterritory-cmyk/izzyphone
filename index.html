@@ -975,6 +975,7 @@
     });
     document.getElementById('passwordSetupOverlay').classList.toggle('show', mustSetOwnPassword);
     applyAgentDefaults();
+    loadQuoters();
   }
 
   async function apiFetch(path, options = {}) {
@@ -1702,7 +1703,6 @@
   const savedCotTel    = localStorage.getItem('izzy_cotizador_tel');
   if (savedCotNombre) document.getElementById('cotizadorNombre').value = savedCotNombre;
   if (savedCotTel)    document.getElementById('cotizadorTel').value    = savedCotTel;
-  loadQuoters();
 
   // ═══ PASO 2: MENSAJE AL CLIENTE ═══
   let currentMsgCliente = '';
