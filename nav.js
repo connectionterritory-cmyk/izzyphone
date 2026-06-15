@@ -21,7 +21,7 @@
       section: 'principal',
       label: 'Principal',
       items: [
-        { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Centro de Cotizacion' },
+        { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Centro de Cotización' },
         { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
         { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
         { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
@@ -38,13 +38,6 @@
       ]
     },
     {
-      section: 'ambassadors',
-      label: 'Embajadores',
-      items: [
-        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: ICONS.ambassadors, text: 'Programa Embajador' }
-      ]
-    },
-    {
       section: 'admin',
       label: 'Administración',
       items: [
@@ -56,7 +49,7 @@
   ];
 
   const MOBILE_ITEMS = [
-    { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizacion' },
+    { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotización' },
     { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
     { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
     { key: 'compensation', href: 'compensation.html', icon: ICONS.level, text: 'Compensación' },
