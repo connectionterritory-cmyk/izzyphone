@@ -100,6 +100,16 @@
             <option value="embajador">Embajador</option>
           </select>
         </div>
+        <div class="admin-row2">
+          <div>
+            <label class="admin-label">Quien lo recluto</label>
+            <select class="admin-select" id="newAgentSponsorUser"></select>
+          </div>
+          <div>
+            <label class="admin-label">Supervisor directo</label>
+            <select class="admin-select" id="newAgentManagerUser"></select>
+          </div>
+        </div>
         <div>
           <label class="admin-label">Password</label>
           <input class="admin-input" id="newAgentPassword" type="password" placeholder="Password temporal o definitivo">
@@ -241,7 +251,7 @@
       ? adminUsers.map((user) => `
         <div class="admin-item">
           <div class="admin-item-title">${esc(user.nombre)}</div>
-          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · nivel ${esc(user.compensation_role || 'novato')} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
+          <div class="admin-item-sub">${esc(user.pin_code)} · ${esc(user.rol)} · nivel ${esc(user.compensation_role || 'novato')} · reclutado por ${esc(user.sponsor_name || 'sin asignar')} · directo de ${esc(user.manager_name || 'sin asignar')} · ${esc(user.email || 'sin email')}${user.password_set ? ' · password listo' : ' · sin password'}${user.active ? '' : ' · inactivo'}</div>
         </div>
       `).join('')
       : '<div class="admin-empty">No hay agentes configurados.</div>';
@@ -263,6 +273,12 @@
       ? adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`).join('')
       : '<option value="">Sin usuarios</option>';
 
+    const hierarchyOptions = ['<option value="">Sin asignar</option>'].concat(
+      adminUsers.map((user) => `<option value="${user.id}">${esc(user.nombre)} · ${esc(user.pin_code)}</option>`)
+    ).join('');
+    document.getElementById('newAgentSponsorUser').innerHTML = hierarchyOptions;
+    document.getElementById('newAgentManagerUser').innerHTML = hierarchyOptions;
+
     resetRequestsList.innerHTML = resetRequests.length
       ? resetRequests.map((item) => `
         <div class="admin-item">
@@ -281,6 +297,8 @@
       email: document.getElementById('newAgentEmail').value.trim().toLowerCase(),
       rol: document.getElementById('newAgentRole').value,
       compensation_role: document.getElementById('newAgentCompRole').value,
+      sponsor_user_id: document.getElementById('newAgentSponsorUser').value || null,
+      manager_user_id: document.getElementById('newAgentManagerUser').value || null,
       password: document.getElementById('newAgentPassword').value,
     };
     if (!payload.pin_code || !payload.nombre || !payload.email || !payload.password) {
@@ -299,6 +317,8 @@
       ['newAgentPin','newAgentName','newAgentEmail','newAgentPassword'].forEach((id) => { document.getElementById(id).value = ''; });
       document.getElementById('newAgentRole').value = 'agente';
       document.getElementById('newAgentCompRole').value = 'novato';
+      document.getElementById('newAgentSponsorUser').value = '';
+      document.getElementById('newAgentManagerUser').value = '';
       showToast('✅ Agente guardado', '#16a34a');
     } catch {
       showToast('❌ No se pudo guardar el agente', '#b91c1c');
