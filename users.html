@@ -53,16 +53,34 @@
   .admin-empty { font-size: 13px; color: var(--muted); }
   .tree-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
   .tree-meta { font-size: 12px; color: var(--muted); }
+  .tree-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .tree-search {
+    min-width: 240px; border: 1.5px solid var(--border); border-radius: 10px; background: #fff;
+    padding: 9px 12px; font: inherit; color: var(--text);
+  }
+  .tree-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+  .tree-summary-card {
+    border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    padding: 12px 14px;
+  }
+  .tree-summary-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .tree-summary-value { font-size: 24px; font-weight: 700; color: var(--blue); margin-top: 4px; }
+  .tree-summary-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .tree-root-list { display: grid; gap: 12px; }
   .tree-branch { border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: #fcfcfd; }
   .tree-node { display: grid; gap: 10px; }
+  .tree-node-shell { border-radius: 14px; }
+  .tree-node-shell summary { list-style: none; cursor: pointer; }
+  .tree-node-shell summary::-webkit-details-marker { display: none; }
   .tree-card {
     border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px;
     background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
   }
   .tree-card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tree-card-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .tree-name { font-size: 14px; font-weight: 700; color: var(--text); }
   .tree-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 10px; background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 700; }
+  .tree-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 9px; background: #eef6ff; color: #24548b; font-size: 11px; font-weight: 700; }
   .tree-lines { display: grid; gap: 3px; margin-top: 8px; }
   .tree-lines span { font-size: 12px; color: var(--muted); }
   .tree-children { margin-left: 22px; margin-top: 10px; padding-left: 14px; border-left: 2px solid #dbe4f3; display: grid; gap: 10px; }
@@ -215,9 +233,19 @@
     <div class="admin-card-header">Arbol de Jerarquia</div>
     <div class="admin-card-body">
       <div class="tree-toolbar">
-        <div class="tree-meta">Linea directa por <strong>supervisor</strong>. Cada tarjeta tambien muestra quien recluto al usuario.</div>
+        <div class="tree-meta" id="treeModeHelp">Linea directa por <strong>supervisor</strong>. Cada tarjeta tambien muestra quien recluto al usuario.</div>
         <div class="tree-meta" id="treeCount">0 usuarios</div>
       </div>
+      <div class="tree-controls">
+        <select class="admin-select" id="treeViewMode" style="max-width:220px;" onchange="updateHierarchyControls()">
+          <option value="manager">Ver por supervisor</option>
+          <option value="sponsor">Ver por reclutador</option>
+        </select>
+        <input class="tree-search" id="treeSearch" type="search" placeholder="Buscar por nombre, PIN o nivel..." oninput="updateHierarchyControls()">
+        <button class="admin-item-btn" type="button" onclick="setTreeExpansion(true)">Expandir todo</button>
+        <button class="admin-item-btn" type="button" onclick="setTreeExpansion(false)">Colapsar todo</button>
+      </div>
+      <div id="treeSummary" class="tree-summary-grid"></div>
       <div id="hierarchyTree" class="tree-root-list"></div>
     </div>
   </div>
@@ -300,6 +328,11 @@
   let adminQuoters = [];
   let resetRequests = [];
   let editingUserId = null;
+  const hierarchyState = {
+    mode: 'manager',
+    query: '',
+    expandAll: false
+  };
 
   try {
     currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null')?.user || null;
@@ -469,52 +502,180 @@
   }
   window.saveUserEdits = saveUserEdits;
 
-  function buildHierarchyNode(user, childrenByManager) {
-    const children = childrenByManager.get(user.id) || [];
+  function getHierarchyMode() {
+    return hierarchyState.mode === 'sponsor' ? 'sponsor' : 'manager';
+  }
+
+  function getHierarchyLabel(mode) {
+    return mode === 'sponsor' ? 'reclutador' : 'supervisor';
+  }
+
+  function getHierarchyParentId(user, mode) {
+    return mode === 'sponsor' ? user.sponsor_user_id : user.manager_user_id;
+  }
+
+  function getHierarchyParentName(user, mode) {
+    return mode === 'sponsor' ? user.sponsor_name : user.manager_name;
+  }
+
+  function buildHierarchyMaps(mode) {
+    const childrenByParent = new Map();
+    adminUsers.forEach((user) => {
+      const key = getHierarchyParentId(user, mode) || 0;
+      if (!childrenByParent.has(key)) childrenByParent.set(key, []);
+      childrenByParent.get(key).push(user);
+    });
+    childrenByParent.forEach((items) => {
+      items.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+    });
+    return childrenByParent;
+  }
+
+  function collectTreeMetrics(user, childrenByParent) {
+    const children = childrenByParent.get(user.id) || [];
+    let descendants = 0;
+    let maxDepth = 0;
+    children.forEach((child) => {
+      const childMetrics = collectTreeMetrics(child, childrenByParent);
+      descendants += 1 + childMetrics.descendants;
+      maxDepth = Math.max(maxDepth, 1 + childMetrics.maxDepth);
+    });
+    return {
+      directChildren: children.length,
+      descendants,
+      maxDepth,
+    };
+  }
+
+  function matchesTreeQuery(user, query) {
+    if (!query) return true;
+    const haystack = [
+      user.nombre,
+      user.pin_code,
+      user.compensation_role,
+      user.rol,
+      user.sponsor_name,
+      user.manager_name,
+      user.email
+    ].join(' ').toLowerCase();
+    return haystack.includes(query);
+  }
+
+  function buildHierarchyNode(user, childrenByParent, query, depth = 0) {
+    const children = childrenByParent.get(user.id) || [];
+    const childNodes = children
+      .map((child) => buildHierarchyNode(child, childrenByParent, query, depth + 1))
+      .filter(Boolean);
+    const selfMatches = matchesTreeQuery(user, query);
+    if (query && !selfMatches && !childNodes.length) return '';
+    const metrics = collectTreeMetrics(user, childrenByParent);
+    const mode = getHierarchyMode();
+    const parentName = getHierarchyParentName(user, mode) || 'sin asignar';
+    const open = hierarchyState.expandAll || Boolean(query) || depth < 1;
     return `
-      <div class="tree-node">
-        <div class="tree-card">
-          <div class="tree-card-head">
-            <div class="tree-name">${esc(user.nombre)}</div>
-            <div class="tree-badge">${esc(user.compensation_role || 'novato')}</div>
+      <details class="tree-node-shell"${open ? ' open' : ''}>
+        <summary>
+          <div class="tree-node">
+            <div class="tree-card">
+              <div class="tree-card-head">
+                <div>
+                  <div class="tree-name">${esc(user.nombre)}</div>
+                  <div class="tree-lines">
+                    <span>${esc(user.pin_code)} · ${esc(user.rol)}${user.active ? '' : ' · inactivo'}</span>
+                    <span>${mode === 'sponsor' ? 'Reclutado por' : 'Directo de'}: ${esc(parentName)}</span>
+                    <span>Reclutador: ${esc(user.sponsor_name || 'sin asignar')} · Supervisor: ${esc(user.manager_name || 'sin asignar')}</span>
+                  </div>
+                </div>
+                <div class="tree-card-meta">
+                  <div class="tree-pill">${metrics.directChildren} directos</div>
+                  <div class="tree-pill">${metrics.descendants} en red</div>
+                  <div class="tree-badge">${esc(user.compensation_role || 'novato')}</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="tree-lines">
-            <span>${esc(user.pin_code)} · ${esc(user.rol)}</span>
-            <span>Reclutado por: ${esc(user.sponsor_name || 'sin asignar')}</span>
-            <span>Directo de: ${esc(user.manager_name || 'sin asignar')}</span>
-          </div>
-        </div>
-        ${children.length ? `<div class="tree-children">${children.map((child) => buildHierarchyNode(child, childrenByManager)).join('')}</div>` : ''}
-      </div>
+        </summary>
+        ${childNodes.length ? `<div class="tree-children">${childNodes.join('')}</div>` : ''}
+      </details>
     `;
   }
 
   function renderHierarchyTree() {
     const treeMount = document.getElementById('hierarchyTree');
     const treeCount = document.getElementById('treeCount');
+    const treeSummary = document.getElementById('treeSummary');
+    const treeModeHelp = document.getElementById('treeModeHelp');
+    const mode = getHierarchyMode();
+    const query = hierarchyState.query.trim().toLowerCase();
     treeCount.textContent = `${adminUsers.length} usuarios`;
+    treeModeHelp.innerHTML = mode === 'sponsor'
+      ? 'Vista dinamica por <strong>reclutador</strong>. Ideal para seguir quien metio a quien dentro de la red.'
+      : 'Vista dinamica por <strong>supervisor</strong>. Ideal para revisar la estructura operativa y linea directa.';
 
     if (!adminUsers.length) {
+      treeSummary.innerHTML = '';
       treeMount.innerHTML = '<div class="admin-empty">No hay usuarios para mostrar en la jerarquia.</div>';
       return;
     }
 
-    const childrenByManager = new Map();
+    const childrenByParent = buildHierarchyMaps(mode);
+    const roots = adminUsers.filter((user) => {
+      const parentId = getHierarchyParentId(user, mode);
+      return !parentId || !adminUsers.some((candidate) => candidate.id === parentId);
+    });
+    const visibleRoots = roots
+      .map((user) => ({ user, html: buildHierarchyNode(user, childrenByParent, query) }))
+      .filter((entry) => entry.html);
+    const topRoles = {};
     adminUsers.forEach((user) => {
-      const key = user.manager_user_id || 0;
-      if (!childrenByManager.has(key)) childrenByManager.set(key, []);
-      childrenByManager.get(key).push(user);
+      const role = user.compensation_role || 'novato';
+      topRoles[role] = (topRoles[role] || 0) + 1;
     });
-
-    childrenByManager.forEach((items) => {
-      items.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
-    });
-
-    const roots = adminUsers.filter((user) => !user.manager_user_id || !adminUsers.some((candidate) => candidate.id === user.manager_user_id));
-    treeMount.innerHTML = roots.length
-      ? roots.map((user) => `<div class="tree-branch">${buildHierarchyNode(user, childrenByManager)}</div>`).join('')
-      : '<div class="admin-empty">Todos los usuarios tienen supervisor asignado, pero no se encontro una raiz valida.</div>';
+    const biggestRoot = roots.reduce((best, root) => {
+      const metrics = collectTreeMetrics(root, childrenByParent);
+      return !best || metrics.descendants > best.descendants
+        ? { name: root.nombre, descendants: metrics.descendants, maxDepth: metrics.maxDepth }
+        : best;
+    }, null);
+    treeSummary.innerHTML = `
+      <div class="tree-summary-card">
+        <div class="tree-summary-label">Vista</div>
+        <div class="tree-summary-value">${mode === 'sponsor' ? 'Reclutamiento' : 'Supervision'}</div>
+        <div class="tree-summary-sub">${query ? `Filtrando por "${esc(query)}"` : 'Mostrando toda la estructura'}</div>
+      </div>
+      <div class="tree-summary-card">
+        <div class="tree-summary-label">Raices</div>
+        <div class="tree-summary-value">${roots.length}</div>
+        <div class="tree-summary-sub">Puntos de inicio del arbol por ${getHierarchyLabel(mode)}</div>
+      </div>
+      <div class="tree-summary-card">
+        <div class="tree-summary-label">Mayor Red</div>
+        <div class="tree-summary-value">${biggestRoot ? biggestRoot.descendants : 0}</div>
+        <div class="tree-summary-sub">${biggestRoot ? `${esc(biggestRoot.name)} · profundidad ${biggestRoot.maxDepth}` : 'Sin datos'}</div>
+      </div>
+      <div class="tree-summary-card">
+        <div class="tree-summary-label">Niveles</div>
+        <div class="tree-summary-value">${Object.keys(topRoles).length}</div>
+        <div class="tree-summary-sub">${Object.entries(topRoles).map(([role, count]) => `${esc(role)} ${count}`).join(' · ')}</div>
+      </div>
+    `;
+    treeMount.innerHTML = visibleRoots.length
+      ? visibleRoots.map(({ html }) => `<div class="tree-branch">${html}</div>`).join('')
+      : `<div class="admin-empty">${query ? 'No hubo coincidencias para ese filtro dentro del arbol.' : 'Todos los usuarios tienen relacion asignada, pero no se encontro una raiz valida.'}</div>`;
   }
+
+  function updateHierarchyControls() {
+    hierarchyState.mode = document.getElementById('treeViewMode').value || 'manager';
+    hierarchyState.query = document.getElementById('treeSearch').value || '';
+    renderHierarchyTree();
+  }
+  window.updateHierarchyControls = updateHierarchyControls;
+
+  function setTreeExpansion(open) {
+    hierarchyState.expandAll = Boolean(open);
+    renderHierarchyTree();
+  }
+  window.setTreeExpansion = setTreeExpansion;
 
   async function createPortalUser() {
     const payload = {
