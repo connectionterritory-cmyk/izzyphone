@@ -80,6 +80,9 @@ type OrderRow = {
   commission_paid_at: string | null;
   compensation_status: string | null;
   reserve_release_at: string | null;
+  service_category_code: string | null;
+  sale_type: string | null;
+  compensation_rank_code: string | null;
 };
 
 const DEFAULT_QUOTERS = [
@@ -512,7 +515,7 @@ async function updateOrderById(
 ) {
   const { data: existing, error: existingError } = await supabase
     .from("izzy_orders")
-    .select("id, agente, carrier_name, install_date, installation_status, scheduled_install_date, actual_install_date, satisfaction_status, satisfaction_confirmed_at, commission_status, commission_earned_at, commission_amount, commission_paid_at, compensation_status, reserve_release_at")
+    .select("id, agente, carrier_name, install_date, installation_status, scheduled_install_date, actual_install_date, satisfaction_status, satisfaction_confirmed_at, commission_status, commission_earned_at, commission_amount, commission_paid_at, compensation_status, reserve_release_at, service_category_code, sale_type, compensation_rank_code")
     .eq("id", id)
     .maybeSingle();
 
@@ -530,6 +533,29 @@ async function updateOrderById(
   }
 
   const derivedUpdates = deriveOrderUpdates(existing as OrderRow, updates, user.nombre);
+
+  // Auto-calculate commission_amount when commission transitions to "earned" for the first time
+  if (
+    derivedUpdates.commission_status === "earned" &&
+    existing.commission_status !== "earned" &&
+    existing.commission_amount == null &&
+    !("commission_amount" in updates)
+  ) {
+    const rankCode = existing.compensation_rank_code || "novato";
+    const categoryCode = existing.service_category_code || "standard";
+    const saleType = existing.sale_type || "residential";
+    const { data: rateRow } = await supabase
+      .from("izzy_commission_rates")
+      .select("amount")
+      .eq("rank_code", rankCode)
+      .eq("service_category_code", categoryCode)
+      .eq("sale_type", saleType)
+      .eq("active", true)
+      .maybeSingle();
+    if (rateRow?.amount != null) {
+      derivedUpdates.commission_amount = rateRow.amount;
+    }
+  }
 
   const { data, error } = await supabase
     .from("izzy_orders")
