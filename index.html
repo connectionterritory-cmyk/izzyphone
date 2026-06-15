@@ -656,7 +656,7 @@
           <span id="cotizadorBannerText" style="display:none;">Sin cotizador asignado</span>
         </div>
       </div>
-      <div class="cotizador-banner-badge">Asignado</div>
+      <div class="cotizador-banner-badge" id="cotizadorBannerBadge">Asignado</div>
     </div>
     <div class="field">
       <label id="lblCotizadorLista">Cotizador asignado</label>
@@ -1396,7 +1396,7 @@
       hdrCelulares:'📱 Teléfonos Celulares', hdrOferta:'⚡ La Mejor Oferta Encontrada',
       lblMiNombre:'Mi nombre', phMiNombre:'Tu nombre',
       lblCotizadorLista:'Cotizador asignado', phCotizadorDefault:'Selecciona un cotizador',
-      cotizadorBannerEyebrow:'Cotizador del sistema', cotizadorBannerEmpty:'Sin cotizador asignado',
+      cotizadorBannerEyebrow:'Cotizador del sistema', cotizadorBannerEmpty:'Sin cotizador asignado', cotizadorBannerBadge:'Asignado',
       lblCotNombre:'Nombre del cotizador', phCotNombre:'Nombre',
       lblCotTel:'WhatsApp / Teléfono', cotSavedNote:'Este número se guarda automáticamente para la próxima vez.',
       lblClienteNombre:'Nombre del cliente', phClienteNombre:'Nombre completo',
@@ -1467,7 +1467,7 @@
       hdrCelulares:'📱 Cell Phones', hdrOferta:'⚡ Best Offer Found',
       lblMiNombre:'My name', phMiNombre:'Your name',
       lblCotizadorLista:'Assigned quoting agent', phCotizadorDefault:'Select a quoting agent',
-      cotizadorBannerEyebrow:'System quoter', cotizadorBannerEmpty:'No quoting agent assigned',
+      cotizadorBannerEyebrow:'System quoter', cotizadorBannerEmpty:'No quoting agent assigned', cotizadorBannerBadge:'Assigned',
       lblCotNombre:'Quoting agent name', phCotNombre:'Name',
       lblCotTel:'WhatsApp / Phone', cotSavedNote:'This number is saved automatically for next time.',
       lblClienteNombre:'Client name', phClienteNombre:'Full name',
@@ -1594,6 +1594,8 @@
     if(pct) pct.textContent = t.previewClienteTitle;
     const cbe = document.getElementById('cotizadorBannerEyebrow');
     if (cbe) cbe.textContent = t.cotizadorBannerEyebrow;
+    const cbb = document.getElementById('cotizadorBannerBadge');
+    if (cbb) cbb.textContent = t.cotizadorBannerBadge;
     // Regenerate messages
     generate();
     generateCliente();
