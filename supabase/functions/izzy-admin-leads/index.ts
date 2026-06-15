@@ -9,6 +9,7 @@ import {
   type Role,
   verifyPassword,
 } from "../_shared/auth.ts";
+import { normalizeCompensationRole } from "../_shared/compensation.ts";
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
