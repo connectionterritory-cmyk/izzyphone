@@ -1389,7 +1389,7 @@
     es: {
       pinSub:'Ingresa tu código de acceso', pinBtn:'✅ Entrar', pinPlaceholder:'CÓDIGO',
       pinError:'❌ Código incorrecto. Intenta de nuevo.',
-      brandSub:'Enviar lead al cotizador asignado', badge:'📤 Para el Cotizador', tutorialLink:'📚 Tutorial', langToggle:'🇺🇸 EN',
+      brandSub:'Enviar lead al cotizador asignado', badge:'📤 Para el Cotizador', tutorialLink:'📚 Tutorial', langToggle:'🇺🇸 EN', btnNueva:'🔄 Nueva',
       pageTitle:'Centro de Cotización',
       hdrAgente:'👤 Mis Datos (Agente)', hdrCotizador:'📲 Datos del Cotizador',
       hdrCliente:'🏠 Datos del Cliente', hdrSituacion:'📡 Situación Actual del Cliente',
@@ -1460,7 +1460,7 @@
     en: {
       pinSub:'Enter your access code', pinBtn:'✅ Enter', pinPlaceholder:'CODE',
       pinError:'❌ Incorrect code. Please try again.',
-      brandSub:'Send lead to quoting agent', badge:'📤 For Quoting Agent', tutorialLink:'📚 Tutorial', langToggle:'🇲🇽 ES',
+      brandSub:'Send lead to quoting agent', badge:'📤 For Quoting Agent', tutorialLink:'📚 Tutorial', langToggle:'🇲🇽 ES', btnNueva:'🔄 New',
       pageTitle:'Quote Desk',
       hdrAgente:'👤 My Info (Agent)', hdrCotizador:'📲 Quoting Agent Info',
       hdrCliente:'🏠 Client Info', hdrSituacion:'📡 Client\'s Current Situation',
@@ -1548,6 +1548,7 @@
     if (pageTitleText && t.pageTitle) pageTitleText.textContent = t.pageTitle;
     document.getElementById('badgeText').textContent = t.badge;
     document.getElementById('langToggle').textContent = t.langToggle;
+    document.getElementById('btnNueva').textContent = t.btnNueva;
     // Card headers
     ['hdrAgente','hdrCotizador','hdrCliente','hdrSituacion','hdrOferta'].forEach(id => {
       if(document.getElementById(id)) document.getElementById(id).textContent = t[id];
