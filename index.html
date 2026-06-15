@@ -1053,6 +1053,14 @@
           leads: 'Leads',
           orders: 'Orders',
           tutorial: 'Tutorial',
+          'comp-level': 'My Level',
+          'comp-tree': 'My Tree',
+          'comp-table': 'Commission Table',
+          'comp-bonuses': 'Bonuses',
+          'comp-ambassadors': 'Ambassador Program',
+          users: 'Users',
+          'comp-admin': 'Compensation',
+          'tutorial-admin': 'Admin Tutorial',
           compensation: 'Comp Plan',
           admin: 'Admin'
         }
@@ -1071,6 +1079,14 @@
         leads: 'Leads',
         orders: 'Órdenes',
         tutorial: 'Tutorial',
+        'comp-level': 'Mi Nivel',
+        'comp-tree': 'Mi Árbol',
+        'comp-table': 'Tabla de Comisiones',
+        'comp-bonuses': 'Bonos',
+        'comp-ambassadors': 'Programa Embajador',
+        users: 'Usuarios',
+        'comp-admin': 'Compensación',
+        'tutorial-admin': 'Tutorial Admin',
         compensation: 'Compensación',
         admin: 'Admin'
       }
@@ -1078,20 +1094,21 @@
   }
 
   function renderCurrentNavigation() {
+    const lang = localStorage.getItem('izzy_lang') || 'es';
     const sessionUser = getSession()?.user || null;
     const isAdmin = (sessionUser?.rol || '') === 'admin';
-    const t = T[currentLang];
+    const pageTitle = lang === 'en' ? 'Quote Desk' : 'Centro de Cotización';
     renderIzzyNavigation({
       mountId: 'appNav',
       user: sessionUser,
       isAdmin,
       activeSidebar: 'cotizador',
       activeMobile: 'cotizador',
-      pageTitle: t.pageTitle,
-      mobileTitle: t.pageTitle,
+      pageTitle,
+      mobileTitle: pageTitle,
       tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
       mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html',
-      navCopy: getNavCopy(currentLang),
+      navCopy: getNavCopy(lang),
       onLogout: logout
     });
   }
