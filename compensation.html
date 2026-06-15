@@ -106,6 +106,15 @@
   .muted { color: var(--muted); font-size: 12px; }
   .list { display: grid; gap: 10px; }
   .list-item { border: 1px solid var(--border); background: #fafafa; border-radius: 14px; padding: 12px; }
+  .tree-root-list { display: grid; gap: 12px; }
+  .tree-branch { border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: #fcfcfd; }
+  .tree-node { display: grid; gap: 10px; }
+  .tree-card { border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; background: linear-gradient(180deg, #fff 0%, #f8fafc 100%); }
+  .tree-card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tree-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .tree-lines { display: grid; gap: 3px; margin-top: 8px; }
+  .tree-lines span { font-size: 12px; color: var(--muted); }
+  .tree-children { margin-left: 22px; margin-top: 10px; padding-left: 14px; border-left: 2px solid #dbe4f3; display: grid; gap: 10px; }
   .toast { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#111; color:#fff; padding:10px 20px; border-radius:999px; z-index:999; }
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; }
@@ -139,6 +148,13 @@
       <h2>Mi Nivel</h2>
       <p class="lead">Resumen de nivel, actividad, instalaciones del mes y comisiones visibles para ti.</p>
       <div class="two-col" id="levelCards"></div>
+    </section>
+
+    <section class="panel" data-tab="tree">
+      <h2>Mi Árbol</h2>
+      <p class="lead">Tu red de reclutados directos y su desarrollo dentro de la estructura.</p>
+      <div class="two-col" id="treeCards"></div>
+      <div class="tree-root-list" id="recruitTree" style="margin-top:14px;"></div>
     </section>
 
     <section class="panel" data-tab="table">
@@ -225,6 +241,7 @@
   const FUNCTION_NAME = 'izzy-compensation';
   const TAB_LABELS = {
     level: 'Mi Nivel',
+    tree: 'Mi Árbol',
     table: 'Tabla de Comisiones',
     elite: 'Productor Elite',
     progress: 'Progreso de Carrera',
@@ -263,6 +280,7 @@
     isAdmin,
     activeSidebar: ({
       level: 'comp-level',
+      tree: 'comp-tree',
       table: 'comp-table',
       elite: 'comp-elite',
       progress: 'comp-progress',
@@ -407,6 +425,45 @@
         </div>
       </div>
     `;
+  }
+
+  function renderRecruitNode(node) {
+    const recruits = Array.isArray(node.recruits) ? node.recruits : [];
+    return `
+      <div class="tree-node">
+        <div class="tree-card">
+          <div class="tree-card-head">
+            <div class="tree-name">${esc(node.nombre)}</div>
+            <div class="badge blue">${esc(node.compensation_role || 'novato')}</div>
+          </div>
+          <div class="tree-lines">
+            <span>Reclutado por ti</span>
+            <span>${node.manager_user_id ? `Directo de supervisor #${esc(node.manager_user_id)}` : 'Sin supervisor directo asignado'}</span>
+          </div>
+        </div>
+        ${recruits.length ? `<div class="tree-children">${recruits.map((child) => renderRecruitNode(child)).join('')}</div>` : ''}
+      </div>
+    `;
+  }
+
+  function renderTree(data) {
+    const root = data.recruit_tree || {};
+    document.getElementById('treeCards').innerHTML = `
+      <div class="mini-card">
+        <h3>Reclutados Directos</h3>
+        <div class="value">${root.direct_recruits || 0}</div>
+        <p class="muted" style="margin-top:8px;">Personas que entraron al sistema con tu patrocinio.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Red Total</h3>
+        <div class="value">${root.network_size || 0}</div>
+        <p class="muted" style="margin-top:8px;">Incluye toda tu red descendente por reclutamiento.</p>
+      </div>
+    `;
+    const recruits = Array.isArray(root.recruits) ? root.recruits : [];
+    document.getElementById('recruitTree').innerHTML = recruits.length
+      ? recruits.map((node) => `<div class="tree-branch">${renderRecruitNode(node)}</div>`).join('')
+      : '<div class="muted">Todavía no tienes reclutados visibles en tu árbol.</div>';
   }
 
   function renderCommissionTable(data) {
@@ -714,6 +771,7 @@
       dashboardData = data;
       renderTopStats(data);
       renderLevel(data);
+      renderTree(data);
       renderCommissionTable(data);
       renderElite(data);
       renderProgress(data);

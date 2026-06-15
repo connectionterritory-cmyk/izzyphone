@@ -14,6 +14,7 @@
       label: 'Plan de Compensacion',
       items: [
         { key: 'comp-level', href: 'compensation.html?tab=level', icon: '🏅', text: 'Mi Nivel' },
+        { key: 'comp-tree', href: 'compensation.html?tab=tree', icon: '🌿', text: 'Mi Arbol' },
         { key: 'comp-table', href: 'compensation.html?tab=table', icon: '💵', text: 'Tabla de Comisiones' },
         { key: 'comp-elite', href: 'compensation.html?tab=elite', icon: '⭐', text: 'Productor Elite' },
         { key: 'comp-progress', href: 'compensation.html?tab=progress', icon: '📈', text: 'Progreso de Carrera' },

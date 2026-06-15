@@ -70,6 +70,38 @@ function collectDescendants(users: PortalCompUser[], rootId: number) {
   return descendants;
 }
 
+function getSponsoredRecruits(users: PortalCompUser[], sponsorId: number) {
+  return users.filter((user) => user.sponsor_user_id === sponsorId && user.active);
+}
+
+function collectSponsoredDescendants(users: PortalCompUser[], rootId: number) {
+  const descendants = new Set<number>();
+  const queue = [rootId];
+  while (queue.length) {
+    const current = queue.shift()!;
+    for (const user of users) {
+      if (user.sponsor_user_id === current && !descendants.has(user.id)) {
+        descendants.add(user.id);
+        queue.push(user.id);
+      }
+    }
+  }
+  descendants.delete(rootId);
+  return descendants;
+}
+
+function buildRecruitTree(users: PortalCompUser[], rootId: number): Array<Record<string, unknown>> {
+  const children = getSponsoredRecruits(users, rootId);
+  return children.map((user) => ({
+    id: user.id,
+    nombre: user.nombre,
+    compensation_role: user.compensation_role,
+    manager_user_id: user.manager_user_id,
+    sponsor_user_id: user.sponsor_user_id,
+    recruits: buildRecruitTree(users, user.id),
+  }));
+}
+
 function getActivityRule(config: CompensationConfig, role: string) {
   return config.activityRules.find((rule) => rule.rank_code === role);
 }
@@ -209,6 +241,11 @@ async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof 
       org_installs_month: activity.descendantOrdersMonth.length,
       requirements: progressRequirement,
       initial_rank_assigned_by_admin: true,
+    },
+    recruit_tree: {
+      direct_recruits: getSponsoredRecruits(users, freshUser.id).length,
+      network_size: Array.from(users).filter((candidate) => candidate.id !== freshUser.id && collectSponsoredDescendants(users, freshUser.id).has(candidate.id)).length,
+      recruits: buildRecruitTree(users, freshUser.id),
     },
     supervisor_view: ["supervisor", "director"].includes(freshUser.compensation_role)
       ? {
