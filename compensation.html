@@ -31,9 +31,15 @@
   .stat-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
   .stat-value { font-size: 28px; font-weight: 700; color: var(--blue); }
   .stat-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
-  .panel { padding: 18px; }
-  .panel.hidden { display: none; }
-  .panel h2 { font-size: 18px; margin-bottom: 12px; color: var(--blue); }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tab-btn {
+    border: 1.5px solid var(--border); background: #fff; color: var(--muted); border-radius: 10px;
+    padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s;
+  }
+  .tab-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .tab-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .panel { padding: 18px; display: none; }
+  .panel.active { display: block; }
   .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .mini-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
   .mini-card h3 { font-size: 14px; margin-bottom: 8px; }
@@ -135,21 +141,20 @@
 
     <section class="stat-grid" id="topStats"></section>
 
-    <section class="panel" data-tab="level">
-      <h2>Mi Nivel</h2>
+    <section class="tabs" id="tabs"></section>
+
+    <section class="panel active" data-tab="level">
       <div class="two-col" id="levelCards"></div>
       <div class="two-col" id="eliteCards" style="margin-top:12px;"></div>
       <div class="two-col" id="progressCards" style="margin-top:12px;"></div>
     </section>
 
-    <section class="panel hidden" data-tab="tree">
-      <h2>Mi Árbol</h2>
+    <section class="panel" data-tab="tree">
       <div class="two-col" id="treeCards"></div>
       <div class="tree-root-list" id="recruitTree" style="margin-top:14px;"></div>
     </section>
 
     <section class="panel" data-tab="table">
-      <h2>Tabla de Comisiones</h2>
       <div class="table-wrap">
         <table>
           <thead>
@@ -165,17 +170,15 @@
       </div>
     </section>
 
-    <section class="panel hidden" data-tab="bonuses">
-      <h2>Bonos</h2>
+    <section class="panel" data-tab="bonuses">
       <div class="two-col" id="bonusCards"></div>
     </section>
 
     <section class="panel" data-tab="ambassadors">
-      <h2>Programa Embajador</h2>
       <div class="two-col" id="ambassadorCards"></div>
     </section>
 
-    <section class="panel hidden" data-tab="admin" id="adminPanel">
+    <section class="panel" data-tab="admin" id="adminPanel">
       <div class="admin-toolbar">
         <div class="editor-card">
           <h3>Razón del Cambio</h3>
@@ -213,6 +216,15 @@
   const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
   const SESSION_KEY = 'izzy_session';
   const FUNCTION_NAME = 'izzy-compensation';
+  const TAB_LABELS = {
+    level: 'Mi Nivel',
+    tree: 'Mi Árbol',
+    table: 'Comisiones',
+    bonuses: 'Bonos',
+    ambassadors: 'Embajadores',
+    admin: 'Admin',
+  };
+  const TAB_ROLES = { tree: ['supervisor','director'], bonuses: ['supervisor','director'] };
   let currentUser = null;
   let dashboardData = null;
   let adminData = null;
@@ -233,9 +245,10 @@
 
   const isAdmin = currentUser.rol === 'admin';
 
-  if (isAdmin) {
-    document.querySelector('.panel[data-tab="admin"]').classList.remove('hidden');
-  }
+  const activeTab = (() => {
+    const raw = new URLSearchParams(window.location.search).get('tab') || 'level';
+    return TAB_LABELS[raw] ? raw : 'level';
+  })();
 
   renderIzzyNavigation({
     mountId: 'appNav',
@@ -303,11 +316,26 @@
       .replace(/'/g, '&#39;');
   }
 
-  function applyRoleVisibility(role) {
-    const isLeader = ['supervisor', 'director'].includes(role);
-    document.querySelector('.panel[data-tab="tree"]').classList.toggle('hidden', !isLeader);
-    document.querySelector('.panel[data-tab="bonuses"]').classList.toggle('hidden', !isLeader);
+  function renderTabs(role) {
+    const tabs = Object.entries(TAB_LABELS).filter(([key]) => {
+      if (key === 'admin') return isAdmin;
+      if (TAB_ROLES[key]) return role && TAB_ROLES[key].includes(role);
+      return true;
+    });
+    document.getElementById('tabs').innerHTML = tabs.map(([key, label]) =>
+      `<button class="tab-btn${key === activeTab ? ' active' : ''}" onclick="switchTab('${key}')">${label}</button>`
+    ).join('');
+    document.querySelectorAll('.panel[data-tab]').forEach((p) => {
+      p.classList.toggle('active', p.dataset.tab === activeTab);
+    });
   }
+
+  function switchTab(tab) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.location.href = url.toString();
+  }
+  window.switchTab = switchTab;
 
   function renderTopStats(data) {
     document.getElementById('heroLevel').textContent = `Nivel actual: ${data.current_level.name}`;
@@ -728,7 +756,7 @@
         return;
       }
       dashboardData = data;
-      applyRoleVisibility(data.user.compensation_role);
+      renderTabs(data.user.compensation_role);
       renderTopStats(data);
       renderLevel(data);
       renderTree(data);
@@ -760,6 +788,7 @@
     }
   }
 
+  renderTabs(null);
   loadDashboard();
   if (isAdmin) loadAdmin();
 </script>
