@@ -251,8 +251,8 @@
     try {
       res = await fetch(`${FUNCTIONS_BASE_URL}/${FUNCTION_NAME}${join}`, { ...options, headers });
     } catch {
-      // fetch aborted (e.g. concurrent redirect) or network error — swallow silently
-      return new Response('{}', { status: 0 });
+      // fetch aborted (e.g. concurrent redirect) or network error — return inert response
+      return new Response('{}', { status: 503 });
     }
     if (res.status === 401) {
       localStorage.removeItem(SESSION_KEY);
