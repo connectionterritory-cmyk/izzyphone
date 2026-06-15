@@ -38,6 +38,13 @@
       ]
     },
     {
+      section: 'ambassadors',
+      label: 'Embajadores',
+      items: [
+        { key: 'comp-ambassadors', href: 'compensation.html?tab=ambassadors', icon: ICONS.ambassadors, text: 'Programa Embajador' }
+      ]
+    },
+    {
       section: 'admin',
       label: 'Administración',
       items: [

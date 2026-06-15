@@ -254,7 +254,14 @@
     mountId: 'appNav',
     user: currentUser,
     isAdmin,
-    activeSidebar: 'compensation',
+    activeSidebar: ({
+      level: 'comp-level',
+      tree: 'comp-tree',
+      table: 'comp-table',
+      bonuses: 'comp-bonuses',
+      ambassadors: 'comp-ambassadors',
+      admin: 'comp-admin'
+    })[activeTab] || 'comp-level',
     activeMobile: 'compensation',
     pageTitle: 'Plan de Compensación',
     mobileTitle: 'Compensación',
@@ -760,7 +767,14 @@
         mountId: 'appNav',
         user: currentUser,
         isAdmin,
-        activeSidebar: 'compensation',
+        activeSidebar: ({
+          level: 'comp-level',
+          tree: 'comp-tree',
+          table: 'comp-table',
+          bonuses: 'comp-bonuses',
+          ambassadors: 'comp-ambassadors',
+          admin: 'comp-admin'
+        })[activeTab] || 'comp-level',
         compRole: data.user.compensation_role,
         activeMobile: 'compensation',
         pageTitle: 'Plan de Compensación',
