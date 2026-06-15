@@ -28,6 +28,10 @@ function ensureAdmin(role: Role) {
   }
 }
 
+function safeResponseStatus(status: number) {
+  return Number.isInteger(status) && status >= 200 && status <= 599 ? status : 500;
+}
+
 function currentMonthKey(dateValue: string | null) {
   if (!dateValue) return "";
   const date = new Date(dateValue);
@@ -537,7 +541,7 @@ Deno.serve(async (req) => {
     if (error instanceof Response) {
       const body = await error.text();
       return new Response(body, {
-        status: error.status,
+        status: safeResponseStatus(error.status),
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

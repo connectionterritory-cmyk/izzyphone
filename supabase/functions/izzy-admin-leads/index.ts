@@ -856,7 +856,6 @@ async function handleCreateQuoter(req: Request, user: { rol: Role }, supabase: R
 }
 
 async function handleGet(req: Request) {
-  const user = await requireSession(req);
   const url = new URL(req.url);
   const resource = url.searchParams.get("resource") || "leads";
   const supabase = createAdminClient();
@@ -865,6 +864,8 @@ async function handleGet(req: Request) {
     const quoters = await getQuoters(supabase);
     return jsonResponse({ quoters });
   }
+
+  const user = await requireSession(req);
 
   if (resource === "admin-config") {
     return await handleAdminConfig(user, supabase);
@@ -1057,7 +1058,7 @@ Deno.serve(async (req) => {
     if (error instanceof Response) {
       const body = await error.text();
       return new Response(body, {
-        status: error.status,
+        status: Number.isInteger(error.status) && error.status >= 200 && error.status <= 599 ? error.status : 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
