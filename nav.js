@@ -23,7 +23,8 @@
       items: [
         { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotizador' },
         { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
-        { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Orders' }
+        { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Orders' },
+        { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
       ]
     },
     {
@@ -42,8 +43,7 @@
       label: 'Admin',
       items: [
         { key: 'users', href: 'users.html', icon: ICONS.users, text: 'Usuarios', adminOnly: true },
-        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensacion', adminOnly: true },
-        { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
+        { key: 'comp-admin', href: 'compensation.html?tab=admin', icon: ICONS.admin, text: 'Compensacion', adminOnly: true }
       ]
     }
   ];

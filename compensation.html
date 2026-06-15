@@ -115,6 +115,9 @@
   .tree-lines span { font-size: 12px; color: var(--muted); }
   .tree-children { margin-left: 22px; margin-top: 10px; padding-left: 14px; border-left: 2px solid #dbe4f3; display: grid; gap: 10px; }
   .toast { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#111; color:#fff; padding:10px 20px; border-radius:999px; z-index:999; }
+  @media (min-width: 861px) {
+    #tabs { display: none; }
+  }
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; }
     .two-col { grid-template-columns: 1fr; }
