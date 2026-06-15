@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -487,7 +487,7 @@
 <!-- ── STATS ──────────────────────────────────────────── -->
 <div class="stats-row">
   <div class="stat-card">
-    <div class="stat-label" id="statTotalLabel">Total Leads</div>
+    <div class="stat-label" id="statTotalLabel">Total de Leads</div>
     <div class="stat-value" id="statTotal">—</div>
     <div class="stat-sub" id="statTotalSub">en la base de datos</div>
   </div>
@@ -704,7 +704,7 @@
     document.getElementById('statProm').textContent       = prom > 0 ? `$${prom.toFixed(0)}` : '—';
     document.getElementById('statVendidos').textContent   = vendidos;
     document.getElementById('statPendientes').textContent = pendientes;
-    document.getElementById('statFecha').textContent      = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    document.getElementById('statFecha').textContent      = new Date().toLocaleDateString('es-US', { month:'short', day:'numeric' });
   }
 
   // ── Estado helpers ─────────────────────────────────────

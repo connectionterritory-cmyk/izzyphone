@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Izzy Communications — Orders</title>
+<title>Izzy Communications — Órdenes</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="nav.css">
 <style>
@@ -104,7 +104,7 @@
   <div class="modal">
     <div class="modal-header">
       <div>
-        <h2 id="modalTitle">Order Detail</h2>
+        <h2 id="modalTitle">Detalle de Orden</h2>
         <div class="modal-sub" id="modalSub"></div>
       </div>
       <button class="btn-close" onclick="closeModal()">✕</button>
@@ -118,7 +118,7 @@
 <div class="page-shell-header" style="max-width:980px;">
   <div class="page-shell-title">
     <span class="page-shell-eyebrow">Principal</span>
-    <h1>🧾 Orders</h1>
+    <h1>🧾 Órdenes</h1>
     <p>Órdenes guardadas del portal y seguimiento operativo.</p>
   </div>
   <div class="page-shell-actions">
@@ -129,9 +129,9 @@
 
 <div class="stats-row">
   <div class="stat-card">
-    <div class="stat-label" id="statTotalLabel">Total Orders</div>
+    <div class="stat-label" id="statTotalLabel">Total Órdenes</div>
     <div class="stat-value" id="statTotal">—</div>
-    <div class="stat-sub" id="statTotalSub">ordenes registradas</div>
+    <div class="stat-sub" id="statTotalSub">órdenes registradas</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Hoy</div>
@@ -141,7 +141,7 @@
   <div class="stat-card">
     <div class="stat-label">Esta Semana</div>
     <div class="stat-value" id="statSemana">—</div>
-    <div class="stat-sub">ultimos 7 dias</div>
+    <div class="stat-sub">Últimos 7 días</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Precio Promedio</div>
@@ -151,7 +151,7 @@
 </div>
 
 <div class="search-bar">
-  <input type="text" id="searchInput" placeholder="🔍 Buscar por cliente, agente, telefono o order #..." oninput="renderTable()">
+  <input type="text" id="searchInput" placeholder="🔍 Buscar por cliente, agente, teléfono u orden #..." oninput="renderTable()">
   <select id="filterAgente" onchange="renderTable()">
     <option value="">Todos los agentes</option>
   </select>
@@ -175,7 +175,7 @@
           <th onclick="sortBy('created_at')">Fecha <span>↕</span></th>
           <th onclick="sortBy('agente')">Agente <span>↕</span></th>
           <th onclick="sortBy('cliente_nombre')">Cliente <span>↕</span></th>
-          <th class="no-sort">Telefono</th>
+          <th class="no-sort">Teléfono</th>
           <th class="no-sort">Proveedor</th>
           <th class="no-sort">Estado</th>
           <th class="no-sort">Precio</th>
@@ -226,8 +226,8 @@
     isAdmin,
     activeSidebar: 'orders',
     activeMobile: 'orders',
-    pageTitle: 'Orders',
-    mobileTitle: 'Orders',
+    pageTitle: 'Órdenes',
+    mobileTitle: 'Órdenes',
     tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
     mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html'
   });
@@ -256,7 +256,7 @@
     const res = await apiFetch('izzy-admin-leads?resource=orders');
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      showToast('❌ Error al cargar ordenes', '#b91c1c');
+      showToast('❌ Error al cargar órdenes', '#b91c1c');
       return;
     }
     allOrders = data.orders || [];
@@ -343,14 +343,14 @@
     const precios = allOrders.map((o) => parseFloat(o.monthly_price) || 0).filter((n) => n > 0);
     const prom = precios.length ? precios.reduce((a, b) => a + b, 0) / precios.length : 0;
     if (!isAdmin) {
-      document.getElementById('statTotalLabel').textContent = 'Mis Orders';
-      document.getElementById('statTotalSub').textContent = 'ordenes tuyas';
+      document.getElementById('statTotalLabel').textContent = 'Mis Órdenes';
+      document.getElementById('statTotalSub').textContent = 'órdenes tuyas';
     }
     document.getElementById('statTotal').textContent = allOrders.length;
     document.getElementById('statHoy').textContent = hoy;
     document.getElementById('statSemana').textContent = semana;
     document.getElementById('statProm').textContent = prom ? `$${prom.toFixed(0)}` : '—';
-    document.getElementById('statFecha').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    document.getElementById('statFecha').textContent = new Date().toLocaleDateString('es-US', { month: 'short', day: 'numeric' });
   }
 
   function sortBy(col) {
@@ -366,7 +366,7 @@
       return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
     });
 
-    document.getElementById('resultCount').textContent = `${data.length} order${data.length !== 1 ? 's' : ''}`;
+    document.getElementById('resultCount').textContent = `${data.length} orden${data.length !== 1 ? 'es' : ''}`;
     document.getElementById('emptyState').style.display = data.length === 0 ? 'block' : 'none';
 
     document.getElementById('tableBody').innerHTML = data.map((o) => {
@@ -393,7 +393,7 @@
     document.getElementById('cardList').innerHTML = data.map((o) => {
       const fullName = esc([o.cliente_nombre, o.cliente_apellido].filter(Boolean).join(' ') || '—');
       const provider = esc(o.proveedor_otro || o.proveedor_servicio || '');
-      const price = o.monthly_price ? `$${parseFloat(o.monthly_price).toFixed(2)}/mo` : '';
+      const price = o.monthly_price ? `$${parseFloat(o.monthly_price).toFixed(2)}/mes` : '';
       const scheduledInstall = o.scheduled_install_date || o.install_date || '';
       return `<div class="order-card" onclick="openModalById(${Number(o.id)})">
         <div class="order-card-top">
@@ -419,8 +419,8 @@
   function openModal(order) {
     activeOrder = order;
     const fullName = [order.cliente_nombre, order.cliente_apellido].filter(Boolean).join(' ');
-    document.getElementById('modalTitle').textContent = fullName || 'Order Detail';
-    document.getElementById('modalSub').textContent = `Order ID #${order.id} · ${order.fecha || '—'}`;
+    document.getElementById('modalTitle').textContent = fullName || 'Detalle de Orden';
+    document.getElementById('modalSub').textContent = `Orden #${order.id} · ${order.fecha || '—'}`;
     const provider = order.proveedor_otro || order.proveedor_servicio || '—';
     const address = [order.direccion, order.apartamento, [order.ciudad, order.estado].filter(Boolean).join(', '), order.zip].filter(Boolean).join(' · ');
     const commissionAmount = order.commission_amount ? '$' + esc(Number(order.commission_amount).toFixed(2)) : '—';
@@ -431,42 +431,42 @@
       </div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">Agente</div><div class="m-value">${esc(order.agente || '—')}</div></div>
-        <div class="m-field"><div class="m-label">Order Number</div><div class="m-value">${esc(order.order_number || '—')}</div></div>
+        <div class="m-field"><div class="m-label">N° de Orden</div><div class="m-value">${esc(order.order_number || '—')}</div></div>
       </div>
       <div class="m-row2">
-        <div class="m-field"><div class="m-label">Telefono Principal</div><div class="m-value">${esc(order.telefono_primario || '—')}</div></div>
-        <div class="m-field"><div class="m-label">Telefono Secundario</div><div class="m-value">${esc(order.telefono_secundario || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Teléfono Principal</div><div class="m-value">${esc(order.telefono_primario || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Teléfono Secundario</div><div class="m-value">${esc(order.telefono_secundario || '—')}</div></div>
       </div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">Email</div><div class="m-value">${esc(order.email || '—')}</div></div>
-        <div class="m-field"><div class="m-label">DOB</div><div class="m-value">${esc(order.fecha_nacimiento || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Fecha Nacimiento</div><div class="m-value">${esc(order.fecha_nacimiento || '—')}</div></div>
       </div>
-      <div class="m-field"><div class="m-label">Direccion</div><div class="m-value">${esc(address || '—')}</div></div>
+      <div class="m-field"><div class="m-label">Dirección</div><div class="m-value">${esc(address || '—')}</div></div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">Proveedor</div><div class="m-value">${esc(provider)}</div></div>
         <div class="m-field"><div class="m-label">Velocidad</div><div class="m-value">${esc(order.velocidad_deseada || '—')}</div></div>
       </div>
       <div class="m-row2">
-        <div class="m-field"><div class="m-label">Voice Service</div><div class="m-value">${order.voice_service ? 'Yes' : 'No'}</div></div>
-        <div class="m-field"><div class="m-label">Autopay</div><div class="m-value">${order.autopay ? 'Yes' : 'No'}</div></div>
+        <div class="m-field"><div class="m-label">Servicio de Voz</div><div class="m-value">${order.voice_service ? 'Sí' : 'No'}</div></div>
+        <div class="m-field"><div class="m-label">Autopay</div><div class="m-value">${order.autopay ? 'Sí' : 'No'}</div></div>
       </div>
       <div class="m-row2">
-        <div class="m-field"><div class="m-label">Monthly Price</div><div class="m-value">${order.monthly_price ? '$' + esc(Number(order.monthly_price).toFixed(2)) : '—'}</div></div>
-        <div class="m-field"><div class="m-label">Commission Amount</div><div class="m-value">${commissionAmount}</div></div>
+        <div class="m-field"><div class="m-label">Precio Mensual</div><div class="m-value">${order.monthly_price ? '$' + esc(Number(order.monthly_price).toFixed(2)) : '—'}</div></div>
+        <div class="m-field"><div class="m-label">Monto de Comisión</div><div class="m-value">${commissionAmount}</div></div>
       </div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">Programada</div><div class="m-value">${esc(order.scheduled_install_date || order.install_date || '—')}</div></div>
         <div class="m-field"><div class="m-label">Instalada</div><div class="m-value">${esc(order.actual_install_date || '—')}</div></div>
       </div>
       <div class="m-row2">
-        <div class="m-field"><div class="m-label">Satisfaction</div><div class="m-value">${esc(satisfactionStatusLabel(order.satisfaction_status || 'pending'))}${order.satisfaction_confirmed_at ? `<div style="margin-top:8px;font-size:12px;color:#7a7570;">Confirmado: ${esc(formatDateTime(order.satisfaction_confirmed_at))}${order.satisfaction_confirmed_by ? ` por ${esc(order.satisfaction_confirmed_by)}` : ''}</div>` : ''}${order.satisfaction_notes ? `<div style="margin-top:6px;font-size:12px;color:#374151;background:#f9fafb;border-radius:7px;padding:6px 10px;">${esc(order.satisfaction_notes)}</div>` : ''}</div></div>
-        <div class="m-field"><div class="m-label">Legacy Install Date</div><div class="m-value">${esc(order.install_date || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Satisfacción</div><div class="m-value">${esc(satisfactionStatusLabel(order.satisfaction_status || 'pending'))}${order.satisfaction_confirmed_at ? `<div style="margin-top:8px;font-size:12px;color:#7a7570;">Confirmado: ${esc(formatDateTime(order.satisfaction_confirmed_at))}${order.satisfaction_confirmed_by ? ` por ${esc(order.satisfaction_confirmed_by)}` : ''}</div>` : ''}${order.satisfaction_notes ? `<div style="margin-top:6px;font-size:12px;color:#374151;background:#f9fafb;border-radius:7px;padding:6px 10px;">${esc(order.satisfaction_notes)}</div>` : ''}</div></div>
+        <div class="m-field"><div class="m-label">Fecha Instalación (ant.)</div><div class="m-value">${esc(order.install_date || '—')}</div></div>
       </div>
-      <div class="m-field"><div class="m-label">Install Notes</div><div class="m-value">${esc(order.notas_instalacion || '—')}</div></div>
-      <div class="m-field"><div class="m-label">Special Notes</div><div class="m-value">${esc(order.special_notes || '—')}</div></div>
+      <div class="m-field"><div class="m-label">Notas de Instalación</div><div class="m-value">${esc(order.notas_instalacion || '—')}</div></div>
+      <div class="m-field"><div class="m-label">Notas Especiales</div><div class="m-value">${esc(order.special_notes || '—')}</div></div>
       <div class="m-row2">
         <div class="m-field"><div class="m-label">BTN</div><div class="m-value">${esc(order.btn || '—')}</div></div>
-        <div class="m-field"><div class="m-label">Card Last 4</div><div class="m-value">${esc(order.card_last4 || '—')}</div></div>
+        <div class="m-field"><div class="m-label">Últimos 4 Dígitos</div><div class="m-value">${esc(order.card_last4 || '—')}</div></div>
       </div>
       <div class="m-field">
         <div class="m-label">Acciones</div>
@@ -488,7 +488,7 @@
   function openModalById(id) {
     const order = allOrders.find((item) => Number(item.id) === Number(id));
     if (!order) {
-      showToast('❌ No se encontro la orden', '#b91c1c');
+      showToast('❌ No se encontró la orden', '#b91c1c');
       return;
     }
     openModal(order);
@@ -518,31 +518,31 @@
 
   function installationStatusLabel(status) {
     return ({
-      submitted: 'Submitted',
-      scheduled: 'Scheduled',
-      installed_pending_confirmation: 'Installed / Pending Confirmation',
-      confirmed_satisfied: 'Confirmed Satisfied',
-      cancelled: 'Cancelled',
-      failed_install: 'Failed Install'
-    })[status] || 'Submitted';
+      submitted: 'Enviada',
+      scheduled: 'Programada',
+      installed_pending_confirmation: 'Instalada / Pendiente',
+      confirmed_satisfied: 'Confirmada',
+      cancelled: 'Cancelada',
+      failed_install: 'Falló la instalación'
+    })[status] || 'Enviada';
   }
 
   function satisfactionStatusLabel(status) {
     return ({
-      pending: 'Pending',
-      satisfied: 'Satisfied',
-      issue: 'Issue Reported',
-      cancelled: 'Cancelled'
-    })[status] || 'Pending';
+      pending: 'Pendiente',
+      satisfied: 'Satisfecho',
+      issue: 'Incidencia',
+      cancelled: 'Cancelada'
+    })[status] || 'Pendiente';
   }
 
   function commissionStatusLabel(status) {
     return ({
-      not_earned: 'Not Earned',
-      earned: 'Earned',
-      paid: 'Paid',
-      cancelled: 'Cancelled'
-    })[status] || 'Not Earned';
+      not_earned: 'No Ganada',
+      earned: 'Ganada',
+      paid: 'Pagada',
+      cancelled: 'Cancelada'
+    })[status] || 'No Ganada';
   }
 
   function badgeClassForInstallation(status) {
@@ -579,7 +579,7 @@
   function formatDateTime(value) {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value || '—';
-    return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    return date.toLocaleString('es-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
   }
 
   function getOrderById(id) {
