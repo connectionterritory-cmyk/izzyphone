@@ -10,18 +10,21 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #f0f2f5;
+    --bg: #eef3f9;
     --surface: #fff;
-    --border: #e2e0dc;
-    --text: #1a1814;
-    --muted: #7a7570;
-    --blue: #1a3a6b;
-    --blue-light: #edf1f8;
+    --border: #dbe4ef;
+    --text: #162033;
+    --muted: #6b7280;
+    --blue: #173d74;
+    --blue-dark: #102f5c;
+    --blue-light: #e9f0fb;
     --green: #25D366;
-    --green-dark: #128C7E;
+    --green-dark: #128c7e;
     --green-light: #e8faf1;
     --wa-bg: #e5ddd5;
     --wa-bubble: #dcf8c6;
+    --card-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --card-radius: 22px;
   }
 
   body {
@@ -37,64 +40,72 @@
     max-width: 560px;
     margin: 0 auto 16px;
     background: var(--surface);
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    border: 1px solid rgba(219, 228, 239, 0.95);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
     overflow: hidden;
   }
 
   .card-header {
-    padding: 13px 20px;
+    padding: 16px 22px;
     font-size: 12px; font-weight: 700;
     letter-spacing: .08em; text-transform: uppercase;
     color: #fff;
-    background: var(--blue);
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
   }
 
-  .card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 13px; }
+  .card-body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
 
   /* Fields */
   .field { display: flex; flex-direction: column; gap: 5px; }
 
   label {
-    font-size: 11px; font-weight: 600; color: var(--muted);
-    letter-spacing: .06em; text-transform: uppercase;
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    letter-spacing: .08em; text-transform: uppercase;
   }
 
   input[type="text"],
   input[type="tel"],
-  input[type="number"] {
+  input[type="number"],
+  input[type="email"],
+  select,
+  textarea {
     font-family: 'DM Sans', sans-serif;
     font-size: 15px; color: var(--text);
-    background: var(--bg);
+    background: #f8fafc;
     border: 1.5px solid var(--border);
-    border-radius: 9px;
-    padding: 10px 14px;
+    border-radius: 14px;
+    padding: 11px 14px;
     outline: none; width: 100%;
-    transition: border-color .15s, box-shadow .15s;
+    transition: border-color .18s, box-shadow .18s, background .18s, transform .18s;
   }
 
-  input:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px var(--blue-light);
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #18c77a;
+    box-shadow: 0 0 0 4px rgba(24, 199, 122, .14);
     background: #fff;
   }
 
   input::placeholder { color: #c5bfb9; }
 
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
   /* Chips */
   .chips { display: flex; flex-wrap: wrap; gap: 7px; }
   .chip-input { display: none; }
   .chip-label {
     cursor: pointer;
-    padding: 6px 14px; border-radius: 20px;
-    border: 1.5px solid var(--border);
-    font-size: 13px; font-weight: 500; color: var(--muted);
-    transition: all .15s; user-select: none;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    transition: all .18s ease; user-select: none;
   }
   .chip-input:checked + .chip-label {
     background: var(--blue); border-color: var(--blue); color: #fff;
+    box-shadow: 0 10px 20px rgba(23, 61, 116, 0.18);
   }
 
   .other-provider-field {
@@ -107,31 +118,90 @@
     display: none;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding: 10px 12px;
-    border: 1.5px solid #86efac;
-    border-radius: 10px;
-    background: #e8faf1;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid #86efac;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
     color: #166534;
     font-size: 13px;
     font-weight: 600;
   }
 
   .cotizador-banner.show { display: flex; }
-  .cotizador-banner small { color: #15803d; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .cotizador-banner small { color: #15803d; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .cotizador-banner-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+  .cotizador-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    font-weight: 900;
+    flex-shrink: 0;
+    box-shadow: 0 10px 22px rgba(22, 163, 74, 0.24);
+  }
+  .cotizador-banner-meta {
+    min-width: 0;
+  }
+  .cotizador-banner-name {
+    display: block;
+    margin-top: 3px;
+    font-size: 20px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #166534;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cotizador-banner-phone {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 7px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(22, 163, 74, 0.09);
+    color: #166534;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .cotizador-banner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(134, 239, 172, 0.8);
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
 
   /* Money */
   .money-wrap {
     display: flex; align-items: stretch;
-    background: var(--bg);
+    background: #f8fafc;
     border: 1.5px solid var(--border);
-    border-radius: 9px;
+    border-radius: 14px;
     overflow: hidden;
     transition: border-color .15s, box-shadow .15s;
   }
   .money-wrap:focus-within {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px var(--blue-light);
+    border-color: #18c77a;
+    box-shadow: 0 0 0 4px rgba(24, 199, 122, .14);
     background: #fff;
   }
   .money-sign {
@@ -154,14 +224,15 @@
     max-width: 560px;
     margin: 0 auto;
     background: var(--surface);
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    border: 1px solid rgba(219, 228, 239, 0.95);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
     overflow: hidden;
   }
 
   .preview-header {
-    background: var(--green-dark);
-    padding: 13px 20px;
+    background: linear-gradient(135deg, #11796d 0%, var(--green-dark) 100%);
+    padding: 16px 20px;
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 8px;
   }
@@ -208,7 +279,7 @@
   .bubble-time { font-size: 11px; color: #999; text-align: right; margin-top: 4px; }
 
   .copy-area {
-    padding: 14px 20px;
+    padding: 16px 20px;
     border-top: 1px solid var(--border);
     display: flex; gap: 10px; flex-wrap: wrap;
     align-items: center; justify-content: space-between;
@@ -218,7 +289,7 @@
   .char-count span { font-weight: 700; color: var(--text); }
 
   .btn-copy {
-    padding: 11px 24px; border-radius: 10px; border: none; cursor: pointer;
+    padding: 11px 18px; border-radius: 14px; border: none; cursor: pointer;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px; font-weight: 700;
     display: flex; align-items: center; gap: 8px;
@@ -231,7 +302,7 @@
   .btn-copy.sms-mode:hover { background: #2860c8; }
 
   .btn-save {
-    padding: 11px 24px; border-radius: 10px; border: none; cursor: pointer;
+    padding: 11px 18px; border-radius: 14px; border: none; cursor: pointer;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px; font-weight: 700;
     display: flex; align-items: center; gap: 8px;
@@ -264,6 +335,76 @@
   .webhook-status { font-size: 12px; font-weight: 600; white-space: nowrap; }
   .webhook-status.ok  { color: #4ade80; }
   .webhook-status.err { color: #f87171; }
+
+  .section-panel {
+    background: #f8fafc;
+    border-radius: 18px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .section-panel-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-panel-title.blue { color: var(--blue); }
+  .section-panel-title.purple { color: #5c2d91; }
+  .section-panel-title.teal { color: #0e7490; }
+  .status-summary {
+    display: none;
+    border-radius: 16px;
+    padding: 14px;
+    border: 1px solid #86efac;
+    background: #f0fdf4;
+  }
+  .status-summary-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #15803d;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .maps-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:12px 16px;
+    border-radius:14px;
+    border:1.5px solid var(--border);
+    background:#f8fafc;
+    font-family:'DM Sans',sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:var(--blue);
+    cursor:pointer;
+    transition:all .18s ease;
+  }
+  .maps-btn:hover {
+    background:#eef4fd;
+    border-color:#bfd0ea;
+  }
+
+  .page-title-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    margin-right: 12px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(23, 61, 116, 0.12), rgba(18, 140, 126, 0.12));
+    font-size: 24px;
+    vertical-align: middle;
+  }
+
+  .page-title-text {
+    vertical-align: middle;
+  }
 
   .toast {
     display: none;
@@ -480,8 +621,8 @@
 <div class="page-shell-header">
   <div class="page-shell-title">
     <span class="page-shell-eyebrow">Principal</span>
-    <h1>📋 Cotizador</h1>
-    <p id="brandSub">Enviar lead al cotizador</p>
+    <h1><span class="page-title-icon">📋</span><span class="page-title-text">Cotizador</span></h1>
+    <p id="brandSub">Enviar lead al cotizador asignado</p>
   </div>
   <div class="page-shell-actions">
     <button onclick="nuevaCotizacion()" id="btnNueva" class="page-action page-action-green">🔄 Nueva</button>
@@ -506,14 +647,20 @@
   <div class="card-header" id="hdrCotizador" style="background:#16a34a;">📲 Datos del Cotizador</div>
   <div class="card-body">
     <div class="cotizador-banner" id="cotizadorBanner">
-      <div>
-        <small id="cotizadorBannerEyebrow">Cotizador del sistema</small><br>
-        <span id="cotizadorBannerText">Sin cotizador asignado</span>
+      <div class="cotizador-banner-main">
+        <div class="cotizador-avatar" id="cotizadorBannerAvatar">PC</div>
+        <div class="cotizador-banner-meta">
+          <small id="cotizadorBannerEyebrow">Cotizador del sistema</small><br>
+          <span class="cotizador-banner-name" id="cotizadorBannerName">Sin cotizador asignado</span>
+          <span class="cotizador-banner-phone" id="cotizadorBannerPhone">Sin teléfono</span>
+          <span id="cotizadorBannerText" style="display:none;">Sin cotizador asignado</span>
+        </div>
       </div>
+      <div class="cotizador-banner-badge">Asignado</div>
     </div>
     <div class="field">
       <label id="lblCotizadorLista">Cotizador asignado</label>
-      <select id="cotizadorSelect" onchange="applySelectedCotizador()" style="font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;outline:none;width:100%;">
+      <select id="cotizadorSelect" onchange="applySelectedCotizador()">
         <option value="">Selecciona un cotizador</option>
       </select>
     </div>
@@ -567,13 +714,7 @@
       </div>
     </div>
     <div class="field">
-      <button type="button" onclick="verifyOnMaps()" style="
-        display:flex;align-items:center;justify-content:center;gap:8px;
-        width:100%;padding:10px 16px;border-radius:9px;
-        border:1.5px solid #e2e0dc;background:#f0f2f5;
-        font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
-        color:#1a3a6b;cursor:pointer;transition:all .15s;
-      " onmouseover="this.style.background='#e8edf5'" onmouseout="this.style.background='#f0f2f5'">
+      <button type="button" class="maps-btn" onclick="verifyOnMaps()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Verify Address on Google Maps
       </button>
@@ -587,8 +728,8 @@
   <div class="card-body">
 
     <!-- INTERNET -->
-    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
-      <div style="font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">🌐 Internet</div>
+    <div class="section-panel">
+      <div class="section-panel-title blue">🌐 Internet</div>
       <div class="field" style="margin-bottom:10px;">
         <label id="lblIntProv">Compañía de Internet</label>
         <div class="chips">
@@ -643,8 +784,8 @@
     </div>
 
     <!-- TELÉFONOS -->
-    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
-      <div id="hdrCelulares" style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 Teléfonos Celulares</div>
+    <div class="section-panel">
+      <div id="hdrCelulares" class="section-panel-title purple">📱 Teléfonos Celulares</div>
       <div class="field" style="margin-bottom:10px;">
         <label id="lblTelProv">Compañía de Teléfono</label>
         <div class="chips">
@@ -740,8 +881,8 @@
   <div class="card-body">
 
     <!-- INTERNET -->
-    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
-      <div style="font-size:12px;font-weight:700;color:#0e7490;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">🌐 Internet</div>
+    <div class="section-panel">
+      <div class="section-panel-title teal">🌐 Internet</div>
       <div class="field" style="margin-bottom:10px;">
         <label id="lblOfertaProv">Proveedor oferta</label>
         <div class="chips">
@@ -782,8 +923,8 @@
     </div>
 
     <!-- TELÉFONOS -->
-    <div style="background:var(--bg);border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-bottom:12px;">
-      <div style="font-size:12px;font-weight:700;color:#5c2d91;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">📱 <span id="hdrOfertaTel">Teléfonos</span> <span id="hdrOfertaTelOpt" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(opcional)</span></div>
+    <div class="section-panel">
+      <div class="section-panel-title purple">📱 <span id="hdrOfertaTel">Teléfonos</span> <span id="hdrOfertaTelOpt" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;">(opcional)</span></div>
       <div class="field" style="margin-bottom:10px;">
         <label id="lblOfertaLineas">Líneas incluidas</label>
         <div class="chips">
@@ -838,8 +979,8 @@
     </div>
 
     <!-- TOTAL AUTOMÁTICO -->
-    <div id="ofertaTotalDisplay" style="display:none;border-radius:10px;padding:14px;border:1.5px solid #86efac;background:#f0fdf4;">
-      <div id="resumenTitle" style="font-size:12px;font-weight:700;color:#15803d;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">💰 Resumen automático</div>
+    <div id="ofertaTotalDisplay" class="status-summary">
+      <div id="resumenTitle" class="status-summary-title">💰 Resumen automático</div>
       <div id="ofertaTotalLineas" style="font-size:14px;color:#1a1814;line-height:1.7;"></div>
     </div>
 
@@ -1187,7 +1328,7 @@
     es: {
       pinSub:'Ingresa tu código de acceso', pinBtn:'✅ Entrar', pinPlaceholder:'CÓDIGO',
       pinError:'❌ Código incorrecto. Intenta de nuevo.',
-      brandSub:'Enviar lead al cotizador', badge:'📤 Para el Cotizador', tutorialLink:'📚 Tutorial', langToggle:'🇺🇸 EN',
+      brandSub:'Enviar lead al cotizador asignado', badge:'📤 Para el Cotizador', tutorialLink:'📚 Tutorial', langToggle:'🇺🇸 EN',
       hdrAgente:'👤 Mis Datos (Agente)', hdrCotizador:'📲 Datos del Cotizador',
       hdrCliente:'🏠 Datos del Cliente', hdrSituacion:'📡 Situación Actual del Cliente',
       hdrCelulares:'📱 Teléfonos Celulares', hdrOferta:'⚡ La Mejor Oferta Encontrada',
@@ -1453,16 +1594,33 @@
   function updateCotizadorBanner(quoter) {
     const banner = document.getElementById('cotizadorBanner');
     const text = document.getElementById('cotizadorBannerText');
-    if (!banner || !text) return;
+    const name = document.getElementById('cotizadorBannerName');
+    const phone = document.getElementById('cotizadorBannerPhone');
+    const avatar = document.getElementById('cotizadorBannerAvatar');
+    if (!banner || !text || !name || !phone || !avatar) return;
 
     if (!quoter) {
       banner.classList.remove('show');
       text.textContent = T[currentLang].cotizadorBannerEmpty;
+      name.textContent = T[currentLang].cotizadorBannerEmpty;
+      phone.textContent = 'Sin telefono';
+      avatar.textContent = 'QA';
       return;
     }
 
+    const initials = String(quoter.nombre || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join('') || 'QA';
+
     banner.classList.add('show');
     text.textContent = `${quoter.nombre} · ${quoter.telefono}`;
+    name.textContent = quoter.nombre;
+    phone.textContent = quoter.telefono || 'Sin telefono';
+    avatar.textContent = initials;
   }
 
   // Persistir datos del cotizador

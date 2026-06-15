@@ -1,14 +1,15 @@
 :root {
   --app-sidebar-width: 220px;
-  --app-shell-bg: #f0f2f5;
+  --app-shell-bg: #eef3f9;
   --app-shell-surface: #ffffff;
-  --app-shell-border: #e2e0dc;
-  --app-shell-text: #1a1814;
-  --app-shell-muted: #7a7570;
-  --app-shell-blue: #1a3a6b;
-  --app-shell-blue-light: #edf1f8;
+  --app-shell-border: #dbe4ef;
+  --app-shell-text: #162033;
+  --app-shell-muted: #6b7280;
+  --app-shell-blue: #173d74;
+  --app-shell-blue-dark: #102f5c;
+  --app-shell-blue-light: #edf4ff;
   --app-shell-green: #0f766e;
-  --app-shell-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+  --app-shell-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
   --app-mobile-header-h: 64px;
 }
 
@@ -30,12 +31,14 @@ body.has-app-shell {
   position: fixed;
   inset: 0 auto 0 0;
   width: var(--app-sidebar-width);
-  background: linear-gradient(180deg, #132c52 0%, #1a3a6b 100%);
+  background:
+    radial-gradient(circle at top, rgba(96, 165, 250, 0.16), transparent 28%),
+    linear-gradient(180deg, #102f5c 0%, #0b2447 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 6px 0 24px rgba(15, 23, 42, 0.12);
+  box-shadow: 10px 0 32px rgba(15, 23, 42, 0.16);
   z-index: 120;
   overflow: visible;
 }
@@ -43,7 +46,7 @@ body.has-app-shell {
 .app-sidebar-inner {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   height: 100%;
   padding: 24px 16px 18px;
   overflow-y: auto;
@@ -60,10 +63,12 @@ body.has-app-shell {
 }
 
 .app-brand-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.12);
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,8 +86,8 @@ body.has-app-shell {
 }
 
 .app-brand-title {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   line-height: 1.2;
 }
 
@@ -99,7 +104,7 @@ body.has-app-shell {
 .app-sidebar-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .app-sidebar-label-btn {
@@ -107,11 +112,11 @@ body.has-app-shell {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 12px 6px;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.48);
   font-family: inherit;
   transition: color 0.15s ease;
 }
@@ -122,8 +127,8 @@ body.has-app-shell {
 
 .app-sidebar-label-text {
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: left;
   flex: 1;
@@ -150,7 +155,7 @@ body.has-app-shell {
 .app-sidebar-links {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   overflow: hidden;
   transition: max-height 0.3s ease, opacity 0.3s ease;
   max-height: 500px;
@@ -167,12 +172,13 @@ body.has-app-shell {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 12px;
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.72);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -192,6 +198,7 @@ body.has-app-shell {
 .app-sidebar-icon svg {
   width: 100%;
   height: 100%;
+  stroke-width: 2.15;
 }
 
 .app-sidebar-text {
@@ -202,9 +209,9 @@ body.has-app-shell {
 }
 
 .app-sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  transform: translateX(4px);
+  transform: translateX(2px);
 }
 
 .app-sidebar-link:hover .app-sidebar-icon {
@@ -212,10 +219,10 @@ body.has-app-shell {
 }
 
 .app-sidebar-link.active {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.16);
   color: #fff;
-  font-weight: 600;
-  box-shadow: inset 3px 0 0 #fff;
+  font-weight: 800;
+  box-shadow: inset 3px 0 0 #fff, 0 12px 24px rgba(15, 23, 42, 0.18);
 }
 
 .app-sidebar-link.active .app-sidebar-icon {
@@ -229,7 +236,7 @@ body.has-app-shell {
 /* ── Sidebar footer ────────────────────────────────────── */
 
 .app-sidebar-footer {
-  padding-top: 14px;
+  padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   flex-shrink: 0;
   position: relative;
@@ -298,19 +305,21 @@ body.has-app-shell {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.07);
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
   color: #fff;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 
 .user-menu:hover {
-  background: rgba(255, 255, 255, 0.13);
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+  border-color: rgba(255,255,255,.2);
+  transform: translateY(-1px);
 }
 
 .user-menu-info {
@@ -532,7 +541,9 @@ body.has-app-shell {
   gap: 16px;
   margin: 0 auto 20px;
   padding: 22px 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background:
+    radial-gradient(circle at top left, rgba(22, 119, 255, 0.08), transparent 28%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid var(--app-shell-border);
   border-radius: 22px;
   box-shadow: var(--app-shell-shadow);
@@ -540,7 +551,7 @@ body.has-app-shell {
 
 .page-shell-title h1 {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--app-shell-blue);
 }
 
@@ -566,6 +577,7 @@ body.has-app-shell {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
+  align-items: center;
 }
 
 .page-action,
@@ -574,7 +586,7 @@ body.has-app-shell {
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  padding: 9px 14px;
+  padding: 9px 16px;
   border-radius: 999px;
   border: 1px solid var(--app-shell-border);
   background: #fff;
@@ -583,10 +595,17 @@ body.has-app-shell {
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
 }
 
 .page-action {
   cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.page-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
 
 .page-action-accent {
@@ -779,9 +798,9 @@ body.has-app-shell {
     justify-content: space-between;
     gap: 12px;
     padding: 0 16px;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(226, 224, 220, 0.9);
+    border-bottom: 1px solid rgba(219, 228, 239, 0.9);
     z-index: 110;
   }
 
@@ -817,7 +836,7 @@ body.has-app-shell {
     align-items: stretch;
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(14px);
-    border-top: 1px solid rgba(226, 224, 220, 0.95);
+    border-top: 1px solid rgba(219, 228, 239, 0.95);
     box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08);
     z-index: 110;
   }
