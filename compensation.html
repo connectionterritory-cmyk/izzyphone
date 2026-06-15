@@ -174,9 +174,6 @@
       <div class="two-col" id="bonusCards"></div>
     </section>
 
-    <section class="panel" data-tab="ambassadors">
-      <div class="two-col" id="ambassadorCards"></div>
-    </section>
 
     <section class="panel" data-tab="admin" id="adminPanel">
       <div class="admin-toolbar">
@@ -221,7 +218,7 @@
     tree: 'Mi Árbol',
     table: 'Comisiones',
     bonuses: 'Bonos',
-    ambassadors: 'Embajadores',
+
     admin: 'Admin',
   };
   const TAB_ROLES = { tree: ['supervisor','director'], bonuses: ['supervisor','director'] };
@@ -776,7 +773,6 @@
       renderElite(data);
       renderProgress(data);
       renderBonuses(data);
-      renderAmbassadors(data);
     } catch (error) {
       console.error('[compensation] loadDashboard failed', error);
       showToast('No se pudo conectar con compensación', '#b91c1c');
