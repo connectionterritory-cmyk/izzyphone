@@ -460,8 +460,8 @@
       await fetchAdminConfig();
       closeEditUserModal();
       showToast('✅ Recluta actualizado', '#16a34a');
-    } catch {
-      showToast('❌ No se pudo actualizar el recluta', '#b91c1c');
+    } catch (error) {
+      showToast(`❌ ${error?.message || 'No se pudo actualizar el recluta'}`, '#b91c1c');
     } finally {
       btn.disabled = false;
       btn.textContent = 'Guardar cambios';

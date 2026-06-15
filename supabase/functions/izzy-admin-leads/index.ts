@@ -691,6 +691,14 @@ async function handleUpdateUser(req: Request, user: { rol: Role }, supabase: Ret
     return jsonResponse({ error: "pin_code and nombre are required" }, { status: 400 });
   }
 
+  if (payload.sponsor_user_id === userId) {
+    return jsonResponse({ error: "El recluta no puede reclutarse a si mismo" }, { status: 400 });
+  }
+
+  if (payload.manager_user_id === userId) {
+    return jsonResponse({ error: "El recluta no puede ser su propio supervisor" }, { status: 400 });
+  }
+
   const { data, error } = await supabase
     .from("izzy_portal_users")
     .update(payload)
@@ -700,7 +708,13 @@ async function handleUpdateUser(req: Request, user: { rol: Role }, supabase: Ret
 
   if (error) {
     console.error("[izzy-admin-leads] update user failed", error);
-    return jsonResponse({ error: "Could not update user" }, { status: 500 });
+    if (error.code === "23505") {
+      return jsonResponse({ error: "Ya existe otro usuario con ese PIN o email" }, { status: 409 });
+    }
+    if (error.code === "23503") {
+      return jsonResponse({ error: "Sponsor o supervisor no valido" }, { status: 400 });
+    }
+    return jsonResponse({ error: error.message || "Could not update user" }, { status: 500 });
   }
 
   return jsonResponse({ user: data });
