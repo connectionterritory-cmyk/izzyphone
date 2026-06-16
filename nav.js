@@ -49,6 +49,7 @@
   const ICONS = {
     cotizador: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/><path d="M16 3h5v5"/><path d="m10 14 9-9"/><path d="M9 9h1"/><path d="M9 13h3"/><path d="M9 17h6"/></svg>`,
     callcenter: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.91.33 1.8.61 2.65a2 2 0 0 1-.45 2.11L8 9.94a16 16 0 0 0 6.06 6.06l1.46-1.27a2 2 0 0 1 2.11-.45c.85.28 1.74.49 2.65.61A2 2 0 0 1 22 16.92z"/></svg>`,
+    clients: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
     leads: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
     orders: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h16"/><path d="M6 7h12"/><path d="M6 11h8"/><path d="M6 15h6"/><path d="M17 14v6"/><path d="M14 17h6"/><path d="M18.5 3v6"/></svg>`,
     level: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-7"/></svg>`,
@@ -72,6 +73,7 @@
         { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Centro de Cotización' },
         { key: 'call-center', href: 'call-center.html', icon: ICONS.callcenter, text: 'Call Center' },
         { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
+        { key: 'clients', href: 'clients.html', icon: ICONS.clients, text: 'Clientes' },
         { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
         { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
       ]
@@ -108,6 +110,7 @@
     { key: 'cotizador', href: 'index.html', icon: ICONS.cotizador, text: 'Cotización' },
     { key: 'call-center', href: 'call-center.html', icon: ICONS.callcenter, text: 'Call Center' },
     { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
+    { key: 'clients', href: 'clients.html', icon: ICONS.clients, text: 'Clientes' },
     { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
     { key: 'compensation', href: 'compensation.html', icon: ICONS.level, text: 'Compensación' },
     { key: 'admin', href: 'users.html', icon: ICONS.users, text: 'Admin' }

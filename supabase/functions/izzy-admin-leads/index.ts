@@ -231,6 +231,14 @@ function sanitizeOrderUpdates(raw: Record<string, unknown>, isAdmin: boolean) {
     updates.satisfaction_notes = cleanString(raw.satisfaction_notes) || null;
   }
 
+  if ("renewal_date" in raw) {
+    updates.renewal_date = cleanDate(raw.renewal_date);
+  }
+
+  if ("client_notes" in raw) {
+    updates.client_notes = cleanString(raw.client_notes) || null;
+  }
+
   return updates;
 }
 
