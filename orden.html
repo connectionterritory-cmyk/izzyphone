@@ -125,13 +125,6 @@
     letter-spacing: .06em; text-transform: uppercase; margin-left: 8px; vertical-align: middle;
   }
 
-  #signatureCanvas {
-    width: 100%; height: 180px; border: 2px dashed var(--border);
-    border-radius: 12px; background: #fafaf8; touch-action: none;
-    cursor: crosshair; display: block;
-  }
-  #signatureCanvas.has-sig { border-color: var(--blue); border-style: solid; }
-
   .legal-text { font-size: 12px; line-height: 1.65; color: var(--muted); padding: 12px; background: var(--bg); border-radius: 8px; }
 
   .btn-submit {
@@ -589,30 +582,6 @@
   </div>
 </div>
 
-<!-- ═══ SECTION 5: SIGNATURE ═══ -->
-<div class="section-divider">
-  <div class="line"></div>
-  <div class="lbl"><span class="sec-num" style="background:#b45309;">5</span> Client Signature</div>
-  <div class="line"></div>
-</div>
-
-<div class="card">
-  <div class="card-header" style="background:#b45309;">✍️ Client Signature</div>
-  <div class="card-body">
-
-    <div class="legal-text">
-      I authorize this agent, Izzy Communications, or any of its employees to manage my internet order, handle all necessary documentation, and schedule a technician visit to install and activate services at my premises. This authorization will remain effective until I revoke it in writing. I accept full responsibility for all charges incurred under this authorization.
-    </div>
-
-    <div class="field">
-      <label>Sign below (finger or stylus)</label>
-      <canvas id="signatureCanvas"></canvas>
-      <button onclick="clearSig()" style="margin-top:8px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;">🗑 Clear Signature</button>
-    </div>
-
-  </div>
-</div>
-
 <!-- Submit -->
 <button class="btn-submit" onclick="submitOrder()">✅ Submit Order</button>
 
@@ -638,8 +607,8 @@
   const today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
   document.getElementById('orderDateDisplay').textContent = today;
 
-  const PROJECT_REF = 'rxiarmbosgivaplygqug';
-  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const PROJECT_REF = window.getIzzyProjectRef ? window.getIzzyProjectRef() : 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = window.getIzzyFunctionsBaseUrl ? window.getIzzyFunctionsBaseUrl() : `https://${PROJECT_REF}.functions.supabase.co`;
 
   async function apiFetch(path, options = {}) {
     const session = (() => {
@@ -729,6 +698,9 @@
 
   const tel = localStorage.getItem('izzy_orden_tel') || '';
   if (tel) document.getElementById('phone1').value = tel;
+
+  const emailSaved = localStorage.getItem('izzy_orden_email') || '';
+  if (emailSaved) document.getElementById('email').value = emailSaved;
 
   const streetSaved = localStorage.getItem('izzy_orden_street') || '';
   const aptSaved = localStorage.getItem('izzy_orden_apt') || '';
@@ -862,57 +834,6 @@
     if (e.key === 'Backspace' && e.target.value === '') document.getElementById(prevId)?.focus();
   }
 
-  // ── Signature Canvas ──────────────────────────────────
-  const canvas = document.getElementById('signatureCanvas');
-  const ctx    = canvas.getContext('2d');
-  let drawing  = false;
-  let hasSig   = false;
-
-  function resizeCanvas() {
-    const r = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width  = r.width  * dpr;
-    canvas.height = r.height * dpr;
-    ctx.scale(dpr, dpr);
-    ctx.strokeStyle = '#1a3a6b';
-    ctx.lineWidth   = 2.5;
-    ctx.lineCap     = 'round';
-    ctx.lineJoin    = 'round';
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-
-  function getPos(e) {
-    const r   = canvas.getBoundingClientRect();
-    const src = e.touches ? e.touches[0] : e;
-    return { x: src.clientX - r.left, y: src.clientY - r.top };
-  }
-
-  canvas.addEventListener('mousedown', e => {
-    drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
-  });
-  canvas.addEventListener('mousemove', e => {
-    if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
-    hasSig = true; canvas.classList.add('has-sig');
-  });
-  canvas.addEventListener('mouseup',    () => drawing = false);
-  canvas.addEventListener('mouseleave', () => drawing = false);
-
-  canvas.addEventListener('touchstart', e => {
-    e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
-  }, { passive: false });
-  canvas.addEventListener('touchmove', e => {
-    e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
-    hasSig = true; canvas.classList.add('has-sig');
-  }, { passive: false });
-  canvas.addEventListener('touchend', () => drawing = false);
-
-  function clearSig() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    hasSig = false;
-    canvas.classList.remove('has-sig');
-  }
-
   // ── Toast ─────────────────────────────────────────────
   function showToast(msg, color = '#111') {
     const t = document.getElementById('toast');
@@ -931,8 +852,6 @@
     if (!first || !last) { showToast('⚠️ Client name is required', '#b45309'); return; }
     if (!phone)          { showToast('⚠️ Primary phone is required', '#b45309'); return; }
     if (!street)         { showToast('⚠️ Street address is required', '#b45309'); return; }
-    if (!hasSig)         { showToast('⚠️ Signature is required', '#b45309'); return; }
-
     const provider = document.querySelector('input[name="svcProv"]:checked')?.value || '';
     const desiredSpeed = document.querySelector('input[name="desiredSpeed"]:checked')?.value || '';
     const payload = {
@@ -967,8 +886,7 @@
       order_date: document.getElementById('orderDateDisplay').textContent.trim(),
       install_date: agentRole === 'admin' ? document.getElementById('installDate').value : '',
       id_dl: document.getElementById('idDl').value.trim(),
-      card_last4: document.getElementById('cardNumber').value.replace(/\D/g,'').slice(-4),
-      signature_data: canvas.toDataURL('image/png')
+      card_last4: document.getElementById('cardNumber').value.replace(/\D/g,'').slice(-4)
     };
 
     submitBtn.disabled = true;

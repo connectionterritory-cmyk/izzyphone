@@ -21,3 +21,9 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/izzy-compensation/deno.json"
 entrypoint = "./functions/izzy-compensation/index.ts"
+
+[functions.izzy-call-center]
+enabled = true
+verify_jwt = false
+import_map = "./functions/izzy-call-center/deno.json"
+entrypoint = "./functions/izzy-call-center/index.ts"

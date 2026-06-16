@@ -724,6 +724,7 @@
           <option>Instagram</option>
           <option>WhatsApp</option>
           <option>Llamada en Frío</option>
+          <option>Display</option>
           <option>Willi CRM</option>
           <option>Otro</option>
         </select>
@@ -917,6 +918,11 @@
           <label class="chip-label" for="op-tmobile">T-Mobile</label>
           <input type="radio" class="chip-input" name="ofertaProv" id="op-verizon" value="Verizon" onchange="generateCliente()">
           <label class="chip-label" for="op-verizon">Verizon</label>
+          <input type="radio" class="chip-input" name="ofertaProv" id="op-otro" value="Otro" onchange="handleOfertaProvOtro()">
+          <label class="chip-label" for="op-otro">Otro</label>
+        </div>
+        <div class="other-provider-field" id="ofertaProvOtroWrap">
+          <input type="text" id="ofertaProvOtro" placeholder="Ej: EarthLink, Comcast..." oninput="generateCliente()" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;">
         </div>
       </div>
       <div class="row2">
@@ -1053,8 +1059,8 @@
 <script src="nav.js"></script>
 <script>
   // ── Acceso por código de usuario ───────────────────────
-  const PROJECT_REF = 'rxiarmbosgivaplygqug';
-  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const PROJECT_REF = window.getIzzyProjectRef ? window.getIzzyProjectRef() : 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = window.getIzzyFunctionsBaseUrl ? window.getIzzyFunctionsBaseUrl() : `https://${PROJECT_REF}.functions.supabase.co`;
   const SESSION_KEY = 'izzy_session';
   let mustSetOwnPassword = false;
   let resetToken = '';
@@ -1776,6 +1782,21 @@
     return getVal(name === 'intProv' ? 'intProvOther' : 'telProvOther');
   }
 
+  function handleOfertaProvOtro() {
+    const selected = getRadio('ofertaProv');
+    const wrap = document.getElementById('ofertaProvOtroWrap');
+    const input = document.getElementById('ofertaProvOtro');
+    wrap.classList.toggle('show', selected === 'Otro');
+    if (selected !== 'Otro') input.value = '';
+    generateCliente();
+  }
+
+  function getOfertaProvValue() {
+    const selected = getRadio('ofertaProv');
+    if (selected !== 'Otro') return selected;
+    return document.getElementById('ofertaProvOtro').value.trim() || 'Otro';
+  }
+
   function handleProviderSelection(name) {
     const isInternet = name === 'intProv';
     const selected = getRadio(name);
@@ -1993,7 +2014,7 @@
     const pagoViejo        = pagoInt + pagoTel;
     const intProv          = getProviderValue('intProv');
     const telProv          = getProviderValue('telProv');
-    const ofertaProv       = getRadio('ofertaProv');
+    const ofertaProv       = getOfertaProvValue();
     const ofertaVel        = getRadio('ofertaVel');
     const ofertaIntPrecio  = parseFloat(getVal('ofertaIntPrecio')) || 0;
     const numLineasStr     = getRadio('ofertaLineas');
@@ -2249,6 +2270,8 @@
     if (origenOtroEl) { origenOtroEl.value = ''; origenOtroEl.style.display = 'none'; }
     document.getElementById('intProvOtherWrap').classList.remove('show');
     document.getElementById('telProvOtherWrap').classList.remove('show');
+    document.getElementById('ofertaProvOtroWrap').classList.remove('show');
+    document.getElementById('ofertaProvOtro').value = '';
     // Clear all checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
     // Hide dynamic displays
@@ -2288,7 +2311,7 @@
     localStorage.setItem('izzy_orden_state', clienteState);
     localStorage.setItem('izzy_orden_zip', getVal('clienteZip'));
     localStorage.setItem('izzy_orden_direccion', [[getVal('clienteDirec'), getVal('clienteApt')].filter(Boolean).join(', '), clienteCiudadRaw, getVal('clienteZip')].filter(Boolean).join(', '));
-    localStorage.setItem('izzy_orden_proveedor', getRadio('ofertaProv'));
+    localStorage.setItem('izzy_orden_proveedor', getOfertaProvValue());
     localStorage.setItem('izzy_orden_velocidad', getRadio('ofertaVel'));
     localStorage.setItem('izzy_orden_precio', getVal('ofertaIntPrecio'));
     localStorage.setItem('izzy_orden_voice', voiceWanted ? 'yes' : 'no');
@@ -2297,6 +2320,7 @@
     localStorage.setItem('izzy_orden_tel_provider', getRadio('telProv'));
     localStorage.setItem('izzy_orden_tel_lines', getRadio('lineas'));
     localStorage.setItem('izzy_orden_tel_price', getVal('ofertaTelBase'));
+    localStorage.setItem('izzy_orden_email', getVal('correoCliente'));
     window.location.href = 'orden.html';
   }
 
