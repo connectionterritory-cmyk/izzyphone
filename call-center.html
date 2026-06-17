@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Communications — Call Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #edf2f7;
+    --surface: #ffffff;
+    --surface-soft: #f8fbff;
+    --border: #d8e2ef;
+    --text: #132238;
+    --muted: #6d7f94;
+    --blue: #183b6b;
+    --blue-soft: #e8f0fb;
+    --green: #119669;
+    --green-soft: #ebfbf4;
+    --amber: #d97706;
+    --amber-soft: #fff7ed;
+    --red: #c2410c;
+    --red-soft: #fff1f2;
+    --shadow: 0 18px 50px rgba(18, 45, 86, 0.08);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: radial-gradient(circle at top, #f8fbff 0%, var(--bg) 42%, #e8eef6 100%); color: var(--text); min-height: 100vh; }
+  .app-main { padding-bottom: 110px; }
+  .workspace-shell { max-width: 1200px; margin: 0 auto; display: grid; gap: 20px; }
+  .hero {
+    background: linear-gradient(135deg, #173a69 0%, #24548d 58%, #1da57a 100%);
+    border-radius: 28px;
+    color: #fff;
+    padding: 26px 28px;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  .hero-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+  .hero h1 { font-size: clamp(30px, 4vw, 44px); line-height: 1.02; margin-top: 10px; }
+  .hero p { margin-top: 10px; max-width: 620px; color: rgba(255,255,255,.86); line-height: 1.55; }
+  .hero-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .hero-metric {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 18px;
+    padding: 14px 16px;
+    backdrop-filter: blur(12px);
+  }
+  .hero-metric span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+  .hero-metric strong { display: block; font-size: 28px; margin-top: 4px; }
+  .hero-metric small { display: block; margin-top: 2px; opacity: .72; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 18px 18px 16px;
+  }
+  .kpi-label { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+  .kpi-value { font-size: 31px; font-weight: 700; color: var(--blue); margin-top: 8px; line-height: 1; }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .filters-card, .queue-card, .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+  }
+  .filters-card { padding: 18px; display: grid; gap: 14px; }
+  .filters-row { display: grid; grid-template-columns: 1.6fr .9fr .9fr auto; gap: 12px; align-items: center; }
+  .search-input, .filter-select, .field-input, .field-textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    background: var(--surface-soft);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+  }
+  .search-input:focus, .filter-select:focus, .field-input:focus, .field-textarea:focus {
+    border-color: #2c69b3;
+    box-shadow: 0 0 0 4px rgba(44, 105, 179, 0.14);
+    background: #fff;
+  }
+  .field-textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+  .filter-select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #6d7f94 50%), linear-gradient(135deg, #6d7f94 50%, transparent 50%); background-position: calc(100% - 18px) calc(50% - 4px), calc(100% - 12px) calc(50% - 4px); background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+  .queue-tabs { display: flex; flex-wrap: wrap; gap: 10px; }
+  .queue-chip {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
+  }
+  .queue-chip.active { color: var(--blue); border-color: #9cb8dc; box-shadow: 0 8px 16px rgba(24, 59, 107, 0.08); transform: translateY(-1px); }
+  .queue-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 18px; }
+  .queue-card { overflow: hidden; }
+  .queue-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .queue-head h3 { font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--blue); }
+  .queue-head span { font-size: 12px; color: var(--muted); font-weight: 700; }
+  .queue-list { display: grid; gap: 10px; padding: 14px; min-height: 130px; }
+  .queue-item {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px;
+    background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
+    cursor: pointer;
+  }
+  .queue-item-title { font-weight: 700; font-size: 14px; }
+  .queue-item-sub { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  .queue-empty { color: var(--muted); font-size: 13px; align-self: center; justify-self: center; text-align: center; }
+  .table-card { overflow: hidden; }
+  .table-head {
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .table-head h2 { font-size: 18px; color: var(--blue); }
+  .table-head p { font-size: 13px; color: var(--muted); }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 880px; }
+  th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: #fbfdff; }
+  td { font-size: 14px; color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { cursor: pointer; transition: background .12s ease; }
+  tbody tr:hover { background: #f7fafe; }
+  .cell-name { font-weight: 700; font-size: 15px; }
+  .cell-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .status-badge, .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .status-new, .status-not_contacted { background: #eef4fb; color: #365c8f; }
+  .status-contacted, .status-follow_up { background: #edf8ff; color: #0f5b8d; }
+  .status-qualified, .status-quote_requested, .status-quote_pending, .status-quoted_ready { background: #ecfdf5; color: #0f766e; }
+  .status-not_interested, .status-wrong_number { background: #fff1f2; color: #be123c; }
+  .status-sold { background: #dcfce7; color: #166534; }
+  .priority-low { background: #f3f4f6; color: #4b5563; }
+  .priority-normal { background: #e8f0fb; color: #1d4f91; }
+  .priority-high { background: #fff7ed; color: #c2410c; }
+  .priority-urgent { background: #fef2f2; color: #b91c1c; }
+  .ghost-btn, .primary-btn, .secondary-btn, .danger-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 15px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+  }
+  .ghost-btn:hover, .primary-btn:hover, .secondary-btn:hover, .danger-btn:hover { transform: translateY(-1px); }
+  .ghost-btn { background: #eef4fb; color: var(--blue); }
+  .primary-btn { background: var(--blue); color: #fff; }
+  .secondary-btn { background: #0f766e; color: #fff; }
+  .danger-btn { background: #fff1f2; color: #be123c; }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: rgba(10, 22, 41, 0.56);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-panel {
+    width: min(1120px, 100%);
+    max-height: 92vh;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 30px;
+    box-shadow: 0 30px 80px rgba(11, 29, 56, 0.22);
+    display: grid;
+    grid-template-columns: 340px minmax(0, 1fr);
+  }
+  .modal-side {
+    background: linear-gradient(180deg, #173a69 0%, #1b4d84 56%, #24548d 100%);
+    color: #fff;
+    padding: 24px;
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
+  .modal-main { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+  .modal-top {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .modal-top h3 { font-size: 22px; color: var(--blue); }
+  .modal-top p { color: var(--muted); font-size: 13px; margin-top: 5px; }
+  .modal-close {
+    width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--border);
+    background: #fff; font-size: 18px; cursor: pointer; color: var(--muted);
+  }
+  .modal-scroll { overflow-y: auto; padding: 20px 22px 24px; display: grid; gap: 20px; }
+  .modal-block {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+    background: #fff;
+  }
+  .modal-block h4 { color: var(--blue); font-size: 14px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+  .form-grid { display: grid; gap: 12px; }
+  .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; margin-bottom: 6px; }
+  .inline-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .timeline { display: grid; gap: 12px; }
+  .timeline-item {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px;
+    background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
+  }
+  .timeline-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .timeline-kind { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--blue); font-weight: 700; }
+  .timeline-date { font-size: 12px; color: var(--muted); }
+  .timeline-title { margin-top: 8px; font-size: 15px; font-weight: 700; }
+  .timeline-body { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
+  .timeline-actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .side-stat {
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 18px;
+    padding: 14px;
+    background: rgba(255,255,255,.1);
+  }
+  .side-stat span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .72; }
+  .side-stat strong { display: block; font-size: 22px; margin-top: 4px; }
+  .side-copy { color: rgba(255,255,255,.8); font-size: 13px; line-height: 1.55; }
+  .lead-flags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toggle-row { display: flex; align-items: center; gap: 10px; }
+  .empty-state { padding: 34px 20px; text-align: center; color: var(--muted); }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+    background: #111827;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 14px 28px rgba(0,0,0,.18);
+    display: none;
+    z-index: 980;
+  }
+  .toast.show { display: block; }
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; }
+    .queue-grid { grid-template-columns: repeat(2, 1fr); }
+    .modal-panel { grid-template-columns: 1fr; }
+    .modal-side { display: none; }
+  }
+  @media (max-width: 760px) {
+    .filters-row, .form-row2, .queue-grid { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr 1fr; }
+    .table-scroll { display: none; }
+    .mobile-list { display: grid; }
+  }
+  @media (min-width: 761px) {
+    .mobile-list { display: none; }
+  }
+  .mobile-card {
+    border-top: 1px solid var(--border);
+    padding: 16px 18px;
+    display: grid;
+    gap: 8px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div id="appNav"></div>
+<div class="app-main">
+  <div class="workspace-shell">
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow">Call Center</div>
+        <h1>Workspace operativo para trabajar leads sin salir de Izzy.</h1>
+        <p>Seguimiento del día, llamadas manuales, notas, próximos pasos y timeline por lead en un solo lugar. Este módulo convive con `Leads`, `Cotizador`, `Orders` y `Comisiones` sin tocar sus flujos actuales.</p>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-metric">
+          <span>Agente</span>
+          <strong id="heroAgent">—</strong>
+          <small id="heroRole">—</small>
+        </div>
+        <div class="hero-metric">
+          <span>Leads Activos</span>
+          <strong id="heroAssigned">0</strong>
+          <small>asignados en tu workspace</small>
+        </div>
+        <div class="hero-metric">
+          <span>Seguimientos</span>
+          <strong id="heroFollowups">0</strong>
+          <small>hoy + vencidos</small>
+        </div>
+        <div class="hero-metric">
+          <span>Cotización</span>
+          <strong id="heroQuotes">0</strong>
+          <small>leads enviados al cotizador</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="kpi-grid" id="kpiGrid"></section>
+
+    <section class="filters-card">
+      <div class="filters-row">
+        <input id="searchInput" class="search-input" type="text" placeholder="Buscar por nombre, teléfono o dirección">
+        <select id="statusFilter" class="filter-select"></select>
+        <select id="queueFilter" class="filter-select">
+          <option value="all">Toda la cola</option>
+          <option value="new">Nuevos</option>
+          <option value="not_contacted">No contactados</option>
+          <option value="due_today">Seguimientos de hoy</option>
+          <option value="overdue">Seguimientos vencidos</option>
+          <option value="follow_up">En follow-up</option>
+          <option value="qualified">Calificados</option>
+          <option value="quote_pending">En cotización</option>
+        </select>
+        <button class="ghost-btn" type="button" onclick="refreshWorkspace()">Actualizar</button>
+      </div>
+      <div class="queue-tabs" id="queueTabs"></div>
+    </section>
+
+    <section class="queue-grid" id="queueGrid"></section>
+
+    <section class="table-card">
+      <div class="table-head">
+        <div>
+          <h2>Leads del workspace</h2>
+          <p id="resultText">0 leads</p>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>Estado</th>
+              <th>Prioridad</th>
+              <th>Último contacto</th>
+              <th>Resultado</th>
+              <th>Próximo paso</th>
+              <th>Seguimiento</th>
+              <th>DNC</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="mobile-list" id="mobileList"></div>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        No hay leads para esos filtros.
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="modal-overlay" id="leadModal" onclick="handleModalBackdrop(event)">
+  <div class="modal-panel">
+    <aside class="modal-side">
+      <div>
+        <div class="hero-eyebrow">Lead abierto</div>
+        <h2 id="modalLeadName" style="font-size:30px;line-height:1.02;margin-top:10px;">—</h2>
+        <div class="side-copy" id="modalLeadMeta" style="margin-top:10px;">—</div>
+      </div>
+      <div class="lead-flags" id="modalLeadFlags"></div>
+      <div class="side-stat"><span>Último contacto</span><strong id="modalLastContact">—</strong></div>
+      <div class="side-stat"><span>Próximo follow-up</span><strong id="modalNextFollowup">—</strong></div>
+      <div class="side-stat"><span>Resultado actual</span><strong id="modalCurrentResult">—</strong></div>
+      <div class="side-copy">Todo lo que registres aquí queda acumulado en historial. No se pisan notas anteriores y cada llamada crea rastro propio.</div>
+    </aside>
+    <div class="modal-main">
+      <div class="modal-top">
+        <div>
+          <h3>Operar lead</h3>
+          <p id="modalSubcopy">Cambia estado, registra llamadas, notas y seguimientos.</p>
+        </div>
+        <button class="modal-close" type="button" onclick="closeLeadModal()">✕</button>
+      </div>
+      <div class="modal-scroll">
+        <section class="modal-block">
+          <h4>Estado y control</h4>
+          <div class="form-grid">
+            <div class="form-row2">
+              <div>
+                <div class="field-label">Estado del lead</div>
+                <select id="leadStatusInput" class="filter-select"></select>
+              </div>
+              <div>
+                <div class="field-label">Prioridad</div>
+                <select id="leadPriorityInput" class="filter-select">
+                  <option value="low">Baja</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">Alta</option>
+                  <option value="urgent">Urgente</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row2">
+              <div>
+                <div class="field-label">Próximo paso</div>
+                <input id="leadNextActionInput" class="field-input" type="text" placeholder="Ej. Volver a llamar después de las 5 pm">
+              </div>
+              <div>
+                <div class="field-label">Próximo follow-up</div>
+                <input id="leadNextFollowupInput" class="field-input" type="datetime-local">
+              </div>
+            </div>
+            <label class="toggle-row">
+              <input id="leadDoNotCallInput" type="checkbox">
+              <span>Marcar como Do Not Call</span>
+            </label>
+            <div class="inline-actions">
+              <button class="primary-btn" type="button" onclick="saveLeadState()">Guardar estado</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-block">
+          <h4>Registrar llamada manual</h4>
+          <div class="form-grid">
+            <div class="form-row2">
+              <div>
+                <div class="field-label">Dirección</div>
+                <select id="callDirectionInput" class="filter-select">
+                  <option value="outbound">Saliente</option>
+                  <option value="inbound">Entrante</option>
+                </select>
+              </div>
+              <div>
+                <div class="field-label">Resultado</div>
+                <select id="callStatusInput" class="filter-select"></select>
+              </div>
+            </div>
+            <div class="form-row2">
+              <div>
+                <div class="field-label">Próxima acción</div>
+                <input id="callNextActionInput" class="field-input" type="text" placeholder="Ej. Mandar oferta mañana">
+              </div>
+              <div>
+                <div class="field-label">Programar follow-up</div>
+                <input id="callFollowupInput" class="field-input" type="datetime-local">
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Notas de la llamada</div>
+              <textarea id="callNotesInput" class="field-textarea" placeholder="Qué pasó, qué pidió el cliente, objeciones, contexto útil..."></textarea>
+            </div>
+            <div class="inline-actions">
+              <button class="secondary-btn" type="button" onclick="submitLeadCall()">Guardar llamada</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-block">
+          <h4>Nota rápida</h4>
+          <div class="form-grid">
+            <div>
+              <div class="field-label">Nota</div>
+              <textarea id="noteInput" class="field-textarea" placeholder="Agrega una nota puntual sin modificar el historial anterior."></textarea>
+            </div>
+            <div class="inline-actions">
+              <button class="ghost-btn" type="button" onclick="submitLeadNote()">Agregar nota</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-block">
+          <h4>Seguimiento manual</h4>
+          <div class="form-grid">
+            <div class="form-row2">
+              <div>
+                <div class="field-label">Asunto</div>
+                <input id="followupSubjectInput" class="field-input" type="text" placeholder="Ej. Reconfirmar documentación">
+              </div>
+              <div>
+                <div class="field-label">Fecha y hora</div>
+                <input id="followupDateInput" class="field-input" type="datetime-local">
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Notas</div>
+              <textarea id="followupNotesInput" class="field-textarea" placeholder="Qué hay que revisar en el próximo contacto."></textarea>
+            </div>
+            <div class="inline-actions">
+              <button class="primary-btn" type="button" onclick="createLeadFollowup()">Programar seguimiento</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-block">
+          <h4>Timeline del lead</h4>
+          <div class="timeline" id="timelineList"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="nav.js"></script>
+<script>
+  const PROJECT_REF = window.getIzzyProjectRef ? window.getIzzyProjectRef() : 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = window.getIzzyFunctionsBaseUrl ? window.getIzzyFunctionsBaseUrl() : `https://${PROJECT_REF}.functions.supabase.co`;
+  const SESSION_KEY = 'izzy_session';
+
+  let currentUser = null;
+  let workspace = null;
+  let workspaceLeads = [];
+  let filteredLeads = [];
+  let activeQueue = 'all';
+  let activeLead = null;
+
+  const STATUS_LABELS = {
+    new: 'Nuevo',
+    not_contacted: 'No contactado',
+    contacted: 'Contactado',
+    follow_up: 'Follow-up',
+    qualified: 'Calificado',
+    quote_requested: 'Cotización pedida',
+    quote_pending: 'En cotización',
+    quoted_ready: 'Cotización lista',
+    not_interested: 'No interesado',
+    wrong_number: 'Número incorrecto',
+    sold: 'Vendido'
+  };
+
+  const CALL_LABELS = {
+    answered: 'Contestó',
+    no_answer: 'No contestó',
+    voicemail: 'Voicemail',
+    wrong_number: 'Número incorrecto',
+    call_back: 'Llamar luego',
+    interested: 'Interesado',
+    not_interested: 'No interesado',
+    quote_requested: 'Pidió cotización'
+  };
+
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null')?.user || null;
+  } catch {
+    currentUser = null;
+  }
+  if (!currentUser) window.location.href = 'index.html';
+
+  const isAdmin = currentUser.rol === 'admin';
+  renderIzzyNavigation({
+    mountId: 'appNav',
+    user: currentUser,
+    isAdmin,
+    activeSidebar: 'call-center',
+    activeMobile: 'call-center',
+    pageTitle: 'Call Center',
+    mobileTitle: 'Call Center',
+    tutorialHref: isAdmin ? 'tutorial-admin.html' : 'tutorial.html',
+    mobileAdminHref: isAdmin ? 'users.html' : 'tutorial.html'
+  });
+
+  function getSession() {
+    try {
+      return JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  async function apiFetch(path, options = {}) {
+    const session = getSession();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (session?.token) headers.Authorization = `Bearer ${session.token}`;
+    const res = await fetch(`${FUNCTIONS_BASE_URL}/${path}`, { ...options, headers });
+    if (res.status === 401) {
+      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      alert('Tu sesión expiró. Inicia sesión de nuevo.');
+      window.location.href = 'index.html';
+    }
+    return res;
+  }
+
+  function esc(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function showToast(message, color = '#111827') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = color;
+    toast.classList.add('show');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  function formatDateTime(value) {
+    if (!value) return '—';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '—';
+    return date.toLocaleString('es-US', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function toDateTimeLocal(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  function fromDateTimeLocal(value) {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  }
+
+  function statusLabel(value) {
+    return STATUS_LABELS[value] || value || 'Sin estado';
+  }
+
+  function callLabel(value) {
+    return CALL_LABELS[value] || value || '—';
+  }
+
+  function statusClass(value) {
+    return `status-${String(value || 'new').replace(/[^a-z_]/g, '_')}`;
+  }
+
+  function priorityClass(value) {
+    return `priority-${String(value || 'normal').replace(/[^a-z_]/g, '_')}`;
+  }
+
+  function renderStatusBadge(value) {
+    return `<span class="status-badge ${statusClass(value)}">${esc(statusLabel(value))}</span>`;
+  }
+
+  function renderPriorityBadge(value) {
+    const label = { low: 'Baja', normal: 'Normal', high: 'Alta', urgent: 'Urgente' }[value] || 'Normal';
+    return `<span class="priority-badge ${priorityClass(value)}">${esc(label)}</span>`;
+  }
+
+  function getQueueMatches(lead, queueKey) {
+    switch (queueKey) {
+      case 'new': return lead.lead_status_code === 'new';
+      case 'not_contacted': return lead.lead_status_code === 'not_contacted' || (!lead.last_contact_at && lead.lead_status_code === 'new');
+      case 'due_today': return lead.is_due_today;
+      case 'overdue': return lead.is_overdue;
+      case 'follow_up': return lead.lead_status_code === 'follow_up';
+      case 'qualified': return ['qualified', 'quote_requested', 'quote_pending', 'quoted_ready'].includes(lead.lead_status_code);
+      case 'quote_pending': return ['quote_requested', 'quote_pending', 'quoted_ready'].includes(lead.lead_status_code) || lead.sent_to_quote;
+      default: return true;
+    }
+  }
+
+  function getFilteredLeads() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const status = document.getElementById('statusFilter').value;
+    const queue = document.getElementById('queueFilter').value;
+
+    return workspaceLeads.filter((lead) => {
+      const haystack = [lead.cliente, lead.telefono, lead.direccion, lead.agente].map((v) => String(v || '').toLowerCase()).join(' ');
+      const matchesQuery = !q || haystack.includes(q);
+      const matchesStatus = !status || lead.lead_status_code === status;
+      const matchesQueue = getQueueMatches(lead, queue === 'all' ? activeQueue : queue);
+      return matchesQuery && matchesStatus && matchesQueue;
+    });
+  }
+
+  function renderHeroAndKpis() {
+    document.getElementById('heroAgent').textContent = currentUser.nombre;
+    document.getElementById('heroRole').textContent = isAdmin ? 'Administrador' : 'Agente';
+    document.getElementById('heroAssigned').textContent = workspace?.kpis?.assigned_leads ?? 0;
+    document.getElementById('heroFollowups').textContent = (workspace?.kpis?.followups_today || 0) + (workspace?.kpis?.overdue_followups || 0);
+    document.getElementById('heroQuotes').textContent = workspace?.kpis?.sent_to_quote ?? 0;
+
+    const cards = [
+      ['Leads asignados', workspace?.kpis?.assigned_leads ?? 0, 'scope actual visible'],
+      ['Llamadas hoy', workspace?.kpis?.calls_today ?? 0, 'registro manual'],
+      ['Contactados hoy', workspace?.kpis?.contacted_today ?? 0, 'contestó / interesado / callback'],
+      ['No contestaron', workspace?.kpis?.no_answer_today ?? 0, 'solo hoy'],
+      ['Seguimientos hoy', workspace?.kpis?.followups_today ?? 0, 'cola inmediata'],
+      ['Seguimientos vencidos', workspace?.kpis?.overdue_followups ?? 0, 'requieren atención'],
+      ['Interesados', workspace?.kpis?.interested_leads ?? 0, 'calificados o en cotización'],
+      ['Enviados a cotización', workspace?.kpis?.sent_to_quote ?? 0, 'si ya existe ese estado'],
+    ];
+
+    document.getElementById('kpiGrid').innerHTML = cards.map(([label, value, sub]) => `
+      <div class="kpi-card">
+        <div class="kpi-label">${esc(label)}</div>
+        <div class="kpi-value">${esc(value)}</div>
+        <div class="kpi-sub">${esc(sub)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderStatusFilters() {
+    const select = document.getElementById('statusFilter');
+    const modalSelect = document.getElementById('leadStatusInput');
+    const callSelect = document.getElementById('callStatusInput');
+    const statuses = workspace?.status_options || [];
+    const callResults = workspace?.call_result_options || [];
+
+    select.innerHTML = '<option value="">Todos los estados</option>' + statuses.map((status) => `<option value="${esc(status)}">${esc(statusLabel(status))}</option>`).join('');
+    modalSelect.innerHTML = statuses.map((status) => `<option value="${esc(status)}">${esc(statusLabel(status))}</option>`).join('');
+    callSelect.innerHTML = callResults.map((status) => `<option value="${esc(status)}">${esc(callLabel(status))}</option>`).join('');
+  }
+
+  function renderQueueTabs() {
+    const tabs = [
+      ['all', 'Todo'],
+      ['new', 'Nuevos'],
+      ['not_contacted', 'No contactados'],
+      ['due_today', 'Hoy'],
+      ['overdue', 'Vencidos'],
+      ['follow_up', 'Follow-up'],
+      ['qualified', 'Calificados'],
+      ['quote_pending', 'Cotización'],
+    ];
+    document.getElementById('queueTabs').innerHTML = tabs.map(([key, label]) => `
+      <button class="queue-chip ${activeQueue === key ? 'active' : ''}" type="button" onclick="setActiveQueue('${key}')">${esc(label)}</button>
+    `).join('');
+  }
+
+  function renderQueuePanels() {
+    const panelDefs = [
+      ['Seguimientos de hoy', 'due_today'],
+      ['Seguimientos vencidos', 'overdue'],
+      ['Leads nuevos', 'new'],
+      ['No contactados', 'not_contacted'],
+    ];
+
+    document.getElementById('queueGrid').innerHTML = panelDefs.map(([title, key]) => {
+      const items = workspaceLeads.filter((lead) => getQueueMatches(lead, key)).slice(0, 4);
+      return `
+        <section class="queue-card">
+          <div class="queue-head">
+            <h3>${esc(title)}</h3>
+            <span>${items.length}</span>
+          </div>
+          <div class="queue-list">
+            ${items.length ? items.map((lead) => `
+              <div class="queue-item" onclick="openLeadById(${Number(lead.id)})">
+                <div class="queue-item-title">${esc(lead.cliente || 'Sin nombre')}</div>
+                <div class="queue-item-sub">${esc(lead.telefono || 'Sin teléfono')} · ${esc(lead.direccion || 'Sin dirección')}</div>
+              </div>
+            `).join('') : '<div class="queue-empty">No hay leads en esta cola.</div>'}
+          </div>
+        </section>
+      `;
+    }).join('');
+  }
+
+  function renderLeadTable() {
+    filteredLeads = getFilteredLeads();
+    document.getElementById('resultText').textContent = `${filteredLeads.length} lead${filteredLeads.length === 1 ? '' : 's'} visibles`;
+    document.getElementById('emptyState').style.display = filteredLeads.length ? 'none' : 'block';
+
+    document.getElementById('tableBody').innerHTML = filteredLeads.map((lead) => `
+      <tr onclick="openLeadById(${Number(lead.id)})">
+        <td>
+          <div class="cell-name">${esc(lead.cliente || 'Sin nombre')}</div>
+          <div class="cell-sub">${esc(lead.telefono || 'Sin teléfono')} · ${esc(lead.direccion || 'Sin dirección')}</div>
+        </td>
+        <td>${renderStatusBadge(lead.lead_status_code)}</td>
+        <td>${renderPriorityBadge(lead.priority || 'normal')}</td>
+        <td>${esc(formatDateTime(lead.last_contact_at))}</td>
+        <td>${esc(callLabel(lead.last_contact_result))}</td>
+        <td>${esc(lead.next_action || '—')}</td>
+        <td>${lead.next_followup_at ? `${esc(formatDateTime(lead.next_followup_at))}<div class="cell-sub">${esc(lead.computed_followup_status || 'scheduled')}</div>` : '—'}</td>
+        <td>${lead.do_not_call ? 'Sí' : 'No'}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('mobileList').innerHTML = filteredLeads.map((lead) => `
+      <div class="mobile-card" onclick="openLeadById(${Number(lead.id)})">
+        <div class="cell-name">${esc(lead.cliente || 'Sin nombre')}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">${renderStatusBadge(lead.lead_status_code)}${renderPriorityBadge(lead.priority || 'normal')}</div>
+        <div class="cell-sub">${esc(lead.telefono || 'Sin teléfono')}</div>
+        <div class="cell-sub">${esc(lead.direccion || 'Sin dirección')}</div>
+        <div class="cell-sub">Próximo paso: ${esc(lead.next_action || '—')}</div>
+      </div>
+    `).join('');
+  }
+
+  async function refreshWorkspace() {
+    const res = await apiFetch('izzy-call-center?resource=workspace');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(`❌ ${data?.error || 'No se pudo cargar Call Center'}`, '#b91c1c');
+      return;
+    }
+    workspace = data;
+    workspaceLeads = data.leads || [];
+    renderHeroAndKpis();
+    renderStatusFilters();
+    renderQueueTabs();
+    renderQueuePanels();
+    renderLeadTable();
+  }
+
+  function setActiveQueue(queue) {
+    activeQueue = queue;
+    renderQueueTabs();
+    renderLeadTable();
+  }
+
+  function getLeadById(id) {
+    return workspaceLeads.find((lead) => Number(lead.id) === Number(id)) || null;
+  }
+
+  async function openLeadById(id) {
+    const lead = getLeadById(id);
+    if (!lead) return;
+    activeLead = lead;
+    document.getElementById('modalLeadName').textContent = lead.cliente || 'Sin nombre';
+    document.getElementById('modalLeadMeta').textContent = `${lead.telefono || 'Sin teléfono'} · ${lead.direccion || 'Sin dirección'}`;
+    document.getElementById('modalLeadFlags').innerHTML = `${renderStatusBadge(lead.lead_status_code)}${renderPriorityBadge(lead.priority || 'normal')}${lead.do_not_call ? '<span class="status-badge status-wrong_number">Do Not Call</span>' : ''}`;
+    document.getElementById('modalLastContact').textContent = formatDateTime(lead.last_contact_at);
+    document.getElementById('modalNextFollowup').textContent = formatDateTime(lead.next_followup_at);
+    document.getElementById('modalCurrentResult').textContent = callLabel(lead.last_contact_result);
+    document.getElementById('leadStatusInput').value = lead.lead_status_code || 'new';
+    document.getElementById('leadPriorityInput').value = lead.priority || 'normal';
+    document.getElementById('leadNextActionInput').value = lead.next_action || '';
+    document.getElementById('leadNextFollowupInput').value = toDateTimeLocal(lead.next_followup_at);
+    document.getElementById('leadDoNotCallInput').checked = Boolean(lead.do_not_call);
+    document.getElementById('callDirectionInput').value = 'outbound';
+    document.getElementById('callStatusInput').value = 'answered';
+    document.getElementById('callNextActionInput').value = lead.next_action || '';
+    document.getElementById('callFollowupInput').value = '';
+    document.getElementById('callNotesInput').value = '';
+    document.getElementById('noteInput').value = '';
+    document.getElementById('followupSubjectInput').value = lead.next_action || '';
+    document.getElementById('followupDateInput').value = '';
+    document.getElementById('followupNotesInput').value = '';
+    document.getElementById('timelineList').innerHTML = '<div class="queue-empty">Cargando timeline…</div>';
+    document.getElementById('leadModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    const res = await apiFetch(`izzy-call-center?resource=lead-timeline&id=${Number(id)}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      document.getElementById('timelineList').innerHTML = '<div class="queue-empty">No se pudo cargar el timeline.</div>';
+      showToast(`❌ ${data?.error || 'No se pudo cargar timeline'}`, '#b91c1c');
+      return;
+    }
+    renderTimeline(data.timeline || []);
+  }
+
+  function closeLeadModal() {
+    document.getElementById('leadModal').classList.remove('open');
+    document.body.style.overflow = '';
+    activeLead = null;
+  }
+
+  function handleModalBackdrop(event) {
+    if (event.target === document.getElementById('leadModal')) closeLeadModal();
+  }
+
+  function renderTimeline(entries) {
+    document.getElementById('timelineList').innerHTML = entries.length ? entries.map((entry) => {
+      if (entry.kind === 'call') {
+        const call = entry.item;
+        return `
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <div class="timeline-kind">Llamada</div>
+              <div class="timeline-date">${esc(formatDateTime(call.started_at))}</div>
+            </div>
+            <div class="timeline-title">${esc(callLabel(call.call_status))}</div>
+            <div class="timeline-body">${esc(call.notes || 'Sin notas de llamada.')}</div>
+          </div>
+        `;
+      }
+
+      if (entry.kind === 'followup') {
+        const followup = entry.item;
+        return `
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <div class="timeline-kind">Seguimiento</div>
+              <div class="timeline-date">${esc(formatDateTime(followup.scheduled_for))}</div>
+            </div>
+            <div class="timeline-title">${esc(followup.subject || 'Follow-up')}</div>
+            <div class="timeline-body">${esc(followup.notes || 'Sin notas.')}</div>
+            ${followup.status === 'scheduled' ? `<div class="timeline-actions"><button class="ghost-btn" type="button" onclick="completeFollowup(${Number(followup.id)})">Completar</button></div>` : ''}
+          </div>
+        `;
+      }
+
+      const activity = entry.item;
+      return `
+        <div class="timeline-item">
+          <div class="timeline-meta">
+            <div class="timeline-kind">Actividad</div>
+            <div class="timeline-date">${esc(formatDateTime(activity.created_at))}</div>
+          </div>
+          <div class="timeline-title">${esc(activity.title || activity.activity_type)}</div>
+          <div class="timeline-body">${esc(activity.body || '')}</div>
+        </div>
+      `;
+    }).join('') : '<div class="queue-empty">Todavía no hay historial para este lead.</div>';
+  }
+
+  async function saveLeadState() {
+    if (!activeLead) return;
+    const payload = {
+      lead_status_code: document.getElementById('leadStatusInput').value,
+      priority: document.getElementById('leadPriorityInput').value,
+      next_action: document.getElementById('leadNextActionInput').value.trim(),
+      next_followup_at: fromDateTimeLocal(document.getElementById('leadNextFollowupInput').value),
+      do_not_call: document.getElementById('leadDoNotCallInput').checked,
+    };
+    const res = await apiFetch(`izzy-call-center?resource=lead&id=${Number(activeLead.id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(`❌ ${data?.error || 'No se pudo guardar estado'}`, '#b91c1c');
+      return;
+    }
+    replaceLead(data.lead);
+    showToast('✅ Estado actualizado', '#0f766e');
+    await refreshWorkspace();
+    await openLeadById(activeLead.id);
+  }
+
+  async function submitLeadCall() {
+    if (!activeLead) return;
+    const payload = {
+      lead_id: activeLead.id,
+      direction: document.getElementById('callDirectionInput').value,
+      call_status: document.getElementById('callStatusInput').value,
+      disposition: document.getElementById('callStatusInput').value,
+      notes: document.getElementById('callNotesInput').value.trim(),
+      next_action: document.getElementById('callNextActionInput').value.trim(),
+      next_followup_at: fromDateTimeLocal(document.getElementById('callFollowupInput').value),
+    };
+    const res = await apiFetch('izzy-call-center?resource=lead-call', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(`❌ ${data?.error || 'No se pudo guardar llamada'}`, '#b91c1c');
+      return;
+    }
+    showToast('📞 Llamada registrada', '#0f766e');
+    await refreshWorkspace();
+    await openLeadById(activeLead.id);
+  }
+
+  async function submitLeadNote() {
+    if (!activeLead) return;
+    const note = document.getElementById('noteInput').value.trim();
+    if (!note) {
+      showToast('⚠️ Escribe una nota primero', '#b45309');
+      return;
+    }
+    const res = await apiFetch('izzy-call-center?resource=note', {
+      method: 'POST',
+      body: JSON.stringify({ lead_id: activeLead.id, note })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(`❌ ${data?.error || 'No se pudo guardar nota'}`, '#b91c1c');
+      return;
+    }
+    document.getElementById('noteInput').value = '';
+    showToast('📝 Nota agregada', '#183b6b');
+    await openLeadById(activeLead.id);
+  }
+
+  async function createLeadFollowup() {
+    if (!activeLead) return;
+    const scheduledFor = fromDateTimeLocal(document.getElementById('followupDateInput').value);
+    if (!scheduledFor) {
+      showToast('⚠️ Elige fecha y hora del seguimiento', '#b45309');
+      return;
+    }
+    const payload = {
+      lead_id: activeLead.id,
+      subject: document.getElementById('followupSubjectInput').value.trim(),
+      scheduled_for: scheduledFor,
+      notes: document.getElementById('followupNotesInput').value.trim(),
+    };
+    const res = await apiFetch('izzy-call-center?resource=followup', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(`❌ ${data?.error || 'No se pudo crear seguimiento'}`, '#b91c1c');
+      return;
+    }
+    showToast('📅 Seguimiento programado', '#0f766e');
+    await refreshWorkspace();
+    await openLeadById(activeLead.id);
+  }
+
+  async function completeFollowup(followupId) {
+    if (!activeLead) return;
+    const outcome = window.prompt('Resultado del seguimiento completado:', '');
+    const res = await apiFetch(`izzy-call-center?resource=followup&id=${Number(followupId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'completed', outcome: outcome || '' })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(`❌ ${data?.error || 'No se pudo completar seguimiento'}`, '#b91c1c');
+      return;
+    }
+    showToast('✅ Seguimiento completado', '#0f766e');
+    await refreshWorkspace();
+    await openLeadById(activeLead.id);
+  }
+
+  function replaceLead(nextLead) {
+    const idx = workspaceLeads.findIndex((lead) => Number(lead.id) === Number(nextLead.id));
+    if (idx >= 0) workspaceLeads[idx] = { ...workspaceLeads[idx], ...nextLead };
+  }
+
+  document.getElementById('searchInput').addEventListener('input', renderLeadTable);
+  document.getElementById('statusFilter').addEventListener('change', renderLeadTable);
+  document.getElementById('queueFilter').addEventListener('change', renderLeadTable);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeLeadModal();
+  });
+
+  refreshWorkspace();
+</script>
+</body>
+</html>
