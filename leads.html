@@ -371,6 +371,7 @@
             <option>WhatsApp</option>
             <option>Llamada en Frío</option>
             <option>Willi CRM</option>
+            <option>FlowSuite CRM</option>
             <option>Otro</option>
           </select>
           <input class="m-input" type="text" id="mOrigenOtro" placeholder="Especifica el origen..." style="display:none;margin-top:8px;">
@@ -594,6 +595,7 @@
     <option>WhatsApp</option>
     <option>Llamada en Frío</option>
     <option>Willi CRM</option>
+    <option>FlowSuite CRM</option>
     <option>Otro</option>
   </select>
   <span class="result-count" id="resultCount"></span>
@@ -638,8 +640,8 @@
 <script src="nav.js"></script>
 <script>
   // ── Auth: admin only ───────────────────────────────────
-  const PROJECT_REF = 'rxiarmbosgivaplygqug';
-  const FUNCTIONS_BASE_URL = `https://${PROJECT_REF}.functions.supabase.co`;
+  const PROJECT_REF = window.getIzzyProjectRef ? window.getIzzyProjectRef() : 'rxiarmbosgivaplygqug';
+  const FUNCTIONS_BASE_URL = window.getIzzyFunctionsBaseUrl ? window.getIzzyFunctionsBaseUrl() : `https://${PROJECT_REF}.functions.supabase.co`;
   const SESSION_KEY = 'izzy_session';
   let currentUser = null;
   try {
@@ -868,7 +870,7 @@
   }
 
   // ── Modal ──────────────────────────────────────────────
-  const KNOWN_ORIGENES = ['Puerta a Puerta','Referido','Facebook','Instagram','WhatsApp','Llamada en Frío','Willi CRM','Otro'];
+  const KNOWN_ORIGENES = ['Puerta a Puerta','Referido','Facebook','Instagram','WhatsApp','Llamada en Frío','Willi CRM','FlowSuite CRM','Otro'];
 
   function toggleModalOrigenOtro() {
     const show = document.getElementById('mOrigen').value === 'Otro';
