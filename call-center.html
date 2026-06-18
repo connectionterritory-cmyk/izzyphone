@@ -339,7 +339,20 @@
     <section class="filters-card">
       <div class="filters-row">
         <input id="searchInput" class="search-input" type="text" placeholder="Buscar por nombre, teléfono o dirección">
-        <select id="statusFilter" class="filter-select"></select>
+        <select id="statusFilter" class="filter-select">
+          <option value="">Todos los estados</option>
+          <option value="new">Nuevo</option>
+          <option value="not_contacted">No contactado</option>
+          <option value="contacted">Contactado</option>
+          <option value="follow_up">Follow-up</option>
+          <option value="qualified">Calificado</option>
+          <option value="quote_requested">Cotización pedida</option>
+          <option value="quote_pending">En cotización</option>
+          <option value="quoted_ready">Cotización lista</option>
+          <option value="not_interested">No interesado</option>
+          <option value="wrong_number">Número incorrecto</option>
+          <option value="sold">Vendido</option>
+        </select>
         <select id="queueFilter" class="filter-select">
           <option value="all">Toda la cola</option>
           <option value="new">Nuevos</option>
