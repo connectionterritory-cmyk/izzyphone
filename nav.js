@@ -75,7 +75,8 @@
         { key: 'leads', href: 'leads.html', icon: ICONS.leads, text: 'Leads' },
         { key: 'clients', href: 'clients.html', icon: ICONS.clients, text: 'Clientes' },
         { key: 'orders', href: 'orders.html', icon: ICONS.orders, text: 'Órdenes' },
-        { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' }
+        { key: 'tutorial', href: 'tutorial.html', icon: ICONS.tutorial, text: 'Tutorial' },
+        { key: 'tutorial-crecimiento', href: 'tutorial-crecimiento.html', icon: ICONS.tutorial, text: 'Plan de Crecimiento' }
       ]
     },
     {

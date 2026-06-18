@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Crecimiento — Izzy Communications</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue:#1a3a6b; --blue-soft:#e8f0fb;
+    --green:#25D366; --green-dark:#128C7E;
+    --gold:#f59e0b; --gold-soft:#fef3c7;
+    --purple:#7c3aed; --purple-soft:#ede9fe;
+    --bg:#f0f2f5; --surface:#fff; --border:#e2e0dc;
+    --text:#1a1814; --muted:#7a7570;
+  }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+  /* HERO */
+  .hero { background:linear-gradient(135deg,#0f2244 0%,#1a3a6b 60%,#2d5fa6 100%); padding:36px 24px 40px; text-align:center; color:#fff; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero-tag { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:14px; }
+  .hero h1 { font-size:26px; font-weight:700; margin-bottom:8px; line-height:1.2; }
+  .hero p { font-size:14px; color:rgba(255,255,255,.65); max-width:340px; margin:0 auto 28px; line-height:1.6; }
+
+  /* ROADMAP TOP */
+  .roadmap { display:flex; align-items:center; justify-content:center; gap:0; max-width:360px; margin:0 auto; }
+  .rm-node { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .rm-circle { width:38px; height:38px; border-radius:50%; border:2.5px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-size:16px; background:rgba(255,255,255,.1); flex-shrink:0; transition:all .2s; }
+  .rm-circle.active { background:#fff; border-color:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.2); }
+  .rm-label { font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:rgba(255,255,255,.6); }
+  .rm-label.active { color:#fff; }
+  .rm-line { flex:1; height:2px; background:rgba(255,255,255,.2); margin-bottom:14px; min-width:18px; }
+  .rm-line.done { background:var(--green); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap { max-width:560px; margin:20px auto 0; padding:0 20px; display:flex; gap:6px; }
+  .prog-dot { flex:1; height:4px; border-radius:4px; background:rgba(255,255,255,.2); cursor:pointer; transition:all .2s; }
+  .prog-dot.done { background:var(--green); }
+  .prog-dot.active { background:#fff; }
+
+  /* CARDS */
+  .steps-wrap { max-width:560px; margin:0 auto; padding:20px 16px 40px; }
+  .step-card { display:none; background:var(--surface); border-radius:20px; box-shadow:0 4px 24px rgba(0,0,0,.09); overflow:hidden; animation:slideIn .3s ease; }
+  .step-card.active { display:block; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-header { padding:22px 22px 18px; display:flex; align-items:center; gap:14px; border-bottom:1px solid var(--border); }
+  .card-icon { width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .icon-blue { background:var(--blue-soft); }
+  .icon-green { background:#dcfce7; }
+  .icon-gold { background:var(--gold-soft); }
+  .icon-purple { background:var(--purple-soft); }
+  .icon-red { background:#fef2f2; }
+  .card-header-text h2 { font-size:18px; font-weight:700; color:var(--blue); }
+  .card-header-text p { font-size:12px; color:var(--muted); margin-top:2px; }
+
+  .card-body { padding:20px 22px; display:flex; flex-direction:column; gap:16px; }
+
+  /* RANK BADGE */
+  .rank-banner { border-radius:14px; padding:18px 20px; display:flex; align-items:center; gap:16px; }
+  .rank-banner.novato { background:linear-gradient(135deg,#f8fafc,#e2e8f0); border:1.5px solid #cbd5e1; }
+  .rank-banner.agente { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1.5px solid #93c5fd; }
+  .rank-banner.supervisor { background:linear-gradient(135deg,#fefce8,#fef9c3); border:1.5px solid #fde047; }
+  .rank-banner.director { background:linear-gradient(135deg,#fdf4ff,#f3e8ff); border:1.5px solid #d8b4fe; }
+  .rank-emoji { font-size:36px; }
+  .rank-info h3 { font-size:17px; font-weight:700; }
+  .rank-info .rank-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+  .rank-info .rank-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-top:6px; }
+  .badge-novato { background:#e2e8f0; color:#475569; }
+  .badge-agente { background:#dbeafe; color:#1d4ed8; }
+  .badge-supervisor { background:#fef9c3; color:#a16207; }
+  .badge-director { background:#f3e8ff; color:#7c3aed; }
+
+  /* COMMISSION TABLE */
+  .section-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:8px; }
+  .comm-table { border:1.5px solid var(--border); border-radius:12px; overflow:hidden; }
+  .comm-row { display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid var(--border); }
+  .comm-row:last-child { border-bottom:none; }
+  .comm-row.header { background:#f8fafc; }
+  .comm-cell { padding:10px 12px; font-size:13px; }
+  .comm-row.header .comm-cell { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .comm-cell.amount { font-weight:700; color:var(--green-dark); }
+  .comm-cell.highlight { font-weight:700; color:var(--blue); }
+
+  /* REQUIREMENTS */
+  .req-list { display:flex; flex-direction:column; gap:10px; }
+  .req-item { display:flex; align-items:center; gap:12px; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); background:#fafafa; }
+  .req-item.achieved { border-color:#86efac; background:#f0fdf4; }
+  .req-icon { font-size:22px; flex-shrink:0; }
+  .req-text { flex:1; }
+  .req-text strong { font-size:15px; font-weight:700; display:block; }
+  .req-text span { font-size:12px; color:var(--muted); }
+  .req-check { font-size:18px; }
+
+  /* TIPS */
+  .tip-list { display:flex; flex-direction:column; gap:10px; }
+  .tip { display:flex; gap:12px; padding:13px 14px; border-radius:12px; background:#f8fafc; border:1px solid var(--border); }
+  .tip-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+  .tip-text { font-size:13px; line-height:1.55; color:var(--text); }
+  .tip-text strong { font-weight:700; }
+
+  /* ALERTS */
+  .alert { border-radius:12px; padding:13px 16px; font-size:13px; line-height:1.6; display:flex; gap:10px; align-items:flex-start; }
+  .alert-blue { background:var(--blue-soft); border:1.5px solid #93c5fd; color:#1e40af; }
+  .alert-green { background:#f0fdf4; border:1.5px solid #86efac; color:#15803d; }
+  .alert-gold { background:var(--gold-soft); border:1.5px solid #fcd34d; color:#92400e; }
+  .alert-purple { background:var(--purple-soft); border:1.5px solid #c4b5fd; color:#5b21b6; }
+  .alert-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+
+  /* INCOME SHOWCASE */
+  .income-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .income-card { border-radius:12px; padding:14px; text-align:center; }
+  .income-card.res { background:#f0fdf4; border:1.5px solid #86efac; }
+  .income-card.com { background:#fffbeb; border:1.5px solid #fcd34d; }
+  .income-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; }
+  .income-amount { font-size:22px; font-weight:700; color:var(--blue); }
+  .income-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+
+  /* OVERRIDE EXPLAINER */
+  .override-flow { display:flex; flex-direction:column; gap:8px; }
+  .override-row { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; border:1.5px solid var(--border); background:#fafafa; }
+  .override-who { font-size:12px; font-weight:700; flex:1; }
+  .override-arrow { color:var(--muted); font-size:16px; }
+  .override-amount { font-size:14px; font-weight:700; color:var(--green-dark); }
+  .override-note { font-size:11px; color:var(--muted); margin-top:3px; }
+
+  /* PATH STEPS */
+  .path-steps { display:flex; flex-direction:column; gap:0; }
+  .path-step { display:flex; gap:14px; padding:14px 0; position:relative; }
+  .path-step:not(:last-child)::after { content:''; position:absolute; left:17px; top:46px; width:2px; height:calc(100% - 20px); background:var(--border); }
+  .path-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; z-index:1; }
+  .path-dot.blue { background:var(--blue-soft); }
+  .path-dot.green { background:#dcfce7; }
+  .path-dot.gold { background:var(--gold-soft); }
+  .path-dot.purple { background:var(--purple-soft); }
+  .path-content { flex:1; padding-top:6px; }
+  .path-content h4 { font-size:14px; font-weight:700; }
+  .path-content p { font-size:12px; color:var(--muted); margin-top:3px; line-height:1.5; }
+
+  /* NAV BUTTONS */
+  .card-nav { padding:16px 22px 22px; display:flex; gap:10px; border-top:1px solid var(--border); }
+  .btn-prev { flex:1; padding:13px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; }
+  .btn-prev:hover { background:var(--border); }
+  .btn-next { flex:2; padding:13px; border-radius:12px; border:none; background:var(--blue); color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; }
+  .btn-next:hover { background:#15316a; }
+  .btn-next.final { background:var(--green-dark); }
+  .btn-next.final:hover { background:#0f6a58; }
+
+  /* DONE */
+  .done-screen { display:none; text-align:center; padding:48px 24px; }
+  .done-screen.active { display:block; }
+  .done-emoji { font-size:72px; margin-bottom:16px; }
+  .done-screen h2 { font-size:24px; font-weight:700; color:var(--blue); margin-bottom:8px; }
+  .done-screen p { font-size:14px; color:var(--muted); max-width:300px; margin:0 auto 28px; line-height:1.6; }
+  .done-actions { display:flex; flex-direction:column; gap:10px; max-width:280px; margin:0 auto; }
+  .btn-action { display:block; padding:14px 24px; border-radius:12px; font-size:15px; font-weight:700; text-decoration:none; text-align:center; }
+  .btn-green { background:var(--green-dark); color:#fff; }
+  .btn-outline { background:var(--bg); border:1.5px solid var(--border); color:var(--text); }
+
+  /* STAR RATING VISUAL */
+  .stars { color:var(--gold); font-size:18px; letter-spacing:2px; }
+
+  /* DIVIDER */
+  .divider { height:1px; background:var(--border); margin:4px 0; }
+
+  @media(max-width:400px) {
+    .income-grid { grid-template-columns:1fr; }
+    .comm-row { grid-template-columns:1.2fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="navContainer"></div>
+
+<div class="hero">
+  <div class="hero-tag">Plan de Crecimiento</div>
+  <h1>Tu camino al éxito<br>en Izzy Communications</h1>
+  <p>Aprende cómo subir de rango, cuánto ganarás en cada nivel y qué necesitas lograr para llegar al tope.</p>
+
+  <div class="roadmap">
+    <div class="rm-node">
+      <div class="rm-circle active" id="rm0">🌱</div>
+      <div class="rm-label active">Novato</div>
+    </div>
+    <div class="rm-line" id="rl0"></div>
+    <div class="rm-node">
+      <div class="rm-circle" id="rm1">⭐</div>
+      <div class="rm-label">Agente</div>
+    </div>
+    <div class="rm-line" id="rl1"></div>
+    <div class="rm-node">
+      <div class="rm-circle" id="rm2">🏆</div>
+      <div class="rm-label">Supervisor</div>
+    </div>
+    <div class="rm-line" id="rl2"></div>
+    <div class="rm-node">
+      <div class="rm-circle" id="rm3">👑</div>
+      <div class="rm-label">Director</div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="prog-dot active" onclick="goTo(0)"></div>
+    <div class="prog-dot" onclick="goTo(1)"></div>
+    <div class="prog-dot" onclick="goTo(2)"></div>
+    <div class="prog-dot" onclick="goTo(3)"></div>
+    <div class="prog-dot" onclick="goTo(4)"></div>
+    <div class="prog-dot" onclick="goTo(5)"></div>
+  </div>
+</div>
+
+<div class="steps-wrap">
+
+  <!-- PASO 0: Visión general -->
+  <div class="step-card active" id="card-0">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🗺️</div>
+      <div class="card-header-text">
+        <h2>El camino completo</h2>
+        <p>4 rangos, ingresos crecientes en cada etapa</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="path-steps">
+        <div class="path-step">
+          <div class="path-dot blue">🌱</div>
+          <div class="path-content">
+            <h4>Novato — Punto de partida</h4>
+            <p>Aprendes el proceso, haces tus primeras ventas. Ganas hasta <strong>$50 por instalación</strong> residencial.</p>
+          </div>
+        </div>
+        <div class="path-step">
+          <div class="path-dot green">⭐</div>
+          <div class="path-content">
+            <h4>Agente — Profesional establecido</h4>
+            <p>Aumentan tus comisiones hasta <strong>$100 por instalación</strong> residencial. Necesitas 10 instalaciones.</p>
+          </div>
+        </div>
+        <div class="path-step">
+          <div class="path-dot gold">🏆</div>
+          <div class="path-content">
+            <h4>Supervisor — Construyes equipo</h4>
+            <p>Comisiones de hasta <strong>$150 residencial / $450 comercial</strong> + ganas porcentaje del equipo que reclutes.</p>
+          </div>
+        </div>
+        <div class="path-step">
+          <div class="path-dot purple">👑</div>
+          <div class="path-content">
+            <h4>Director — Ingresos organizacionales</h4>
+            <p>Recibes un <strong>bono por cada instalación de tu organización</strong> entera, más tus comisiones personales.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-blue">
+        <div class="alert-icon">💡</div>
+        <div>El sistema <strong>te promueve automáticamente</strong> cuando cumples los requisitos. No tienes que pedirlo.</div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="btn-next" onclick="next()">Empezar → Novato</button>
+    </div>
+  </div>
+
+  <!-- PASO 1: NOVATO -->
+  <div class="step-card" id="card-1">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🌱</div>
+      <div class="card-header-text">
+        <h2>Rango: Novato</h2>
+        <p>Tu punto de partida — aprende y vende</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="rank-banner novato">
+        <div class="rank-emoji">🌱</div>
+        <div class="rank-info">
+          <h3>Novato</h3>
+          <div class="rank-sub">Rango inicial de todos los agentes</div>
+          <div class="rank-badge badge-novato">Rango 1 de 4</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Comisiones por instalación</div>
+        <div class="comm-table">
+          <div class="comm-row header">
+            <div class="comm-cell">Categoría</div>
+            <div class="comm-cell">Residencial</div>
+            <div class="comm-cell">Comercial</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Básico</div>
+            <div class="comm-cell amount">$25</div>
+            <div class="comm-cell amount">$75</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Estándar</div>
+            <div class="comm-cell amount">$40</div>
+            <div class="comm-cell amount">$120</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Premium</div>
+            <div class="comm-cell amount">$50</div>
+            <div class="comm-cell amount">$150</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Ejemplos por categoría</div>
+        <div class="tip-list">
+          <div class="tip">
+            <div class="tip-icon">📡</div>
+            <div class="tip-text"><strong>Básico:</strong> Servicios promocionales, programas especiales</div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">🌐</div>
+            <div class="tip-text"><strong>Estándar:</strong> Spectrum 300/500, Frontier 500, T-Mobile Home Internet</div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">🚀</div>
+            <div class="tip-text"><strong>Premium:</strong> Spectrum 1 Gig / 2 Gig, AT&T Fiber, Frontier 1 Gig</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-gold">
+        <div class="alert-icon">🎯</div>
+        <div>Tu meta inmediata: <strong>10 instalaciones</strong> para ascender a Agente y aumentar tus comisiones.</div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="btn-prev" onclick="prev()">← Atrás</button>
+      <button class="btn-next" onclick="next()">Cómo llegar a Agente →</button>
+    </div>
+  </div>
+
+  <!-- PASO 2: AGENTE -->
+  <div class="step-card" id="card-2">
+    <div class="card-header">
+      <div class="card-icon icon-green">⭐</div>
+      <div class="card-header-text">
+        <h2>Rango: Agente</h2>
+        <p>Más comisiones, mismo esfuerzo</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="rank-banner agente">
+        <div class="rank-emoji">⭐</div>
+        <div class="rank-info">
+          <h3>Agente</h3>
+          <div class="rank-sub">Profesional establecido</div>
+          <div class="rank-badge badge-agente">Rango 2 de 4</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Requisito para ascender</div>
+        <div class="req-list">
+          <div class="req-item">
+            <div class="req-icon">📦</div>
+            <div class="req-text">
+              <strong>10 instalaciones acumuladas</strong>
+              <span>De por vida — no importa el tiempo, solo el total</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Comisiones como Agente</div>
+        <div class="comm-table">
+          <div class="comm-row header">
+            <div class="comm-cell">Categoría</div>
+            <div class="comm-cell">Residencial</div>
+            <div class="comm-cell">Comercial</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Básico</div>
+            <div class="comm-cell amount">$40</div>
+            <div class="comm-cell amount">$120</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Estándar</div>
+            <div class="comm-cell amount">$75</div>
+            <div class="comm-cell amount">$225</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Premium</div>
+            <div class="comm-cell amount">$100</div>
+            <div class="comm-cell amount">$300</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-green">
+        <div class="alert-icon">📈</div>
+        <div>Con el mismo trabajo, en Estándar residencial pasas de <strong>$40 a $75 por venta</strong> — casi el doble.</div>
+      </div>
+
+      <div>
+        <div class="section-label">Tu meta como Agente</div>
+        <div class="req-list">
+          <div class="req-item">
+            <div class="req-icon">📦</div>
+            <div class="req-text">
+              <strong>20 instalaciones acumuladas</strong>
+              <span>10 más desde que llegaste a Agente</span>
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-icon">👥</div>
+            <div class="req-text">
+              <strong>5 agentes activos en tu equipo</strong>
+              <span>Personas que reclutas y que estén produciendo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="btn-prev" onclick="prev()">← Atrás</button>
+      <button class="btn-next" onclick="next()">Cómo llegar a Supervisor →</button>
+    </div>
+  </div>
+
+  <!-- PASO 3: SUPERVISOR -->
+  <div class="step-card" id="card-3">
+    <div class="card-header">
+      <div class="card-icon icon-gold">🏆</div>
+      <div class="card-header-text">
+        <h2>Rango: Supervisor</h2>
+        <p>Construyes equipo y ganas del trabajo de todos</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="rank-banner supervisor">
+        <div class="rank-emoji">🏆</div>
+        <div class="rank-info">
+          <h3>Supervisor</h3>
+          <div class="rank-sub">Líder de equipo</div>
+          <div class="rank-badge badge-supervisor">Rango 3 de 4</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Requisitos para ascender a Supervisor</div>
+        <div class="req-list">
+          <div class="req-item">
+            <div class="req-icon">📦</div>
+            <div class="req-text">
+              <strong>20 instalaciones personales acumuladas</strong>
+              <span>De por vida — se suma todo lo que hayas hecho</span>
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-icon">👥</div>
+            <div class="req-text">
+              <strong>5 agentes activos en tu equipo</strong>
+              <span>Que estén vendiendo activamente bajo tu línea</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Comisiones personales como Supervisor</div>
+        <div class="comm-table">
+          <div class="comm-row header">
+            <div class="comm-cell">Categoría</div>
+            <div class="comm-cell">Residencial</div>
+            <div class="comm-cell">Comercial</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Básico</div>
+            <div class="comm-cell amount">$50</div>
+            <div class="comm-cell amount">$150</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Estándar</div>
+            <div class="comm-cell amount">$90</div>
+            <div class="comm-cell amount">$270</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Premium</div>
+            <div class="comm-cell amount">$150</div>
+            <div class="comm-cell amount">$450</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Ingresos máximos mensuales estimados</div>
+        <div class="income-grid">
+          <div class="income-card res">
+            <div class="income-label">Solo personal (10 ventas/mes)</div>
+            <div class="income-amount">$900+</div>
+            <div class="income-sub">Estándar residencial</div>
+          </div>
+          <div class="income-card com">
+            <div class="income-label">Con equipo de 5 activos</div>
+            <div class="income-amount">$1,500+</div>
+            <div class="income-sub">Personal + overrides del equipo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-gold">
+        <div class="alert-icon">💰</div>
+        <div>Como Supervisor también recibes un <strong>override sobre las ventas de tus agentes</strong> — ganas cuando tu equipo vende, aunque tú no lo hagas ese día.</div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="btn-prev" onclick="prev()">← Atrás</button>
+      <button class="btn-next" onclick="next()">Cómo llegar a Director →</button>
+    </div>
+  </div>
+
+  <!-- PASO 4: DIRECTOR -->
+  <div class="step-card" id="card-4">
+    <div class="card-header">
+      <div class="card-icon icon-purple">👑</div>
+      <div class="card-header-text">
+        <h2>Rango: Director</h2>
+        <p>El nivel más alto — ingresos de toda la organización</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="rank-banner director">
+        <div class="rank-emoji">👑</div>
+        <div class="rank-info">
+          <h3>Director</h3>
+          <div class="rank-sub">Líder organizacional</div>
+          <div class="rank-badge badge-director">Rango 4 de 4</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Requisitos para ascender a Director</div>
+        <div class="req-list">
+          <div class="req-item">
+            <div class="req-icon">🏆</div>
+            <div class="req-text">
+              <strong>1 Supervisor activo en tu organización</strong>
+              <span>Un agente tuyo que también llegó a Supervisor</span>
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-icon">📊</div>
+            <div class="req-text">
+              <strong>25 instalaciones organizacionales por mes</strong>
+              <span>Entre tú + todos en tu organización combinados</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Bono Director — por cada instalación de tu org</div>
+        <div class="comm-table">
+          <div class="comm-row header">
+            <div class="comm-cell">Categoría</div>
+            <div class="comm-cell">Residencial</div>
+            <div class="comm-cell">Comercial</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Básico</div>
+            <div class="comm-cell amount">+$2</div>
+            <div class="comm-cell amount">+$6</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Estándar</div>
+            <div class="comm-cell amount">+$5</div>
+            <div class="comm-cell amount">+$15</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Premium</div>
+            <div class="comm-cell amount">+$20</div>
+            <div class="comm-cell amount">+$60</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-purple">
+        <div class="alert-icon">👑</div>
+        <div>Si tu organización hace <strong>50 instalaciones Premium residenciales</strong> en un mes, recibes <strong>$1,000 extra en bono Director</strong>, más tus comisiones personales.</div>
+      </div>
+
+      <div>
+        <div class="section-label">Comisiones personales como Director</div>
+        <div class="comm-table">
+          <div class="comm-row header">
+            <div class="comm-cell">Categoría</div>
+            <div class="comm-cell">Residencial</div>
+            <div class="comm-cell">Comercial</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Básico</div>
+            <div class="comm-cell amount">$50</div>
+            <div class="comm-cell amount">$150</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Estándar</div>
+            <div class="comm-cell amount">$90</div>
+            <div class="comm-cell amount">$270</div>
+          </div>
+          <div class="comm-row">
+            <div class="comm-cell">Premium</div>
+            <div class="comm-cell amount">$150</div>
+            <div class="comm-cell amount">$450</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="btn-prev" onclick="prev()">← Atrás</button>
+      <button class="btn-next" onclick="next()">Consejos para crecer →</button>
+    </div>
+  </div>
+
+  <!-- PASO 5: TIPS -->
+  <div class="step-card" id="card-5">
+    <div class="card-header">
+      <div class="card-icon icon-green">💡</div>
+      <div class="card-header-text">
+        <h2>Claves para subir rápido</h2>
+        <p>Estrategias de los agentes más exitosos</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="tip-list">
+        <div class="tip">
+          <div class="tip-icon">🎯</div>
+          <div class="tip-text"><strong>Enfócate en Premium desde el principio.</strong> Un Premium residencial paga $50–$150 vs $25–$40 de Básico. El esfuerzo es el mismo, la comisión es muy diferente.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📋</div>
+          <div class="tip-text"><strong>Usa el sistema de leads.</strong> Registra cada llamada, programa follow-ups. Los agentes que hacen seguimiento cierran 3× más que los que llaman una sola vez.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">👥</div>
+          <div class="tip-text"><strong>Piensa en reclutar desde el día 1.</strong> Para Supervisor necesitas 5 agentes activos — mientras más pronto los empieces a traer, más rápido llegas.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🏢</div>
+          <div class="tip-text"><strong>Comercial multiplica tus ingresos.</strong> Un Estándar comercial paga $225 vs $75 residencial. Si puedes hablar con negocios, vale la pena el esfuerzo extra.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📊</div>
+          <div class="tip-text"><strong>Revisa tu compensación regularmente.</strong> En el módulo Compensación puedes ver tu progreso, cuánto llevas acumulado y cuánto te falta para el siguiente rango.</div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🔁</div>
+          <div class="tip-text"><strong>Consistencia > explosiones.</strong> 5 instalaciones por semana te lleva a Agente en 2 semanas. Enfócate en el proceso diario, no en el resultado del mes.</div>
+        </div>
+      </div>
+
+      <div class="alert alert-green">
+        <div class="alert-icon">🚀</div>
+        <div><strong>Ruta más rápida a Supervisor:</strong> 4 semanas de ventas activas (20 instalaciones) + traer 5 personas a tu equipo desde el inicio.</div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="btn-prev" onclick="prev()">← Atrás</button>
+      <button class="btn-next final" onclick="finish()">¡Listo, empezar a vender!</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div class="done-screen" id="done">
+    <div class="done-emoji">🎉</div>
+    <h2>¡Ya conoces el camino!</h2>
+    <p>Tienes todo lo que necesitas para crecer. El primer paso es cerrar tu primera venta hoy.</p>
+    <div class="done-actions">
+      <a href="leads.html" class="btn-action btn-green">Ver mis leads →</a>
+      <a href="call-center.html" class="btn-action btn-outline">Ir al Call Center</a>
+      <a href="compensation.html" class="btn-action btn-outline">Ver mi compensación</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="nav.js"></script>
+<script>
+  let current = 0;
+  const total = 6;
+
+  const rankMap = { 0: null, 1: 0, 2: 1, 3: 2, 4: 3, 5: 3 };
+
+  function updateRoadmap(step) {
+    const activeRank = rankMap[step];
+    for (let i = 0; i < 4; i++) {
+      const circle = document.getElementById('rm' + i);
+      const label = circle.nextElementSibling;
+      circle.classList.toggle('active', i === activeRank);
+      label.classList.toggle('active', i === activeRank);
+      if (i < 3) {
+        const line = document.getElementById('rl' + i);
+        line.classList.toggle('done', activeRank !== null && i < activeRank);
+      }
+    }
+  }
+
+  function updateDots(step) {
+    document.querySelectorAll('.prog-dot').forEach((d, i) => {
+      d.classList.toggle('done', i < step);
+      d.classList.toggle('active', i === step);
+    });
+  }
+
+  function goTo(step) {
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('done').classList.remove('active');
+    const card = document.getElementById('card-' + step);
+    if (card) card.classList.add('active');
+    current = step;
+    updateDots(step);
+    updateRoadmap(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function next() {
+    if (current < total - 1) goTo(current + 1);
+  }
+
+  function prev() {
+    if (current > 0) goTo(current - 1);
+  }
+
+  function finish() {
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('done').classList.add('active');
+    document.querySelectorAll('.prog-dot').forEach(d => { d.classList.add('done'); d.classList.remove('active'); });
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('rm' + i)?.classList.remove('active');
+      document.getElementById('rm' + i)?.nextElementSibling?.classList.remove('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
