@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:#1a3a6b; --blue-soft:#e8f0fb;
+  --green:#25D366; --green-dark:#128C7E;
+  --gold:#f59e0b; --gold-soft:#fef3c7;
+  --purple:#7c3aed; --purple-soft:#ede9fe;
+  --red:#ef4444; --red-soft:#fef2f2;
+  --bg:#f0f2f5; --surface:#fff; --border:#e2e0dc;
+  --text:#1a1814; --muted:#7a7570;
+}
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* HERO */
+.hero { background:linear-gradient(135deg,#0f2244 0%,#1a3a6b 55%,#1e4a8a 100%); padding:32px 20px 36px; color:#fff; position:relative; overflow:hidden; }
+.hero::after { content:'🎓'; position:absolute; right:-10px; bottom:-20px; font-size:120px; opacity:.06; transform:rotate(-10deg); pointer-events:none; }
+.hero-tag { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:12px; }
+.hero h1 { font-size:28px; font-weight:800; margin-bottom:6px; }
+.hero h1 span { color:#fbbf24; }
+.hero p { font-size:14px; color:rgba(255,255,255,.65); max-width:340px; line-height:1.6; margin-bottom:20px; }
+.hero-stats { display:flex; gap:24px; }
+.hero-stat { text-align:center; }
+.hero-stat .val { font-size:22px; font-weight:800; }
+.hero-stat .lbl { font-size:10px; color:rgba(255,255,255,.55); text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+
+/* OVERALL PROGRESS */
+.overall-progress { background:var(--surface); border-bottom:1px solid var(--border); padding:14px 20px; display:flex; align-items:center; gap:14px; }
+.op-label { font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; }
+.op-bar { flex:1; height:8px; background:var(--bg); border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+.op-fill { height:100%; background:linear-gradient(90deg,var(--green-dark),var(--green)); border-radius:8px; transition:width .5s ease; }
+.op-pct { font-size:13px; font-weight:700; color:var(--blue); white-space:nowrap; }
+
+/* MAIN */
+.main { max-width:680px; margin:0 auto; padding:20px 16px 60px; display:flex; flex-direction:column; gap:20px; }
+
+/* SECTION TITLE */
+.sec-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:2px; }
+
+/* COURSE CARD */
+.course-card { background:var(--surface); border-radius:18px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,.07); border:1.5px solid var(--border); }
+.course-header { padding:18px 20px 14px; display:flex; align-items:flex-start; gap:14px; cursor:pointer; }
+.course-header:hover { background:#fafafa; }
+.course-icon-wrap { width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.c-blue { background:var(--blue-soft); }
+.c-green { background:#dcfce7; }
+.c-gold { background:var(--gold-soft); }
+.c-purple { background:var(--purple-soft); }
+.c-red { background:var(--red-soft); }
+.course-meta { flex:1; }
+.course-meta h3 { font-size:16px; font-weight:700; color:var(--blue); }
+.course-meta p { font-size:12px; color:var(--muted); margin-top:3px; line-height:1.4; }
+.course-meta .tags { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.tag { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; }
+.tag-blue { background:var(--blue-soft); color:var(--blue); }
+.tag-green { background:#dcfce7; color:#15803d; }
+.tag-gold { background:var(--gold-soft); color:#92400e; }
+.tag-purple { background:var(--purple-soft); color:#5b21b6; }
+.course-progress-bar { height:4px; background:var(--bg); }
+.course-progress-fill { height:100%; background:linear-gradient(90deg,var(--green-dark),var(--green)); transition:width .4s; }
+.course-badge { text-align:right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.badge-pct { font-size:13px; font-weight:700; color:var(--green-dark); }
+.badge-done { background:var(--green); color:#fff; border-radius:20px; padding:3px 10px; font-size:10px; font-weight:700; }
+.lessons-list { border-top:1px solid var(--border); display:none; }
+.lessons-list.open { display:block; }
+.lesson-row { display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .15s; }
+.lesson-row:last-child { border-bottom:none; }
+.lesson-row:hover { background:#f8fafc; }
+.lesson-num { width:28px; height:28px; border-radius:50%; background:var(--bg); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--muted); flex-shrink:0; }
+.lesson-num.done { background:var(--green); border-color:var(--green); color:#fff; }
+.lesson-num.locked { background:var(--bg); border-color:var(--border); color:var(--border); }
+.lesson-info { flex:1; }
+.lesson-info .ln { font-size:14px; font-weight:600; color:var(--text); }
+.lesson-info .lt { font-size:11px; color:var(--muted); margin-top:2px; }
+.lesson-type { font-size:10px; font-weight:700; padding:3px 8px; border-radius:20px; }
+.lt-lesson { background:var(--blue-soft); color:var(--blue); }
+.lt-quiz { background:var(--gold-soft); color:#92400e; }
+.lt-external { background:#dcfce7; color:#15803d; }
+.chevron { color:var(--muted); transition:transform .2s; font-size:18px; flex-shrink:0; }
+.chevron.open { transform:rotate(180deg); }
+
+/* LESSON MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1000; display:none; align-items:flex-end; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--surface); border-radius:24px 24px 0 0; width:100%; max-height:92vh; overflow:hidden; display:flex; flex-direction:column; animation:slideUp .3s ease; }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-header { padding:16px 20px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.modal-close { width:32px; height:32px; border-radius:50%; background:var(--bg); border:none; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; color:var(--muted); flex-shrink:0; }
+.modal-title { flex:1; }
+.modal-title h4 { font-size:15px; font-weight:700; color:var(--blue); }
+.modal-title p { font-size:11px; color:var(--muted); }
+.modal-slide-counter { font-size:12px; font-weight:700; color:var(--muted); flex-shrink:0; }
+.modal-progress { height:3px; background:var(--bg); flex-shrink:0; }
+.modal-progress-fill { height:100%; background:var(--blue); transition:width .3s; }
+.modal-body { flex:1; overflow-y:auto; padding:24px 20px; }
+.modal-nav { padding:14px 20px 24px; display:flex; gap:10px; border-top:1px solid var(--border); flex-shrink:0; }
+.btn-slide-prev { flex:1; padding:12px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
+.btn-slide-next { flex:2; padding:12px; border-radius:12px; border:none; background:var(--blue); color:#fff; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
+.btn-slide-next:hover { background:#15316a; }
+.btn-slide-next.finish { background:var(--green-dark); }
+
+/* SLIDE CONTENT */
+.slide { display:none; animation:fadeSlide .25s ease; }
+.slide.active { display:block; }
+@keyframes fadeSlide { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
+.slide-hero { background:linear-gradient(135deg,var(--blue-soft),#dbeafe); border-radius:14px; padding:24px 20px; margin-bottom:20px; text-align:center; }
+.slide-hero .sh-emoji { font-size:48px; margin-bottom:10px; }
+.slide-hero h2 { font-size:20px; font-weight:800; color:var(--blue); margin-bottom:6px; }
+.slide-hero p { font-size:13px; color:var(--muted); line-height:1.6; }
+.slide h3 { font-size:17px; font-weight:700; color:var(--blue); margin-bottom:12px; }
+.slide p { font-size:14px; line-height:1.65; color:var(--text); margin-bottom:12px; }
+.slide p:last-child { margin-bottom:0; }
+.slide strong { font-weight:700; color:var(--text); }
+
+/* LESSON COMPONENTS */
+.info-box { border-radius:12px; padding:14px 16px; margin-bottom:14px; display:flex; gap:12px; align-items:flex-start; }
+.info-box.blue { background:var(--blue-soft); border:1.5px solid #93c5fd; color:#1e40af; }
+.info-box.green { background:#f0fdf4; border:1.5px solid #86efac; color:#15803d; }
+.info-box.gold { background:var(--gold-soft); border:1.5px solid #fcd34d; color:#92400e; }
+.info-box.red { background:var(--red-soft); border:1.5px solid #fca5a5; color:#991b1b; }
+.info-box.purple { background:var(--purple-soft); border:1.5px solid #c4b5fd; color:#5b21b6; }
+.info-icon { font-size:20px; flex-shrink:0; }
+.info-text { font-size:13px; line-height:1.55; }
+.info-text strong { font-weight:700; }
+
+.carrier-card { border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+.carrier-card h4 { font-size:15px; font-weight:700; margin-bottom:6px; }
+.carrier-card ul { list-style:none; display:flex; flex-direction:column; gap:4px; }
+.carrier-card li { font-size:13px; color:var(--muted); padding-left:16px; position:relative; line-height:1.5; }
+.carrier-card li::before { content:'•'; position:absolute; left:0; color:var(--blue); }
+
+.comparison-table { border:1.5px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:14px; }
+.ct-row { display:grid; gap:0; border-bottom:1px solid var(--border); }
+.ct-row:last-child { border-bottom:none; }
+.ct-row.header { background:#f8fafc; }
+.ct-cell { padding:10px 12px; font-size:13px; }
+.ct-row.header .ct-cell { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+.ct-cell.highlight { font-weight:700; color:var(--green-dark); }
+.ct-cell.dim { color:var(--muted); }
+.grid-3 { grid-template-columns:1.4fr 1fr 1fr; }
+.grid-4 { grid-template-columns:1.2fr 1fr 1fr 1fr; }
+
+.steps-lesson { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
+.step-lesson { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); background:#fafafa; }
+.step-lesson-num { width:28px; height:28px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+.step-lesson-text { font-size:13px; line-height:1.55; }
+.step-lesson-text strong { font-weight:700; display:block; margin-bottom:2px; }
+
+.dialog-box { border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+.dialog-agent { background:#dbeafe; border-left:4px solid #3b82f6; }
+.dialog-client { background:#f0fdf4; border-left:4px solid #22c55e; }
+.dialog-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+.dialog-agent .dialog-label { color:#1d4ed8; }
+.dialog-client .dialog-label { color:#15803d; }
+.dialog-text { font-size:13px; line-height:1.55; font-style:italic; }
+
+/* QUIZ */
+.quiz-wrap { display:flex; flex-direction:column; gap:16px; }
+.quiz-q { font-size:16px; font-weight:700; color:var(--blue); margin-bottom:14px; line-height:1.4; }
+.quiz-options { display:flex; flex-direction:column; gap:8px; }
+.quiz-opt { display:flex; align-items:center; gap:12px; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); cursor:pointer; transition:all .15s; font-size:14px; background:var(--surface); }
+.quiz-opt:hover { border-color:var(--blue); background:var(--blue-soft); }
+.quiz-opt.selected { border-color:var(--blue); background:var(--blue-soft); color:var(--blue); font-weight:600; }
+.quiz-opt.correct { border-color:#22c55e; background:#f0fdf4; color:#15803d; font-weight:700; }
+.quiz-opt.wrong { border-color:#ef4444; background:#fef2f2; color:#991b1b; }
+.quiz-opt.disabled { pointer-events:none; }
+.quiz-opt-letter { width:26px; height:26px; border-radius:50%; background:var(--bg); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+.quiz-feedback { border-radius:12px; padding:14px 16px; font-size:13px; line-height:1.55; display:none; }
+.quiz-feedback.show { display:flex; gap:10px; align-items:flex-start; }
+.quiz-feedback.ok { background:#f0fdf4; border:1.5px solid #86efac; color:#15803d; }
+.quiz-feedback.fail { background:var(--red-soft); border:1.5px solid #fca5a5; color:#991b1b; }
+.quiz-score { text-align:center; padding:20px; }
+.quiz-score .qs-emoji { font-size:56px; margin-bottom:12px; }
+.quiz-score h3 { font-size:20px; font-weight:800; color:var(--blue); margin-bottom:6px; }
+.quiz-score p { font-size:14px; color:var(--muted); line-height:1.6; }
+.quiz-score .qs-result { font-size:28px; font-weight:800; margin:10px 0; }
+.quiz-score .qs-result.pass { color:var(--green-dark); }
+.quiz-score .qs-result.fail { color:var(--red); }
+
+/* CERT BADGE */
+.cert-badge { background:linear-gradient(135deg,#fef9c3,#fef3c7); border:2px solid #fcd34d; border-radius:16px; padding:24px 20px; text-align:center; margin-bottom:16px; }
+.cert-badge .cb-emoji { font-size:48px; margin-bottom:8px; }
+.cert-badge h3 { font-size:18px; font-weight:800; color:#92400e; margin-bottom:4px; }
+.cert-badge p { font-size:12px; color:#a16207; }
+
+/* LOCKED BANNER */
+.locked-banner { background:var(--bg); border:1.5px dashed var(--border); border-radius:14px; padding:24px; text-align:center; }
+.locked-banner .lb-emoji { font-size:36px; margin-bottom:8px; }
+.locked-banner p { font-size:13px; color:var(--muted); line-height:1.6; }
+
+@media(max-width:400px) {
+  .hero h1 { font-size:22px; }
+  .grid-4 { grid-template-columns:1.4fr 1fr 1fr 1fr; font-size:11px; }
+}
+</style>
+</head>
+<body>
+<div id="navContainer"></div>
+
+<div class="hero">
+  <div class="hero-tag">Izzy Academy</div>
+  <h1>Aprende. Vende.<br><span>Crece.</span></h1>
+  <p>Capacitación completa para agentes de Izzy Communications. Desde cero hasta Director.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="val" id="courseDoneCount">0</div><div class="lbl">Cursos completados</div></div>
+    <div class="hero-stat"><div class="val" id="lessonDoneCount">0</div><div class="lbl">Lecciones</div></div>
+    <div class="hero-stat"><div class="val" id="totalXP">0</div><div class="lbl">XP ganados</div></div>
+  </div>
+</div>
+
+<div class="overall-progress">
+  <div class="op-label">Progreso total</div>
+  <div class="op-bar"><div class="op-fill" id="overallBar" style="width:0%"></div></div>
+  <div class="op-pct" id="overallPct">0%</div>
+</div>
+
+<div class="main" id="main"></div>
+
+<!-- LESSON MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-title">
+        <h4 id="modalTitle">Lección</h4>
+        <p id="modalCourse">Curso</p>
+      </div>
+      <div class="modal-slide-counter" id="slideCounter">1 / 1</div>
+    </div>
+    <div class="modal-progress"><div class="modal-progress-fill" id="modalProgressFill" style="width:0%"></div></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-nav">
+      <button class="btn-slide-prev" id="btnPrev" onclick="prevSlide()">← Anterior</button>
+      <button class="btn-slide-next" id="btnNext" onclick="nextSlide()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script>
+// ──────────────────────────────────────────────
+// COURSE DATA
+// ──────────────────────────────────────────────
+const COURSES = [
+  {
+    id: 'producto',
+    icon: '📡',
+    color: 'c-blue',
+    tag: 'tag-blue',
+    tagText: 'Fundamentos',
+    title: 'Conocimiento del Producto',
+    desc: 'Carriers, planes, categorías y cómo presentarlos al cliente.',
+    xp: 100,
+    lessons: [
+      {
+        id: 'carriers',
+        title: 'Los carriers que vendemos',
+        type: 'lesson',
+        duration: '5 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '📡',
+            title: 'Los carriers que vendemos',
+            subtitle: 'Spectrum, AT&T, Frontier y T-Mobile. Cada uno tiene su mercado.'
+          },
+          {
+            type: 'content',
+            html: `
+              <div class="slide-hero">
+                <div class="sh-emoji">🌐</div>
+                <h2>¿Por qué importa conocer los carriers?</h2>
+                <p>Cuando el cliente pregunta "¿qué servicio me recomiendas?", necesitas responder con confianza y exactitud. Cada carrier tiene fortalezas diferentes.</p>
+              </div>
+              <div class="info-box blue"><div class="info-icon">💡</div><div class="info-text">Los clientes confían más en un agente que conoce los productos. El conocimiento <strong>cierra ventas</strong>.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>🟣 Spectrum (Charter)</h3>
+              <div class="carrier-card">
+                <h4>Spectrum</h4>
+                <ul>
+                  <li>Cable coaxial — amplia cobertura en áreas urbanas y suburbanas</li>
+                  <li>Sin contratos anuales — ventaja competitiva clave</li>
+                  <li>Planes: 300 Mbps, 500 Mbps, 1 Gig, 2 Gig</li>
+                  <li>TV + Internet + Phone bundles disponibles</li>
+                  <li>Argumento de venta: <strong>"Sin contratos, sin susto al año"</strong></li>
+                </ul>
+              </div>
+              <div class="info-box green"><div class="info-icon">✅</div><div class="info-text">Spectrum es tu producto más fácil de vender por la ausencia de contrato y su reconocimiento de marca.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>🔵 AT&T Fiber</h3>
+              <div class="carrier-card">
+                <h4>AT&T Fiber</h4>
+                <ul>
+                  <li>Fibra óptica — velocidades simétricas (upload = download)</li>
+                  <li>300 Mbps, 500 Mbps, 1 Gig, 2 Gig, 5 Gig</li>
+                  <li>Disponible en áreas con infraestructura de fibra instalada</li>
+                  <li>Argumento de venta: <strong>"La velocidad más rápida disponible"</strong></li>
+                  <li>Ideal para: trabajadores remotos, streamers, gamers</li>
+                </ul>
+              </div>
+              <div class="info-box gold"><div class="info-icon">⚡</div><div class="info-text">Antes de ofrecer AT&T verifica disponibilidad en la dirección del cliente — no está en todos los mercados.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>🟠 Frontier & 📶 T-Mobile</h3>
+              <div class="carrier-card">
+                <h4>Frontier Fiber</h4>
+                <ul>
+                  <li>Fibra óptica — competidor directo de AT&T en mercados específicos</li>
+                  <li>Planes: 500 Mbps, 1 Gig, 2 Gig, 5 Gig</li>
+                  <li>Buena opción cuando AT&T no está disponible</li>
+                </ul>
+              </div>
+              <div class="carrier-card">
+                <h4>T-Mobile Home Internet</h4>
+                <ul>
+                  <li>Internet inalámbrico (5G/LTE) — sin instalación de cable</li>
+                  <li>Ideal para áreas donde cable o fibra no llega</li>
+                  <li>Sin contratos, precio fijo</li>
+                  <li>Argumento: <strong>"Conectividad donde otros no llegan"</strong></li>
+                </ul>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Cuándo usar cada uno?</h3>
+              <div class="comparison-table">
+                <div class="ct-row header grid-3">
+                  <div class="ct-cell">Situación del cliente</div>
+                  <div class="ct-cell">Carrier ideal</div>
+                  <div class="ct-cell">Razón</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Quiere evitar contratos</div>
+                  <div class="ct-cell highlight">Spectrum</div>
+                  <div class="ct-cell">Sin contrato anual</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Trabaja desde casa / gamer</div>
+                  <div class="ct-cell highlight">AT&T Fiber</div>
+                  <div class="ct-cell">Velocidad simétrica</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Zona rural / sin cable</div>
+                  <div class="ct-cell highlight">T-Mobile</div>
+                  <div class="ct-cell">Inalámbrico 5G</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">AT&T no disponible</div>
+                  <div class="ct-cell highlight">Frontier</div>
+                  <div class="ct-cell">Fibra alternativa</div>
+                </div>
+              </div>
+              <div class="info-box blue"><div class="info-icon">🎯</div><div class="info-text"><strong>Tip pro:</strong> Siempre verifica disponibilidad antes de hacer la oferta. Nada peor que ofrecer algo que no está disponible en la dirección del cliente.</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'categorias',
+        title: 'Categorías: Básico, Estándar y Premium',
+        type: 'lesson',
+        duration: '4 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '📊',
+            title: 'Categorías de Servicio',
+            subtitle: 'Básico, Estándar y Premium. Aprende cuál aplica a cada venta.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Las 3 categorías de comisión</h3>
+              <p>Cada servicio que vendemos cae en una de 3 categorías. La categoría determina <strong>cuánto ganas por esa instalación</strong>.</p>
+              <div class="comparison-table">
+                <div class="ct-row header grid-4">
+                  <div class="ct-cell">Categoría</div>
+                  <div class="ct-cell">Novato</div>
+                  <div class="ct-cell">Agente</div>
+                  <div class="ct-cell">Supervisor</div>
+                </div>
+                <div class="ct-row grid-4">
+                  <div class="ct-cell">Básico</div>
+                  <div class="ct-cell">$25</div>
+                  <div class="ct-cell">$40</div>
+                  <div class="ct-cell highlight">$50</div>
+                </div>
+                <div class="ct-row grid-4">
+                  <div class="ct-cell">Estándar</div>
+                  <div class="ct-cell">$40</div>
+                  <div class="ct-cell">$75</div>
+                  <div class="ct-cell highlight">$90</div>
+                </div>
+                <div class="ct-row grid-4">
+                  <div class="ct-cell">Premium</div>
+                  <div class="ct-cell">$50</div>
+                  <div class="ct-cell">$100</div>
+                  <div class="ct-cell highlight">$150</div>
+                </div>
+              </div>
+              <div class="info-box gold"><div class="info-icon">💰</div><div class="info-text">El comercial paga <strong>3× más</strong> que el residencial en la misma categoría. Un Estándar comercial = $225 para un Agente.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Qué es Básico?</h3>
+              <div class="info-box blue"><div class="info-icon">📡</div><div class="info-text"><strong>Categoría Básico:</strong> Servicios promocionales, programas especiales, planes de entrada.</div></div>
+              <p>Son los servicios de menor precio y velocidad. La comisión es menor, pero son más fáciles de cerrar porque el precio del cliente es bajo.</p>
+              <div class="info-box gold"><div class="info-icon">💡</div><div class="info-text">Usa Básico como <strong>entrada</strong>. Si el cliente tiene presupuesto ajustado, comienzas con Básico y más adelante lo subes a Estándar cuando vea el valor.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Qué es Estándar?</h3>
+              <div class="info-box blue"><div class="info-icon">🌐</div><div class="info-text"><strong>Categoría Estándar:</strong> Internet residencial / comercial de velocidad media. Spectrum 300/500, Frontier 500, T-Mobile Home Internet.</div></div>
+              <p>El pan de cada día del agente. Son los planes que la mayoría de las familias necesitan para streaming, trabajo remoto y uso general.</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">1</div><div class="step-lesson-text"><strong>Identifica cuántos usuarios hay en el hogar</strong> — más de 4 personas usualmente necesitan Estándar mínimo.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">2</div><div class="step-lesson-text"><strong>Pregunta si trabajan desde casa</strong> — si sí, Estándar es el mínimo recomendado.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">3</div><div class="step-lesson-text"><strong>Streaming 4K</strong> requiere mínimo 25 Mbps por pantalla — Estándar lo cubre.</div></div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Qué es Premium?</h3>
+              <div class="info-box purple"><div class="info-icon">🚀</div><div class="info-text"><strong>Categoría Premium:</strong> Spectrum 1 Gig / 2 Gig, AT&T Fiber 1 Gig+, Frontier 1 Gig+. Los planes de mayor velocidad y precio.</div></div>
+              <p>Son los servicios que más comisión generan. <strong>El truco es saber cuándo ofrecerlos</strong> — no todo cliente los necesita, pero cuando sí los necesita, la venta se cierra sola.</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Gamers / streamers profesionales</strong> — necesitan velocidad y latencia baja.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Hogares con 6+ dispositivos</strong> — la demanda justifica el costo.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Home office con videollamadas frecuentes</strong> — el upload simétrico de fibra es clave.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Pequeños negocios</strong> — necesitan conexión confiable para operaciones.</div></div>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'quiz-producto',
+        title: 'Quiz: Conocimiento del Producto',
+        type: 'quiz',
+        duration: '3 min',
+        xp: 50,
+        questions: [
+          {
+            q: '¿Cuál es el principal argumento de venta de Spectrum sobre sus competidores?',
+            opts: ['Es el más barato del mercado', 'No tiene contratos anuales', 'Tiene la fibra más rápida', 'Solo funciona en ciudades'],
+            correct: 1,
+            explanation: 'Spectrum no requiere contratos anuales. Esto elimina el miedo del cliente a quedarse atrapado y es su ventaja competitiva más clara.'
+          },
+          {
+            q: 'Un cliente trabaja desde casa con videollamadas todo el día y quiere la mejor conexión disponible. ¿Qué le ofreces?',
+            opts: ['Spectrum 300 Básico', 'T-Mobile Home Internet', 'AT&T Fiber 1 Gig', 'Cualquiera es igual'],
+            correct: 2,
+            explanation: 'AT&T Fiber ofrece velocidades simétricas (upload = download), ideal para videollamadas. T-Mobile puede tener variabilidad y Spectrum 300 podría quedarse corto.'
+          },
+          {
+            q: 'Como Agente, ¿cuánto ganas por una instalación de Estándar residencial?',
+            opts: ['$40', '$75', '$90', '$100'],
+            correct: 1,
+            explanation: 'Un Agente gana $75 por Estándar residencial, versus $40 de Novato. Una de las razones más importantes para llegar a Agente rápido.'
+          },
+          {
+            q: '¿Cuándo es T-Mobile Home Internet la mejor opción?',
+            opts: ['Para gamers que necesitan baja latencia', 'En zonas donde no hay cable ni fibra disponible', 'Siempre es la primera opción', 'Para negocios grandes'],
+            correct: 1,
+            explanation: 'T-Mobile es inalámbrico (5G/LTE) y llega donde la infraestructura de cable o fibra no está instalada. Es ideal para zonas rurales o con cobertura limitada.'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'ventas',
+    icon: '💬',
+    color: 'c-green',
+    tag: 'tag-green',
+    tagText: 'Ventas',
+    title: 'Técnicas de Venta',
+    desc: 'El pitch perfecto, manejo de objeciones y cómo cerrar con confianza.',
+    xp: 150,
+    lessons: [
+      {
+        id: 'primer-contacto',
+        title: 'El primer contacto — cómo presentarte',
+        type: 'lesson',
+        duration: '5 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '👋',
+            title: 'El primer contacto',
+            subtitle: 'Los primeros 30 segundos determinan si el cliente sigue escuchando o cuelga.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>La regla de los 30 segundos</h3>
+              <p>Tienes exactamente 30 segundos para captar la atención del cliente. En ese tiempo debes lograr que sienta que:</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">1</div><div class="step-lesson-text"><strong>No vas a hacerle perder el tiempo</strong> — sé directo y claro.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">2</div><div class="step-lesson-text"><strong>Tienes algo valioso para él</strong> — menciona un beneficio concreto desde el inicio.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">3</div><div class="step-lesson-text"><strong>Eres profesional y de confianza</strong> — tono calmado, seguro, sin presión.</div></step-lesson></div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>El pitch de apertura</h3>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE — Ejemplo de apertura efectiva</div>
+                <div class="dialog-text">"Buenas tardes, mi nombre es [Nombre], te llamo de parte de Izzy Communications. La razón de mi llamada es que tenemos disponible en tu área internet de alta velocidad sin contratos anuales — muchos de nuestros clientes están ahorrando entre $20 y $40 al mes comparado con lo que pagaban antes. ¿Tienes un momento para escuchar las opciones?"</div>
+              </div>
+              <div class="info-box green"><div class="info-icon">✅</div><div class="info-text">Este pitch tiene: <strong>presentación</strong>, <strong>beneficio concreto</strong> (ahorro en dinero), <strong>diferenciador</strong> (sin contrato) y una <strong>pregunta abierta</strong> para que el cliente responda.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Errores comunes en el primer contacto</h3>
+              <div class="dialog-box dialog-client" style="background:#fef2f2;border-left-color:#ef4444;">
+                <div class="dialog-label" style="color:#991b1b;">❌ NO hagas esto</div>
+                <div class="dialog-text">"Hola, ¿cómo está? Mire, es que nosotros somos una compañía de internet y tenemos muchos planes y quería saber si usted tiene servicio o no, o si le gustaría saber más sobre lo que ofrecemos porque tenemos muchas cosas..."</div>
+              </div>
+              <div class="info-box red"><div class="info-icon">⚠️</div><div class="info-text">Este ejemplo es débil porque: es vago, no menciona ningún beneficio, no hay propuesta de valor, y el cliente ya está buscando cómo colgar.</div></div>
+              <div class="info-box blue"><div class="info-icon">💡</div><div class="info-text"><strong>Regla:</strong> menciona UN beneficio concreto en los primeros 15 segundos. No listes todos los productos — eso abruma.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Frases de apertura que funcionan</h3>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">💰</div><div class="step-lesson-text">"Muchos de nuestros clientes están ahorrando entre $20 y $40 al mes..."</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">📦</div><div class="step-lesson-text">"Tenemos internet sin contratos anuales — si no te gusta, te puedes ir sin penalidades..."</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">⚡</div><div class="step-lesson-text">"Disponemos de fibra óptica con velocidad de 1 Gigabyte, ahora disponible en tu área..."</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">🏠</div><div class="step-lesson-text">"Para los que trabajan desde casa, tenemos conexiones que garantizan estabilidad en videollamadas..."</div></div>
+              </div>
+              <div class="info-box gold"><div class="info-icon">🎯</div><div class="info-text">Practica tu apertura en voz alta hasta que suene natural. La confianza en la voz es tan importante como las palabras.</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'objeciones',
+        title: 'Manejo de objeciones',
+        type: 'lesson',
+        duration: '6 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '🛡️',
+            title: 'Manejo de objeciones',
+            subtitle: 'Las objeciones no son un "no" — son una oportunidad de dar más información.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>La mentalidad correcta ante una objeción</h3>
+              <p>Cuando un cliente objeta, no está rechazando. Está pidiendo más razones para decir que sí. Tu trabajo es <strong>escuchar, validar y responder</strong>.</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">1</div><div class="step-lesson-text"><strong>Escucha completa</strong> — no interrumpas. Deja que termine.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">2</div><div class="step-lesson-text"><strong>Valida</strong> — "entiendo perfectamente lo que me dices..." Nunca pelees.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">3</div><div class="step-lesson-text"><strong>Responde con beneficio</strong> — convierte la objeción en una razón para comprar.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">4</div><div class="step-lesson-text"><strong>Cierra de nuevo</strong> — después de responder, vuelve a pedir la venta.</div></step-lesson></div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Objeción 1: "Está muy caro"</h3>
+              <div class="dialog-box dialog-client">
+                <div class="dialog-label">👤 CLIENTE</div>
+                <div class="dialog-text">"Eso está muy caro para lo que ofrecen."</div>
+              </div>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE — Respuesta efectiva</div>
+                <div class="dialog-text">"Entiendo perfectamente, el precio importa. Déjame preguntarte: ¿cuánto pagas actualmente? [Escucha]. Entonces si te puedo mostrar que obtienes más velocidad por menos dinero o el mismo precio sin contrato anual, ¿tendría sentido para ti?"</div>
+              </div>
+              <div class="info-box green"><div class="info-icon">💡</div><div class="info-text">Convierte "caro" en una comparación. Pregunta cuánto paga ahora, luego muestra el valor real.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Objeción 2: "Tengo contrato con otra compañía"</h3>
+              <div class="dialog-box dialog-client">
+                <div class="dialog-label">👤 CLIENTE</div>
+                <div class="dialog-text">"Tengo contrato con [compañía] por 12 meses más."</div>
+              </div>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE — Respuesta efectiva</div>
+                <div class="dialog-text">"Entiendo. ¿Sabes cuánto te cobraría salirte del contrato? A veces el ahorro mensual que te daríamos compensa la penalidad en pocos meses. También podemos hacer una nota para contactarte cuando tu contrato esté por vencer — ¿cuándo sería eso exactamente?"</div>
+              </div>
+              <div class="info-box blue"><div class="info-icon">📅</div><div class="info-text">Si no puede cerrar hoy, <strong>agenda para el futuro</strong>. Registra en el sistema la fecha de vencimiento del contrato como follow-up.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Objeción 3: "Necesito pensarlo / hablarlo"</h3>
+              <div class="dialog-box dialog-client">
+                <div class="dialog-label">👤 CLIENTE</div>
+                <div class="dialog-text">"Déjame pensarlo y te llamo si me interesa."</div>
+              </div>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE — Respuesta efectiva</div>
+                <div class="dialog-text">"Por supuesto, es una decisión importante. Dime, ¿qué información necesitas para poder decidir? ¿Hay algo específico que te genera duda? [Escucha]. Perfecto, ¿puedo llamarte mañana a las [hora] para resolver esas dudas?"</div>
+              </div>
+              <div class="info-box gold"><div class="info-icon">⚡</div><div class="info-text"><strong>Nunca dejes sin fecha de seguimiento.</strong> "Si me interesa te llamo" es casi siempre el fin de la oportunidad. Agenda tú el próximo contacto.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Objeción 4: "Ya tengo internet y estoy bien"</h3>
+              <div class="dialog-box dialog-client">
+                <div class="dialog-label">👤 CLIENTE</div>
+                <div class="dialog-text">"Ya tengo internet, no necesito cambiar."</div>
+              </div>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE — Respuesta efectiva</div>
+                <div class="dialog-text">"Me alegra que tengas servicio. ¿Puedo preguntarte cuánto pagas al mes y qué velocidad tienes? [Escucha]. Muchos clientes que decían lo mismo descubrieron que podían tener más velocidad por el mismo precio o igual velocidad por menos. ¿Vale la pena revisar los números juntos?"</div>
+              </div>
+              <div class="info-box blue"><div class="info-icon">🔍</div><div class="info-text">La clave es hacer preguntas para encontrar insatisfacción oculta. Casi nadie está 100% feliz con su internet actual.</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'cierre',
+        title: 'Técnicas de cierre',
+        type: 'lesson',
+        duration: '5 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '🤝',
+            title: 'El Cierre de la Venta',
+            subtitle: 'Saber cuándo y cómo pedir la venta marca la diferencia entre un lead y un cliente.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Cuándo intentar el cierre?</h3>
+              <p>El momento de cerrar es cuando el cliente ha expresado interés y no tiene objeciones activas. Busca estas señales:</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Pregunta sobre detalles prácticos</strong> — "¿Y la instalación cuánto tarda?"</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Habla en futuro</strong> — "¿Y si lo contrato, cuándo lo instalan?"</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Silencio pensativo</strong> — el cliente está calculando mentalmente.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Preguntas sobre el precio total</strong> — está evaluando si puede pagarlo.</div></div>
+              </div>
+              <div class="info-box gold"><div class="info-icon">💡</div><div class="info-text">Cuando ves estas señales, <strong>no sigas explicando</strong>. Para y pide la venta.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Técnica 1: El Cierre Directo</h3>
+              <p>Simple y efectivo. Después de presentar los beneficios, pide la venta directamente.</p>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE</div>
+                <div class="dialog-text">"Basado en lo que me dijiste — que trabajan 3 personas desde casa y tienes 4 televisiones — el plan Estándar de 500 Mbps es perfecto para ti. ¿Procedemos con la instalación esta semana?"</div>
+              </div>
+              <div class="info-box green"><div class="info-icon">✅</div><div class="info-text">El cierre directo funciona cuando ya hiciste bien el diagnóstico de necesidades. El cliente siente que la recomendación es personalizada para él.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Técnica 2: El Cierre por Alternativa</h3>
+              <p>En lugar de preguntar si compra, preguntas entre qué opción.</p>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE</div>
+                <div class="dialog-text">"Tienes dos opciones que te funcionan bien: el Estándar a $69/mes que cubre perfectamente lo que necesitas, o el Premium a $89/mes que te da el doble de velocidad. ¿Cuál prefieres que hagamos?"</div>
+              </div>
+              <div class="info-box blue"><div class="info-icon">💡</div><div class="info-text">Esta técnica cambia la pregunta de "¿compras o no?" a "¿cuál compras?". El cliente inconscientemente asume que va a comprar y solo elige entre opciones.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Técnica 3: El Cierre por Urgencia</h3>
+              <p>Crea un sentido de urgencia genuino (no falso).</p>
+              <div class="dialog-box dialog-agent">
+                <div class="dialog-label">🧑 AGENTE</div>
+                <div class="dialog-text">"Tengo disponibilidad de instalación para mañana o el jueves de esta semana. Las fechas se llenan rápido. ¿Cuál te conviene más para que lo reserve?"</div>
+              </div>
+              <div class="info-box gold"><div class="info-icon">⚠️</div><div class="info-text"><strong>Importante:</strong> solo usa urgencia cuando es real. No inventes escasez falsa — el cliente puede verificarlo y pierde la confianza en ti.</div></div>
+              <div class="info-box green"><div class="info-icon">🎯</div><div class="info-text">La urgencia genuina puede ser: "la promoción vence el viernes", "tenemos instaladores disponibles esta semana", "el precio podría cambiar el próximo mes".</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'quiz-ventas',
+        title: 'Quiz: Técnicas de Venta',
+        type: 'quiz',
+        duration: '3 min',
+        xp: 75,
+        questions: [
+          {
+            q: 'Un cliente dice "está muy caro". ¿Cuál es la mejor respuesta?',
+            opts: ['Bajarle el precio inmediatamente', 'Preguntarle cuánto paga actualmente y comparar el valor', 'Decirle que es el mejor precio del mercado', 'Terminar la llamada'],
+            correct: 1,
+            explanation: 'Siempre convierte "caro" en una comparación de valor. Pregunta qué paga ahora y muestra en qué es mejor tu oferta. Bajar el precio sin resistencia muestra desesperación.'
+          },
+          {
+            q: 'El cliente dice "déjame pensarlo y te llamo". ¿Qué haces?',
+            opts: ['Agradeces y esperas su llamada', 'Le preguntas qué duda específica tiene y agendas tú el próximo contacto', 'Le presionas para que decida ahora', 'Le mandas un mensaje de WhatsApp al rato'],
+            correct: 1,
+            explanation: '"Te llamo si me interesa" raramente sucede. Tu trabajo es identificar la duda real y agendar un follow-up concreto. Nunca dejes sin fecha de seguimiento.'
+          },
+          {
+            q: '¿Cuál de estas es una señal de que el cliente está listo para cerrar?',
+            opts: ['Te pregunta cuál es el número de cancelación', 'Pregunta "¿y si lo contrato, cuándo me lo instalan?"', 'Te dice que ya tiene internet y está bien', 'Pide que le mandes información por email'],
+            correct: 1,
+            explanation: 'Hablar en futuro sobre los detalles prácticos (instalación, fechas) es una señal clara de compra. En ese momento deja de explicar y pide la venta.'
+          },
+          {
+            q: 'En el Cierre por Alternativa, ¿cuál es el objetivo principal?',
+            opts: ['Dar más opciones para confundir al cliente', 'Cambiar la pregunta de ¿compras? a ¿cuál compras?', 'Mostrar que tienes muchos productos', 'Que el cliente elija el más barato'],
+            correct: 1,
+            explanation: 'El cierre por alternativa asume que la venta ya ocurrirá y solo pone al cliente a elegir entre opciones. Es psicológicamente efectivo porque el cliente deja de decidir "si" compra.'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'sistema',
+    icon: '🖥️',
+    color: 'c-purple',
+    tag: 'tag-purple',
+    tagText: 'Herramientas',
+    title: 'Domina el Sistema',
+    desc: 'Cómo usar leads, call center, órdenes y seguimientos para vender más.',
+    xp: 120,
+    lessons: [
+      {
+        id: 'leads-sistema',
+        title: 'Gestionar tus leads',
+        type: 'lesson',
+        duration: '5 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '📋',
+            title: 'Gestionar tus Leads',
+            subtitle: 'Un lead bien gestionado puede ser la diferencia entre una venta y un cliente perdido.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Qué es un lead?</h3>
+              <p>Un lead es un prospecto — alguien que podría convertirse en cliente. En Izzy, los leads se guardan en el módulo <strong>Leads</strong> con toda su información de contacto.</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">1</div><div class="step-lesson-text"><strong>Crea el lead</strong> — nombre, teléfono, dirección, origen. Mientras más completo, mejor.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">2</div><div class="step-lesson-text"><strong>Asigna un estado</strong> — Nuevo, Contactado, Follow-up, Calificado, etc.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">3</div><div class="step-lesson-text"><strong>Registra cada interacción</strong> — en el Call Center anota el resultado de cada llamada.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">4</div><div class="step-lesson-text"><strong>Programa follow-ups</strong> — nunca dejes un lead sin fecha de próximo contacto.</div></step-lesson></div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Los estados del lead</h3>
+              <div class="comparison-table">
+                <div class="ct-row header grid-3">
+                  <div class="ct-cell">Estado</div>
+                  <div class="ct-cell">Significado</div>
+                  <div class="ct-cell">Siguiente paso</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Nuevo</div>
+                  <div class="ct-cell dim">Sin contactar aún</div>
+                  <div class="ct-cell">Llamar hoy</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">No Contactado</div>
+                  <div class="ct-cell dim">Intentado, sin respuesta</div>
+                  <div class="ct-cell">Re-intentar en 2h</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Contactado</div>
+                  <div class="ct-cell dim">Habló pero no decidió</div>
+                  <div class="ct-cell">Follow-up programado</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Calificado</div>
+                  <div class="ct-cell dim">Interesado en comprar</div>
+                  <div class="ct-cell">Cerrar / cotización</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Vendido</div>
+                  <div class="ct-cell highlight">¡Venta cerrada!</div>
+                  <div class="ct-cell">Crear orden</div>
+                </div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Errores que cuestan ventas</h3>
+              <div class="info-box red"><div class="info-icon">❌</div><div class="info-text"><strong>No registrar el resultado de cada llamada.</strong> Si no lo anotas, no existe. La próxima vez que llames al cliente no sabrás de qué hablaron.</div></div>
+              <div class="info-box red"><div class="info-icon">❌</div><div class="info-text"><strong>No programar follow-up.</strong> Los agentes top hacen seguimiento 5-7 veces antes de rendirse. La mayoría de agentes se rinden al 2do intento.</div></div>
+              <div class="info-box red"><div class="info-icon">❌</div><div class="info-text"><strong>Dejar leads en estado "Nuevo" por semanas.</strong> Un lead viejo es un lead frío. Contacta dentro de las primeras 24 horas.</div></div>
+              <div class="info-box green"><div class="info-icon">✅</div><div class="info-text"><strong>Regla de oro:</strong> Cada lead debe tener un siguiente paso programado. Si no tiene follow-up, está muerto.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>El Call Center — tu herramienta de productividad</h3>
+              <p>El módulo Call Center te muestra todos tus leads organizados por prioridad: seguimientos vencidos, seguimientos de hoy, y leads nuevos.</p>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">1</div><div class="step-lesson-text"><strong>Abre un lead</strong> — ves toda su información y historial de llamadas.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">2</div><div class="step-lesson-text"><strong>Llama al cliente</strong> — desde tu celular o el sistema.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">3</div><div class="step-lesson-text"><strong>Registra el resultado</strong> — contestó, no contestó, voicemail, interesado, etc.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">4</div><div class="step-lesson-text"><strong>Programa el siguiente contacto</strong> — fecha y hora exacta del próximo intento.</div></step-lesson></div>
+              </div>
+              <div class="info-box blue"><div class="info-icon">📊</div><div class="info-text">Los KPIs en la parte superior del Call Center te muestran cuántas llamadas hiciste hoy y cuántos seguimientos tienes pendientes.</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'orden',
+        title: 'Crear una orden correctamente',
+        type: 'lesson',
+        duration: '4 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '📝',
+            title: 'Crear una Orden',
+            subtitle: 'Una orden bien hecha = comisión garantizada. Una orden incompleta = retrasos.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>¿Cuándo se crea una orden?</h3>
+              <p>Creas una orden cuando el cliente confirma que quiere el servicio y tienes todos sus datos. La orden es la documentación oficial de la venta.</p>
+              <div class="info-box gold"><div class="info-icon">⚠️</div><div class="info-text">No crees órdenes especulativas o sin confirmación del cliente. Afecta tus métricas y puede generar chargebacks.</div></div>
+              <h3 style="margin-top:16px;">Información necesaria para la orden</h3>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Nombre completo</strong> del titular del servicio</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Dirección exacta</strong> de instalación (con apartamento si aplica)</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Teléfono</strong> de contacto</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Carrier y plan</strong> seleccionados</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">✓</div><div class="step-lesson-text"><strong>Fecha de instalación</strong> acordada</div></step-lesson></div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>El módulo de Órdenes</h3>
+              <p>Ve a <strong>Órdenes</strong> en el menú. Desde ahí puedes ver el estado de todas tus órdenes activas.</p>
+              <div class="comparison-table">
+                <div class="ct-row header grid-3">
+                  <div class="ct-cell">Estado</div>
+                  <div class="ct-cell">Significado</div>
+                  <div class="ct-cell">Acción</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Pendiente</div>
+                  <div class="ct-cell dim">En proceso</div>
+                  <div class="ct-cell">Esperar</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Instalada</div>
+                  <div class="ct-cell highlight">Completada</div>
+                  <div class="ct-cell">Comisión generada</div>
+                </div>
+                <div class="ct-row grid-3">
+                  <div class="ct-cell">Cancelada</div>
+                  <div class="ct-cell dim">No se instaló</div>
+                  <div class="ct-cell">Analizar causa</div>
+                </div>
+              </div>
+              <div class="info-box green"><div class="info-icon">💡</div><div class="info-text">Da seguimiento a tus órdenes pendientes. A veces el cliente cancela la cita — un recordatorio tuyo el día anterior puede salvar la instalación.</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'quiz-sistema',
+        title: 'Quiz: Domina el Sistema',
+        type: 'quiz',
+        duration: '2 min',
+        xp: 60,
+        questions: [
+          {
+            q: '¿Cuánto tiempo máximo debería pasar antes de contactar un lead nuevo?',
+            opts: ['Una semana', '3 días', '24 horas', 'Cuando tengas tiempo'],
+            correct: 2,
+            explanation: 'Los leads deben contactarse dentro de las primeras 24 horas. Un lead nuevo enfría rápido — entre más rápido lo contactas, más interés tiene.'
+          },
+          {
+            q: '¿Qué debes hacer siempre al terminar una llamada con un lead que no compró?',
+            opts: ['Marcarlo como "No interesado" y seguir', 'Programar una fecha de próximo contacto', 'Borrarlo del sistema', 'Enviarlo a otro agente'],
+            correct: 1,
+            explanation: 'Todo lead debe tener un siguiente paso programado. La mayoría de ventas se cierran al 5to o 6to contacto. Sin follow-up, ese lead está perdido.'
+          },
+          {
+            q: '¿Cuándo debes crear una orden en el sistema?',
+            opts: ['Cuando crees que el cliente va a comprar', 'Cuando el cliente muestra interés', 'Cuando el cliente confirma que quiere el servicio', 'Antes de llamar al cliente'],
+            correct: 2,
+            explanation: 'Solo crea órdenes con confirmación real del cliente. Las órdenes especulativas generan chargebacks y afectan tus métricas.'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'crecimiento',
+    icon: '🚀',
+    color: 'c-gold',
+    tag: 'tag-gold',
+    tagText: 'Carrera',
+    title: 'Plan de Crecimiento',
+    desc: 'Novato → Agente → Supervisor → Director. Tu roadmap completo.',
+    xp: 80,
+    lessons: [
+      {
+        id: 'roadmap',
+        title: 'Tu camino de Novato a Director',
+        type: 'lesson',
+        duration: '4 min',
+        slides: [
+          {
+            type: 'intro',
+            emoji: '🏆',
+            title: 'Tu Camino de Carrera',
+            subtitle: '4 rangos, comisiones crecientes, ingresos organizacionales.'
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>Los 4 rangos del plan</h3>
+              <div class="steps-lesson">
+                <div class="step-lesson"><div class="step-lesson-num">🌱</div><div class="step-lesson-text"><strong>Novato</strong> — Comienzas aquí. Comisiones base: $25–$50 residencial, $75–$150 comercial.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">⭐</div><div class="step-lesson-text"><strong>Agente</strong> (10 instalaciones acumuladas) — Comisiones: $40–$100 residencial, $120–$300 comercial.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">🏆</div><div class="step-lesson-text"><strong>Supervisor</strong> (20 inst. + 5 agentes activos) — $50–$150 residencial, $150–$450 comercial + overrides del equipo.</div></div>
+                <div class="step-lesson"><div class="step-lesson-num">👑</div><div class="step-lesson-text"><strong>Director</strong> (1 supervisor activo + 25 inst. org/mes) — Todo lo anterior + bono director por instalación de la organización.</div></div>
+              </div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>El sistema promueve automáticamente</h3>
+              <p>No tienes que pedir que te asciendan. El sistema verifica automáticamente si cumples los requisitos y actualiza tu rango.</p>
+              <div class="info-box gold"><div class="info-icon">🎯</div><div class="info-text"><strong>Ruta más rápida a Supervisor:</strong> Haz 20 ventas en las primeras 4-6 semanas y trae 5 personas a tu equipo desde el inicio.</div></div>
+              <div class="info-box blue"><div class="info-icon">💡</div><div class="info-text">Puedes ver tu progreso de rango en tiempo real en el módulo <strong>Compensación → Mi Nivel</strong>.</div></div>
+              <div class="info-box purple"><div class="info-icon">👥</div><div class="info-text">Para llegar a Supervisor necesitas <strong>reclutar</strong>. Empieza a traer personas a tu equipo desde el día 1, no cuando ya tengas 20 ventas.</div></div>
+            `
+          },
+          {
+            type: 'content',
+            html: `
+              <h3>El poder de los overrides (Supervisor+)</h3>
+              <p>Cuando llegas a Supervisor, empiezas a ganar un porcentaje de las ventas de los agentes en tu equipo — sin hacer esas ventas tú mismo.</p>
+              <div class="info-box green"><div class="info-icon">💰</div><div class="info-text">Si tienes 5 agentes que promedian 8 ventas Estándar al mes cada uno = 40 ventas organizacionales. Tus overrides sobre esas 40 ventas se suman a tus comisiones personales.</div></div>
+              <div class="info-box blue"><div class="info-icon">📈</div><div class="info-text">A Director, recibes además un bono por <em>cada instalación</em> de tu organización completa: $2–$20 residencial, $6–$60 comercial según categoría.</div></div>
+            `
+          }
+        ]
+      },
+      {
+        id: 'tutorial-link',
+        title: 'Tutorial completo del Plan de Crecimiento',
+        type: 'external',
+        duration: '8 min',
+        href: 'tutorial-crecimiento.html'
+      }
+    ]
+  }
+];
+
+// ──────────────────────────────────────────────
+// PROGRESS STATE
+// ──────────────────────────────────────────────
+const PROGRESS_KEY = 'izzy_academy_progress';
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch { return {}; }
+}
+
+function saveProgress(progress) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch {}
+}
+
+function markLessonDone(courseId, lessonId) {
+  const p = loadProgress();
+  if (!p[courseId]) p[courseId] = {};
+  p[courseId][lessonId] = true;
+  saveProgress(p);
+}
+
+function isLessonDone(courseId, lessonId) {
+  const p = loadProgress();
+  return !!(p[courseId] && p[courseId][lessonId]);
+}
+
+function getCourseProgress(course) {
+  const p = loadProgress();
+  const done = course.lessons.filter(l => p[course.id] && p[course.id][l.id]).length;
+  return { done, total: course.lessons.length, pct: Math.round(done / course.lessons.length * 100) };
+}
+
+function getOverallStats() {
+  const p = loadProgress();
+  let totalLessons = 0, doneLessons = 0, doneXP = 0, doneCourses = 0;
+  COURSES.forEach(c => {
+    c.lessons.forEach(l => {
+      totalLessons++;
+      if (p[c.id] && p[c.id][l.id]) {
+        doneLessons++;
+        doneXP += (l.xp || 30);
+      }
+    });
+    const prog = getCourseProgress(c);
+    if (prog.pct === 100) doneCourses++;
+  });
+  return { totalLessons, doneLessons, doneXP, doneCourses, pct: Math.round(doneLessons / totalLessons * 100) };
+}
+
+// ──────────────────────────────────────────────
+// RENDER
+// ──────────────────────────────────────────────
+function renderAll() {
+  const stats = getOverallStats();
+  document.getElementById('courseDoneCount').textContent = stats.doneCourses;
+  document.getElementById('lessonDoneCount').textContent = stats.doneLessons;
+  document.getElementById('totalXP').textContent = stats.doneXP;
+  document.getElementById('overallBar').style.width = stats.pct + '%';
+  document.getElementById('overallPct').textContent = stats.pct + '%';
+
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  COURSES.forEach((course, ci) => {
+    const prog = getCourseProgress(course);
+    const isDone = prog.pct === 100;
+
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.innerHTML = `
+      <div class="course-header" onclick="toggleCourse('cl-${course.id}', 'chev-${course.id}')">
+        <div class="course-icon-wrap ${course.color}">${course.icon}</div>
+        <div class="course-meta">
+          <h3>${course.title}</h3>
+          <p>${course.desc}</p>
+          <div class="tags">
+            <span class="tag ${course.tag}">${course.tagText}</span>
+            <span class="tag tag-blue">${course.lessons.length} lecciones</span>
+            <span class="tag tag-blue">${course.xp} XP</span>
+          </div>
+        </div>
+        <div class="course-badge">
+          <div class="badge-pct">${prog.pct}%</div>
+          ${isDone ? '<div class="badge-done">✓ Listo</div>' : ''}
+          <div class="chevron" id="chev-${course.id}">⌄</div>
+        </div>
+      </div>
+      <div class="course-progress-bar"><div class="course-progress-fill" style="width:${prog.pct}%"></div></div>
+      <div class="lessons-list ${ci === 0 ? 'open' : ''}" id="cl-${course.id}">
+        ${course.lessons.map((lesson, li) => {
+          const done = isLessonDone(course.id, lesson.id);
+          return `
+            <div class="lesson-row" onclick="openLesson('${course.id}', ${li})">
+              <div class="lesson-num ${done ? 'done' : ''}">${done ? '✓' : (li + 1)}</div>
+              <div class="lesson-info">
+                <div class="ln">${lesson.title}</div>
+                <div class="lt">${lesson.duration || '5 min'}</div>
+              </div>
+              <span class="lesson-type ${lesson.type === 'quiz' ? 'lt-quiz' : lesson.type === 'external' ? 'lt-external' : 'lt-lesson'}">${lesson.type === 'quiz' ? '📝 Quiz' : lesson.type === 'external' ? '🔗 Tutorial' : '📖 Lección'}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+    main.appendChild(card);
+
+    if (ci === 0) {
+      document.getElementById(`chev-${course.id}`).classList.add('open');
+    }
+  });
+}
+
+function toggleCourse(listId, chevId) {
+  const list = document.getElementById(listId);
+  const chev = document.getElementById(chevId);
+  const open = list.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+// ──────────────────────────────────────────────
+// MODAL / LESSON VIEWER
+// ──────────────────────────────────────────────
+let currentCourse = null;
+let currentLesson = null;
+let currentSlide = 0;
+let quizState = {};
+
+function openLesson(courseId, lessonIdx) {
+  currentCourse = COURSES.find(c => c.id === courseId);
+  currentLesson = currentCourse.lessons[lessonIdx];
+
+  if (currentLesson.type === 'external') {
+    markLessonDone(currentCourse.id, currentLesson.id);
+    renderAll();
+    window.location.href = currentLesson.href;
+    return;
+  }
+
+  currentSlide = 0;
+  quizState = {};
+
+  document.getElementById('modalTitle').textContent = currentLesson.title;
+  document.getElementById('modalCourse').textContent = currentCourse.title;
+  renderSlide();
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalBody').scrollTop = 0;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function getSlides() {
+  if (currentLesson.type === 'quiz') {
+    return currentLesson.questions.map((q, i) => ({ type: 'quiz', index: i })).concat([{ type: 'quiz-result' }]);
+  }
+  return currentLesson.slides || [];
+}
+
+function renderSlide() {
+  const slides = getSlides();
+  const total = slides.length;
+  const slide = slides[currentSlide];
+
+  document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${total}`;
+  document.getElementById('modalProgressFill').style.width = ((currentSlide + 1) / total * 100) + '%';
+
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  btnPrev.style.display = currentSlide === 0 ? 'none' : 'block';
+  const isLast = currentSlide === total - 1;
+  btnNext.textContent = isLast ? '¡Completar lección!' : 'Siguiente →';
+  btnNext.className = 'btn-slide-next' + (isLast ? ' finish' : '');
+
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'slide active';
+
+  if (currentLesson.type === 'quiz') {
+    if (slide.type === 'quiz-result') {
+      const q = currentLesson.questions;
+      const correct = q.filter((_, i) => quizState[i] === currentLesson.questions[i].correct).length;
+      const pct = Math.round(correct / q.length * 100);
+      const pass = pct >= 70;
+      div.innerHTML = `
+        <div class="quiz-score">
+          <div class="qs-emoji">${pass ? '🎉' : '📚'}</div>
+          <h3>${pass ? '¡Excelente!' : 'Sigue practicando'}</h3>
+          <div class="qs-result ${pass ? 'pass' : 'fail'}">${correct}/${q.length} correctas</div>
+          <p>${pass ? 'Aprobaste el quiz. ¡Los conocimientos de esta lección son tuyos!' : 'Revisa las lecciones y vuelve a intentarlo. Necesitas 70% para aprobar.'}</p>
+          ${pass ? `<div class="cert-badge" style="margin-top:16px;"><div class="cb-emoji">🏅</div><h3>Quiz Completado</h3><p>+${currentLesson.xp || 50} XP ganados</p></div>` : ''}
+          ${!pass ? `<button class="btn-slide-next" style="margin-top:16px;width:100%" onclick="retryQuiz()">Reintentar Quiz</button>` : ''}
+        </div>
+      `;
+      if (pass) {
+        markLessonDone(currentCourse.id, currentLesson.id);
+        renderAll();
+      }
+    } else {
+      const qi = slide.index;
+      const q = currentLesson.questions[qi];
+      const answered = quizState[qi] !== undefined;
+      const letters = ['A','B','C','D'];
+      div.innerHTML = `
+        <div class="quiz-wrap">
+          <div class="quiz-q">${qi + 1}. ${q.q}</div>
+          <div class="quiz-options">
+            ${q.opts.map((opt, oi) => {
+              let cls = 'quiz-opt';
+              if (answered) {
+                cls += ' disabled';
+                if (oi === q.correct) cls += ' correct';
+                else if (quizState[qi] === oi) cls += ' wrong';
+              }
+              return `<div class="${cls}" onclick="selectQuizOpt(${qi}, ${oi})">
+                <div class="quiz-opt-letter">${letters[oi]}</div>
+                ${opt}
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="quiz-feedback ${answered ? 'show ' + (quizState[qi] === q.correct ? 'ok' : 'fail') : ''}">
+            <div>${quizState[qi] === q.correct ? '✅' : '❌'}</div>
+            <div>${q.explanation}</div>
+          </div>
+        </div>
+      `;
+      btnNext.disabled = !answered;
+      btnNext.style.opacity = answered ? '1' : '0.4';
+    }
+  } else {
+    const s = slide;
+    if (s.type === 'intro') {
+      div.innerHTML = `
+        <div class="slide-hero">
+          <div class="sh-emoji">${s.emoji}</div>
+          <h2>${s.title}</h2>
+          <p>${s.subtitle}</p>
+        </div>
+        <div class="info-box blue"><div class="info-icon">📖</div><div class="info-text">Esta lección tarda aprox. <strong>${currentLesson.duration}</strong>. Usa los botones para avanzar a tu propio ritmo.</div></div>
+      `;
+    } else {
+      div.innerHTML = s.html || '';
+    }
+  }
+
+  body.appendChild(div);
+  body.scrollTop = 0;
+}
+
+function selectQuizOpt(qi, oi) {
+  if (quizState[qi] !== undefined) return;
+  quizState[qi] = oi;
+  renderSlide();
+}
+
+function retryQuiz() {
+  quizState = {};
+  currentSlide = 0;
+  renderSlide();
+}
+
+function nextSlide() {
+  const slides = getSlides();
+  if (currentSlide < slides.length - 1) {
+    currentSlide++;
+    renderSlide();
+    document.getElementById('modalBody').scrollTop = 0;
+  } else {
+    // Complete lesson
+    if (currentLesson.type !== 'quiz') {
+      markLessonDone(currentCourse.id, currentLesson.id);
+      renderAll();
+    }
+    closeModal();
+  }
+}
+
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    renderSlide();
+    document.getElementById('modalBody').scrollTop = 0;
+  }
+}
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+renderAll();
+
+if (window.buildNav) {
+  buildNav({ activeSidebar: 'academy', tutorialHref: 'tutorial-crecimiento.html' });
+}
+</script>
+</body>
+</html>
