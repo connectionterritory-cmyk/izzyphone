@@ -71,7 +71,7 @@
     box-shadow: var(--shadow);
   }
   .filters-card { padding: 18px; display: grid; gap: 14px; }
-  .filters-row { display: grid; grid-template-columns: 1.6fr .9fr .9fr auto; gap: 12px; align-items: center; }
+  .filters-row { display: grid; grid-template-columns: 1.6fr .9fr .9fr auto; gap: 12px; align-items: end; }
   .search-input, .filter-select, .field-input, .field-textarea {
     width: 100%;
     border: 1.5px solid var(--border);
@@ -90,6 +90,8 @@
   }
   .field-textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
   .filter-select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #6d7f94 50%), linear-gradient(135deg, #6d7f94 50%, transparent 50%); background-position: calc(100% - 18px) calc(50% - 4px), calc(100% - 12px) calc(50% - 4px); background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+  .filter-label { display: flex; flex-direction: column; gap: 4px; }
+  .filter-label-text { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding-left: 4px; }
   .queue-tabs { display: flex; flex-wrap: wrap; gap: 10px; }
   .queue-chip {
     border: 1px solid var(--border);
@@ -339,30 +341,36 @@
     <section class="filters-card">
       <div class="filters-row">
         <input id="searchInput" class="search-input" type="text" placeholder="Buscar por nombre, teléfono o dirección">
-        <select id="statusFilter" class="filter-select">
-          <option value="">Todos los estados</option>
-          <option value="new">Nuevo</option>
-          <option value="not_contacted">No contactado</option>
-          <option value="contacted">Contactado</option>
-          <option value="follow_up">Follow-up</option>
-          <option value="qualified">Calificado</option>
-          <option value="quote_requested">Cotización pedida</option>
-          <option value="quote_pending">En cotización</option>
-          <option value="quoted_ready">Cotización lista</option>
-          <option value="not_interested">No interesado</option>
-          <option value="wrong_number">Número incorrecto</option>
-          <option value="sold">Vendido</option>
-        </select>
-        <select id="queueFilter" class="filter-select">
-          <option value="all">Toda la cola</option>
-          <option value="new">Nuevos</option>
-          <option value="not_contacted">No contactados</option>
-          <option value="due_today">Seguimientos de hoy</option>
-          <option value="overdue">Seguimientos vencidos</option>
-          <option value="follow_up">En follow-up</option>
-          <option value="qualified">Calificados</option>
-          <option value="quote_pending">En cotización</option>
-        </select>
+        <label class="filter-label">
+          <span class="filter-label-text">Estado</span>
+          <select id="statusFilter" class="filter-select">
+            <option value="">Todos los estados</option>
+            <option value="new">Nuevo</option>
+            <option value="not_contacted">No contactado</option>
+            <option value="contacted">Contactado</option>
+            <option value="follow_up">Follow-up</option>
+            <option value="qualified">Calificado</option>
+            <option value="quote_requested">Cotización pedida</option>
+            <option value="quote_pending">En cotización</option>
+            <option value="quoted_ready">Cotización lista</option>
+            <option value="not_interested">No interesado</option>
+            <option value="wrong_number">Número incorrecto</option>
+            <option value="sold">Vendido</option>
+          </select>
+        </label>
+        <label class="filter-label">
+          <span class="filter-label-text">Vista</span>
+          <select id="queueFilter" class="filter-select">
+            <option value="all">Toda la cola</option>
+            <option value="new">Nuevos</option>
+            <option value="not_contacted">No contactados</option>
+            <option value="due_today">Seguimientos de hoy</option>
+            <option value="overdue">Seguimientos vencidos</option>
+            <option value="follow_up">En follow-up</option>
+            <option value="qualified">Calificados</option>
+            <option value="quote_pending">En cotización</option>
+          </select>
+        </label>
         <button class="ghost-btn" type="button" onclick="refreshWorkspace()">Actualizar</button>
       </div>
       <div class="queue-tabs" id="queueTabs"></div>
