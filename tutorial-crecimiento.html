@@ -167,6 +167,327 @@
   .btn-blue { background:var(--blue); color:#fff; }
   .btn-outline { border:1.5px solid var(--blue); color:var(--blue); background:#fff; }
 
+  /* ICONOS Y EJEMPLOS PRÁCTICOS */
+  .ic { width:1.5em; height:1.5em; flex:none; color:var(--navy); --tone:var(--blue-mid); display:inline-block; vertical-align:middle; }
+  symbol .t { fill:var(--tone,#2d5fa6); fill-opacity:.22; }
+  .ic.sm { width:1.15em; height:1.15em; }
+  .ic.lg { width:2rem; height:2rem; }
+  .ic.xl { width:2.75rem; height:2.75rem; }
+  .ic.green { --tone:var(--green); }
+  .ic.gold { --tone:var(--gold); }
+  .ic.red { --tone:var(--red); }
+  .lvl-ic { position:absolute; right:18px; top:18px; }
+  .lvl { padding-right:68px; }
+  .ej { margin-top:20px; background:linear-gradient(180deg,#fff 0%,#f6f9fe 100%); border:1.5px solid var(--border); border-radius:var(--radius); padding:18px; display:grid; gap:16px; min-width:0; }
+  .ej > * { min-width:0; }
+  .ej-head { display:flex; align-items:center; gap:10px; }
+  .ej-head > div { min-width:0; flex:1 1 0; }
+  .ej-head .badge { max-width:100%; }
+  .avatar { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:var(--blue-soft); border:2px solid #fff; box-shadow:0 0 0 1.5px var(--border); flex:none; }
+  .badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; padding:5px 10px; border-radius:999px; background:var(--blue-soft); color:var(--blue); }
+  .badge.gold { background:var(--gold-soft); color:var(--gold); }
+  .badge.green { background:var(--green-soft); color:var(--green); }
+  .badge.red { background:var(--red-soft); color:var(--red); }
+  .ej-title { font-size:15px; font-weight:800; color:var(--navy); }
+  .ej-k { font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 4px; }
+  .ej-sit { font-size:16px; font-weight:600; color:var(--navy); }
+  .ej-calc { font-size:clamp(16px,4.6vw,20px); font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums; background:#eaf1fb; border-radius:12px; padding:10px 14px; }
+  .ej-res { display:flex; align-items:center; flex-wrap:wrap; gap:6px 12px; }
+  .ej-res strong { font-size:clamp(30px,9vw,44px); font-weight:800; color:var(--green); line-height:1; font-variant-numeric:tabular-nums; }
+  .ej-res span { font-size:15px; color:var(--text); flex:1 1 180px; }
+  .ej-res.neg strong { color:var(--red); }
+  .ej-note { font-size:12px; color:var(--muted); }
+  .ej-body { display:grid; gap:14px; }
+  .ej-art { display:grid; gap:12px; justify-items:center; }
+  .flow { list-style:none; display:flex; align-items:flex-start; justify-content:center; gap:0; width:100%; }
+  .flow li { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--muted); text-align:center; line-height:1.2; }
+  .flow li.sep { flex:0 0 14px; padding-top:13px; color:var(--blue-mid); }
+  .flow .fc .ic { width:24px; height:24px; }
+  .flow .fc { width:44px; height:44px; border-radius:14px; background:var(--blue-soft); display:flex; align-items:center; justify-content:center; }
+  .flow li.ok .fc { background:var(--green-soft); }
+  .flow li.ok { color:var(--green); }
+  .flow-cap { font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); text-align:center; }
+  .cmp { display:grid; gap:6px; justify-items:center; text-align:center; }
+  .cmp .lv { width:100%; border-radius:12px; padding:10px 12px; background:var(--blue-soft); display:flex; justify-content:space-between; align-items:center; gap:10px; font-weight:800; color:var(--navy); font-size:14px; }
+  .cmp .lv b { font-size:20px; color:var(--green); font-variant-numeric:tabular-nums; }
+  .cmp .asc { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--blue-mid); }
+  .cmp .diff { font-size:14px; font-weight:700; color:var(--green); }
+  .prog { display:grid; gap:6px; }
+  .prog-row { display:grid; grid-template-columns:1fr auto; gap:4px 10px; align-items:center; }
+  .prog-row .pl { font-size:13px; font-weight:800; color:var(--navy); }
+  .prog-row b { font-size:18px; color:var(--green); font-variant-numeric:tabular-nums; }
+  .prog-row .pb { grid-column:1 / -1; height:12px; border-radius:999px; background:#e1e9f5; overflow:hidden; }
+  .prog-row .pb i { display:block; height:100%; border-radius:999px; background:var(--blue-mid); }
+  .prog-row.top .pb i { background:var(--gold); }
+  .prog-arrow { display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--blue-mid); }
+  .prog-cap { font-size:14px; color:var(--muted); text-align:center; }
+  .path4 { list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .st { border:1.5px solid var(--border); border-radius:14px; padding:12px; background:#fff; display:grid; gap:6px; }
+  .st .ord { font-size:22px; font-weight:800; color:var(--navy); line-height:1; }
+  .st .sttier { font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+  .st dl { display:grid; gap:2px; font-size:13px; }
+  .st dl div { display:flex; justify-content:space-between; gap:8px; }
+  .st dt { color:var(--muted); font-weight:600; }
+  .st dd { font-weight:800; color:var(--navy); font-variant-numeric:tabular-nums; }
+  .st .fx { font-size:13px; font-weight:800; color:var(--green); font-variant-numeric:tabular-nums; border-top:1px dashed var(--border); padding-top:6px; }
+  .st.t2 { border-color:#8fc7bf; background:var(--green-soft); }
+  .st.t3 { border-color:#f3d28a; background:var(--gold-soft); }
+  .eq { display:flex; align-items:stretch; justify-content:center; gap:6px; }
+  .eq .op { align-self:center; font-size:22px; font-weight:800; color:var(--muted); }
+  .eq .q { flex:1 1 0; min-width:0; text-align:center; border-radius:14px; padding:10px 6px; background:var(--blue-soft); }
+  .eq .q b { display:block; font-size:clamp(20px,6vw,28px); font-weight:800; color:var(--navy); font-variant-numeric:tabular-nums; }
+  .eq .q span { font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+  .eq .q.bn { background:var(--green-soft); }
+  .eq .q.tt { background:var(--gold-soft); }
+  .eq .q.tt b { color:var(--gold); }
+  .tree2 { list-style:none; display:grid; gap:8px; margin:0; padding:0; }
+  .tree2 ul { list-style:none; display:grid; gap:8px; margin:8px 0 0 14px; padding:0 0 0 14px; border-left:2px solid var(--border); }
+  .tn { display:flex; align-items:center; gap:10px; border:2px solid var(--blue); border-radius:14px; padding:8px 12px; background:#fff; font-weight:800; color:var(--navy); font-size:14px; }
+  .tn small { display:block; font-weight:600; color:var(--muted); font-size:12px; }
+  .tn.ag { border-style:dashed; border-color:#94a3b8; }
+  .tn.pl { border:1.5px solid var(--border); background:#f7f9fd; font-weight:700; }
+  .tn.pl b { color:var(--green); margin-left:auto; white-space:nowrap; }
+  .tn.pl.no { border-color:#f1b5b5; background:var(--red-soft); }
+  .tn.pl.no b { color:var(--red); }
+  .rel2 { font-size:12px; font-weight:700; color:var(--muted); display:flex; align-items:center; gap:6px; margin:4px 0 0 14px; }
+  .sumbox { display:grid; gap:6px; font-size:15px; }
+  .sumbox p { color:var(--text); }
+  .points { list-style:none; display:grid; gap:6px; font-size:14px; color:var(--muted); }
+  .points li { display:flex; gap:8px; align-items:flex-start; }
+  .points svg { margin-top:2px; }
+  .rev { list-style:none; display:grid; gap:6px; }
+  .rev li { display:flex; justify-content:space-between; gap:10px; background:#fff; border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; font-size:14px; font-weight:700; color:var(--navy); }
+  .rev li b { color:var(--red); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .rev li.tot { background:var(--red-soft); border-color:#f1b5b5; }
+  .rev li.tot b { font-size:18px; }
+  .rev.pos li b { color:var(--green); }
+  .rev.pos li.tot { background:var(--green-soft); border-color:#8fc7bf; }
+  .stage { display:grid; gap:6px; justify-items:center; }
+  .stage .sg { display:flex; align-items:center; gap:8px; font-weight:800; font-size:14px; padding:8px 14px; border-radius:12px; background:var(--green-soft); color:var(--green); width:100%; justify-content:center; text-align:center; }
+  .stage .sg.bad { background:var(--red-soft); color:var(--red); }
+  .stage .sg.rv { background:var(--navy); color:#fff; }
+  .stage .st-arrow { font-size:12px; font-weight:700; color:var(--muted); display:flex; align-items:center; gap:6px; }
+  .meter { display:flex; height:24px; border-radius:999px; overflow:hidden; background:#e1e9f5; }
+  .meter i { display:block; height:100%; }
+  .meter .m1 { flex:60; background:var(--blue-mid); }
+  .meter .m2 { flex:90; background:var(--green); }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; font-weight:700; color:var(--navy); }
+  .legend span::before { content:''; display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:middle; }
+  .legend .l1::before { background:var(--blue-mid); }
+  .legend .l2::before { background:var(--green); }
+  .done { display:flex; align-items:center; gap:8px; font-weight:800; color:var(--green); font-size:15px; }
+  .scene-title { font-size:18px; margin:26px 0 4px; }
+  .scene-lead { color:var(--muted); font-size:15px; max-width:640px; }
+
+  /* TUTORIAL SECUENCIAL */
+  .lesson .badge { margin-bottom:10px; }
+  .qb { margin-top:26px; }
+  .q-title { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:800; color:var(--navy); margin-bottom:10px; }
+  .qn { min-width:30px; height:30px; padding:0 8px; border-radius:999px; background:var(--blue); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; flex:none; }
+  .qp { font-size:16px; color:var(--text); max-width:680px; }
+  .qh { font-size:12px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--blue-mid); margin:14px 0 8px; }
+  .tbl-link { margin-top:10px; font-weight:700; }
+  .tbl-link a { color:var(--blue-mid); }
+  .loop2 { margin-top:10px; font-weight:800; letter-spacing:.06em; color:var(--blue); font-size:14px; }
+  .here { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:12px; }
+  .here li { position:relative; background:#fff; border:1.5px solid var(--border); border-radius:14px; padding:10px 8px; text-align:center; display:grid; gap:4px; justify-items:center; }
+  .here .dot { width:28px; height:28px; border-radius:50%; background:#e1e9f5; color:var(--blue); font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .here .hl { font-size:12px; font-weight:700; color:var(--muted); line-height:1.25; }
+  .here li.on { border-color:var(--blue); background:var(--blue-soft); }
+  .here li.on .dot { background:var(--blue); color:#fff; }
+  .here li.on .hl { color:var(--navy); font-weight:800; }
+  .here .you { font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#fff; background:var(--blue); border-radius:999px; padding:2px 8px; }
+  .vflow { list-style:none; display:flex; flex-direction:column; align-items:flex-start; gap:2px; margin:0 0 12px; max-width:420px; }
+  .vflow li { display:flex; align-items:center; gap:12px; font-weight:800; font-size:14px; letter-spacing:.02em; text-transform:uppercase; color:var(--navy); }
+  .vflow li.va { padding-left:14px; color:var(--blue-mid); }
+  .vflow .fc { width:44px; height:44px; border-radius:14px; background:var(--blue-soft); display:flex; align-items:center; justify-content:center; flex:none; }
+  .vflow .fc .ic { width:24px; height:24px; }
+  .vflow li.ok .fc { background:var(--green-soft); }
+  .vflow li.ok { color:var(--green); }
+  .callout-soft { background:var(--blue-soft); color:var(--navy); border:1.5px solid #b7cdee; font-weight:600; margin-top:26px; }
+  .callout-soft strong { color:var(--navy); }
+  .ej-words { margin-top:6px; font-size:14px; color:var(--muted); }
+  .ej-why { margin-top:8px; font-size:15px; color:var(--navy); background:var(--green-soft); border-radius:10px; padding:8px 12px; }
+  .prog-why { text-align:center; font-size:15px; color:var(--navy); margin-top:4px; }
+  .chips3 { list-style:none; display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .chips3 li { font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; background:var(--green-soft); color:var(--green); border-radius:999px; padding:5px 10px; }
+  .cmp .lv small { display:block; font-weight:600; font-size:12px; color:var(--muted); }
+  .cmp .lv { text-align:left; }
+  .gloss { display:grid; gap:10px; }
+  .gloss .g { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 16px; }
+  .gloss dt { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); }
+  .gloss dd { margin-top:6px; font-size:15px; color:var(--muted); }
+  .tramos { list-style:none; display:grid; gap:6px; margin-bottom:6px; }
+  .tr { display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:center; border:1.5px solid var(--border); border-radius:14px; padding:12px 14px; background:#fff; }
+  .tr .trn { font-size:18px; font-weight:800; color:var(--navy); }
+  .tr .trd { font-size:15px; color:var(--muted); }
+  .tr .trd strong { display:block; color:var(--navy); }
+  .tr.t2 { border-color:#8fc7bf; background:var(--green-soft); }
+  .tr.t3 { border-color:#f3d28a; background:var(--gold-soft); }
+  .tr-go { display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--blue-mid); }
+  .path2 { grid-template-columns:1fr 1fr; }
+  .eq3 .q { display:grid; gap:6px; justify-items:center; align-content:center; padding:12px 6px; }
+  .eq3 .q b { font-size:clamp(12px,3.4vw,16px); line-height:1.25; }
+  .story { display:grid; gap:0; justify-items:start; margin:6px 0 18px; max-width:340px; }
+  .who { display:grid; gap:12px; margin-top:16px; }
+  .who .card h3 { font-size:16px; }
+
+
+  /* PASS VISUAL: lectura progresiva */
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .band { background:#fff; border-top:1px solid var(--border); border-bottom:1px solid var(--border); margin-top:40px; padding-bottom:36px; }
+  .band .card, .band .gloss .g { background:#f8fbff; }
+  .more { margin-top:16px; }
+  .more > .body { padding:0 14px 16px; }
+  .more > .body .twin { margin-top:0; }
+  .lesson .qb { margin-top:20px; }
+  .qnote { margin-top:8px; font-size:14px; color:var(--muted); background:var(--blue-soft); border-radius:10px; padding:8px 12px; max-width:680px; }
+  .qnote strong { color:var(--navy); }
+  /* camino: product + amount on each level, and the staircase */
+  .lvl-ex { margin-top:10px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--muted); font-weight:600; }
+  .lvl-ex b { font-size:26px; color:var(--green); font-weight:800; line-height:1; font-variant-numeric:tabular-nums; }
+  .stairs { margin-top:22px; background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:18px 14px 16px; box-shadow:var(--shadow); }
+  .stairs-k { font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--blue); text-align:center; margin-bottom:14px; }
+  .stairs-bars { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; align-items:end; }
+  .sb { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; text-align:center; min-width:0; }
+  .sb-amt { font-size:clamp(26px,8vw,40px); font-weight:800; color:var(--green); line-height:1; font-variant-numeric:tabular-nums; }
+  .sb-up { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:800; color:var(--green); background:var(--green-soft); border-radius:999px; padding:2px 8px; }
+  .sb-bar { display:block; width:100%; border-radius:12px 12px 4px 4px; background:linear-gradient(180deg,var(--blue-mid),var(--blue)); }
+  .sb.s3 .sb-bar { background:linear-gradient(180deg,#d98a1c,var(--gold)); }
+  .sb-name { font-size:12px; font-weight:800; color:var(--navy); line-height:1.2; min-height:2.4em; display:flex; align-items:flex-start; }
+  /* level snapshot: readable in 10 seconds */
+  .snap { margin-top:18px; background:linear-gradient(135deg,var(--navy),var(--blue)); color:#fff; border-radius:var(--radius); padding:16px 18px; display:grid; gap:8px; box-shadow:var(--shadow); }
+  .snap-lv { display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:#cfe0f7; }
+  .snap .ic { color:#fff; }
+  .snap-row { display:flex; align-items:center; flex-wrap:wrap; gap:6px 14px; }
+  .snap-pr { display:inline-flex; align-items:center; gap:8px; font-size:clamp(16px,4.6vw,20px); font-weight:800; }
+  .snap-ar { display:inline-flex; color:#9fc1ee; }
+  .snap-amt { font-size:clamp(46px,14vw,68px); font-weight:800; line-height:1; color:#fff; font-variant-numeric:tabular-nums; }
+  .snap-per { font-size:13px; color:#cfe0f7; font-weight:600; }
+  /* ticket: the example as a small illustrated receipt */
+  .ticketed { align-items:start; }
+  .tk { width:100%; display:grid; gap:0; justify-items:stretch; background:#fff; border:1.5px dashed #b7cdee; border-radius:18px; padding:14px; }
+  .tk-row { display:flex; align-items:center; gap:12px; border-radius:12px; padding:10px 12px; background:var(--blue-soft); }
+  .tk-who small, .tk-valid small { display:block; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .tk-who b { font-size:17px; color:var(--navy); }
+  .tk-t { flex:1; min-width:0; }
+  .tk-ic { margin-left:auto; }
+  .tk-valid { background:var(--green-soft); }
+  .tk-valid small { color:var(--green); font-size:13px; }
+  .tk-calc { display:grid; gap:4px; }
+  .tk-k { font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .tk-ar { display:flex; justify-content:center; color:var(--blue-mid); height:22px; align-items:center; }
+  .tk-res { display:grid; gap:2px; justify-items:center; text-align:center; background:var(--green-soft); border:2px solid #8fc7bf; border-radius:16px; padding:14px 12px; }
+  .tk-gen { font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--green); }
+  .tk-res strong { font-size:clamp(52px,16vw,76px); font-weight:800; line-height:1; color:var(--green); font-variant-numeric:tabular-nums; }
+  .tk-cap { font-size:13px; color:var(--text); }
+  .ticketed .ej-body { gap:10px; }
+  .ticketed .ej-sit { font-size:15px; font-weight:600; }
+  .ticketed .ej-words { font-size:13px; }
+  /* scan strips: topic + main number + takeaway */
+  .scan { margin:16px 0 4px; background:var(--surface); border:1.5px solid var(--border); border-left:6px solid var(--blue-mid); border-radius:var(--radius); padding:12px 16px; display:grid; gap:6px; box-shadow:var(--shadow); }
+  .scan-k { display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--blue); }
+  .scan-row { display:flex; flex-wrap:wrap; gap:6px 26px; align-items:flex-end; }
+  .scan-n small { display:block; font-size:12px; font-weight:700; color:var(--muted); }
+  .scan-n b { font-size:clamp(36px,10vw,52px); font-weight:800; line-height:1.05; color:var(--green); font-variant-numeric:tabular-nums; }
+  .scan-c { font-size:14px; color:var(--text); }
+  .scan[data-scan="chargeback"] { border-left-color:var(--gold); }
+  .scan[data-scan="chargeback"] .scan-n b { color:var(--navy); }
+  .scan[data-scan="maintenance"] .scan-n b, .scan[data-scan="leadership"] .scan-n b { color:var(--navy); }
+  /* glossary: chips visible, definitions in one accordion */
+  .gl-chips { list-style:none; display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px; }
+  .gl-chips li { font-size:13px; font-weight:700; color:var(--navy); background:var(--blue-soft); border-radius:999px; padding:6px 12px; }
+  /* 25/50 as a real staircase */
+  .tramos { gap:0; margin-top:18px; }
+  .tr { padding:14px 16px; }
+  .tr .trn { font-size:clamp(22px,6.4vw,30px); white-space:nowrap; }
+  .tramos .t1 { margin-right:34px; }
+  .tramos .t2 { margin-left:17px; margin-right:17px; }
+  .tramos .t3 { margin-left:34px; }
+  .tr-go { padding:6px 0; }
+  /* steps (#24, #25, #49, #50): the formula and the total lead */
+  .st .fx { font-size:14px; }
+  .st dl div:last-child dd { font-size:20px; color:var(--green); }
+  .st dl div:last-child dt { color:var(--navy); font-weight:800; }
+  /* big result block (leadership, chargeback) */
+  .bigres { display:grid; gap:2px; justify-items:center; text-align:center; background:var(--green-soft); border:2px solid #8fc7bf; border-radius:16px; padding:14px 12px; }
+  .bigres .br-who { font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--green); }
+  .bigres strong { font-size:clamp(52px,16vw,76px); font-weight:800; line-height:1; color:var(--green); font-variant-numeric:tabular-nums; }
+  .bigres .br-what { font-size:14px; color:var(--text); }
+  .bigres.calm { background:var(--gold-soft); border-color:#f3d28a; }
+  .bigres.calm .br-who { color:var(--gold); }
+  .bigres.calm strong { color:var(--navy); }
+  .lead-eq { margin:4px 0 6px; }
+  .lead-eq .q span { font-size:11px; }
+  .lead-x { text-align:center; font-weight:800; color:var(--navy); font-size:22px; margin:4px 0 10px; }
+  .lead-x span { background:var(--blue-soft); border-radius:10px; padding:2px 12px; }
+  .leadhero .tn.pl { background:#fff; }
+  /* pills for the product lists */
+  .pills .elig { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .pills .elig li { font-size:13px; font-weight:700; border-radius:999px; padding:5px 11px; background:var(--green-soft); color:var(--green); }
+  .pills .card:last-child .elig li { background:var(--red-soft); color:var(--red); }
+  /* chargeback: calm explanation + timeline */
+  .protect2 .stage { order:-1; }
+  .protect2 { display:grid; gap:18px; border-left-width:6px; border-left-color:var(--blue-mid); border-color:var(--border); }
+  .protect2 .months { background:var(--blue-soft); color:var(--blue); }
+  .stage.calm { align-content:start; }
+  .stage.calm .sg { background:var(--blue-soft); color:var(--navy); }
+  .stage.calm .sg.ok { background:var(--green-soft); color:var(--green); }
+  .stage.calm .sg.keep { background:var(--gold-soft); color:var(--gold); }
+  .stage.calm .sg.rv { background:var(--navy); color:#fff; }
+  .stage.calm .sg.rv .ic { color:#fff; }
+  .rev li b { color:var(--navy); }
+  .rev.pos li b { color:var(--green); }
+  .rev li.tot { background:var(--gold-soft); border-color:#f3d28a; }
+  .minis { display:grid; gap:10px; margin-top:16px; }
+  .minis .card { padding:14px 16px; }
+  .minis .card h3 { font-size:15px; }
+  /* compact vertical "how you earn" flow */
+  .vflow .fc { width:38px; height:38px; }
+  .vflow .fc .ic { width:22px; height:22px; }
+  .vflow li.va { padding-left:11px; height:12px; }
+  .vflow { gap:0; }
+
+  /* PASS VISUAL 2 */
+  .tk-lvl { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-top:1px; }
+  .duo { display:grid; gap:0; }
+  .eq-wide { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1.35fr) auto minmax(0,1fr); align-items:stretch; gap:6px; }
+  .eq-wide .q span { letter-spacing:.02em; font-size:11px; text-transform:none; font-weight:700; }
+  .receipt { width:100%; border-collapse:separate; border-spacing:0 6px; table-layout:fixed; font-size:14px; }
+  .receipt thead th { font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); padding:0 8px 2px; border:0; }
+  .receipt thead th:not(:first-child), .receipt td { text-align:right; }
+  .receipt th:first-child { width:50%; }
+  .receipt tbody th, .receipt tfoot th { text-align:left; font-weight:700; color:var(--navy); background:#fff; padding:10px 8px 10px 12px; border:1.5px solid var(--border); border-right:0; border-radius:10px 0 0 10px; }
+  .receipt td { font-weight:800; font-variant-numeric:tabular-nums; padding:10px 8px; background:#fff; border-top:1.5px solid var(--border); border-bottom:1.5px solid var(--border); color:var(--green); }
+  .receipt td.rv { color:var(--navy); border-right:1.5px solid var(--border); border-radius:0 10px 10px 0; }
+  .receipt tfoot th, .receipt tfoot td { background:var(--gold-soft); border-color:#f3d28a; }
+  .receipt tfoot td { font-size:17px; }
+  .receipt tbody tr:last-child td, .receipt tbody tr:last-child th { }
+  .ej-calc + .ej-calc { margin-top:8px; }
+  /* tighter vertical rhythm on small screens */
+  @media (max-width:767px) {
+    section { padding-top:32px; }
+    .band { margin-top:28px; padding-bottom:26px; }
+    .grid3 { gap:10px; }
+    .grid3 .card { padding:14px 16px; }
+    .grid3 .card .num { width:28px; height:28px; margin-bottom:6px; }
+    .tree2 ul { margin-left:6px; padding-left:10px; }
+    .tn { padding:7px 10px; gap:8px; font-size:13px; }
+    .tn.pl b { font-size:12px; }
+    .who { gap:8px; }
+    .who .card { padding:12px 14px; }
+    .who .card h3 { font-size:14px; margin-bottom:2px; }
+    .who .card p { font-size:14px; }
+    .points { font-size:13px; }
+    .ej { padding:14px; gap:12px; }
+    .ej-sit { font-size:15px; }
+    .duo .ej-sit { font-size:14px; font-weight:500; color:var(--muted); }
+    .tramos .t1, .tramos .t2, .tramos .t3 { margin-left:0; margin-right:0; }
+    .tramos .t2 { margin-left:14px; }
+    .tramos .t3 { margin-left:28px; }
+    .tr { grid-template-columns:72px 1fr; }
+    .receipt { font-size:13px; }
+  }
   @media (min-width:768px) {
     .wrap { padding:0 24px; }
     section { padding-top:60px; }
@@ -184,9 +505,58 @@
     .panel { padding:28px; }
     .tab { font-size:15px; }
   }
+  @media (min-width:768px) {
+    .ej { padding:24px; }
+    .ej.split { grid-template-columns:minmax(220px,260px) 1fr; align-items:center; gap:24px; }
+    .ej.split .ej-note, .ej .ej-note { grid-column:1 / -1; }
+    .path4 { grid-template-columns:repeat(4,1fr); }
+    .ej.cols2 { grid-template-columns:1fr 1fr; align-items:start; }
+    .gloss { grid-template-columns:1fr 1fr; }
+    .who { grid-template-columns:1fr 1fr 1fr; align-items:start; }
+    .tr { grid-template-columns:140px 1fr; }
+    .path2 { grid-template-columns:1fr 1fr; }
+    .here .hl { font-size:14px; }
+  }
   @media (min-width:1024px) {
     .twin { gap:20px; }
     .panel table { max-width:640px; }
+  }
+  @media (min-width:768px) {
+    .ej.ticketed { grid-template-columns:minmax(280px,330px) 1fr; gap:28px; }
+    .stairs { padding:22px 28px 20px; }
+    .stairs-bars { gap:18px; max-width:760px; margin:0 auto; }
+    .sb-bar { max-width:none; }
+    .snap { grid-template-columns:1fr; padding:20px 26px; }
+    .scan { grid-template-columns:auto 1fr; align-items:center; column-gap:26px; }
+    .scan-k { grid-column:1 / -1; }
+    .minis { grid-template-columns:repeat(3,1fr); }
+    .protect2 { grid-template-columns:1.25fr 1fr; align-items:start; }
+    .tramos { grid-template-columns:1fr 70px 1fr 70px 1fr; align-items:end; gap:0; }
+    .tramos .tr { grid-template-columns:1fr; text-align:left; align-content:start; margin:0; }
+    .tramos .t1 { min-height:130px; }
+    .tramos .t2 { min-height:170px; }
+    .tramos .t3 { min-height:210px; }
+    .tramos .tr-go { flex-direction:column; text-align:center; align-self:center; }
+    .vflow { flex-direction:row; flex-wrap:wrap; align-items:flex-start; max-width:none; gap:0; }
+    .vflow li { flex-direction:column; text-align:center; width:128px; gap:6px; }
+    .vflow li.va { width:30px; height:auto; padding:10px 0 0; justify-content:center; }
+    .vflow li.va svg { transform:rotate(-90deg); }
+    .lead-x { font-size:26px; }
+  }
+  @media (min-width:1024px) {
+    .duo { grid-template-columns:1fr 1fr; gap:20px; }
+    .duo .ej { margin-top:20px; }
+  }
+  @media (min-width:768px) {
+    .who { grid-template-columns:1fr 1fr; align-items:stretch; }
+    .who .why-byod { grid-column:1 / -1; }
+    .pills { align-items:start; }
+    .vflow { flex-wrap:nowrap; }
+    .vflow li { width:112px; font-size:13px; }
+    .vflow li.va { width:24px; }
+    .ej.ticketed { align-items:start; }
+    .protect2 .stage { order:0; align-self:center; gap:10px; }
+    .protect2 .stage .sg { padding:16px 18px; font-size:15px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior:auto; }
@@ -195,6 +565,30 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></symbol>
+<symbol id="i-training" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path class="t" d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6.5 11.8V16c0 1.4 2.5 2.8 5.5 2.8s5.5-1.4 5.5-2.8v-4.2M21.5 9.5v5"/></symbol>
+<symbol id="i-promotion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="12" r="9"/><path d="M12 16.5V8M8.2 11.8 12 8l3.8 3.8"/></symbol>
+<symbol id="i-supervisor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path class="t" d="M12 3 19 6v5.6c0 4.2-2.9 7.5-7 9.4-4.1-1.9-7-5.2-7-9.4V6z"/><path d="m8.7 11.2 3.3-3.2 3.3 3.2M8.7 15.2l3.3-3.2 3.3 3.2"/></symbol>
+<symbol id="i-team" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="9" cy="8.5" r="3"/><path d="M3.5 19.5c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M16.2 14.2c2.7.2 4.8 2.3 4.8 5"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path class="t" d="M4 11 12 4l8 7v8.5a.5.5 0 0 1-.5.5H15v-5.5H9V20H4.5a.5.5 0 0 1-.5-.5z"/></symbol>
+<symbol id="i-router" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect class="t" x="4" y="14" width="16" height="5.5" rx="1.8"/><path d="M8 14v-3.5M16 14v-3.5M9.4 7.8a3.8 3.8 0 0 1 5.2 0M7 5.3a7.2 7.2 0 0 1 10 0"/><circle cx="8" cy="16.8" r=".7" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-fiber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 3 14 2.5-7H21"/><circle class="t" cx="3" cy="12" r="1.3"/><circle class="t" cx="21" cy="12" r="1.3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="12" r="9"/><path d="m8 12.3 2.7 2.7L16 9.5"/></symbol>
+<symbol id="i-money" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="12" r="9"/><path d="M14.6 9.3c-.4-.9-1.4-1.4-2.6-1.4-1.5 0-2.6.8-2.6 1.9 0 2.8 5.3 1.4 5.3 4.2 0 1.2-1.2 2-2.8 2-1.3 0-2.3-.5-2.8-1.5M12 6.5v1.4M12 16.1v1.4"/></symbol>
+<symbol id="i-bonus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect class="t" x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M12 8v8M8 12h8"/></symbol>
+<symbol id="i-leadership" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="5.5" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M12 8v4M12 12H6v3.5M12 12h6v3.5"/></symbol>
+<symbol id="i-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="12" r="2.4"/><circle cx="5" cy="6" r="1.8"/><circle cx="19" cy="6" r="1.8"/><circle cx="5" cy="18" r="1.8"/><circle cx="19" cy="18" r="1.8"/><path d="m10.3 10.3-3.8-2.8M13.7 10.3l3.8-2.8M10.3 13.7l-3.8 2.8M13.7 13.7l3.8 2.8"/></symbol>
+<symbol id="i-goal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path class="t" d="M12 3 19 6v5.6c0 4.2-2.9 7.5-7 9.4-4.1-1.9-7-5.2-7-9.4V6z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/></symbol>
+<symbol id="i-reversal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 5 10l4 4"/><path d="M5 10h8.5a5 5 0 0 1 0 10H10"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect class="t" x="4" y="5.5" width="16" height="14.5" rx="2.2"/><path d="M8 3v4M16 3v4M4 10.5h16"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle class="t" cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m6 18 12-12"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect class="t" x="7.5" y="3" width="9" height="18" rx="2"/><path d="M11 18h2"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</defs></svg>
 <a class="skip" href="#main">Saltar al contenido</a>
 
 <header class="hero">
@@ -205,7 +599,7 @@
     <p class="sub">Tu crecimiento en IZZY Communications está basado en producción, desarrollo y resultados.</p>
     <div class="hero-cta">
       <a class="btn btn-light" href="#camino">Ver mi camino</a>
-      <a class="btn btn-ghost" href="#comisiones">Ver comisiones</a>
+      <a class="btn btn-ghost" href="#tablas">Ver comisiones</a>
     </div>
   </div>
 </header>
@@ -221,38 +615,300 @@
 
       <ol class="path">
         <li class="lvl l1">
+          <svg class="ic lg lvl-ic" aria-hidden="true" focusable="false"><use href="#i-training"/></svg>
           <h3>Agente en Entrenamiento</h3>
           <p>Aprende el sistema, domina los productos y empieza a producir.</p>
+          <p class="lvl-ex" data-amount="100"><span>AT&amp;T 500 Mbps</span><b>$100</b></p>
           <span class="chip">Nivel 1</span>
         </li>
         <li class="arrow" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </li>
         <li class="lvl l2">
+          <svg class="ic lg lvl-ic green" aria-hidden="true" focusable="false"><use href="#i-promotion"/></svg>
           <h3>Asociado</h3>
           <p>Con tu desarrollo accedes a un nivel superior de comisión.</p>
+          <p class="lvl-ex" data-amount="125"><span>AT&amp;T 500 Mbps</span><b>$125</b></p>
           <span class="chip">Nivel 2</span>
         </li>
         <li class="arrow" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </li>
         <li class="lvl l3">
+          <svg class="ic lg lvl-ic gold" aria-hidden="true" focusable="false"><use href="#i-supervisor"/></svg>
           <h3>Supervisor</h3>
           <p>Combina producción personal, desarrollo de agentes y liderazgo.</p>
+          <p class="lvl-ex" data-amount="150"><span>AT&amp;T 500 Mbps</span><b>$150</b></p>
           <span class="chip">Nivel 3</span>
         </li>
       </ol>
+
+      <div class="stairs" data-stairs="true" role="group" aria-label="La misma conexión de AT&amp;T 500 Mbps paga $100 como Agente en Entrenamiento, $125 como Asociado y $150 como Supervisor">
+        <p class="stairs-k">La misma venta, tres niveles · AT&amp;T 500 Mbps</p>
+        <ol class="stairs-bars">
+          <li class="sb" data-level="training" data-amount="100"><span class="sb-amt">$100</span><span class="sb-bar" style="height:84px" aria-hidden="true"></span><span class="sb-name">Agente en Entrenamiento</span></li>
+          <li class="sb s2" data-level="associate" data-amount="125" data-diff="25"><span class="sb-amt">$125</span><span class="sb-up"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-promotion"/></svg> +$25</span><span class="sb-bar" style="height:105px" aria-hidden="true"></span><span class="sb-name">Asociado</span></li>
+          <li class="sb s3" data-level="supervisor" data-amount="150" data-diff="25"><span class="sb-amt">$150</span><span class="sb-up"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-promotion"/></svg> +$25</span><span class="sb-bar" style="height:126px" aria-hidden="true"></span><span class="sb-name">Supervisor</span></li>
+        </ol>
+      </div>
       <p class="loop">APRENDE → PRODUCE → CRECE</p>
     </div>
   </section>
 
-  <!-- COMISIONES POR NIVEL -->
-  <section id="comisiones" aria-labelledby="com-t">
+  <!-- GLOSARIO -->
+  <section id="glosario" class="band" aria-labelledby="glo-t">
     <div class="wrap">
-      <span class="eyebrow">Comisión por conexión</span>
-      <h2 class="sec-title" id="com-t">Comisiones por nivel</h2>
-      <p class="sec-lead">Elige un nivel para ver la comisión de cada producto.</p>
+      <span class="eyebrow">Antes de empezar</span>
+      <h2 class="sec-title" id="glo-t">Palabras que debes conocer</h2>
+      <p class="sec-lead">Estas palabras aparecen en el tutorial. Cada una se explica de nuevo cuando la usamos.</p>
+      <ul class="gl-chips" aria-label="Las 11 palabras del glosario"><li>Conexión válida</li><li>Comisión base</li><li>Pool</li><li>Bono de producción</li><li>Bono de liderazgo</li><li>Chargeback</li><li>Base directa elegible</li><li>Mantenimiento</li><li>Producto</li><li>Tramo</li><li>Desarrollar a un agente</li></ul>
+      <details class="more" id="gl-det">
+        <summary>Ver el significado de cada palabra</summary>
+        <div class="body">
+      <dl class="gloss">
+        <div class="g" data-term="conexion-valida"><dt><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Conexión válida</span></dt><dd>Una conexión que cumple los requisitos del plan para generar compensación.</dd></div>
+        <div class="g" data-term="comision-base"><dt><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-money"/></svg><span>Comisión base</span></dt><dd>La cantidad correspondiente al producto y a tu nivel.</dd></div>
+        <div class="g" data-term="pool"><dt><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-team"/></svg><span>Pool</span></dt><dd>Las conexiones válidas que cuentan para medir la producción del Supervisor según las reglas del plan.</dd></div>
+        <div class="g" data-term="bono-produccion"><dt><svg class="ic lg gold" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg><span>Bono de producción</span></dt><dd>Compensación adicional que comienza al entrar en los tramos correspondientes.</dd></div>
+        <div class="g" data-term="bono-liderazgo"><dt><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-leadership"/></svg><span>Bono de liderazgo</span></dt><dd>$5 por conexión válida elegible de Internet según la estructura de liderazgo V1.</dd></div>
+        <div class="g" data-term="chargeback"><dt><svg class="ic lg red" aria-hidden="true" focusable="false"><use href="#i-reversal"/></svg><span>Chargeback</span></dt><dd>Reversión de compensación relacionada con una conexión que no cumple el mínimo requerido de permanencia.</dd></div>
+        <div class="g" data-term="base-directa"><dt><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-network"/></svg><span>Base directa elegible</span></dt><dd>Los agentes que desarrollas directamente y que todavía no son Supervisores.</dd></div>
+        <div class="g" data-term="mantenimiento"><dt><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg><span>Mantenimiento</span></dt><dd>La referencia de 150 conexiones válidas por trimestre que se usa para el Supervisor.</dd></div>
+        <div class="g" data-term="producto"><dt><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg><span>Producto</span></dt><dd>El servicio que vendes. Por ejemplo, AT&amp;T 500 Mbps es un plan de Internet; Mbps y Gig indican su velocidad. AT&amp;T Air también es Internet para el hogar. AT&amp;T Celular + Línea y AT&amp;T BYOD (el cliente trae su propio dispositivo) son servicios de celular.</dd></div>
+        <div class="g" data-term="tramo"><dt><svg class="ic lg gold" aria-hidden="true" focusable="false"><use href="#i-goal"/></svg><span>Tramo</span></dt><dd>Un grupo de conexiones de tu pool: de la 1 a la 24, de la 25 a la 49 y de la 50 en adelante.</dd></div>
+        <div class="g" data-term="desarrollar"><dt><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-promotion"/></svg><span>Desarrollar a un agente</span></dt><dd>Reclutarlo y tenerlo como tu agente directo.</dd></div>
+      </dl>
+        </div>
+      </details>
+    </div>
+  </section>
 
+
+  <!-- NIVEL 1 -->
+  <section id="nivel-1" class="lesson" aria-labelledby="n1-t">
+    <div class="wrap">
+      <span class="badge"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-training"/></svg> Nivel 1 — Agente en Entrenamiento</span>
+      <h2 class="sec-title" id="n1-t">Este es tu punto de partida</h2>
+      <p class="sec-lead">Aquí aprendes cómo funciona una comisión, paso a paso, con un ejemplo real.</p>
+      <div class="snap" data-snap="training" data-product="AT&amp;T 500 Mbps" data-amount="100" role="group" aria-label="Agente en Entrenamiento: AT&amp;T 500 Mbps paga $100 por conexión válida">
+        <span class="snap-lv"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-training"/></svg> Agente en Entrenamiento</span>
+        <span class="snap-row"><span class="snap-pr"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg><span>AT&amp;T 500 Mbps</span></span><span class="snap-ar" aria-hidden="true"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-right"/></svg></span><b class="snap-amt">$100</b></span>
+        <span class="snap-per">por conexión válida</span>
+      </div>
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">1</span><span>¿Dónde estoy?</span></h3>
+          <p class="qp">Cuando comienzas en IZZY Communications, empiezas como Agente en Entrenamiento. Es el primer nivel del camino.</p>
+          <ol class="here" aria-label="Tu posición en el camino: nivel 1 de 3"><li class="on"><span class="dot">1</span><span class="hl">Agente en Entrenamiento</span><span class="you">Estás aquí</span></li><li><span class="dot">2</span><span class="hl">Asociado</span></li><li><span class="dot">3</span><span class="hl">Supervisor</span></li></ol>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">2</span><span>¿Qué tengo que hacer?</span></h3>
+          <p class="qp">Tu primera etapa es aprender el sistema, dominar los productos y comenzar a producir. <strong>Producir</strong> significa lograr conexiones válidas.</p>
+          <p class="qh">¿Cómo ganas?</p>
+          <ol class="vflow" aria-label="Cómo ganas una comisión: tú realizas la venta, el cliente recibe el servicio, la conexión es válida y recibes la comisión">
+            <li><span class="fc"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-agent"/></svg></span><span class="vt">Tú</span></li>
+            <li class="va" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></li>
+            <li><span class="fc"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-fiber"/></svg></span><span class="vt">Realizas la venta</span></li>
+            <li class="va" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></li>
+            <li><span class="fc"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span><span class="vt">El cliente recibe el servicio</span></li>
+            <li class="va" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></li>
+            <li class="ok"><span class="fc"><svg class="ic green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span><span class="vt">La conexión es válida</span></li>
+            <li class="va" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></li>
+            <li class="ok"><span class="fc"><svg class="ic green" aria-hidden="true" focusable="false"><use href="#i-money"/></svg></span><span class="vt">Recibes la comisión</span></li>
+          </ol>
+          <p class="qp">Realizas una conexión, la conexión es validada y recibes la comisión correspondiente al producto.</p>
+          <p class="qnote"><strong>Conexión válida:</strong> una conexión que cumple los requisitos del plan para generar compensación.</p>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">3</span><span>¿Cuánto paga?</span></h3>
+          <p class="qp">Cada producto paga una cantidad fija que depende de tu nivel. A esa cantidad se le llama <strong>comisión base</strong>. En este nivel, por ejemplo, una conexión válida de AT&amp;T 500 Mbps (un plan de Internet) paga $100.</p>
+          <p class="tbl-link"><a href="#tablas">Ver la tabla completa de comisiones →</a></p>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">4–6</span><span>Ejemplo real: la historia de María</span></h3>
+
+        <article class="ej split ticketed" data-ej="level-training" data-level="training" data-product="AT&amp;T 500 Mbps" data-qty="1" data-unit="100" data-total="100" aria-label="Ejemplo real: María — Agente en Entrenamiento">
+          <div class="ej-art">
+            <div class="tk">
+              <div class="tk-row tk-who"><span class="avatar"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-agent"/></svg></span><span class="tk-t"><small>María vende</small><b>AT&amp;T 500 Mbps</b><span class="tk-lvl">como Agente en Entrenamiento</span></span><span class="tk-ic"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg></span></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-row tk-valid"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span><small>Conexión válida</small></span></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-row tk-calc"><small class="tk-k">¿Cómo se calcula?</small><p class="ej-calc">1 conexión × $100 = $100</p></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-res"><small class="tk-k">¿Cuánto ganaría en este ejemplo?</small><span class="tk-gen">María genera</span><strong>$100</strong><span class="tk-cap">En este ejemplo, María genera $100 de comisión base.</span></div>
+            </div>
+          </div>
+          <div class="ej-body">
+            <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">María es nueva en IZZY Communications. María vende AT&amp;T 500 Mbps, un plan de Internet, y la conexión es válida. La comisión de ese producto, en este nivel, es $100.</p></div>
+            <p class="ej-words">1 conexión válida de AT&amp;T 500 Mbps × $100 de comisión = $100</p>
+            
+          </div>
+          <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+        </article>
+
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">7</span><span>¿Cómo avanzo al siguiente nivel?</span></h3>
+          <p class="qp">Consulta con tu Supervisor los requisitos vigentes de ascenso.</p>
+          <p class="loop2">APRENDE → PRODUCE → CRECE</p>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- NIVEL 2 -->
+  <section id="nivel-2" class="lesson band" aria-labelledby="n2-t">
+    <div class="wrap">
+      <span class="badge green"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-promotion"/></svg> Nivel 2 — Asociado</span>
+      <h2 class="sec-title" id="n2-t">Ahora María avanzó a Asociado</h2>
+      <p class="sec-lead">Seguimos con la historia de María. Fíjate qué cambia y qué no cambia.</p>
+      <div class="snap" data-snap="associate" data-product="AT&amp;T 500 Mbps" data-amount="125" role="group" aria-label="Asociado: AT&amp;T 500 Mbps paga $125 por conexión válida">
+        <span class="snap-lv"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-promotion"/></svg> Asociado</span>
+        <span class="snap-row"><span class="snap-pr"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg><span>AT&amp;T 500 Mbps</span></span><span class="snap-ar" aria-hidden="true"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-right"/></svg></span><b class="snap-amt">$125</b></span>
+        <span class="snap-per">por conexión válida</span>
+      </div>
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">1</span><span>¿Dónde estoy?</span></h3>
+          <p class="qp">Asociado es el segundo nivel del camino.</p>
+          <ol class="here" aria-label="Tu posición en el camino: nivel 2 de 3"><li><span class="dot">1</span><span class="hl">Agente en Entrenamiento</span></li><li class="on"><span class="dot">2</span><span class="hl">Asociado</span><span class="you">Estás aquí</span></li><li><span class="dot">3</span><span class="hl">Supervisor</span></li></ol>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">2</span><span>¿Qué tengo que hacer?</span></h3>
+          <p class="qp">Sigues produciendo conexiones válidas y desarrollando tu conocimiento. A medida que avanzas en tu desarrollo, puedes acceder a un nivel superior de comisión.</p>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">3</span><span>¿Cuánto paga?</span></h3>
+          <p class="qp">La misma conexión paga más. AT&amp;T 500 Mbps paga $100 como Agente en Entrenamiento y $125 como Asociado.</p>
+          <p class="tbl-link"><a href="#tablas">Ver la tabla completa de comisiones →</a></p>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">4–6</span><span>Ejemplo real: María como Asociado</span></h3>
+
+        <article class="ej split ticketed" data-ej="level-associate" data-level="associate" data-product="AT&amp;T 500 Mbps" data-qty="1" data-unit="125" data-total="125" aria-label="Ejemplo real: María — Asociado">
+          <div class="ej-art">
+            <div class="tk">
+              <div class="tk-row tk-who"><span class="avatar"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-agent"/></svg></span><span class="tk-t"><small>María vende</small><b>AT&amp;T 500 Mbps</b><span class="tk-lvl">como Asociado</span></span><span class="tk-ic"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg></span></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-row tk-valid"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span><small>Conexión válida</small></span></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-row tk-calc"><small class="tk-k">¿Cómo se calcula?</small><p class="ej-calc">1 conexión × $125 = $125</p></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-res"><small class="tk-k">¿Cuánto ganaría en este ejemplo?</small><span class="tk-gen">María genera</span><strong>$125</strong><span class="tk-cap">En este ejemplo, María genera $125 de comisión base.</span></div>
+            </div>
+          </div>
+          <div class="ej-body">
+            <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">Ahora María avanzó a Asociado y realiza la misma conexión válida de AT&amp;T 500 Mbps.</p><p class="ej-why"><strong>El producto no cambió. Lo que cambió fue el nivel de María.</strong></p></div>
+            <p class="ej-words">1 AT&amp;T 500 × $125 de comisión de Asociado = $125</p>
+            <div class="cmp" data-compare="training-associate" data-from="100" data-to="125" data-diff="25">
+              <div class="lv"><span>María · Agente en Entrenamiento<small>$100 por AT&amp;T 500</small></span><b>$100</b></div>
+              <div class="asc" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> Ascenso</div>
+              <div class="lv"><span>María · Asociado<small>$125 por la misma conexión</small></span><b>$125</b></div>
+              <p class="diff">Diferencia: +$25 por la misma conexión válida.</p>
+              <ul class="chips3" aria-label="Qué cambió"><li>Misma conexión</li><li>Nuevo nivel</li><li>Mayor comisión</li></ul>
+              <p class="ej-note">Comparación de las comisiones V1; no es un ingreso garantizado.</p>
+            </div>
+          </div>
+          <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+        </article>
+
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">7</span><span>¿Cómo avanzo al siguiente nivel?</span></h3>
+          <p class="qp">Consulta con tu Supervisor los requisitos vigentes de ascenso.</p>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- NIVEL 3 -->
+  <section id="nivel-3" class="lesson" aria-labelledby="n3-t">
+    <div class="wrap">
+      <span class="badge gold"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-supervisor"/></svg> Nivel 3 — Supervisor</span>
+      <h2 class="sec-title" id="n3-t">María llegó a Supervisor</h2>
+      <p class="sec-lead">Es el último paso de la historia. Primero repasamos la comisión base; los bonos vienen después.</p>
+      <div class="snap" data-snap="supervisor" data-product="AT&amp;T 500 Mbps" data-amount="150" role="group" aria-label="Supervisor: AT&amp;T 500 Mbps paga $150 por conexión válida">
+        <span class="snap-lv"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-supervisor"/></svg> Supervisor</span>
+        <span class="snap-row"><span class="snap-pr"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg><span>AT&amp;T 500 Mbps</span></span><span class="snap-ar" aria-hidden="true"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-right"/></svg></span><b class="snap-amt">$150</b></span>
+        <span class="snap-per">por conexión válida</span>
+      </div>
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">1</span><span>¿Dónde estoy?</span></h3>
+          <p class="qp">Supervisor es el tercer nivel del camino.</p>
+          <ol class="here" aria-label="Tu posición en el camino: nivel 3 de 3"><li><span class="dot">1</span><span class="hl">Agente en Entrenamiento</span></li><li><span class="dot">2</span><span class="hl">Asociado</span></li><li class="on"><span class="dot">3</span><span class="hl">Supervisor</span><span class="you">Estás aquí</span></li></ol>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">2</span><span>¿Qué tengo que hacer?</span></h3>
+          <p class="qp">El Supervisor combina producción personal, desarrollo de agentes y liderazgo.</p>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">3</span><span>¿Cuánto paga?</span></h3>
+          <p class="qp">Tu comisión base funciona igual que antes: depende del producto y de tu nivel. Como Supervisor, AT&amp;T 500 Mbps paga $150.</p>
+          <p class="tbl-link"><a href="#tablas">Ver la tabla completa de comisiones →</a></p>
+        </div>
+
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">4–6</span><span>Ejemplo real: María como Supervisor</span></h3>
+
+        <article class="ej split ticketed" data-ej="level-supervisor" data-level="supervisor" data-product="AT&amp;T 500 Mbps" data-qty="1" data-unit="150" data-total="150" aria-label="Ejemplo real: María — Supervisor">
+          <div class="ej-art">
+            <div class="tk">
+              <div class="tk-row tk-who"><span class="avatar"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-agent"/></svg></span><span class="tk-t"><small>María vende</small><b>AT&amp;T 500 Mbps</b><span class="tk-lvl">como Supervisor</span></span><span class="tk-ic"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-router"/></svg></span></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-row tk-valid"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span><small>Conexión válida</small></span></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-row tk-calc"><small class="tk-k">¿Cómo se calcula?</small><p class="ej-calc">1 conexión × $150 = $150</p></div>
+              <p class="tk-ar" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+              <div class="tk-res"><small class="tk-k">¿Cuánto ganaría en este ejemplo?</small><span class="tk-gen">María genera</span><strong>$150</strong><span class="tk-cap">En este ejemplo, María genera $150 de comisión base.</span></div>
+            </div>
+          </div>
+          <div class="ej-body">
+            <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">María llegó a Supervisor y realiza la misma conexión válida de AT&amp;T 500 Mbps.</p></div>
+            <p class="ej-words">1 AT&amp;T 500 × $150 de comisión de Supervisor = $150</p>
+            <div class="prog" role="group" aria-label="Progresión de la comisión base de AT&amp;T 500 Mbps: Agente en Entrenamiento $100, Asociado $125, Supervisor $150">
+              <div class="prog-row" data-level="training" data-amount="100"><span class="pl">Entrenamiento</span><b>$100</b><span class="pb" aria-hidden="true"><i style="width:66.7%"></i></span></div>
+              <div class="prog-arrow" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> Ascenso</div>
+              <div class="prog-row" data-level="associate" data-amount="125"><span class="pl">Asociado</span><b>$125</b><span class="pb" aria-hidden="true"><i style="width:83.3%"></i></span></div>
+              <div class="prog-arrow" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> Ascenso</div>
+              <div class="prog-row top" data-level="supervisor" data-amount="150"><span class="pl">Supervisor</span><b>$150</b><span class="pb" aria-hidden="true"><i style="width:100%"></i></span></div>
+              <p class="prog-cap">Mismo producto. La comisión base aumenta según el rango.</p>
+              <p class="prog-why"><strong>Ahora puedes ver por qué crecer de nivel cambia tu comisión.</strong></p>
+            </div>
+          </div>
+          <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+        </article>
+
+        </div>
+
+        <p class="callout callout-soft"><strong>Hasta aquí estamos hablando solamente de comisión base.</strong> Ahora aprenderás las otras formas de compensación de un Supervisor.</p>
+        <div class="qb">
+          <h3 class="q-title"><span class="qn" aria-hidden="true">7</span><span>¿Cómo avanzo?</span></h3>
+          <p class="qp">Supervisor es el último nivel del plan V1. Lo que sigue es conocer los bonos y cómo se mantiene tu producción.</p>
+          <p class="tbl-link"><a href="#fuentes">Ir a los bonos del Supervisor →</a></p>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- TABLAS COMPLETAS -->
+  <section id="tablas" class="band" aria-labelledby="com-t">
+    <div class="wrap">
+      <span class="eyebrow">Consulta</span>
+      <h2 class="sec-title" id="com-t">Tabla completa de comisiones</h2>
+      <p class="sec-lead">Ya viste cómo funciona. Aquí puedes consultar el valor de cada producto en cada nivel. Un producto es el servicio que vendes: Mbps y Gig indican la velocidad del Internet, y BYOD significa que el cliente trae su propio dispositivo.</p>
+
+      <details class="more" id="tablas-d">
+        <summary>Ver tabla completa de comisiones</summary>
+        <div class="body">
       <div class="tabs" role="tablist" aria-label="Nivel">
         <button class="tab" role="tab" id="tab-train" aria-controls="panel-train" aria-selected="true" type="button">Entrenamiento</button>
         <button class="tab" role="tab" id="tab-assoc" aria-controls="panel-assoc" aria-selected="false" tabindex="-1" type="button">Asociado</button>
@@ -262,8 +918,7 @@
       <div class="panel" role="tabpanel" id="panel-train" aria-labelledby="tab-train" tabindex="0">
         <h3>Agente en Entrenamiento</h3>
         <p class="msg">Tu primera etapa es aprender el sistema, dominar los productos y comenzar a producir.</p>
-        <div class="cta-row" aria-label="Aprende, produce, crece">APRENDE <i>→</i> PRODUCE <i>→</i> CRECE</div>
-        <table data-table="commission-training">
+<table data-table="commission-training">
           <caption>Comisión por conexión válida</caption>
           <thead><tr><th scope="col">Producto</th><th scope="col">Comisión</th></tr></thead>
           <tbody>
@@ -284,7 +939,7 @@
       <div class="panel" role="tabpanel" id="panel-assoc" aria-labelledby="tab-assoc" tabindex="0" hidden>
         <h3>Asociado</h3>
         <p class="msg">A medida que avanzas en tu desarrollo, puedes acceder a un nivel superior de comisión.</p>
-        <table data-table="commission-associate">
+<table data-table="commission-associate">
           <caption>Comisión por conexión válida</caption>
           <thead><tr><th scope="col">Producto</th><th scope="col">Comisión</th></tr></thead>
           <tbody>
@@ -306,7 +961,7 @@
       <div class="panel" role="tabpanel" id="panel-sup" aria-labelledby="tab-sup" tabindex="0" hidden>
         <h3>Supervisor</h3>
         <p class="msg">El Supervisor combina producción personal, desarrollo de agentes y liderazgo.</p>
-        <table data-table="commission-supervisor">
+<table data-table="commission-supervisor">
           <caption>Comisión base por conexión válida</caption>
           <thead><tr><th scope="col">Producto</th><th scope="col">Comisión base</th></tr></thead>
           <tbody>
@@ -323,72 +978,160 @@
           </tbody>
         </table>
       </div>
+
+        </div>
+      </details>
     </div>
   </section>
 
-  <!-- 3 FUENTES -->
+  <!-- OTRAS FORMAS DE COMPENSACIÓN -->
   <section id="fuentes" aria-labelledby="src-t">
     <div class="wrap">
       <span class="eyebrow">Nivel Supervisor</span>
-      <h2 class="sec-title" id="src-t">3 formas de generar compensación</h2>
-      <p class="sec-lead">Como Supervisor puedes generar compensación por:</p>
+      <h2 class="sec-title" id="src-t">Además de tu comisión base: los bonos</h2>
+      <p class="sec-lead">Como Supervisor puedes tener otras formas de compensación además de tu comisión base. Las veremos una por una.</p>
       <div class="grid3">
         <article class="card">
           <div class="num" aria-hidden="true">1</div>
-          <h3>Tu producción</h3>
-          <p>Comisión correspondiente al nivel Supervisor.</p>
+          <h3>Tu comisión base</h3>
+          <p>Ya la conoces: depende del producto y de tu nivel de Supervisor.</p>
         </article>
         <article class="card">
           <div class="num" aria-hidden="true">2</div>
-          <h3>Bono de producción</h3>
-          <p>Basado en las conexiones válidas elegibles de tu pool.</p>
+          <h3>Bono de Producción</h3>
+          <p>Compensación adicional que comienza cuando tu producción llega a ciertos tramos: 25–49 y 50+.</p>
         </article>
         <article class="card lead">
           <div class="num" aria-hidden="true">3</div>
-          <h3>Liderazgo</h3>
-          <p>Recibes $5 por cada conexión válida elegible de Internet de cada Supervisor que desarrollaste y de sus agentes directos que todavía no son Supervisores. Una sola profundidad.</p>
+          <h3>Bono de Liderazgo</h3>
+          <p>$5 por cada conexión válida elegible de Internet cuando desarrollas a otro Supervisor. Una sola profundidad.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- 25/50 -->
+  <!-- POOL -->
+  <section id="pool" class="band" aria-labelledby="pool-t">
+    <div class="wrap">
+      <span class="eyebrow">Primero lo primero</span>
+      <h2 class="sec-title" id="pool-t">¿Qué cuenta para tu producción? Tu pool</h2>
+      <p class="sec-lead">Tu pool es el grupo de conexiones válidas que cuentan para medir tu producción como Supervisor, de acuerdo con las reglas del plan.</p>
+      <div class="eq eq3" role="group" aria-label="Tu producción personal más la producción elegible de tu base directa es igual a tu pool" data-pool-formula="true">
+        <div class="q"><span class="qi"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-agent"/></svg></span><b>Tu producción personal</b></div><span class="op" aria-hidden="true">+</span>
+        <div class="q bn"><span class="qi"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-team"/></svg></span><b>Producción elegible de tu base directa</b></div><span class="op" aria-hidden="true">=</span>
+        <div class="q tt"><span class="qi"><svg class="ic lg gold" aria-hidden="true" focusable="false"><use href="#i-goal"/></svg></span><b>Tu pool</b></div>
+      </div>
+      <p class="sec-lead" style="margin-top:14px">Tu <strong>base directa elegible</strong> son los agentes que desarrollaste directamente y que todavía no son Supervisores.</p>
+      <div class="pool">
+        <div class="card yes">
+          <h3>Incluye</h3>
+          <ul>
+            <li>Tus conexiones válidas.</li>
+            <li>Conexiones válidas de tus agentes directos que todavía no son Supervisores.</li>
+          </ul>
+        </div>
+        <div class="card no">
+          <h3>No incluye</h3>
+          <ul>
+            <li>Supervisores directos (los Supervisores que tú desarrollaste).</li>
+            <li>Producción de las bases de esos Supervisores.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BONO DE PRODUCCIÓN -->
   <section id="bono" aria-labelledby="bono-t">
     <div class="wrap">
-      <span class="eyebrow">Bono de producción</span>
-      <h2 class="sec-title" id="bono-t">Cómo funciona el bono 25/50</h2>
-      <p class="sec-lead">Tus conexiones válidas se cuentan en orden. El bono depende del tramo en que cae cada conexión.</p>
+      <span class="eyebrow">Bono de Producción</span>
+      <h2 class="sec-title" id="bono-t">Cómo funciona el Bono de Producción</h2>
+      <p class="sec-lead">Las conexiones válidas de tu pool se cuentan en orden: la #1, la #2, la #3… El tramo en que cae cada conexión decide si hay bono. Un tramo es un grupo de conexiones: de la 1 a la 24, de la 25 a la 49 y de la 50 en adelante.</p>
+      <div class="scan" data-scan="bono" role="group" aria-label="Bono de Producción con AT&amp;T 500 Mbps: a partir de la conexión 25 suma $15 y desde la 50 suma $25">
+        <span class="scan-k"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg> Bono de Producción · AT&amp;T 500 Mbps</span>
+        <span class="scan-row">
+          <span class="scan-n" data-ordinal="25" data-bonus="15"><small>Conexión #25</small><b>+$15</b></span>
+          <span class="scan-n" data-ordinal="50" data-bonus="25"><small>Conexión #50</small><b>+$25</b></span>
+        </span>
+        <span class="scan-c">Se suma a tu comisión base de Supervisor ($150 en AT&amp;T 500 Mbps).</span>
+      </div>
+      <ol class="tramos" aria-label="Los tramos del bono: conexiones 1 a 24, 25 a 49 y 50 en adelante">
+        <li class="tr t1" data-tier="1-24"><span class="trn">1–24</span><span class="trd"><strong>Comisión normal</strong> Sin bono adicional.</span></li>
+        <li class="tr-go" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> llegas a la #25</li>
+        <li class="tr t2" data-tier="25-49"><span class="trn">25–49</span><span class="trd"><strong>Comisión base + Bono 25–49</strong> El bono depende del producto.</span></li>
+        <li class="tr-go" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> llegas a la #50</li>
+        <li class="tr t3" data-tier="50+"><span class="trn">50+</span><span class="trd"><strong>Comisión base + Bono 50+</strong> El bono del tramo 50+ también depende del producto.</span></li>
+      </ol>
+      <p class="callout"><strong>LOS BONOS SON POR TRAMOS.</strong> NO son retroactivos. Los bonos no regresan hacia atrás para recalcular conexiones anteriores.</p>
 
-      <div class="tiers">
-        <div class="tier t1">
-          <div class="range">Conexiones 1–24</div>
-          <h3>Comisión Supervisor</h3>
-          <p>Sin bono adicional.</p>
+      <div class="duo">
+      <article class="ej" data-ej="bonus-25" data-product="AT&amp;T 500 Mbps" aria-label="Ejemplo real: Bono 25–49 con AT&amp;T 500 Mbps">
+        <div class="ej-head"><span class="avatar"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg></span><div><span class="badge green"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg> Primero: Bono 25–49</span><p class="ej-title">Supervisor con AT&amp;T 500 Mbps</p></div></div>
+        <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">En tu pool llevas 24 conexiones: cada una paga solo la comisión base, $150 en AT&amp;T 500 Mbps. Al lograr la conexión #25 entras al tramo 25–49 y se suma el Bono 25–49 de $15.</p></div>
+        <div><p class="ej-k">¿Cómo se calcula?</p>
+          <ol class="path4 path2">
+            <li class="st " data-ordinal="24" data-base="150" data-bonus="0" data-total="150" data-tier="none">
+              <span class="ord">#24</span><span class="sttier">Sin bono</span>
+              <dl><div><dt>Base</dt><dd>$150</dd></div><div><dt>Bono</dt><dd>$0</dd></div><div><dt>Total</dt><dd>$150</dd></div></dl>
+              <p class="fx">#24 → $150</p></li>
+            <li class="st t2" data-ordinal="25" data-base="150" data-bonus="15" data-total="165" data-tier="25-49">
+              <span class="ord">#25</span><span class="sttier">Tramo 25–49</span>
+              <dl><div><dt>Base</dt><dd>$150</dd></div><div><dt>Bono</dt><dd>$15</dd></div><div><dt>Total</dt><dd>$165</dd></div></dl>
+              <p class="fx">#25 → $150 + $15 = $165</p></li>
+          </ol>
         </div>
-        <div class="tier t2">
-          <div class="range">Conexiones 25–49</div>
-          <h3>Comisión + Bono 25–49</h3>
-          <p>Comisión Supervisor más el bono 25–49 correspondiente al producto.</p>
+        <div><p class="ej-k">¿Cuánto ganaría en este ejemplo?</p>
+          <p class="ej-res"><svg class="ic xl green" aria-hidden="true" focusable="false"><use href="#i-money"/></svg><strong>$165</strong><span>Esa es la compensación de la conexión #25.</span></p>
+          <ul class="points"><li><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Al entrar al tramo 25–49, la conexión #25 de tu pool recibe el bono correspondiente.</span></li></ul>
         </div>
-        <div class="tier t3">
-          <div class="range">Conexión 50+</div>
-          <h3>Comisión + Bono 50+</h3>
-          <p>Comisión Supervisor más el bono 50+ correspondiente al producto.</p>
+        <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+      </article>
+      <article class="ej" data-ej="bonus-50" data-product="AT&amp;T 500 Mbps" aria-label="Ejemplo real: Bono 50+ con AT&amp;T 500 Mbps">
+        <div class="ej-head"><span class="avatar"><svg class="ic lg gold" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg></span><div><span class="badge gold"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg> Segundo: Bono 50+</span><p class="ej-title">Supervisor con AT&amp;T 500 Mbps</p></div></div>
+        <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">La conexión #49 todavía está en el tramo 25–49. Al lograr la conexión #50 pasas al tramo 50+, que tiene su propio bono: $25 en AT&amp;T 500 Mbps.</p></div>
+        <div><p class="ej-k">¿Cómo se calcula?</p>
+          <ol class="path4 path2">
+            <li class="st t2" data-ordinal="49" data-base="150" data-bonus="15" data-total="165" data-tier="25-49">
+              <span class="ord">#49</span><span class="sttier">Tramo 25–49</span>
+              <dl><div><dt>Base</dt><dd>$150</dd></div><div><dt>Bono</dt><dd>$15</dd></div><div><dt>Total</dt><dd>$165</dd></div></dl>
+              <p class="fx">#49 → $150 + $15 = $165</p></li>
+            <li class="st t3" data-ordinal="50" data-base="150" data-bonus="25" data-total="175" data-tier="50+">
+              <span class="ord">#50</span><span class="sttier">Tramo 50+</span>
+              <dl><div><dt>Base</dt><dd>$150</dd></div><div><dt>Bono</dt><dd>$25</dd></div><div><dt>Total</dt><dd>$175</dd></div></dl>
+              <p class="fx">#50 → $150 + $25 = $175</p></li>
+          </ol>
         </div>
+        <div><p class="ej-k">¿Cuánto ganaría en este ejemplo?</p>
+          <p class="ej-res"><svg class="ic xl green" aria-hidden="true" focusable="false"><use href="#i-money"/></svg><strong>$175</strong><span>Esa es la compensación de la conexión #50.</span></p>
+          <ul class="points">
+            <li><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Desde la conexión #50 de tu pool aplica el tramo 50+.</span></li>
+            <li><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>No es retroactivo: las conexiones anteriores no se recalculan.</span></li>
+          </ul>
+        </div>
+        <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+      </article>
       </div>
 
-      <div class="bar" role="img" aria-label="Línea de progreso: conexiones 1 a 24 sin bono, 25 a 49 bono 25–49, 50 en adelante bono 50+">
-        <i class="b1"></i><i class="b2"></i><i class="b3"></i>
-      </div>
-      <div class="bar-legend" aria-hidden="true"><span>1</span><span>25</span><span>50+</span></div>
+      <article class="ej" data-ej="bonus-spectrum" data-product="Spectrum 1 Gig" data-base="135" data-bonus="10" data-total="145" aria-label="Ejemplo real: Bono 25–49 con Spectrum 1 Gig">
+        <div class="ej-head"><span class="avatar"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg></span><div><span class="badge green"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-bonus"/></svg> Bono 25–49</span><p class="ej-title">El bono depende del producto</p></div></div>
+        <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">Una conexión de Spectrum 1 Gig en el tramo 25–49 de tu pool. En el mismo tramo, AT&amp;T 500 Mbps suma $15 y Spectrum 1 Gig suma $10.</p></div>
+        <div><p class="ej-k">¿Cómo se calcula?</p>
+          <div class="eq" role="group" aria-label="$135 de base más $10 de bono igual a $145 en total">
+            <div class="q"><b>$135</b><span>Base</span></div><span class="op" aria-hidden="true">+</span>
+            <div class="q bn"><b>$10</b><span>Bono</span></div><span class="op" aria-hidden="true">=</span>
+            <div class="q tt"><b>$145</b><span>Total</span></div>
+          </div>
+          <p class="ej-calc" style="margin-top:10px">$135 + $10 = $145</p>
+        </div>
+        <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+      </article>
 
-      <p class="callout"><strong>LOS BONOS SON POR TRAMOS.</strong> NO son retroactivos.</p>
-
-      <div class="twin">
-        <details open>
-          <summary>Tabla bonos 25–49</summary>
-          <div class="body">
-            <table data-table="bonus-25-49">
+      <details class="more" id="bono-d">
+        <summary>Ver las tablas de bonos por producto</summary>
+        <div class="body">
+          <div class="twin">
+            <div>
+<table data-table="bonus-25-49">
               <caption>Bono adicional por conexión, conexiones 25–49</caption>
               <thead><tr><th scope="col">Producto</th><th scope="col">Bono</th></tr></thead>
               <tbody>
@@ -404,13 +1147,9 @@
                 <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="20">+$20</td></tr>
               </tbody>
             </table>
-          </div>
-        </details>
-
-        <details open>
-          <summary>Tabla bonos 50+</summary>
-          <div class="body">
-            <table data-table="bonus-50-plus">
+            </div>
+            <div>
+<table data-table="bonus-50-plus">
               <caption>Bono adicional por conexión, conexión 50 en adelante</caption>
               <thead><tr><th scope="col">Producto</th><th scope="col">Bono</th></tr></thead>
               <tbody>
@@ -426,100 +1165,87 @@
                 <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="35">+$35</td></tr>
               </tbody>
             </table>
+            </div>
           </div>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- POOL -->
-  <section id="pool" aria-labelledby="pool-t">
-    <div class="wrap">
-      <span class="eyebrow">Nivel Supervisor</span>
-      <h2 class="sec-title" id="pool-t">Tu pool de producción</h2>
-      <p class="sec-lead">Es el conjunto de conexiones que cuentan para tu bono 25/50.</p>
-      <div class="pool">
-        <div class="card yes">
-          <h3>Incluye</h3>
-          <ul>
-            <li>Tus conexiones válidas.</li>
-            <li>Conexiones válidas de tus agentes directos que todavía no son Supervisores.</li>
-          </ul>
         </div>
-        <div class="card no">
-          <h3>No incluye</h3>
-          <ul>
-            <li>Supervisores directos.</li>
-            <li>Producción de las bases de esos Supervisores.</li>
-          </ul>
-        </div>
-      </div>
+      </details>
     </div>
   </section>
 
   <!-- LIDERAZGO -->
-  <section id="liderazgo" aria-labelledby="lid-t">
+  <section id="liderazgo" class="band" aria-labelledby="lid-t">
     <div class="wrap">
-      <span class="eyebrow">Liderazgo</span>
-      <h2 class="sec-title" id="lid-t">Cómo funciona el $5 de liderazgo</h2>
-      <p class="sec-lead">El Bono de Liderazgo comienza cuando desarrollas a un agente y ese agente se convierte en Supervisor.</p>
+      <span class="eyebrow">Bono de Liderazgo</span>
+      <h2 class="sec-title" id="lid-t">Cómo funciona el Bono de Liderazgo</h2>
+      <p class="sec-lead">El Bono de Liderazgo aparece cuando desarrollas a una persona y esa persona llega a Supervisor.</p>
+      <div class="scan" data-scan="leadership" data-rate="5" role="group" aria-label="Bono de Liderazgo: 5 dólares por conexión válida elegible de Internet">
+        <span class="scan-k"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-leadership"/></svg> Bono de Liderazgo</span>
+        <span class="scan-row"><span class="scan-n"><small>por conexión elegible de Internet</small><b>$5</b></span></span>
+        <span class="scan-c">Una sola profundidad. Un solo bono por conexión.</span>
+      </div>
+      <p class="scene-lead" data-story="true">María ayudó a Carlos a desarrollarse. Carlos llegó a Supervisor. Desde ese momento, el trabajo de Carlos también cuenta para el Bono de Liderazgo de María.</p>
 
-      <div class="lead-grid">
-        <div class="card">
-          <h3>Qué recibes</h3>
-          <p>Desde ese momento recibes $5 por cada conexión válida elegible de Internet producida por:</p>
-          <ul>
-            <li>ese Supervisor;</li>
-            <li>sus agentes directos que todavía no son Supervisores.</li>
+      <article class="ej cols2 leadhero" data-ej="leadership" data-supervisor-internet="3" data-agent-internet="2" data-agent-byod="1" data-rate="5" data-total="25" aria-label="Ejemplo real: Bono de Liderazgo de María">
+        <div class="ej-body">
+          <div class="ej-head"><span class="avatar"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-leadership"/></svg></span><div><span class="badge"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-leadership"/></svg> Bono de Liderazgo</span><p class="ej-title">María, Carlos y su equipo</p></div></div>
+          <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">Carlos vende 3 conexiones elegibles de Internet. Un agente directo de Carlos vende otras 2 conexiones elegibles de Internet y también 1 AT&amp;T BYOD.</p></div>
+          <ul class="tree2" role="list" aria-label="Estructura: María desarrolló a Carlos; el agente es agente directo de Carlos">
+            <li><div class="tn"><svg class="ic gold" aria-hidden="true" focusable="false"><use href="#i-supervisor"/></svg><span>María<small>Supervisor</small></span></div>
+              <p class="rel2" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> desarrolló a</p>
+              <ul>
+                <li><div class="tn"><svg class="ic gold" aria-hidden="true" focusable="false"><use href="#i-supervisor"/></svg><span>Carlos<small>Supervisor desarrollado por María</small></span></div>
+                  <ul>
+                    <li><div class="tn pl"><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-fiber"/></svg><span>3 Internet elegibles</span></div></li>
+                    <li><div class="tn ag"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-agent"/></svg><span>Equipo directo elegible de Carlos<small>Agente directo, todavía no es Supervisor</small></span></div>
+                      <ul>
+                        <li><div class="tn pl"><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-fiber"/></svg><span>2 Internet elegibles</span></div></li>
+                        <li><div class="tn pl no"><svg class="ic sm red" aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><svg class="ic sm red" aria-hidden="true" focusable="false"><use href="#i-ban"/></svg><span>1 AT&amp;T BYOD</span><b>$0 liderazgo</b></div></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
-        <div class="card warn">
-          <h3>Tus propios agentes directos</h3>
-          <p>No generan Bono de Liderazgo para ti. Sus conexiones cuentan para tu pool de producción 25/50.</p>
+        <div class="ej-body">
+          <p class="ej-k">¿Cómo se calcula?</p>
+          <div class="eq eq-wide lead-eq" role="group" aria-label="3 de Carlos más 2 de su equipo directo elegible igual a 5 conexiones elegibles; 5 por 5 dólares es 25 dólares">
+            <div class="q"><b>3</b><span>de Carlos</span></div><span class="op" aria-hidden="true">+</span>
+            <div class="q bn"><b>2</b><span>de su equipo directo</span></div><span class="op" aria-hidden="true">=</span>
+            <div class="q tt"><b>5</b><span>elegibles</span></div>
+          </div>
+          <p class="lead-x" aria-hidden="true"><span>5</span> × <span>$5</span></p>
+          <span class="sr-only">3 de Carlos + 2 de su equipo directo elegible = 5 conexiones elegibles. 5 × $5 = $25.</span>
+          <p class="ej-k">¿Cuánto ganaría en este ejemplo?</p>
+          <div class="bigres"><span class="br-who">María recibe</span><strong>$25</strong><span class="br-what">María recibe $25 de Bono de Liderazgo en este ejemplo.</span></div>
+          <ul class="points">
+            <li><svg class="ic sm red" aria-hidden="true" focusable="false"><use href="#i-ban"/></svg><span>AT&amp;T BYOD: $0 de liderazgo.</span></li>
+            <li><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Una sola profundidad.</span></li>
+            <li><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Un solo Bono de Liderazgo por conexión.</span></li>
+            <li><svg class="ic sm green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Los agentes directos propios de María no generan liderazgo para María; forman parte de su pool 25/50.</span></li>
+            <li><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-network"/></svg><span>El gráfico representa el cálculo de compensación, no pagos entre agentes.</span></li>
+          </ul>
+        </div>
+        <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+      </article>
+
+      <div class="who" data-who="true">
+        <div class="card">
+          <h3>Quién lo genera</h3>
+          <p>Las conexiones válidas elegibles de Internet de Carlos y de sus agentes directos que todavía no son Supervisores.</p>
         </div>
         <div class="card">
-          <h3>Si un agente asciende</h3>
-          <p>Si uno de esos agentes asciende a Supervisor, desde su fecha y hora efectiva sale de esa base elegible. El Supervisor inmediatamente superior a él pasa a recibir el liderazgo correspondiente, y tú recibes $0 de liderazgo sobre él y su base. Las conexiones anteriores al ascenso conservan las reglas con las que se generaron.</p>
+          <h3>Quién lo recibe</h3>
+          <p>María, que desarrolló a Carlos. Son $5 por cada una de esas conexiones.</p>
         </div>
-        <div class="card">
-          <h3>Un solo bono por conexión</h3>
-          <p>Cada conexión puede generar un solo Bono de Liderazgo. No existe liderazgo ilimitado hacia abajo.</p>
-          <span class="depth">Una sola profundidad</span>
+        <div class="card why-byod" data-why="byod">
+          <h3>¿Por qué BYOD y Celular no cuentan?</h3>
+          <p>Porque el Bono de Liderazgo se calcula solo sobre conexiones de Internet. AT&amp;T Celular + Línea y AT&amp;T BYOD (el cliente trae su propio dispositivo) son servicios de celular: siguen teniendo su comisión base, pero generan $0 de liderazgo.</p>
         </div>
       </div>
 
-      <div class="scens">
-        <div class="scen" role="group" aria-label="Situación actual: A desarrolló al Supervisor B y C es agente directo de B. Si B vende Internet, A gana 5 dólares. Si C vende Internet, A gana 5 dólares.">
-          <h3>Situación actual</h3>
-          <div class="tree" aria-hidden="true">
-            <div class="node">Supervisor A</div>
-            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
-            <div class="node">Supervisor B</div>
-            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> agente directo</div>
-            <div class="node ag">Agente C</div>
-          </div>
-          <ul class="res">
-            <li><span>B vende Internet</span><span class="pay">A gana $5</span></li>
-            <li><span>C vende Internet</span><span class="pay">A gana $5</span></li>
-          </ul>
-        </div>
-        <div class="scen" role="group" aria-label="Cuando C asciende a Supervisor: si C vende Internet, B gana 5 dólares y A gana 0 dólares de liderazgo sobre C y su base.">
-          <h3>Cuando C asciende a Supervisor</h3>
-          <div class="tree" aria-hidden="true">
-            <div class="node">Supervisor A</div>
-            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
-            <div class="node">Supervisor B</div>
-            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
-            <div class="node">Supervisor C</div>
-          </div>
-          <ul class="res">
-            <li><span>C vende Internet</span><span class="pay">B gana $5</span></li>
-            <li><span>A sobre C y su base</span><span class="pay zero">A gana $0</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="twin">
+      <div class="twin pills">
         <div class="card" style="border-color:#8fc7bf">
           <h3>Productos elegibles ($5)</h3>
           <ul class="elig">
@@ -541,53 +1267,176 @@
           </ul>
         </div>
       </div>
+
+      <details class="more">
+        <summary>Ver las reglas clave del Bono de Liderazgo</summary>
+        <div class="body">
+      <div class="lead-grid">
+        <div class="card">
+          <h3>Qué recibes</h3>
+          <p>El Bono de Liderazgo comienza cuando desarrollas a un agente y ese agente se convierte en Supervisor. Desde ese momento recibes $5 por cada conexión válida elegible de Internet producida por:</p>
+          <ul>
+            <li>ese Supervisor;</li>
+            <li>sus agentes directos que todavía no son Supervisores.</li>
+          </ul>
+        </div>
+        <div class="card warn">
+          <h3>Tus propios agentes directos</h3>
+          <p>No generan Bono de Liderazgo para ti. Sus conexiones cuentan para tu pool de producción 25/50.</p>
+        </div>
+        <div class="card">
+          <h3>Si un agente asciende</h3>
+          <p>Si uno de esos agentes asciende a Supervisor, desde su fecha y hora efectiva sale de esa base elegible. El Supervisor inmediatamente superior a él pasa a recibir el liderazgo correspondiente, y tú recibes $0 de liderazgo sobre él y su base. Las conexiones anteriores al ascenso conservan las reglas con las que se generaron.</p>
+        </div>
+        <div class="card">
+          <h3>Un solo bono por conexión</h3>
+          <p>Cada conexión puede generar un solo Bono de Liderazgo. No existe liderazgo ilimitado hacia abajo.</p>
+          <span class="depth">Una sola profundidad</span>
+        </div>
+      </div>
+        </div>
+      </details>
+
+      <details class="more">
+        <summary>Ver ejemplo avanzado: el agente también asciende (A → B → C)</summary>
+        <div class="body">
+          <h3 class="scene-title" style="margin-top:0">Un escenario más avanzado: el agente también asciende</h3>
+          <p class="scene-lead">Usamos letras para ver quién cobra: A es María, B es Carlos y C es el agente directo de Carlos. Antes del ascenso, A puede recibir liderazgo sobre las conexiones elegibles de C como parte de la base elegible de B. Después, el liderazgo sobre C y su base pasa a B.</p>
+      <div class="scens">
+        <div class="scen" role="group" aria-label="Situación actual: A desarrolló al Supervisor B y C es agente directo de B. Si B vende Internet, A gana 5 dólares. Si C vende Internet, A gana 5 dólares.">
+          <h3>Antes: C es agente de B</h3>
+          <div class="tree" aria-hidden="true">
+            <div class="node">Supervisor A</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
+            <div class="node">Supervisor B</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> agente directo</div>
+            <div class="node ag">Agente C</div>
+          </div>
+          <ul class="res">
+            <li><span>B vende Internet</span><span class="pay">A gana $5</span></li>
+            <li><span>C vende Internet</span><span class="pay">A gana $5</span></li>
+          </ul>
+        </div>
+        <div class="scen" role="group" aria-label="Cuando C asciende a Supervisor: si C vende Internet, B gana 5 dólares y A gana 0 dólares de liderazgo sobre C y su base.">
+          <h3>Después: C asciende a Supervisor</h3>
+          <div class="tree" aria-hidden="true">
+            <div class="node">Supervisor A</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
+            <div class="node">Supervisor B</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
+            <div class="node">Supervisor C</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> su base</div>
+            <div class="node ag">Base de C</div>
+          </div>
+          <ul class="res">
+            <li><span>C vende Internet</span><span class="pay">B gana $5</span></li>
+            <li><span>A sobre C y su base</span><span class="pay zero">A gana $0</span></li>
+          </ul>
+        </div>
+      </div>
+        </div>
+      </details>
     </div>
   </section>
+
 
   <!-- MANTENIMIENTO -->
   <section id="mantenimiento" aria-labelledby="mant-t">
     <div class="wrap">
       <span class="eyebrow">Mantenimiento</span>
-      <h2 class="sec-title" id="mant-t">Mantenimiento de Supervisor</h2>
-      <div class="maint">
-        <div class="big"><strong>150</strong><span>Conexiones válidas por trimestre</span></div>
-        <div class="grid-m">
-          <div class="card" style="margin-bottom:12px">
-            <h3>Incluye</h3>
-            <p>Producción personal + agentes directos no-Supervisores.</p>
+      <h2 class="sec-title" id="mant-t">¿Qué necesita un Supervisor para mantener su producción?</h2>
+      <p class="sec-lead">La referencia de mantenimiento es 150 conexiones válidas por trimestre, contando producción personal y base directa elegible según las reglas V1.</p>
+      <div class="scan" data-scan="maintenance" data-target="150" role="group" aria-label="Mantenimiento: 150 conexiones válidas por trimestre">
+        <span class="scan-k"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg> Meta de mantenimiento</span>
+        <span class="scan-row"><span class="scan-n"><small>conexiones válidas por trimestre</small><b>150</b></span></span>
+        <span class="scan-c">Producción personal + base directa elegible.</span>
+      </div>
+
+      <article class="ej" data-ej="maintenance" data-personal="60" data-base="90" data-total="150" aria-label="Ejemplo real: meta de mantenimiento de María">
+        <div class="ej-head"><span class="avatar"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-goal"/></svg></span><div><p class="ej-title">El ejemplo de María</p></div></div>
+        <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">María, como Supervisor, registra 60 conexiones válidas personales. Su equipo directo elegible (su base directa elegible) registra 90 conexiones válidas más.</p></div>
+        <div><p class="ej-k">¿Cómo se calcula?</p>
+          <div class="eq eq-wide" role="group" aria-label="60 personales más 90 de base directa elegible igual a 150 como meta del ejemplo">
+            <div class="q"><b>60</b><span>Personales</span></div><span class="op" aria-hidden="true">+</span>
+            <div class="q bn"><b>90</b><span>Base directa elegible</span></div><span class="op" aria-hidden="true">=</span>
+            <div class="q tt"><b>150</b><span>Meta del ejemplo</span></div>
           </div>
-          <div class="card" style="margin-bottom:12px">
-            <h3>No incluye</h3>
-            <p>Supervisores directos ni sus bases.</p>
-          </div>
-          <div class="card">
-            <h3>Supervisor nuevo</h3>
-            <p>El requisito comienza en el siguiente trimestre calendario completo.</p>
-          </div>
+          <div class="meter" style="margin-top:12px" aria-hidden="true"><i class="m1"></i><i class="m2"></i></div>
+          <p class="legend" style="margin-top:8px"><span class="l1">60 personales</span><span class="l2">90 base directa elegible</span></p>
+          <p class="ej-calc" style="margin-top:10px">60 + 90 = 150</p>
         </div>
+        <div><p class="ej-k">Resultado</p><p class="done"><svg class="ic lg green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span>Meta de mantenimiento cumplida: 150 de 150. En este ejemplo se alcanza la meta de mantenimiento.</span></p></div>
+        <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+      </article>
+
+      <div class="minis">
+        <div class="card"><h3>Incluye</h3><p>Producción personal + agentes directos no-Supervisores.</p></div>
+        <div class="card"><h3>No incluye</h3><p>Supervisores directos ni sus bases.</p></div>
+        <div class="card"><h3>Supervisor nuevo</h3><p>El requisito comienza en el siguiente trimestre calendario completo.</p></div>
       </div>
     </div>
   </section>
 
+
   <!-- CHARGEBACK -->
-  <section id="chargeback" aria-labelledby="cb-t">
+  <section id="chargeback" class="band" aria-labelledby="cb-t">
     <div class="wrap">
       <span class="eyebrow">Importante</span>
-      <h2 class="sec-title" id="cb-t">Protege tu producción</h2>
-      <div class="protect">
-        <span class="months">Mínimo 3 meses activa</span>
-        <p>La cuenta debe permanecer activa por un mínimo de 3 meses.</p>
-        <p style="margin-top:10px">Si una conexión no cumple este requisito, se revierte el 100% de los pagos relacionados con esa conexión, incluyendo cuando corresponda:</p>
-        <ul>
-          <li>Comisión base</li>
-          <li>Bono de producción</li>
-          <li>Bono de liderazgo</li>
-          <li>Incentivos relacionados</li>
-        </ul>
-        <p style="margin-top:12px">Si esos pagos ya fueron realizados, el monto correspondiente puede generar un saldo negativo que se compensará con futuras comisiones.</p>
+      <h2 class="sec-title" id="cb-t">Protege tu producción: el chargeback</h2>
+      <div class="scan" data-scan="chargeback" data-months="3" role="group" aria-label="Chargeback: la cuenta debe permanecer activa mínimo 3 meses">
+        <span class="scan-k"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg> Para conservar la comisión</span>
+        <span class="scan-row"><span class="scan-n"><small>la cuenta debe estar activa</small><b>3 meses</b></span></span>
+        <span class="scan-c">Mínimo. Si la conexión cae antes, los pagos relacionados pueden revertirse.</span>
       </div>
+      <div class="protect protect2" data-explain="chargeback">
+        <div class="pr-text">
+          <p><strong>Para conservar la comisión, la cuenta debe mantenerse activa por un mínimo de 3 meses.</strong></p>
+          <p style="margin-top:10px">Si la conexión cae antes de cumplir ese mínimo, los pagos relacionados con esa conexión pueden revertirse según las reglas del plan. A eso se le llama chargeback.</p>
+          <p style="margin-top:10px">Por eso conviene cuidar que tus cuentas permanezcan activas. Si una conexión no cumple este requisito, se revierte el 100% de los pagos relacionados con esa conexión, incluyendo cuando corresponda:</p>
+          <ul>
+            <li>Comisión base</li>
+            <li>Bono de producción</li>
+            <li>Bono de liderazgo</li>
+            <li>Incentivos relacionados</li>
+          </ul>
+          <p style="margin-top:12px">Si esos pagos ya fueron realizados, el monto correspondiente puede generar un saldo negativo que se compensará con futuras comisiones.</p>
+        </div>
+        <div class="stage calm" aria-label="Si la conexión cae antes de cumplir el mínimo de 3 meses, se revierten los pagos relacionados">
+          <p class="sg ok"><svg class="ic green" aria-hidden="true" focusable="false"><use href="#i-check"/></svg> Conexión válida</p>
+          <p class="st-arrow" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg></p>
+          <p class="sg keep"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg> Debe permanecer mínimo 3 meses</p>
+          <p class="st-arrow" aria-hidden="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-down"/></svg> si cae antes</p>
+          <p class="sg rv"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-reversal"/></svg> Reversión de los pagos relacionados</p>
+        </div>
+      </div>
+
+      <article class="ej" data-ej="chargeback" data-product="AT&amp;T 500 Mbps" data-base="150" data-bonus="15" data-leadership="5" data-total="170" data-reversal="-170" aria-label="Ejemplo real: reversión por chargeback">
+        <div class="ej-head"><span class="avatar"><svg class="ic lg" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span><div><span class="badge gold"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-reversal"/></svg> Chargeback</span><p class="ej-title">Una conexión que no cumple los 3 meses</p></div></div>
+        <div><p class="ej-k">Ejemplo real</p><p class="ej-sit">Una conexión válida de AT&amp;T 500 Mbps produjo estos conceptos vinculados a la conexión:</p></div>
+        <div><p class="ej-k">¿Cómo se calcula?</p>
+          <table class="receipt" aria-label="Conceptos de la conexión y su reversión si cae antes de 3 meses">
+            <thead><tr><th scope="col">Concepto</th><th scope="col">Generó</th><th scope="col">Si cae antes</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Comisión base Supervisor</th><td>$150</td><td class="rv">-$150</td></tr>
+              <tr><th scope="row">Bono de Producción</th><td>$15</td><td class="rv">-$15</td></tr>
+              <tr><th scope="row">Bono de Liderazgo relacionado</th><td>$5</td><td class="rv">-$5</td></tr>
+            </tbody>
+            <tfoot><tr><th scope="row">Total</th><td>$170</td><td class="rv">-$170</td></tr></tfoot>
+          </table>
+          <p class="ej-calc" style="margin-top:10px">$150 + $15 + $5 = $170</p>
+        </div>
+        <div><p class="ej-k">¿Cuánto se revertiría en este ejemplo?</p>
+          <div class="bigres calm"><span class="br-who">Reversión en este ejemplo</span><strong>-$170</strong></div>
+        </div>
+        <ul class="points">
+          <li><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg><span>El ejemplo ilustra la reversión del 100% de los conceptos vinculados a la conexión, conforme a V1.</span></li>
+          <li><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-reversal"/></svg><span>Si ya fueron pagados, el ajuste negativo puede compensarse contra comisiones futuras conforme a las reglas V1.</span></li>
+        </ul>
+        <p class="ej-note">Ejemplo ilustrativo. Las comisiones dependen de conexiones válidas y de las reglas vigentes del plan.</p>
+      </article>
     </div>
   </section>
+
 
   <!-- NOTAS -->
   <section id="notas" aria-labelledby="notas-t">
@@ -630,6 +1479,16 @@
       if (n) { e.preventDefault(); select(n, true); }
     });
   });
+})();
+
+(function () {
+  var g = document.getElementById('gl-det');
+  if (g && window.matchMedia('(min-width:768px)').matches) g.open = true;
+  var t = document.getElementById('tablas-d');
+  if (t) {
+    document.querySelectorAll('a[href="#tablas"]').forEach(function (a) { a.addEventListener('click', function () { t.open = true; }); });
+    if (location.hash === '#tablas') t.open = true;
+  }
 })();
 </script>
 </body>
