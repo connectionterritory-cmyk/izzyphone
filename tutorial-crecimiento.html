@@ -4,743 +4,600 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan de Crecimiento — Izzy Communications</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="nav.css">
+<meta name="description" content="Tu camino de crecimiento en IZZY Communications: Agente en Entrenamiento, Asociado y Supervisor.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --blue:#1a3a6b; --blue-soft:#e8f0fb;
-    --green:#25D366; --green-dark:#128C7E;
-    --gold:#f59e0b; --gold-soft:#fef3c7;
-    --purple:#7c3aed; --purple-soft:#ede9fe;
-    --bg:#f0f2f5; --surface:#fff; --border:#e2e0dc;
-    --text:#1a1814; --muted:#7a7570;
+    --navy:#0f2244; --blue:#1a3a6b; --blue-soft:#e8f0fb; --blue-mid:#2d5fa6;
+    --green:#0f766e; --green-soft:#e6f6f3;
+    --gold:#b45309; --gold-soft:#fef3c7;
+    --red:#b91c1c; --red-soft:#fef2f2;
+    --bg:#f0f4fa; --surface:#fff; --border:#d9e2ef;
+    --text:#14202f; --muted:#556275;
+    --radius:18px;
+    --shadow:0 6px 26px rgba(15,34,68,.09);
   }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); line-height:1.55; -webkit-text-size-adjust:100%; overflow-x:hidden; }
+  h1,h2,h3,h4 { line-height:1.2; color:var(--navy); overflow-wrap:anywhere; }
+  p, li, td, th, summary { overflow-wrap:anywhere; }
+  a { color:var(--blue-mid); }
+  :focus-visible { outline:3px solid #f59e0b; outline-offset:2px; border-radius:6px; }
+  .skip { position:absolute; left:-999px; top:8px; background:#fff; color:var(--navy); padding:10px 14px; border-radius:8px; z-index:10; font-weight:700; }
+  .skip:focus { left:8px; }
+
+  .wrap { width:100%; max-width:1040px; margin:0 auto; padding:0 16px; }
+  section { padding:44px 0 4px; }
+  .eyebrow { display:inline-block; font-size:12px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--blue-mid); margin-bottom:8px; }
+  .sec-title { font-size:clamp(22px,4.2vw,32px); font-weight:800; margin-bottom:8px; }
+  .sec-lead { color:var(--muted); font-size:16px; max-width:640px; margin-bottom:22px; }
 
   /* HERO */
-  .hero { background:linear-gradient(135deg,#0f2244 0%,#1a3a6b 60%,#2d5fa6 100%); padding:36px 24px 40px; text-align:center; color:#fff; position:relative; overflow:hidden; }
-  .hero::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-  .hero-tag { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:14px; }
-  .hero h1 { font-size:26px; font-weight:700; margin-bottom:8px; line-height:1.2; }
-  .hero p { font-size:14px; color:rgba(255,255,255,.65); max-width:340px; margin:0 auto 28px; line-height:1.6; }
+  .hero { background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 58%,var(--blue-mid) 100%); color:#fff; text-align:center; padding:48px 0 56px; }
+  .hero .tag { display:inline-block; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.28); border-radius:999px; padding:6px 16px; font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; margin-bottom:18px; }
+  .hero h1 { color:#fff; font-size:clamp(26px,6vw,46px); font-weight:800; margin-bottom:16px; }
+  .hero h1 span { display:block; }
+  .hero .quote { font-size:clamp(17px,3.4vw,22px); font-weight:600; max-width:600px; margin:0 auto 14px; color:#fff; }
+  .hero .sub { font-size:15px; color:rgba(255,255,255,.82); max-width:520px; margin:0 auto 26px; }
+  .hero-cta { display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .btn { display:inline-block; padding:13px 22px; border-radius:12px; font-weight:700; font-size:15px; text-decoration:none; min-height:44px; }
+  .btn-light { background:#fff; color:var(--navy); }
+  .btn-ghost { border:1.5px solid rgba(255,255,255,.55); color:#fff; }
 
-  /* ROADMAP TOP */
-  .roadmap { display:flex; align-items:center; justify-content:center; gap:0; max-width:360px; margin:0 auto; }
-  .rm-node { display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .rm-circle { width:38px; height:38px; border-radius:50%; border:2.5px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-size:16px; background:rgba(255,255,255,.1); flex-shrink:0; transition:all .2s; }
-  .rm-circle.active { background:#fff; border-color:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.2); }
-  .rm-label { font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:rgba(255,255,255,.6); }
-  .rm-label.active { color:#fff; }
-  .rm-line { flex:1; height:2px; background:rgba(255,255,255,.2); margin-bottom:14px; min-width:18px; }
-  .rm-line.done { background:var(--green); }
+  /* PATH */
+  .path { list-style:none; display:grid; gap:0; counter-reset:lvl; }
+  .lvl { position:relative; background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:20px 20px 20px 78px; box-shadow:var(--shadow); }
+  .lvl::before { counter-increment:lvl; content:counter(lvl); position:absolute; left:20px; top:20px; width:42px; height:42px; border-radius:50%; background:var(--blue); color:#fff; font-weight:800; font-size:18px; display:flex; align-items:center; justify-content:center; }
+  .lvl.l2::before { background:var(--blue-mid); }
+  .lvl.l3::before { background:var(--gold); }
+  .lvl h3 { font-size:19px; margin-bottom:4px; }
+  .lvl p { color:var(--muted); font-size:15px; }
+  .lvl .chip { display:inline-block; margin-top:10px; font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:var(--blue-soft); color:var(--blue); }
+  .arrow { display:flex; flex-direction:column; align-items:center; padding:6px 0; color:var(--blue-mid); font-weight:700; font-size:12px; text-align:center; }
+  .arrow svg { width:22px; height:22px; }
+  .arrow span { max-width:260px; color:var(--muted); font-weight:500; font-size:13px; }
+  .loop { margin-top:18px; text-align:center; font-weight:800; letter-spacing:.06em; color:var(--blue); font-size:14px; }
 
-  /* PROGRESS BAR */
-  .progress-bar-wrap { max-width:560px; margin:20px auto 0; padding:0 20px; display:flex; gap:6px; }
-  .prog-dot { flex:1; height:4px; border-radius:4px; background:rgba(255,255,255,.2); cursor:pointer; transition:all .2s; }
-  .prog-dot.done { background:var(--green); }
-  .prog-dot.active { background:#fff; }
+  /* TABS */
+  .tabs { display:flex; gap:6px; background:#e1e9f5; padding:5px; border-radius:14px; margin-bottom:18px; }
+  .tab { flex:1; border:0; background:transparent; font:inherit; font-weight:700; font-size:14px; padding:11px 6px; border-radius:10px; cursor:pointer; color:var(--blue); min-height:44px; }
+  .tab[aria-selected="true"] { background:#fff; color:var(--navy); box-shadow:0 2px 8px rgba(15,34,68,.14); }
+  .panel { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:22px 18px; box-shadow:var(--shadow); }
+  .panel[hidden] { display:none; }
+  .panel > h3 { font-size:20px; margin-bottom:6px; }
+  .panel > .msg { color:var(--muted); margin-bottom:18px; font-size:15px; }
+  .panel .promo { margin-top:16px; font-size:14px; background:var(--blue-soft); color:var(--blue); border-radius:12px; padding:12px 14px; }
+  .cta-row { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:18px; font-weight:800; letter-spacing:.05em; font-size:13px; color:var(--blue); }
+  .cta-row i { font-style:normal; color:var(--green); }
+
+  table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:15px; }
+  caption { text-align:left; font-weight:700; font-size:13px; color:var(--muted); padding-bottom:8px; }
+  thead th { text-align:left; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); padding:8px 10px; border-bottom:2px solid var(--border); }
+  thead th:last-child { text-align:right; width:30%; }
+  tbody th { text-align:left; font-weight:600; padding:11px 10px; border-bottom:1px solid var(--border); }
+  tbody td { text-align:right; font-weight:800; color:var(--green); padding:11px 10px; border-bottom:1px solid var(--border); font-variant-numeric:tabular-nums; }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom:0; }
+  tbody tr:nth-child(even) { background:#f7f9fd; }
 
   /* CARDS */
-  .steps-wrap { max-width:560px; margin:0 auto; padding:20px 16px 40px; }
-  .step-card { display:none; background:var(--surface); border-radius:20px; box-shadow:0 4px 24px rgba(0,0,0,.09); overflow:hidden; animation:slideIn .3s ease; }
-  .step-card.active { display:block; }
-  @keyframes slideIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .grid3 { display:grid; gap:14px; }
+  .card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+  .card .num { display:inline-flex; width:34px; height:34px; border-radius:50%; align-items:center; justify-content:center; background:var(--gold-soft); color:var(--gold); font-weight:800; margin-bottom:10px; }
+  .card h3 { font-size:17px; margin-bottom:6px; }
+  .card p { color:var(--muted); font-size:15px; }
+  .card.lead { border-color:#f3d28a; }
+  .note-strong { margin-top:14px; font-weight:700; color:var(--navy); font-size:15px; }
 
-  .card-header { padding:22px 22px 18px; display:flex; align-items:center; gap:14px; border-bottom:1px solid var(--border); }
-  .card-icon { width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-  .icon-blue { background:var(--blue-soft); }
-  .icon-green { background:#dcfce7; }
-  .icon-gold { background:var(--gold-soft); }
-  .icon-purple { background:var(--purple-soft); }
-  .icon-red { background:#fef2f2; }
-  .card-header-text h2 { font-size:18px; font-weight:700; color:var(--blue); }
-  .card-header-text p { font-size:12px; color:var(--muted); margin-top:2px; }
+  /* 25/50 */
+  .tiers { display:grid; gap:12px; }
+  .tier { border-radius:var(--radius); padding:18px 20px; border:1.5px solid var(--border); background:var(--surface); }
+  .tier .range { font-size:12px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .tier h3 { font-size:20px; margin:4px 0 6px; }
+  .tier p { font-size:15px; color:var(--muted); }
+  .tier.t1 { background:#f7f9fd; }
+  .tier.t2 { border-color:#8fc7bf; background:var(--green-soft); }
+  .tier.t3 { border-color:#f3d28a; background:var(--gold-soft); }
+  .bar { display:flex; height:12px; border-radius:999px; overflow:hidden; margin:18px 0 6px; }
+  .bar i { display:block; height:100%; }
+  .bar .b1 { flex:24; background:#cbd5e1; }
+  .bar .b2 { flex:25; background:#34a899; }
+  .bar .b3 { flex:18; background:#d98a1c; }
+  .bar-legend { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); font-weight:600; }
+  .callout { margin-top:16px; background:var(--navy); color:#fff; border-radius:14px; padding:14px 18px; font-weight:700; font-size:15px; }
+  .callout strong { color:#fcd34d; }
+  .twin { display:grid; gap:14px; margin-top:20px; }
+  details { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+  summary { cursor:pointer; list-style:none; padding:16px 18px; font-weight:800; color:var(--navy); display:flex; justify-content:space-between; align-items:center; gap:10px; min-height:48px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::after { content:'+'; font-size:22px; line-height:1; color:var(--blue-mid); flex-shrink:0; }
+  details[open] > summary::after { content:'–'; }
+  details > .body { padding:0 18px 16px; }
 
-  .card-body { padding:20px 22px; display:flex; flex-direction:column; gap:16px; }
+  /* POOL */
+  .pool { display:grid; gap:14px; }
+  .pool .card ul { list-style:none; display:grid; gap:10px; margin-top:6px; }
+  .pool li { display:flex; gap:10px; font-size:15px; align-items:flex-start; }
+  .pool .yes { border-color:#8fc7bf; }
+  .pool .no { border-color:#f1b5b5; }
+  .pool .yes li::before { content:'✓'; color:var(--green); font-weight:800; }
+  .pool .no li::before { content:'✕'; color:var(--red); font-weight:800; }
+  .pool h3 { font-size:15px; letter-spacing:.05em; text-transform:uppercase; }
+  .pool .yes h3 { color:var(--green); }
+  .pool .no h3 { color:var(--red); }
 
-  /* RANK BADGE */
-  .rank-banner { border-radius:14px; padding:18px 20px; display:flex; align-items:center; gap:16px; }
-  .rank-banner.novato { background:linear-gradient(135deg,#f8fafc,#e2e8f0); border:1.5px solid #cbd5e1; }
-  .rank-banner.agente { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1.5px solid #93c5fd; }
-  .rank-banner.supervisor { background:linear-gradient(135deg,#fefce8,#fef9c3); border:1.5px solid #fde047; }
-  .rank-banner.director { background:linear-gradient(135deg,#fdf4ff,#f3e8ff); border:1.5px solid #d8b4fe; }
-  .rank-emoji { font-size:36px; }
-  .rank-info h3 { font-size:17px; font-weight:700; }
-  .rank-info .rank-sub { font-size:12px; color:var(--muted); margin-top:2px; }
-  .rank-info .rank-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-top:6px; }
-  .badge-novato { background:#e2e8f0; color:#475569; }
-  .badge-agente { background:#dbeafe; color:#1d4ed8; }
-  .badge-supervisor { background:#fef9c3; color:#a16207; }
-  .badge-director { background:#f3e8ff; color:#7c3aed; }
+  /* LEADERSHIP */
+  .diagram { display:flex; flex-direction:column; align-items:center; gap:0; margin:6px 0 18px; }
+  .node { width:100%; max-width:320px; text-align:center; padding:14px 16px; border-radius:14px; background:var(--surface); border:2px solid var(--blue); font-weight:800; color:var(--navy); }
+  .node small { display:block; font-weight:500; color:var(--muted); font-size:13px; margin-top:2px; }
+  .node.c { border-style:dashed; border-color:#94a3b8; }
+  .link { display:flex; flex-direction:column; align-items:center; padding:6px 0; font-size:13px; font-weight:800; color:var(--green); }
+  .link svg { width:22px; height:22px; }
+  .link.none { color:var(--red); }
+  .rules { display:grid; gap:10px; }
+  .rules .card { padding:16px 18px; }
+  .big5 { font-size:34px; font-weight:800; color:var(--green); line-height:1; }
+  .elig { list-style:none; display:grid; gap:6px; font-size:15px; color:var(--muted); margin-top:6px; }
+  .depth { display:inline-block; background:var(--gold-soft); color:var(--gold); font-weight:800; letter-spacing:.07em; font-size:12px; text-transform:uppercase; padding:6px 12px; border-radius:999px; margin-top:6px; }
 
-  /* COMMISSION TABLE */
-  .section-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:8px; }
-  .comm-table { border:1.5px solid var(--border); border-radius:12px; overflow:hidden; }
-  .comm-row { display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid var(--border); }
-  .comm-row:last-child { border-bottom:none; }
-  .comm-row.header { background:#f8fafc; }
-  .comm-cell { padding:10px 12px; font-size:13px; }
-  .comm-row.header .comm-cell { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
-  .comm-cell.amount { font-weight:700; color:var(--green-dark); }
-  .comm-cell.highlight { font-weight:700; color:var(--blue); }
+  /* MAINTENANCE */
+  .maint { display:grid; gap:16px; align-items:center; }
+  .maint .big { background:linear-gradient(135deg,var(--blue),var(--blue-mid)); color:#fff; border-radius:var(--radius); padding:26px 20px; text-align:center; }
+  .maint .big strong { display:block; font-size:clamp(44px,12vw,64px); line-height:1; font-weight:800; }
+  .maint .big span { display:block; margin-top:8px; font-weight:700; letter-spacing:.05em; font-size:13px; text-transform:uppercase; }
 
-  /* REQUIREMENTS */
-  .req-list { display:flex; flex-direction:column; gap:10px; }
-  .req-item { display:flex; align-items:center; gap:12px; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); background:#fafafa; }
-  .req-item.achieved { border-color:#86efac; background:#f0fdf4; }
-  .req-icon { font-size:22px; flex-shrink:0; }
-  .req-text { flex:1; }
-  .req-text strong { font-size:15px; font-weight:700; display:block; }
-  .req-text span { font-size:12px; color:var(--muted); }
-  .req-check { font-size:18px; }
+  /* CHARGEBACK */
+  .protect { background:var(--surface); border:1.5px solid #f3d28a; border-left-width:6px; border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow); }
+  .protect h3 { font-size:20px; margin-bottom:8px; }
+  .protect .months { display:inline-block; background:var(--gold-soft); color:var(--gold); font-weight:800; border-radius:10px; padding:4px 12px; margin-bottom:10px; }
+  .protect ul { margin:10px 0 0 20px; display:grid; gap:4px; font-size:15px; }
 
-  /* TIPS */
-  .tip-list { display:flex; flex-direction:column; gap:10px; }
-  .tip { display:flex; gap:12px; padding:13px 14px; border-radius:12px; background:#f8fafc; border:1px solid var(--border); }
-  .tip-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
-  .tip-text { font-size:13px; line-height:1.55; color:var(--text); }
-  .tip-text strong { font-weight:700; }
+  /* NOTES */
+  .legal { margin:30px 0 0; background:var(--blue-soft); border:1.5px solid #b7cdee; border-radius:var(--radius); padding:18px 20px; color:var(--blue); font-size:15px; }
+  .legal strong { display:block; margin-bottom:4px; }
+  .final { text-align:center; padding:40px 0 56px; }
+  .final .btn { margin:6px 4px; }
+  .btn-blue { background:var(--blue); color:#fff; }
+  .btn-outline { border:1.5px solid var(--blue); color:var(--blue); background:#fff; }
 
-  /* ALERTS */
-  .alert { border-radius:12px; padding:13px 16px; font-size:13px; line-height:1.6; display:flex; gap:10px; align-items:flex-start; }
-  .alert-blue { background:var(--blue-soft); border:1.5px solid #93c5fd; color:#1e40af; }
-  .alert-green { background:#f0fdf4; border:1.5px solid #86efac; color:#15803d; }
-  .alert-gold { background:var(--gold-soft); border:1.5px solid #fcd34d; color:#92400e; }
-  .alert-purple { background:var(--purple-soft); border:1.5px solid #c4b5fd; color:#5b21b6; }
-  .alert-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
-
-  /* INCOME SHOWCASE */
-  .income-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .income-card { border-radius:12px; padding:14px; text-align:center; }
-  .income-card.res { background:#f0fdf4; border:1.5px solid #86efac; }
-  .income-card.com { background:#fffbeb; border:1.5px solid #fcd34d; }
-  .income-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; }
-  .income-amount { font-size:22px; font-weight:700; color:var(--blue); }
-  .income-sub { font-size:11px; color:var(--muted); margin-top:3px; }
-
-  /* OVERRIDE EXPLAINER */
-  .override-flow { display:flex; flex-direction:column; gap:8px; }
-  .override-row { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; border:1.5px solid var(--border); background:#fafafa; }
-  .override-who { font-size:12px; font-weight:700; flex:1; }
-  .override-arrow { color:var(--muted); font-size:16px; }
-  .override-amount { font-size:14px; font-weight:700; color:var(--green-dark); }
-  .override-note { font-size:11px; color:var(--muted); margin-top:3px; }
-
-  /* PATH STEPS */
-  .path-steps { display:flex; flex-direction:column; gap:0; }
-  .path-step { display:flex; gap:14px; padding:14px 0; position:relative; }
-  .path-step:not(:last-child)::after { content:''; position:absolute; left:17px; top:46px; width:2px; height:calc(100% - 20px); background:var(--border); }
-  .path-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; z-index:1; }
-  .path-dot.blue { background:var(--blue-soft); }
-  .path-dot.green { background:#dcfce7; }
-  .path-dot.gold { background:var(--gold-soft); }
-  .path-dot.purple { background:var(--purple-soft); }
-  .path-content { flex:1; padding-top:6px; }
-  .path-content h4 { font-size:14px; font-weight:700; }
-  .path-content p { font-size:12px; color:var(--muted); margin-top:3px; line-height:1.5; }
-
-  /* NAV BUTTONS */
-  .card-nav { padding:16px 22px 22px; display:flex; gap:10px; border-top:1px solid var(--border); }
-  .btn-prev { flex:1; padding:13px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); color:var(--muted); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; }
-  .btn-prev:hover { background:var(--border); }
-  .btn-next { flex:2; padding:13px; border-radius:12px; border:none; background:var(--blue); color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; }
-  .btn-next:hover { background:#15316a; }
-  .btn-next.final { background:var(--green-dark); }
-  .btn-next.final:hover { background:#0f6a58; }
-
-  /* DONE */
-  .done-screen { display:none; text-align:center; padding:48px 24px; }
-  .done-screen.active { display:block; }
-  .done-emoji { font-size:72px; margin-bottom:16px; }
-  .done-screen h2 { font-size:24px; font-weight:700; color:var(--blue); margin-bottom:8px; }
-  .done-screen p { font-size:14px; color:var(--muted); max-width:300px; margin:0 auto 28px; line-height:1.6; }
-  .done-actions { display:flex; flex-direction:column; gap:10px; max-width:280px; margin:0 auto; }
-  .btn-action { display:block; padding:14px 24px; border-radius:12px; font-size:15px; font-weight:700; text-decoration:none; text-align:center; }
-  .btn-green { background:var(--green-dark); color:#fff; }
-  .btn-outline { background:var(--bg); border:1.5px solid var(--border); color:var(--text); }
-
-  /* STAR RATING VISUAL */
-  .stars { color:var(--gold); font-size:18px; letter-spacing:2px; }
-
-  /* DIVIDER */
-  .divider { height:1px; background:var(--border); margin:4px 0; }
-
-  @media(max-width:400px) {
-    .income-grid { grid-template-columns:1fr; }
-    .comm-row { grid-template-columns:1.2fr 1fr 1fr; }
+  @media (min-width:768px) {
+    .wrap { padding:0 24px; }
+    section { padding-top:60px; }
+    .path { grid-template-columns:1fr 56px 1fr 56px 1fr; align-items:stretch; }
+    .lvl { padding:74px 18px 20px; }
+    .lvl::before { left:18px; top:18px; }
+    .arrow { justify-content:center; }
+    .arrow svg { transform:rotate(-90deg); }
+    .arrow span { display:none; }
+    .grid3, .tiers { grid-template-columns:repeat(3,1fr); }
+    .twin, .pool { grid-template-columns:1fr 1fr; }
+    .rules { grid-template-columns:1fr 1fr 1fr; }
+    .maint { grid-template-columns:1fr 1.4fr; }
+    .panel { padding:28px; }
+    .tab { font-size:15px; }
+    .diagram { flex-direction:row; justify-content:center; align-items:stretch; }
+    .diagram .link svg { transform:rotate(-90deg); }
+    .diagram .link { padding:0 10px; justify-content:center; }
+    .node { width:auto; flex:1; max-width:240px; }
+  }
+  @media (min-width:1024px) {
+    .twin { gap:20px; }
+    .panel table { max-width:640px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior:auto; }
+    * { animation:none !important; transition:none !important; }
   }
 </style>
 </head>
 <body>
-<div id="navContainer"></div>
+<a class="skip" href="#main">Saltar al contenido</a>
 
-<div class="hero">
-  <div class="hero-tag">Plan de Crecimiento</div>
-  <h1>Tu camino al éxito<br>en Izzy Communications</h1>
-  <p>Aprende cómo subir de rango, cuánto ganarás en cada nivel y qué necesitas lograr para llegar al tope.</p>
-
-  <div class="roadmap">
-    <div class="rm-node">
-      <div class="rm-circle active" id="rm0">🌱</div>
-      <div class="rm-label active">Novato</div>
-    </div>
-    <div class="rm-line" id="rl0"></div>
-    <div class="rm-node">
-      <div class="rm-circle" id="rm1">⭐</div>
-      <div class="rm-label">Agente</div>
-    </div>
-    <div class="rm-line" id="rl1"></div>
-    <div class="rm-node">
-      <div class="rm-circle" id="rm2">🏆</div>
-      <div class="rm-label">Supervisor</div>
-    </div>
-    <div class="rm-line" id="rl2"></div>
-    <div class="rm-node">
-      <div class="rm-circle" id="rm3">👑</div>
-      <div class="rm-label">Director</div>
+<header class="hero">
+  <div class="wrap">
+    <div class="tag">Plan de Crecimiento</div>
+    <h1>IZZY<br>COMMUNICATIONS</h1>
+    <p class="quote">“Crece con tu producción. Desarrolla tu equipo. Construye liderazgo.”</p>
+    <p class="sub">Tu crecimiento en IZZY Communications está basado en producción, desarrollo y resultados.</p>
+    <div class="hero-cta">
+      <a class="btn btn-light" href="#camino">Ver mi camino</a>
+      <a class="btn btn-ghost" href="#comisiones">Ver comisiones</a>
     </div>
   </div>
+</header>
 
-  <div class="progress-bar-wrap">
-    <div class="prog-dot active" onclick="goTo(0)"></div>
-    <div class="prog-dot" onclick="goTo(1)"></div>
-    <div class="prog-dot" onclick="goTo(2)"></div>
-    <div class="prog-dot" onclick="goTo(3)"></div>
-    <div class="prog-dot" onclick="goTo(4)"></div>
-    <div class="prog-dot" onclick="goTo(5)"></div>
-  </div>
-</div>
+<main id="main">
 
-<div class="steps-wrap">
+  <!-- CAMINO -->
+  <section id="camino" aria-labelledby="camino-t">
+    <div class="wrap">
+      <span class="eyebrow">Paso a paso</span>
+      <h2 class="sec-title" id="camino-t">Tu camino de crecimiento</h2>
+      <p class="sec-lead">Tres niveles. Cada uno te acerca a más desarrollo y liderazgo.</p>
 
-  <!-- PASO 0: Visión general -->
-  <div class="step-card active" id="card-0">
-    <div class="card-header">
-      <div class="card-icon icon-blue">🗺️</div>
-      <div class="card-header-text">
-        <h2>El camino completo</h2>
-        <p>4 rangos, ingresos crecientes en cada etapa</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="path-steps">
-        <div class="path-step">
-          <div class="path-dot blue">🌱</div>
-          <div class="path-content">
-            <h4>Novato — Punto de partida</h4>
-            <p>Aprendes el proceso, haces tus primeras ventas. Ganas hasta <strong>$50 por instalación</strong> residencial.</p>
-          </div>
-        </div>
-        <div class="path-step">
-          <div class="path-dot green">⭐</div>
-          <div class="path-content">
-            <h4>Agente — Profesional establecido</h4>
-            <p>Aumentan tus comisiones hasta <strong>$100 por instalación</strong> residencial. Necesitas 10 instalaciones.</p>
-          </div>
-        </div>
-        <div class="path-step">
-          <div class="path-dot gold">🏆</div>
-          <div class="path-content">
-            <h4>Supervisor — Construyes equipo</h4>
-            <p>Comisiones de hasta <strong>$150 residencial / $450 comercial</strong> + ganas porcentaje del equipo que reclutes.</p>
-          </div>
-        </div>
-        <div class="path-step">
-          <div class="path-dot purple">👑</div>
-          <div class="path-content">
-            <h4>Director — Ingresos organizacionales</h4>
-            <p>Recibes un <strong>bono por cada instalación de tu organización</strong> entera, más tus comisiones personales.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert alert-blue">
-        <div class="alert-icon">💡</div>
-        <div>El sistema <strong>te promueve automáticamente</strong> cuando cumples los requisitos. No tienes que pedirlo.</div>
-      </div>
-    </div>
-    <div class="card-nav">
-      <button class="btn-next" onclick="next()">Empezar → Novato</button>
-    </div>
-  </div>
-
-  <!-- PASO 1: NOVATO -->
-  <div class="step-card" id="card-1">
-    <div class="card-header">
-      <div class="card-icon icon-blue">🌱</div>
-      <div class="card-header-text">
-        <h2>Rango: Novato</h2>
-        <p>Tu punto de partida — aprende y vende</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="rank-banner novato">
-        <div class="rank-emoji">🌱</div>
-        <div class="rank-info">
-          <h3>Novato</h3>
-          <div class="rank-sub">Rango inicial de todos los agentes</div>
-          <div class="rank-badge badge-novato">Rango 1 de 4</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-label">Comisiones por instalación</div>
-        <div class="comm-table">
-          <div class="comm-row header">
-            <div class="comm-cell">Categoría</div>
-            <div class="comm-cell">Residencial</div>
-            <div class="comm-cell">Comercial</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Básico</div>
-            <div class="comm-cell amount">$25</div>
-            <div class="comm-cell amount">$75</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Estándar</div>
-            <div class="comm-cell amount">$40</div>
-            <div class="comm-cell amount">$120</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Premium</div>
-            <div class="comm-cell amount">$50</div>
-            <div class="comm-cell amount">$150</div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-label">Ejemplos por categoría</div>
-        <div class="tip-list">
-          <div class="tip">
-            <div class="tip-icon">📡</div>
-            <div class="tip-text"><strong>Básico:</strong> Servicios promocionales, programas especiales</div>
-          </div>
-          <div class="tip">
-            <div class="tip-icon">🌐</div>
-            <div class="tip-text"><strong>Estándar:</strong> Spectrum 300/500, Frontier 500, T-Mobile Home Internet</div>
-          </div>
-          <div class="tip">
-            <div class="tip-icon">🚀</div>
-            <div class="tip-text"><strong>Premium:</strong> Spectrum 1 Gig / 2 Gig, AT&T Fiber, Frontier 1 Gig</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert alert-gold">
-        <div class="alert-icon">🎯</div>
-        <div>Tu meta inmediata: <strong>10 instalaciones</strong> para ascender a Agente y aumentar tus comisiones.</div>
-      </div>
-    </div>
-    <div class="card-nav">
-      <button class="btn-prev" onclick="prev()">← Atrás</button>
-      <button class="btn-next" onclick="next()">Cómo llegar a Agente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 2: AGENTE -->
-  <div class="step-card" id="card-2">
-    <div class="card-header">
-      <div class="card-icon icon-green">⭐</div>
-      <div class="card-header-text">
-        <h2>Rango: Agente</h2>
-        <p>Más comisiones, mismo esfuerzo</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="rank-banner agente">
-        <div class="rank-emoji">⭐</div>
-        <div class="rank-info">
-          <h3>Agente</h3>
-          <div class="rank-sub">Profesional establecido</div>
-          <div class="rank-badge badge-agente">Rango 2 de 4</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-label">Requisito para ascender</div>
-        <div class="req-list">
-          <div class="req-item">
-            <div class="req-icon">📦</div>
-            <div class="req-text">
-              <strong>10 instalaciones acumuladas</strong>
-              <span>De por vida — no importa el tiempo, solo el total</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-label">Comisiones como Agente</div>
-        <div class="comm-table">
-          <div class="comm-row header">
-            <div class="comm-cell">Categoría</div>
-            <div class="comm-cell">Residencial</div>
-            <div class="comm-cell">Comercial</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Básico</div>
-            <div class="comm-cell amount">$40</div>
-            <div class="comm-cell amount">$120</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Estándar</div>
-            <div class="comm-cell amount">$75</div>
-            <div class="comm-cell amount">$225</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Premium</div>
-            <div class="comm-cell amount">$100</div>
-            <div class="comm-cell amount">$300</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert alert-green">
-        <div class="alert-icon">📈</div>
-        <div>Con el mismo trabajo, en Estándar residencial pasas de <strong>$40 a $75 por venta</strong> — casi el doble.</div>
-      </div>
-
-      <div>
-        <div class="section-label">Tu meta como Agente</div>
-        <div class="req-list">
-          <div class="req-item">
-            <div class="req-icon">📦</div>
-            <div class="req-text">
-              <strong>20 instalaciones acumuladas</strong>
-              <span>10 más desde que llegaste a Agente</span>
-            </div>
-          </div>
-          <div class="req-item">
-            <div class="req-icon">👥</div>
-            <div class="req-text">
-              <strong>5 agentes activos en tu equipo</strong>
-              <span>Personas que reclutas y que estén produciendo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card-nav">
-      <button class="btn-prev" onclick="prev()">← Atrás</button>
-      <button class="btn-next" onclick="next()">Cómo llegar a Supervisor →</button>
-    </div>
-  </div>
-
-  <!-- PASO 3: SUPERVISOR -->
-  <div class="step-card" id="card-3">
-    <div class="card-header">
-      <div class="card-icon icon-gold">🏆</div>
-      <div class="card-header-text">
-        <h2>Rango: Supervisor</h2>
-        <p>Construyes equipo y ganas del trabajo de todos</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="rank-banner supervisor">
-        <div class="rank-emoji">🏆</div>
-        <div class="rank-info">
+      <ol class="path">
+        <li class="lvl l1">
+          <h3>Agente en Entrenamiento</h3>
+          <p>Aprende el sistema, domina los productos y empieza a producir.</p>
+          <span class="chip">Nivel 1</span>
+        </li>
+        <li class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </li>
+        <li class="lvl l2">
+          <h3>Asociado</h3>
+          <p>Con tu desarrollo accedes a un nivel superior de comisión.</p>
+          <span class="chip">Nivel 2</span>
+        </li>
+        <li class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </li>
+        <li class="lvl l3">
           <h3>Supervisor</h3>
-          <div class="rank-sub">Líder de equipo</div>
-          <div class="rank-badge badge-supervisor">Rango 3 de 4</div>
-        </div>
+          <p>Combina producción personal, desarrollo de agentes y liderazgo.</p>
+          <span class="chip">Nivel 3</span>
+        </li>
+      </ol>
+      <p class="loop">APRENDE → PRODUCE → CRECE</p>
+    </div>
+  </section>
+
+  <!-- COMISIONES POR NIVEL -->
+  <section id="comisiones" aria-labelledby="com-t">
+    <div class="wrap">
+      <span class="eyebrow">Comisión por conexión</span>
+      <h2 class="sec-title" id="com-t">Comisiones por nivel</h2>
+      <p class="sec-lead">Elige un nivel para ver la comisión de cada producto.</p>
+
+      <div class="tabs" role="tablist" aria-label="Nivel">
+        <button class="tab" role="tab" id="tab-train" aria-controls="panel-train" aria-selected="true" type="button">Entrenamiento</button>
+        <button class="tab" role="tab" id="tab-assoc" aria-controls="panel-assoc" aria-selected="false" tabindex="-1" type="button">Asociado</button>
+        <button class="tab" role="tab" id="tab-sup" aria-controls="panel-sup" aria-selected="false" tabindex="-1" type="button">Supervisor</button>
       </div>
 
-      <div>
-        <div class="section-label">Requisitos para ascender a Supervisor</div>
-        <div class="req-list">
-          <div class="req-item">
-            <div class="req-icon">📦</div>
-            <div class="req-text">
-              <strong>20 instalaciones personales acumuladas</strong>
-              <span>De por vida — se suma todo lo que hayas hecho</span>
-            </div>
-          </div>
-          <div class="req-item">
-            <div class="req-icon">👥</div>
-            <div class="req-text">
-              <strong>5 agentes activos en tu equipo</strong>
-              <span>Que estén vendiendo activamente bajo tu línea</span>
-            </div>
-          </div>
-        </div>
+      <div class="panel" role="tabpanel" id="panel-train" aria-labelledby="tab-train" tabindex="0">
+        <h3>Agente en Entrenamiento</h3>
+        <p class="msg">Tu primera etapa es aprender el sistema, dominar los productos y comenzar a producir.</p>
+        <div class="cta-row" aria-label="Aprende, produce, crece">APRENDE <i>→</i> PRODUCE <i>→</i> CRECE</div>
+        <table data-table="commission-training">
+          <caption>Comisión por conexión válida</caption>
+          <thead><tr><th scope="col">Producto</th><th scope="col">Comisión</th></tr></thead>
+          <tbody>
+            <tr data-product="Spectrum 500 Mbps"><th scope="row">Spectrum 500 Mbps</th><td data-amount="70">$70</td></tr>
+            <tr data-product="Spectrum 1 Gig"><th scope="row">Spectrum 1 Gig</th><td data-amount="90">$90</td></tr>
+            <tr data-product="AT&amp;T Fiber 300 Mbps"><th scope="row">AT&amp;T Fiber 300 Mbps</th><td data-amount="90">$90</td></tr>
+            <tr data-product="AT&amp;T 500 Mbps"><th scope="row">AT&amp;T 500 Mbps</th><td data-amount="100">$100</td></tr>
+            <tr data-product="AT&amp;T 1–5 Gig"><th scope="row">AT&amp;T 1–5 Gig</th><td data-amount="140">$140</td></tr>
+            <tr data-product="AT&amp;T Air"><th scope="row">AT&amp;T Air</th><td data-amount="50">$50</td></tr>
+            <tr data-product="AT&amp;T Celular + Línea"><th scope="row">AT&amp;T Celular + Línea</th><td data-amount="60">$60</td></tr>
+            <tr data-product="AT&amp;T BYOD"><th scope="row">AT&amp;T BYOD</th><td data-amount="30">$30</td></tr>
+            <tr data-product="Frontier 500 Mbps"><th scope="row">Frontier 500 Mbps</th><td data-amount="100">$100</td></tr>
+            <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="140">$140</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <div>
-        <div class="section-label">Comisiones personales como Supervisor</div>
-        <div class="comm-table">
-          <div class="comm-row header">
-            <div class="comm-cell">Categoría</div>
-            <div class="comm-cell">Residencial</div>
-            <div class="comm-cell">Comercial</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Básico</div>
-            <div class="comm-cell amount">$50</div>
-            <div class="comm-cell amount">$150</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Estándar</div>
-            <div class="comm-cell amount">$90</div>
-            <div class="comm-cell amount">$270</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Premium</div>
-            <div class="comm-cell amount">$150</div>
-            <div class="comm-cell amount">$450</div>
-          </div>
-        </div>
+      <div class="panel" role="tabpanel" id="panel-assoc" aria-labelledby="tab-assoc" tabindex="0" hidden>
+        <h3>Asociado</h3>
+        <p class="msg">A medida que avanzas en tu desarrollo, puedes acceder a un nivel superior de comisión.</p>
+        <table data-table="commission-associate">
+          <caption>Comisión por conexión válida</caption>
+          <thead><tr><th scope="col">Producto</th><th scope="col">Comisión</th></tr></thead>
+          <tbody>
+            <tr data-product="Spectrum 500 Mbps"><th scope="row">Spectrum 500 Mbps</th><td data-amount="90">$90</td></tr>
+            <tr data-product="Spectrum 1 Gig"><th scope="row">Spectrum 1 Gig</th><td data-amount="115">$115</td></tr>
+            <tr data-product="AT&amp;T Fiber 300 Mbps"><th scope="row">AT&amp;T Fiber 300 Mbps</th><td data-amount="115">$115</td></tr>
+            <tr data-product="AT&amp;T 500 Mbps"><th scope="row">AT&amp;T 500 Mbps</th><td data-amount="125">$125</td></tr>
+            <tr data-product="AT&amp;T 1–5 Gig"><th scope="row">AT&amp;T 1–5 Gig</th><td data-amount="175">$175</td></tr>
+            <tr data-product="AT&amp;T Air"><th scope="row">AT&amp;T Air</th><td data-amount="65">$65</td></tr>
+            <tr data-product="AT&amp;T Celular + Línea"><th scope="row">AT&amp;T Celular + Línea</th><td data-amount="75">$75</td></tr>
+            <tr data-product="AT&amp;T BYOD"><th scope="row">AT&amp;T BYOD</th><td data-amount="40">$40</td></tr>
+            <tr data-product="Frontier 500 Mbps"><th scope="row">Frontier 500 Mbps</th><td data-amount="125">$125</td></tr>
+            <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="175">$175</td></tr>
+          </tbody>
+        </table>
+        <p class="promo">Consulta con tu Supervisor los requisitos vigentes de ascenso.</p>
       </div>
 
-      <div>
-        <div class="section-label">Ingresos máximos mensuales estimados</div>
-        <div class="income-grid">
-          <div class="income-card res">
-            <div class="income-label">Solo personal (10 ventas/mes)</div>
-            <div class="income-amount">$900+</div>
-            <div class="income-sub">Estándar residencial</div>
-          </div>
-          <div class="income-card com">
-            <div class="income-label">Con equipo de 5 activos</div>
-            <div class="income-amount">$1,500+</div>
-            <div class="income-sub">Personal + overrides del equipo</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert alert-gold">
-        <div class="alert-icon">💰</div>
-        <div>Como Supervisor también recibes un <strong>override sobre las ventas de tus agentes</strong> — ganas cuando tu equipo vende, aunque tú no lo hagas ese día.</div>
+      <div class="panel" role="tabpanel" id="panel-sup" aria-labelledby="tab-sup" tabindex="0" hidden>
+        <h3>Supervisor</h3>
+        <p class="msg">El Supervisor combina producción personal, desarrollo de agentes y liderazgo.</p>
+        <table data-table="commission-supervisor">
+          <caption>Comisión base por conexión válida</caption>
+          <thead><tr><th scope="col">Producto</th><th scope="col">Comisión base</th></tr></thead>
+          <tbody>
+            <tr data-product="Spectrum 500 Mbps"><th scope="row">Spectrum 500 Mbps</th><td data-amount="105">$105</td></tr>
+            <tr data-product="Spectrum 1 Gig"><th scope="row">Spectrum 1 Gig</th><td data-amount="135">$135</td></tr>
+            <tr data-product="AT&amp;T Fiber 300 Mbps"><th scope="row">AT&amp;T Fiber 300 Mbps</th><td data-amount="135">$135</td></tr>
+            <tr data-product="AT&amp;T 500 Mbps"><th scope="row">AT&amp;T 500 Mbps</th><td data-amount="150">$150</td></tr>
+            <tr data-product="AT&amp;T 1–5 Gig"><th scope="row">AT&amp;T 1–5 Gig</th><td data-amount="210">$210</td></tr>
+            <tr data-product="AT&amp;T Air"><th scope="row">AT&amp;T Air</th><td data-amount="75">$75</td></tr>
+            <tr data-product="AT&amp;T Celular + Línea"><th scope="row">AT&amp;T Celular + Línea</th><td data-amount="90">$90</td></tr>
+            <tr data-product="AT&amp;T BYOD"><th scope="row">AT&amp;T BYOD</th><td data-amount="45">$45</td></tr>
+            <tr data-product="Frontier 500 Mbps"><th scope="row">Frontier 500 Mbps</th><td data-amount="150">$150</td></tr>
+            <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="210">$210</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="card-nav">
-      <button class="btn-prev" onclick="prev()">← Atrás</button>
-      <button class="btn-next" onclick="next()">Cómo llegar a Director →</button>
+  </section>
+
+  <!-- 3 FUENTES -->
+  <section id="fuentes" aria-labelledby="src-t">
+    <div class="wrap">
+      <span class="eyebrow">Nivel Supervisor</span>
+      <h2 class="sec-title" id="src-t">3 formas de generar compensación</h2>
+      <p class="sec-lead">Como Supervisor puedes generar compensación por:</p>
+      <div class="grid3">
+        <article class="card">
+          <div class="num" aria-hidden="true">1</div>
+          <h3>Tu producción</h3>
+          <p>Comisión correspondiente al nivel Supervisor.</p>
+        </article>
+        <article class="card">
+          <div class="num" aria-hidden="true">2</div>
+          <h3>Bono de producción</h3>
+          <p>Basado en las conexiones válidas elegibles de tu pool.</p>
+        </article>
+        <article class="card lead">
+          <div class="num" aria-hidden="true">3</div>
+          <h3>Liderazgo</h3>
+          <p>$5 por conexión válida elegible de internet de tu Supervisor directo y su base elegible. Una sola profundidad.</p>
+        </article>
+      </div>
     </div>
+  </section>
+
+  <!-- 25/50 -->
+  <section id="bono" aria-labelledby="bono-t">
+    <div class="wrap">
+      <span class="eyebrow">Bono de producción</span>
+      <h2 class="sec-title" id="bono-t">Cómo funciona el bono 25/50</h2>
+      <p class="sec-lead">Tus conexiones válidas se cuentan en orden. El bono depende del tramo en que cae cada conexión.</p>
+
+      <div class="tiers">
+        <div class="tier t1">
+          <div class="range">Conexiones 1–24</div>
+          <h3>Comisión Supervisor</h3>
+          <p>Sin bono adicional.</p>
+        </div>
+        <div class="tier t2">
+          <div class="range">Conexiones 25–49</div>
+          <h3>Comisión + Bono 25–49</h3>
+          <p>Comisión Supervisor más el bono 25–49 correspondiente al producto.</p>
+        </div>
+        <div class="tier t3">
+          <div class="range">Conexión 50+</div>
+          <h3>Comisión + Bono 50+</h3>
+          <p>Comisión Supervisor más el bono 50+ correspondiente al producto.</p>
+        </div>
+      </div>
+
+      <div class="bar" role="img" aria-label="Línea de progreso: conexiones 1 a 24 sin bono, 25 a 49 bono 25–49, 50 en adelante bono 50+">
+        <i class="b1"></i><i class="b2"></i><i class="b3"></i>
+      </div>
+      <div class="bar-legend" aria-hidden="true"><span>1</span><span>25</span><span>50+</span></div>
+
+      <p class="callout"><strong>LOS BONOS SON POR TRAMOS.</strong> NO son retroactivos.</p>
+
+      <div class="twin">
+        <details open>
+          <summary>Tabla bonos 25–49</summary>
+          <div class="body">
+            <table data-table="bonus-25-49">
+              <caption>Bono adicional por conexión, conexiones 25–49</caption>
+              <thead><tr><th scope="col">Producto</th><th scope="col">Bono</th></tr></thead>
+              <tbody>
+                <tr data-product="Spectrum 500 Mbps"><th scope="row">Spectrum 500 Mbps</th><td data-amount="10">+$10</td></tr>
+                <tr data-product="Spectrum 1 Gig"><th scope="row">Spectrum 1 Gig</th><td data-amount="10">+$10</td></tr>
+                <tr data-product="AT&amp;T Fiber 300 Mbps"><th scope="row">AT&amp;T Fiber 300 Mbps</th><td data-amount="10">+$10</td></tr>
+                <tr data-product="AT&amp;T 500 Mbps"><th scope="row">AT&amp;T 500 Mbps</th><td data-amount="15">+$15</td></tr>
+                <tr data-product="AT&amp;T 1–5 Gig"><th scope="row">AT&amp;T 1–5 Gig</th><td data-amount="20">+$20</td></tr>
+                <tr data-product="AT&amp;T Air"><th scope="row">AT&amp;T Air</th><td data-amount="5">+$5</td></tr>
+                <tr data-product="AT&amp;T Celular + Línea"><th scope="row">AT&amp;T Celular + Línea</th><td data-amount="10">+$10</td></tr>
+                <tr data-product="AT&amp;T BYOD"><th scope="row">AT&amp;T BYOD</th><td data-amount="5">+$5</td></tr>
+                <tr data-product="Frontier 500 Mbps"><th scope="row">Frontier 500 Mbps</th><td data-amount="15">+$15</td></tr>
+                <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="20">+$20</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+        <details open>
+          <summary>Tabla bonos 50+</summary>
+          <div class="body">
+            <table data-table="bonus-50-plus">
+              <caption>Bono adicional por conexión, conexión 50 en adelante</caption>
+              <thead><tr><th scope="col">Producto</th><th scope="col">Bono</th></tr></thead>
+              <tbody>
+                <tr data-product="Spectrum 500 Mbps"><th scope="row">Spectrum 500 Mbps</th><td data-amount="20">+$20</td></tr>
+                <tr data-product="Spectrum 1 Gig"><th scope="row">Spectrum 1 Gig</th><td data-amount="20">+$20</td></tr>
+                <tr data-product="AT&amp;T Fiber 300 Mbps"><th scope="row">AT&amp;T Fiber 300 Mbps</th><td data-amount="20">+$20</td></tr>
+                <tr data-product="AT&amp;T 500 Mbps"><th scope="row">AT&amp;T 500 Mbps</th><td data-amount="25">+$25</td></tr>
+                <tr data-product="AT&amp;T 1–5 Gig"><th scope="row">AT&amp;T 1–5 Gig</th><td data-amount="35">+$35</td></tr>
+                <tr data-product="AT&amp;T Air"><th scope="row">AT&amp;T Air</th><td data-amount="15">+$15</td></tr>
+                <tr data-product="AT&amp;T Celular + Línea"><th scope="row">AT&amp;T Celular + Línea</th><td data-amount="15">+$15</td></tr>
+                <tr data-product="AT&amp;T BYOD"><th scope="row">AT&amp;T BYOD</th><td data-amount="10">+$10</td></tr>
+                <tr data-product="Frontier 500 Mbps"><th scope="row">Frontier 500 Mbps</th><td data-amount="25">+$25</td></tr>
+                <tr data-product="Frontier 1 Gig"><th scope="row">Frontier 1 Gig</th><td data-amount="35">+$35</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- POOL -->
+  <section id="pool" aria-labelledby="pool-t">
+    <div class="wrap">
+      <span class="eyebrow">Nivel Supervisor</span>
+      <h2 class="sec-title" id="pool-t">Tu pool de producción</h2>
+      <p class="sec-lead">Es el conjunto de conexiones que cuentan para tu bono 25/50.</p>
+      <div class="pool">
+        <div class="card yes">
+          <h3>Incluye</h3>
+          <ul>
+            <li>Tus conexiones válidas.</li>
+            <li>Conexiones válidas de tus agentes directos que todavía no son Supervisores.</li>
+          </ul>
+        </div>
+        <div class="card no">
+          <h3>No incluye</h3>
+          <ul>
+            <li>Supervisores directos.</li>
+            <li>Producción de las bases de esos Supervisores.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIDERAZGO -->
+  <section id="liderazgo" aria-labelledby="lid-t">
+    <div class="wrap">
+      <span class="eyebrow">Liderazgo</span>
+      <h2 class="sec-title" id="lid-t">Cómo funciona el $5 de liderazgo</h2>
+      <p class="sec-lead">Cuando desarrollas a otro Supervisor, puedes recibir liderazgo sobre su producción de internet.</p>
+
+      <div class="diagram" role="group" aria-label="Diagrama: Supervisor A recibe liderazgo sobre Supervisor B; Supervisor B recibe liderazgo sobre Supervisor C; A no recibe sobre C">
+        <div class="node">Supervisor A<small>desarrolla a B</small></div>
+        <div class="link" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          $5
+        </div>
+        <div class="node">Supervisor B<small>desarrolla a C</small></div>
+        <div class="link" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          $5
+        </div>
+        <div class="node c">Supervisor C<small>y su base elegible</small></div>
+      </div>
+
+      <div class="rules">
+        <div class="card">
+          <div class="big5">$5</div>
+          <p><strong>A</strong> puede recibir $5 por conexiones válidas elegibles de internet de <strong>B</strong> y la base elegible de B.</p>
+        </div>
+        <div class="card">
+          <div class="big5">$5</div>
+          <p><strong>B</strong> puede recibir $5 por conexiones válidas elegibles de internet de <strong>C</strong> y la base elegible de C.</p>
+        </div>
+        <div class="card no" style="border-color:#f1b5b5">
+          <div class="big5" style="color:var(--red)">$0</div>
+          <p><strong>A NO</strong> recibe liderazgo sobre C ni sobre la base de C.</p>
+        </div>
+      </div>
+      <span class="depth">Una sola profundidad</span>
+
+      <div class="twin">
+        <div class="card yes-card" style="border-color:#8fc7bf">
+          <h3>Internet elegible ($5)</h3>
+          <ul class="elig">
+            <li>Spectrum Internet</li>
+            <li>AT&amp;T Fiber / Internet</li>
+            <li>AT&amp;T Air</li>
+            <li>Frontier Internet</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color:#f1b5b5">
+          <h3>No elegible ($0)</h3>
+          <ul class="elig">
+            <li>AT&amp;T Celular + Línea</li>
+            <li>AT&amp;T BYOD</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANTENIMIENTO -->
+  <section id="mantenimiento" aria-labelledby="mant-t">
+    <div class="wrap">
+      <span class="eyebrow">Mantenimiento</span>
+      <h2 class="sec-title" id="mant-t">Mantenimiento de Supervisor</h2>
+      <div class="maint">
+        <div class="big"><strong>150</strong><span>Conexiones válidas por trimestre</span></div>
+        <div class="grid-m">
+          <div class="card" style="margin-bottom:12px">
+            <h3>Incluye</h3>
+            <p>Producción personal + agentes directos no-Supervisores.</p>
+          </div>
+          <div class="card" style="margin-bottom:12px">
+            <h3>No incluye</h3>
+            <p>Supervisores directos ni sus bases.</p>
+          </div>
+          <div class="card">
+            <h3>Supervisor nuevo</h3>
+            <p>El requisito comienza en el siguiente trimestre calendario completo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARGEBACK -->
+  <section id="chargeback" aria-labelledby="cb-t">
+    <div class="wrap">
+      <span class="eyebrow">Importante</span>
+      <h2 class="sec-title" id="cb-t">Protege tu producción</h2>
+      <div class="protect">
+        <span class="months">Mínimo 3 meses activa</span>
+        <p>La cuenta debe permanecer activa por un mínimo de 3 meses.</p>
+        <p style="margin-top:10px">Si una conexión no cumple este requisito, se revierte el 100% de los pagos relacionados con esa conexión, incluyendo cuando corresponda:</p>
+        <ul>
+          <li>Comisión base</li>
+          <li>Bono de producción</li>
+          <li>Bono de liderazgo</li>
+          <li>Incentivos relacionados</li>
+        </ul>
+        <p style="margin-top:12px">Si esos pagos ya fueron realizados, el monto correspondiente puede generar un saldo negativo que se compensará con futuras comisiones.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTAS -->
+  <section id="notas" aria-labelledby="notas-t">
+    <div class="wrap">
+      <span class="eyebrow">Antes de vender</span>
+      <h2 class="sec-title" id="notas-t">Notas importantes</h2>
+      <div class="legal" role="note">
+        <strong>Consulta siempre la versión vigente antes de procesar una venta.</strong>
+        Las comisiones, bonos, productos e incentivos están sujetos a la tabla vigente de IZZY Communications y a los programas disponibles de los carriers.
+      </div>
+    </div>
+  </section>
+
+  <div class="final wrap">
+    <a class="btn btn-blue" href="academy.html">Ir a Izzy Academy</a>
+    <a class="btn btn-outline" href="leads.html">Ver mis leads</a>
   </div>
+</main>
 
-  <!-- PASO 4: DIRECTOR -->
-  <div class="step-card" id="card-4">
-    <div class="card-header">
-      <div class="card-icon icon-purple">👑</div>
-      <div class="card-header-text">
-        <h2>Rango: Director</h2>
-        <p>El nivel más alto — ingresos de toda la organización</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="rank-banner director">
-        <div class="rank-emoji">👑</div>
-        <div class="rank-info">
-          <h3>Director</h3>
-          <div class="rank-sub">Líder organizacional</div>
-          <div class="rank-badge badge-director">Rango 4 de 4</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-label">Requisitos para ascender a Director</div>
-        <div class="req-list">
-          <div class="req-item">
-            <div class="req-icon">🏆</div>
-            <div class="req-text">
-              <strong>1 Supervisor activo en tu organización</strong>
-              <span>Un agente tuyo que también llegó a Supervisor</span>
-            </div>
-          </div>
-          <div class="req-item">
-            <div class="req-icon">📊</div>
-            <div class="req-text">
-              <strong>25 instalaciones organizacionales por mes</strong>
-              <span>Entre tú + todos en tu organización combinados</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-label">Bono Director — por cada instalación de tu org</div>
-        <div class="comm-table">
-          <div class="comm-row header">
-            <div class="comm-cell">Categoría</div>
-            <div class="comm-cell">Residencial</div>
-            <div class="comm-cell">Comercial</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Básico</div>
-            <div class="comm-cell amount">+$2</div>
-            <div class="comm-cell amount">+$6</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Estándar</div>
-            <div class="comm-cell amount">+$5</div>
-            <div class="comm-cell amount">+$15</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Premium</div>
-            <div class="comm-cell amount">+$20</div>
-            <div class="comm-cell amount">+$60</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert alert-purple">
-        <div class="alert-icon">👑</div>
-        <div>Si tu organización hace <strong>50 instalaciones Premium residenciales</strong> en un mes, recibes <strong>$1,000 extra en bono Director</strong>, más tus comisiones personales.</div>
-      </div>
-
-      <div>
-        <div class="section-label">Comisiones personales como Director</div>
-        <div class="comm-table">
-          <div class="comm-row header">
-            <div class="comm-cell">Categoría</div>
-            <div class="comm-cell">Residencial</div>
-            <div class="comm-cell">Comercial</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Básico</div>
-            <div class="comm-cell amount">$50</div>
-            <div class="comm-cell amount">$150</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Estándar</div>
-            <div class="comm-cell amount">$90</div>
-            <div class="comm-cell amount">$270</div>
-          </div>
-          <div class="comm-row">
-            <div class="comm-cell">Premium</div>
-            <div class="comm-cell amount">$150</div>
-            <div class="comm-cell amount">$450</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card-nav">
-      <button class="btn-prev" onclick="prev()">← Atrás</button>
-      <button class="btn-next" onclick="next()">Consejos para crecer →</button>
-    </div>
-  </div>
-
-  <!-- PASO 5: TIPS -->
-  <div class="step-card" id="card-5">
-    <div class="card-header">
-      <div class="card-icon icon-green">💡</div>
-      <div class="card-header-text">
-        <h2>Claves para subir rápido</h2>
-        <p>Estrategias de los agentes más exitosos</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="tip-list">
-        <div class="tip">
-          <div class="tip-icon">🎯</div>
-          <div class="tip-text"><strong>Enfócate en Premium desde el principio.</strong> Un Premium residencial paga $50–$150 vs $25–$40 de Básico. El esfuerzo es el mismo, la comisión es muy diferente.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📋</div>
-          <div class="tip-text"><strong>Usa el sistema de leads.</strong> Registra cada llamada, programa follow-ups. Los agentes que hacen seguimiento cierran 3× más que los que llaman una sola vez.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">👥</div>
-          <div class="tip-text"><strong>Piensa en reclutar desde el día 1.</strong> Para Supervisor necesitas 5 agentes activos — mientras más pronto los empieces a traer, más rápido llegas.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">🏢</div>
-          <div class="tip-text"><strong>Comercial multiplica tus ingresos.</strong> Un Estándar comercial paga $225 vs $75 residencial. Si puedes hablar con negocios, vale la pena el esfuerzo extra.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">📊</div>
-          <div class="tip-text"><strong>Revisa tu compensación regularmente.</strong> En el módulo Compensación puedes ver tu progreso, cuánto llevas acumulado y cuánto te falta para el siguiente rango.</div>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">🔁</div>
-          <div class="tip-text"><strong>Consistencia > explosiones.</strong> 5 instalaciones por semana te lleva a Agente en 2 semanas. Enfócate en el proceso diario, no en el resultado del mes.</div>
-        </div>
-      </div>
-
-      <div class="alert alert-green">
-        <div class="alert-icon">🚀</div>
-        <div><strong>Ruta más rápida a Supervisor:</strong> 4 semanas de ventas activas (20 instalaciones) + traer 5 personas a tu equipo desde el inicio.</div>
-      </div>
-    </div>
-    <div class="card-nav">
-      <button class="btn-prev" onclick="prev()">← Atrás</button>
-      <button class="btn-next final" onclick="finish()">¡Listo, empezar a vender!</button>
-    </div>
-  </div>
-
-  <!-- DONE -->
-  <div class="done-screen" id="done">
-    <div class="done-emoji">🎉</div>
-    <h2>¡Ya conoces el camino!</h2>
-    <p>Tienes todo lo que necesitas para crecer. El primer paso es cerrar tu primera venta hoy.</p>
-    <div class="done-actions">
-      <a href="leads.html" class="btn-action btn-green">Ver mis leads →</a>
-      <a href="call-center.html" class="btn-action btn-outline">Ir al Call Center</a>
-      <a href="compensation.html" class="btn-action btn-outline">Ver mi compensación</a>
-    </div>
-  </div>
-
-</div>
-
-<script src="nav.js"></script>
 <script>
-  let current = 0;
-  const total = 6;
-
-  const rankMap = { 0: null, 1: 0, 2: 1, 3: 2, 4: 3, 5: 3 };
-
-  function updateRoadmap(step) {
-    const activeRank = rankMap[step];
-    for (let i = 0; i < 4; i++) {
-      const circle = document.getElementById('rm' + i);
-      const label = circle.nextElementSibling;
-      circle.classList.toggle('active', i === activeRank);
-      label.classList.toggle('active', i === activeRank);
-      if (i < 3) {
-        const line = document.getElementById('rl' + i);
-        line.classList.toggle('done', activeRank !== null && i < activeRank);
-      }
-    }
-  }
-
-  function updateDots(step) {
-    document.querySelectorAll('.prog-dot').forEach((d, i) => {
-      d.classList.toggle('done', i < step);
-      d.classList.toggle('active', i === step);
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
     });
+    if (focus) tab.focus();
   }
-
-  function goTo(step) {
-    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('done').classList.remove('active');
-    const card = document.getElementById('card-' + step);
-    if (card) card.classList.add('active');
-    current = step;
-    updateDots(step);
-    updateRoadmap(step);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function next() {
-    if (current < total - 1) goTo(current + 1);
-  }
-
-  function prev() {
-    if (current > 0) goTo(current - 1);
-  }
-
-  function finish() {
-    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('done').classList.add('active');
-    document.querySelectorAll('.prog-dot').forEach(d => { d.classList.add('done'); d.classList.remove('active'); });
-    for (let i = 0; i < 4; i++) {
-      document.getElementById('rm' + i)?.classList.remove('active');
-      document.getElementById('rm' + i)?.nextElementSibling?.classList.remove('active');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { select(tab, false); });
+    tab.addEventListener('keydown', function (e) {
+      var n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') n = tabs[0];
+      else if (e.key === 'End') n = tabs[tabs.length - 1];
+      if (n) { e.preventDefault(); select(n, true); }
+    });
+  });
+})();
 </script>
 </body>
 </html>
