@@ -127,16 +127,23 @@
   .pool .no h3 { color:var(--red); }
 
   /* LEADERSHIP */
-  .diagram { display:flex; flex-direction:column; align-items:center; gap:0; margin:6px 0 18px; }
-  .node { width:100%; max-width:320px; text-align:center; padding:14px 16px; border-radius:14px; background:var(--surface); border:2px solid var(--blue); font-weight:800; color:var(--navy); }
-  .node small { display:block; font-weight:500; color:var(--muted); font-size:13px; margin-top:2px; }
-  .node.c { border-style:dashed; border-color:#94a3b8; }
-  .link { display:flex; flex-direction:column; align-items:center; padding:6px 0; font-size:13px; font-weight:800; color:var(--green); }
-  .link svg { width:22px; height:22px; }
-  .link.none { color:var(--red); }
-  .rules { display:grid; gap:10px; }
-  .rules .card { padding:16px 18px; }
-  .big5 { font-size:34px; font-weight:800; color:var(--green); line-height:1; }
+  .lead-grid { display:grid; gap:14px; }
+  .lead-grid .card ul { list-style:none; display:grid; gap:8px; margin-top:10px; }
+  .lead-grid .card li { display:flex; gap:10px; font-size:15px; align-items:flex-start; }
+  .lead-grid .card li::before { content:'✓'; color:var(--green); font-weight:800; }
+  .lead-grid .card.warn { border-color:#f3d28a; }
+  .scens { display:grid; gap:14px; margin-top:22px; }
+  .scen { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:20px 18px; box-shadow:var(--shadow); }
+  .scen h3 { font-size:16px; margin-bottom:14px; }
+  .tree { display:flex; flex-direction:column; align-items:center; }
+  .node { width:100%; max-width:260px; text-align:center; padding:12px 14px; border-radius:14px; background:var(--surface); border:2px solid var(--blue); font-weight:800; color:var(--navy); }
+  .node.ag { border-style:dashed; border-color:#94a3b8; }
+  .rel { display:flex; align-items:center; gap:6px; padding:6px 0; font-size:13px; font-weight:700; color:var(--muted); }
+  .rel svg { width:18px; height:18px; color:var(--blue-mid); }
+  .res { list-style:none; display:grid; gap:8px; margin-top:16px; }
+  .res li { display:flex; justify-content:space-between; align-items:center; gap:10px; background:#f7f9fd; border-radius:10px; padding:10px 12px; font-size:14px; }
+  .pay { font-weight:800; color:var(--green); white-space:nowrap; }
+  .pay.zero { color:var(--red); }
   .elig { list-style:none; display:grid; gap:6px; font-size:15px; color:var(--muted); margin-top:6px; }
   .depth { display:inline-block; background:var(--gold-soft); color:var(--gold); font-weight:800; letter-spacing:.07em; font-size:12px; text-transform:uppercase; padding:6px 12px; border-radius:999px; margin-top:6px; }
 
@@ -171,14 +178,11 @@
     .arrow span { display:none; }
     .grid3, .tiers { grid-template-columns:repeat(3,1fr); }
     .twin, .pool { grid-template-columns:1fr 1fr; }
-    .rules { grid-template-columns:1fr 1fr 1fr; }
+    .lead-grid { grid-template-columns:1fr 1fr; }
+    .scens { grid-template-columns:1fr 1fr; }
     .maint { grid-template-columns:1fr 1.4fr; }
     .panel { padding:28px; }
     .tab { font-size:15px; }
-    .diagram { flex-direction:row; justify-content:center; align-items:stretch; }
-    .diagram .link svg { transform:rotate(-90deg); }
-    .diagram .link { padding:0 10px; justify-content:center; }
-    .node { width:auto; flex:1; max-width:240px; }
   }
   @media (min-width:1024px) {
     .twin { gap:20px; }
@@ -342,7 +346,7 @@
         <article class="card lead">
           <div class="num" aria-hidden="true">3</div>
           <h3>Liderazgo</h3>
-          <p>$5 por conexión válida elegible de internet de tu Supervisor directo y su base elegible. Una sola profundidad.</p>
+          <p>Recibes $5 por cada conexión válida elegible de Internet de cada Supervisor que desarrollaste y de sus agentes directos que todavía no son Supervisores. Una sola profundidad.</p>
         </article>
       </div>
     </div>
@@ -458,53 +462,82 @@
     <div class="wrap">
       <span class="eyebrow">Liderazgo</span>
       <h2 class="sec-title" id="lid-t">Cómo funciona el $5 de liderazgo</h2>
-      <p class="sec-lead">Cuando desarrollas a otro Supervisor, puedes recibir liderazgo sobre su producción de internet.</p>
+      <p class="sec-lead">El Bono de Liderazgo comienza cuando desarrollas a un agente y ese agente se convierte en Supervisor.</p>
 
-      <div class="diagram" role="group" aria-label="Diagrama: Supervisor A recibe liderazgo sobre Supervisor B; Supervisor B recibe liderazgo sobre Supervisor C; A no recibe sobre C">
-        <div class="node">Supervisor A<small>desarrolla a B</small></div>
-        <div class="link" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-          $5
-        </div>
-        <div class="node">Supervisor B<small>desarrolla a C</small></div>
-        <div class="link" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-          $5
-        </div>
-        <div class="node c">Supervisor C<small>y su base elegible</small></div>
-      </div>
-
-      <div class="rules">
+      <div class="lead-grid">
         <div class="card">
-          <div class="big5">$5</div>
-          <p><strong>A</strong> puede recibir $5 por conexiones válidas elegibles de internet de <strong>B</strong> y la base elegible de B.</p>
+          <h3>Qué recibes</h3>
+          <p>Desde ese momento recibes $5 por cada conexión válida elegible de Internet producida por:</p>
+          <ul>
+            <li>ese Supervisor;</li>
+            <li>sus agentes directos que todavía no son Supervisores.</li>
+          </ul>
+        </div>
+        <div class="card warn">
+          <h3>Tus propios agentes directos</h3>
+          <p>No generan Bono de Liderazgo para ti. Sus conexiones cuentan para tu pool de producción 25/50.</p>
         </div>
         <div class="card">
-          <div class="big5">$5</div>
-          <p><strong>B</strong> puede recibir $5 por conexiones válidas elegibles de internet de <strong>C</strong> y la base elegible de C.</p>
+          <h3>Si un agente asciende</h3>
+          <p>Si uno de esos agentes asciende a Supervisor, desde su fecha y hora efectiva sale de esa base elegible. El Supervisor inmediatamente superior a él pasa a recibir el liderazgo correspondiente, y tú recibes $0 de liderazgo sobre él y su base. Las conexiones anteriores al ascenso conservan las reglas con las que se generaron.</p>
         </div>
-        <div class="card no" style="border-color:#f1b5b5">
-          <div class="big5" style="color:var(--red)">$0</div>
-          <p><strong>A NO</strong> recibe liderazgo sobre C ni sobre la base de C.</p>
+        <div class="card">
+          <h3>Un solo bono por conexión</h3>
+          <p>Cada conexión puede generar un solo Bono de Liderazgo. No existe liderazgo ilimitado hacia abajo.</p>
+          <span class="depth">Una sola profundidad</span>
         </div>
       </div>
-      <span class="depth">Una sola profundidad</span>
+
+      <div class="scens">
+        <div class="scen" role="group" aria-label="Situación actual: A desarrolló al Supervisor B y C es agente directo de B. Si B vende Internet, A gana 5 dólares. Si C vende Internet, A gana 5 dólares.">
+          <h3>Situación actual</h3>
+          <div class="tree" aria-hidden="true">
+            <div class="node">Supervisor A</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
+            <div class="node">Supervisor B</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> agente directo</div>
+            <div class="node ag">Agente C</div>
+          </div>
+          <ul class="res">
+            <li><span>B vende Internet</span><span class="pay">A gana $5</span></li>
+            <li><span>C vende Internet</span><span class="pay">A gana $5</span></li>
+          </ul>
+        </div>
+        <div class="scen" role="group" aria-label="Cuando C asciende a Supervisor: si C vende Internet, B gana 5 dólares y A gana 0 dólares de liderazgo sobre C y su base.">
+          <h3>Cuando C asciende a Supervisor</h3>
+          <div class="tree" aria-hidden="true">
+            <div class="node">Supervisor A</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
+            <div class="node">Supervisor B</div>
+            <div class="rel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg> desarrolló</div>
+            <div class="node">Supervisor C</div>
+          </div>
+          <ul class="res">
+            <li><span>C vende Internet</span><span class="pay">B gana $5</span></li>
+            <li><span>A sobre C y su base</span><span class="pay zero">A gana $0</span></li>
+          </ul>
+        </div>
+      </div>
 
       <div class="twin">
-        <div class="card yes-card" style="border-color:#8fc7bf">
-          <h3>Internet elegible ($5)</h3>
+        <div class="card" style="border-color:#8fc7bf">
+          <h3>Productos elegibles ($5)</h3>
           <ul class="elig">
-            <li>Spectrum Internet</li>
-            <li>AT&amp;T Fiber / Internet</li>
-            <li>AT&amp;T Air</li>
-            <li>Frontier Internet</li>
+            <li data-leadership="eligible">Spectrum 500 Mbps</li>
+            <li data-leadership="eligible">Spectrum 1 Gig</li>
+            <li data-leadership="eligible">AT&amp;T Fiber 300 Mbps</li>
+            <li data-leadership="eligible">AT&amp;T 500 Mbps</li>
+            <li data-leadership="eligible">AT&amp;T 1–5 Gig</li>
+            <li data-leadership="eligible">AT&amp;T Air</li>
+            <li data-leadership="eligible">Frontier 500 Mbps</li>
+            <li data-leadership="eligible">Frontier 1 Gig</li>
           </ul>
         </div>
         <div class="card" style="border-color:#f1b5b5">
-          <h3>No elegible ($0)</h3>
+          <h3>No elegibles ($0)</h3>
           <ul class="elig">
-            <li>AT&amp;T Celular + Línea</li>
-            <li>AT&amp;T BYOD</li>
+            <li data-leadership="not-eligible">AT&amp;T Celular + Línea</li>
+            <li data-leadership="not-eligible">AT&amp;T BYOD</li>
           </ul>
         </div>
       </div>
