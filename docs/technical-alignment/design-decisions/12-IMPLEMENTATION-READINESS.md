@@ -47,9 +47,9 @@ Implementation cannot begin until Moisés Caicedo resolves the following **three
 +--------------------------------------------------------------------------------------------------+
 |                            PENDING OWNER DECISIONS (MOISÉS CAICEDO)                              |
 +--------------------------------------------------------------------------------------------------+
-| 1. DECISION D-02: EXACT V1 ADOPTION TIMESTAMP (V1_EFFECTIVE_AT)                                  |
-|    - Recommendation: 2026-11-01 00:00:00 Pacific Time (2026-11-01 07:00:00 UTC).                |
-|    - Options: Confirm recommended Nov 1 cutoff or specify alternate calendar date/time.          |
+| 1. DECISION D-02: V1 ADOPTION TIMESTAMP (V1_EFFECTIVE_AT) — APPROVED 2026-10-07                 |
+|    - Approved: 2026-11-01 00:00:00 America/Los_Angeles (2026-11-01 07:00:00 UTC).               |
+|    - Record: design-decisions/13-D02-AND-RANK-MAPPING-DECISION-RECORD.md                         |
 +--------------------------------------------------------------------------------------------------+
 | 2. DECISION D-04: ECONOMIC SNAPSHOT ANCHOR EVENT — APPROVED 2026-10-06 (validation_date)        |
 |    - Recommendation: Freeze snapshot at carrier validation_date (using rank and hierarchy       |
@@ -102,7 +102,7 @@ As mandated, throughout this Material Design Decisions phase:
 
 ## 6. Next Steps Upon Owner Decision Sign-Off
 
-Decisions `D-04` and `D-06` were APPROVED on 2026-10-06 (and `D-16`, see `06-IZZY-COMM-V1-CLARIFICATIONS.md`). Upon receiving written sign-off from Moisés Caicedo on the remaining decision `D-02`:
+Decisions `D-04` and `D-06` were APPROVED on 2026-10-06 (and `D-16`, see `06-IZZY-COMM-V1-CLARIFICATIONS.md`). `D-02` was APPROVED on 2026-10-07, together with the initial V1 rank mapping (see `13-D02-AND-RANK-MAPPING-DECISION-RECORD.md`). **Implementation is still NOT authorized:** `D-03` was also APPROVED on 2026-10-07, but other decisions in `11-MATERIAL-DECISIONS-MATRIX.md` (including `D-05`, `D-07`–`D-15`) and the open items in `13` §9 remain pending. Upon written owner sign-off on those and a formal Phase 2 Implementation Authorization:
 1. Issue formal **Phase 2 Implementation Authorization**.
 2. Generate additive migration scripts strictly matching the schema contract in `03-TARGET-SCHEMA-CONTRACT.md`.
 3. Deploy V1 Calculation Engine in staging environment.

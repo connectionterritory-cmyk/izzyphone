@@ -117,12 +117,12 @@ User rank and team hierarchy must be tracked with timestamp precision so that re
 ```sql
 CREATE TABLE izzy_v1_rank_events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES izzy_portal_users(id),
+    user_id BIGINT NOT NULL REFERENCES izzy_portal_users(id),  -- bigint: matches izzy_portal_users.id (owner decision 2026-10-07)
     rank_code VARCHAR(20) NOT NULL CHECK (rank_code IN ('training', 'associate', 'supervisor')),
-    effective_at TIMESTAMPTZ NOT NULL,
+    effective_at TIMESTAMPTZ NOT NULL,  -- initial V1 onboarding: 2026-11-01 07:00:00 UTC
     ended_at TIMESTAMPTZ NULL,
-    reason VARCHAR(50) NOT NULL,
-    approved_by UUID NOT NULL REFERENCES izzy_portal_users(id),
+    reason VARCHAR(50) NOT NULL,        -- initial_v1_onboarding for the initial events
+    approved_by BIGINT NOT NULL REFERENCES izzy_portal_users(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 CREATE INDEX idx_v1_rank_lookup ON izzy_v1_rank_events (user_id, effective_at, ended_at);
@@ -133,9 +133,9 @@ CREATE INDEX idx_v1_rank_lookup ON izzy_v1_rank_events (user_id, effective_at, e
 ```sql
 CREATE TABLE izzy_v1_hierarchy_events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES izzy_portal_users(id),
-    sponsor_id UUID NULL REFERENCES izzy_portal_users(id),
-    supervisor_id UUID NULL REFERENCES izzy_portal_users(id),
+    user_id BIGINT NOT NULL REFERENCES izzy_portal_users(id),
+    sponsor_id BIGINT NULL REFERENCES izzy_portal_users(id),
+    supervisor_id BIGINT NULL REFERENCES izzy_portal_users(id),  -- NULL for users without a supervisor; never inferred (owner decision 2026-10-07)
     effective_at TIMESTAMPTZ NOT NULL,
     ended_at TIMESTAMPTZ NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
