@@ -10,8 +10,6 @@ import {
   loadCompensationConfig,
   normalizeCompensationRole,
   normalizeSaleType,
-  syncRankPromotions,
-  syncReserveStatuses,
   type CompensationConfig,
   type CompensationOrder,
   type PortalCompUser,
@@ -172,13 +170,11 @@ function sumOrderAmounts(orders: CompensationOrder[], statuses: string[]) {
 }
 
 async function buildDashboard(user: PortalCompUser, supabase: ReturnType<typeof createAdminClient>) {
-  await syncReserveStatuses(supabase);
+  // READ-ONLY: a GET must never mutate orders, reserves, ranks or rank history.
+  // syncReserveStatuses / syncRankPromotions are intentionally not called here.
   const config = await loadCompensationConfig(supabase);
-  let users = await getAllCompUsers(supabase);
-  let orders = await getCompOrders(supabase);
-  await syncRankPromotions(supabase, config, users, orders);
-  users = await getAllCompUsers(supabase);
-  orders = await getCompOrders(supabase);
+  const users = await getAllCompUsers(supabase);
+  const orders = await getCompOrders(supabase);
 
   const freshUser = users.find((row) => row.id === user.id) || user;
   const activity = buildUserActivity(freshUser, users, orders, config);
